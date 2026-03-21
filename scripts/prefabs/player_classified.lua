@@ -266,6 +266,12 @@ local function OnHealthDirty(inst)
         local oldpercent = inst._oldhealthpercent
         local percent = inst.currenthealth:value() / inst.maxhealth:value()
         if oldpercent == percent then
+            local data =
+            {
+                oldpercent = oldpercent,
+                newpercent = percent,
+            }
+            inst._parent:PushEvent("healthdelta", data) -- still must pass healthdelta to update max value in case they changed
             inst._parent:PushEvent("forcehealthpulse", { up = inst.ishealthpulseup:value(), down = inst.ishealthpulsedown:value() })
             inst.ishealthpulseup:set_local(false)
             inst.ishealthpulsedown:set_local(false)

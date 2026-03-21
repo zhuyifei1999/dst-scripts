@@ -104,13 +104,13 @@ end
 ---------------------------------------------------------------
 
 local function GetHealthCircuitArmor(wx)
-    local base_armor = IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2")
-        and TUNING.SKILLS.WX78.MAXHEALTH_ARMOR_ALPHABUFF_2
-        or TUNING.SKILLS.WX78.MAXHEALTH_ARMOR
+    local base_armor = TUNING.SKILLS.WX78.MAXHEALTH_ARMOR_ALPHABUFF_2
     local armor = 0
-    for k, v in ipairs(wx.components.upgrademoduleowner:GetAllModules()) do
-        if v._skill_health_armor_mult then
-            armor = armor + (base_armor * v._skill_health_armor_mult)
+    if IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") then
+        for k, v in ipairs(wx.components.upgrademoduleowner:GetAllModules()) do
+            if v._skill_health_armor_mult then
+                armor = armor + (base_armor * v._skill_health_armor_mult)
+            end
         end
     end
     return armor
@@ -375,20 +375,26 @@ AddCreatureScanDataDefinition("rook_nightmare", "movespeed2", 3)
 
 ---------------------------------------------------------------
 
-local function heat_skill_activate(inst, wx, isloading)
-    if wx.components.health then
-        wx.components.health.fire_damage_scale = wx.components.health.fire_damage_scale - TUNING.SKILLS.WX78.HEAT_FIRE_DAMAGE_SCALE
-    end
+local function heat_freezeimmune_redirect()
+    return true -- return true to be immune to freezing
 end
 
-local function heat_skill_deactivate(inst, wx)
-    if wx.components.health then
-        wx.components.health.fire_damage_scale = wx.components.health.fire_damage_scale + TUNING.SKILLS.WX78.HEAT_FIRE_DAMAGE_SCALE
+local BASE_PLAYER_FREEZE_RESISTANCE = 4
+local function heat_skill_updatefreezable(inst, wx)
+    if wx.components.freezable then
+        if wx._heat_modcount >= 2 then
+            wx.components.freezable:SetRedirectFn(heat_freezeimmune_redirect)
+        else
+            local freezeresistance_mult = wx._heat_modcount * TUNING.SKILLS.WX78.HEAT_FREEZE_RESISTANCE
+            wx.components.freezable:SetRedirectFn(nil)
+            wx.components.freezable:SetResistance(math.max(BASE_PLAYER_FREEZE_RESISTANCE, BASE_PLAYER_FREEZE_RESISTANCE * freezeresistance_mult))
+        end
     end
 end
 
 local EXTRA_DRYRATE = 0.1
 local function heat_activate(inst, wx, isloading)
+    wx._heat_modcount = (wx._heat_modcount or 0) + 1
     if wx.components.temperature then
         -- A higher mintemp means that it's harder to freeze.
         wx.components.temperature.mintemp = wx.components.temperature.mintemp + TUNING.WX78_MINTEMPCHANGEPERMODULE
@@ -404,10 +410,11 @@ local function heat_activate(inst, wx, isloading)
         wx:AddTemperatureModuleLeaning(1)
     end
 
-    Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_betabuffs_1", heat_skill_activate, heat_skill_deactivate, isloading)
+    Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_betabuffs_1", heat_skill_updatefreezable, heat_skill_updatefreezable, isloading)
 end
 
 local function heat_deactivate(inst, wx)
+    wx._heat_modcount = math.max(0, wx._heat_modcount - 1)
     if wx.components.temperature then
         wx.components.temperature.mintemp = wx.components.temperature.mintemp - TUNING.WX78_MINTEMPCHANGEPERMODULE
         wx.components.temperature.maxtemp = wx.components.temperature.maxtemp - TUNING.WX78_MINTEMPCHANGEPERMODULE
@@ -459,11 +466,11 @@ local function nightvision_common_activate(inst, wx)
     wx._nightvision_modcount = (wx._nightvision_modcount or 0) + 1
 
     if wx._nightvision_modcount == 1 then
-        inst:WatchWorldState("isnight", OnNightVisionUpdate)
-        inst:WatchWorldState("isfullmoon", OnNightVisionUpdate)
-        inst:ListenForEvent("onactivateskill_client", OnNightVisionUpdate)
-        inst:ListenForEvent("ondeactivateskill_client", OnNightVisionUpdate)
-        OnNightVisionUpdate(inst)
+        wx:WatchWorldState("isnight", OnNightVisionUpdate)
+        wx:WatchWorldState("isfullmoon", OnNightVisionUpdate)
+        wx:ListenForEvent("onactivateskill_client", OnNightVisionUpdate)
+        wx:ListenForEvent("ondeactivateskill_client", OnNightVisionUpdate)
+        OnNightVisionUpdate(wx)
     end
 end
 
@@ -471,12 +478,12 @@ local function nightvision_common_deactivate(inst, wx)
     wx._nightvision_modcount = math.max(0, wx._nightvision_modcount - 1)
 
     if wx._nightvision_modcount == 0 then
-        inst:StopWatchingWorldState("isnight", OnNightVisionUpdate)
-        inst:StopWatchingWorldState("isfullmoon", OnNightVisionUpdate)
-        inst:RemoveEventCallback("onactivateskill_client", OnNightVisionUpdate)
-        inst:RemoveEventCallback("ondeactivateskill_client", OnNightVisionUpdate)
-        if inst.components.playervision then
-            inst.components.playervision:PopForcedNightVision(inst)
+        wx:StopWatchingWorldState("isnight", OnNightVisionUpdate)
+        wx:StopWatchingWorldState("isfullmoon", OnNightVisionUpdate)
+        wx:RemoveEventCallback("onactivateskill_client", OnNightVisionUpdate)
+        wx:RemoveEventCallback("ondeactivateskill_client", OnNightVisionUpdate)
+        if wx.components.playervision then
+            wx.components.playervision:PopForcedNightVision(wx)
         end
     end
 end
@@ -498,20 +505,15 @@ AddCreatureScanDataDefinition("mole", "nightvision", 4)
 
 ---------------------------------------------------------------
 
-local function cold_freezeimmune_redirect()
-    return true -- return true to be immune to freezing
+local function cold_skill_activate(inst, wx, isloading)
+    if wx.components.health then
+        wx.components.health.fire_damage_scale = wx.components.health.fire_damage_scale - TUNING.SKILLS.WX78.COLD_FIRE_DAMAGE_SCALE
+    end
 end
 
-local BASE_PLAYER_FREEZE_RESISTANCE = 4
-local function cold_skill_updatefreezable(inst, wx)
-    if wx.components.freezable then
-        if wx._cold_modcount >= 2 then
-            wx.components.freezable:SetRedirectFn(cold_freezeimmune_redirect)
-        else
-            local freezeresistance_mult = wx._cold_modcount * TUNING.SKILLS.WX78.COLD_FREEZE_RESISTANCE
-            wx.components.freezable:SetRedirectFn(nil)
-            wx.components.freezable:SetResistance(BASE_PLAYER_FREEZE_RESISTANCE * freezeresistance_mult)
-        end
+local function cold_skill_deactivate(inst, wx, isloading)
+    if wx.components.health then
+        wx.components.health.fire_damage_scale = wx.components.health.fire_damage_scale + TUNING.SKILLS.WX78.COLD_FIRE_DAMAGE_SCALE
     end
 end
 
@@ -527,7 +529,7 @@ local function cold_activate(inst, wx, isloading)
         wx:AddTemperatureModuleLeaning(-1)
     end
 
-    Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_betabuffs_1", cold_skill_updatefreezable, cold_skill_updatefreezable, isloading)
+    Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_betabuffs_1", cold_skill_activate, cold_skill_deactivate, isloading)
 end
 
 local function cold_deactivate(inst, wx)
@@ -1019,8 +1021,7 @@ AddCreatureScanDataDefinition("hermitcrab", "music", 4)
 ---------------------------------------------------------------
 
 local function bee_getticktime(inst, wx)
-    return IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1") and TUNING.SKILLS.WX78.BEE_TICKPERIOD_ALPHABUFF
-        or TUNING.WX78_BEE_TICKPERIOD
+    return TUNING.WX78_BEE_TICKPERIOD
 end
 
 local function bee_tick(wx, inst)
@@ -1047,6 +1048,9 @@ local function bee_updateregen_task(inst, wx)
     local regen_time_left
     if wx._bee_regentask ~= nil then
         regen_time_left = GetTaskRemaining(wx._bee_regentask) or nil
+        if regen_time_left == 0 then
+            regen_time_left = nil
+        end
         wx._bee_regentask:Cancel()
     end
 

@@ -289,7 +289,7 @@ local function BuildSkillsData(SkillTreeFns)
         },
         wx78_extrabody_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_X_DESC,
+            desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_DESC,
             icon = "wx78_body_plus_one",
             pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5},
             group = GROUPS.CHASSIS,
@@ -300,7 +300,7 @@ local function BuildSkillsData(SkillTreeFns)
         },
         wx78_extrabody_3 = {
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_X_DESC,
+            desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_DESC,
             icon = "wx78_body_plus_one",
             pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5},
             group = GROUPS.CHASSIS,

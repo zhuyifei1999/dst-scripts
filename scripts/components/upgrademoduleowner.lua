@@ -406,7 +406,14 @@ function UpgradeModuleOwner:OnLoad(data, newents)
             self.charge_level = data.charge_level
         end
 
-        if data.module_bars ~= nil then
+        if data.modules ~= nil then -- Backwards compat
+            for _, module_record in ipairs(data.modules) do
+				local _module = SpawnSaveRecord(module_record, newents)
+				if _module then
+					self:PushModule(nil, _module, true)
+				end
+			end
+        elseif data.module_bars ~= nil then
             for bartype, modules in pairs(data.module_bars) do
                 for i, module_record in ipairs(modules) do
                     local module = SpawnSaveRecord(module_record, newents)

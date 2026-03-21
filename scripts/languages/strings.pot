@@ -55,7 +55,7 @@ msgstr ""
 
 #. STRINGS.ACTIONS.ACTIVATE.EXCHANGEKNOWLEDGE
 msgctxt "STRINGS.ACTIONS.ACTIVATE.EXCHANGEKNOWLEDGE"
-msgid "Exchange Knowledge"
+msgid "Transfer Consciousness"
 msgstr ""
 
 #. STRINGS.ACTIONS.ACTIVATE.FAKE_PICKUP
@@ -1980,7 +1980,7 @@ msgstr ""
 
 #. STRINGS.ACTIONS.SWAPBODIES_MAP
 msgctxt "STRINGS.ACTIONS.SWAPBODIES_MAP"
-msgid "Exchange Knowledge"
+msgid "Transfer Consciousness"
 msgstr ""
 
 #. STRINGS.ACTIONS.TACKLE
@@ -22858,9 +22858,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_TASER"
 msgid "So much science packed into one tiny gizmo."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_ZAP
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_ZAP"
+msgid "It uses current technology."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_ZAP_REMOTE.CANUSE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_ZAP_REMOTE.CANUSE"
 msgid "only_used_by_wx78"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC"
+msgid "It remotely controls, so it's a.... Detached Telecommand Apparatus!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
+msgid "Finite like that."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_INVENTORYCONTAINER.HELD
@@ -41441,6 +41456,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_TASER
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_TASER"
 msgid "Robot guts! Neat!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_DRONE_SCOUT
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_DRONE_SCOUT"
+msgid "Scott likes to explore!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_INVENTORYCONTAINER.HELD
@@ -205618,6 +205638,16 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_TASER"
 msgid "They've really gotta start takin' better care of themselves."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_DRONE_ZAP
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_DRONE_ZAP"
+msgid "I know who's really in control!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC"
+msgid "WX don't like to share."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_INVENTORYCONTAINER.HELD
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_INVENTORYCONTAINER.HELD"
 msgid "only_used_by_wx78"
@@ -223921,6 +223951,31 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_TASER
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_TASER"
 msgid "Is robot snacks, yes?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_DELIVERY
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_DELIVERY"
+msgid "Wolfgang carry more things."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_SCOUT
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_SCOUT"
+msgid "Brave little scout machine!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_ZAP
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_ZAP"
+msgid "Be careful not zap Wolfgang!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC"
+msgid "Robot have all the fun toy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
+msgid "Any goodie for Wolfgang?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_INVENTORYCONTAINER.HELD
@@ -278913,6 +278968,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_TASER"
 msgid "Are you the brightest bulb of the bunch?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_DRONE_DELIVERY
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_DRONE_DELIVERY"
+msgid "WX Express!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_INVENTORYCONTAINER.HELD
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_INVENTORYCONTAINER.HELD"
 msgid "only_used_by_wx78"
@@ -315693,16 +315753,6 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_DRONE_ZAP_REMOTE.GENERIC"
 msgid "INVALID CREDENTIALS"
 msgstr ""
 
-#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.GENERIC
-msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.GENERIC"
-msgid "TODO"
-msgstr ""
-
-#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.WET
-msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.WET"
-msgid "TODO"
-msgstr ""
-
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "RECOVERY MODE"
@@ -338455,12 +338505,12 @@ msgstr ""
 
 #. STRINGS.NAMES.WX78_BACKUPBODY
 msgctxt "STRINGS.NAMES.WX78_BACKUPBODY"
-msgid "WX-78's Backup"
+msgid "WX-78's Backup Chassis"
 msgstr ""
 
 #. STRINGS.NAMES.WX78_BACKUPBODY_FMT
 msgctxt "STRINGS.NAMES.WX78_BACKUPBODY_FMT"
-msgid "{name}'s Backup"
+msgid "{name}'s Backup Chassis"
 msgstr ""
 
 #. STRINGS.NAMES.WX78_DRONE_DELIVERY
@@ -345610,7 +345660,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.WX78_BACKUPBODY
 msgctxt "STRINGS.RECIPE_DESC.WX78_BACKUPBODY"
-msgid "It never hurts to have a spare chassis. Although data transfer is always a pain."
+msgid "It never hurts to have spare hardware. Although data transfer is always a pain."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.WX78_DRONE_DELIVERY_ITEM
@@ -354905,7 +354955,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_TITLE"
-msgid "Lunar Affinity"
+msgid "Lunar Vessel"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC
@@ -354915,7 +354965,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_TITLE"
-msgid "Shadow Affinity"
+msgid "Shadow Servitor"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_1_DESC
@@ -354960,12 +355010,12 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_BODYCIRCUITS_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_BODYCIRCUITS_DESC"
-msgid "Backup bodies keep their Beta circuits active when powered down."
+msgid "Backup Chassis keep their Beta Circuits active even when powered down."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_BODYCIRCUITS_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_BODYCIRCUITS_TITLE"
-msgid "Backup Generator"
+msgid "Warm Standby"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_CIRCUITRY_SLOT_1_DESC
@@ -355000,27 +355050,32 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_1_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_1_DESC"
-msgid "Learn to craft a reliable Backup Body."
+msgid "Learn to craft a reliable Backup Chassis."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_1_TITLE"
-msgid "System Backup I"
+msgid "Cold Standby I"
+msgstr ""
+
+#. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_DESC
+msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_DESC"
+msgid "Build up to two Backup Chassis."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_TITLE"
-msgid "System Backup II"
+msgid "Cold Standby II"
+msgstr ""
+
+#. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_DESC
+msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_DESC"
+msgid "Build up to three Backup Chassis."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE"
-msgid "System Backup III"
-msgstr ""
-
-#. STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_X_DESC
-msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_X_DESC"
-msgid "Allows for an additional Backup Body at once."
+msgid "Cold Standby III"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_FASTER_CHARGE_DESC
@@ -355055,32 +355110,32 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_DESC"
-msgid "Haunting a Backup Body will Transfer Knowledge into it at the price of all of its stored energy."
+msgid "Haunting a Backup Chassis transfers your consciousness into it, consuming all of the chassis' charge units."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_TITLE"
-msgid "Inhabited Machines I"
+msgid "Inhabited Machine I"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_DESC"
-msgid "While at full energy and having an extra Backup Body to create, dying will leave behind a Backup Body."
+msgid "If you die with full charge and have not yet reached your maximum number of Backup Chassis, one is left behind."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_TITLE"
-msgid "Inhabited Machines II"
+msgid "Inhabited Machine II"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_DESC"
-msgid "Reviving with a Backup Body will revitalize your health fully."
+msgid "Reviving with a Backup Chassis fully restores your health."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_TITLE"
-msgid "Inhabited Machines III"
+msgid "Inhabited Machine III"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_HALF_MODULE_USES_DESC
@@ -355100,17 +355155,17 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_LESS_CHARGE_LOSS_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_LESS_CHARGE_LOSS_TITLE"
-msgid "Hot Swap"
+msgid "Energy-Efficient"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_DESC"
-msgid "Backup bodies may now Exchange Knowledge through the Map."
+msgid "Remotely transfer consciousness to any Backup Chassis on the map."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_TITLE"
-msgid "Remote Backup"
+msgid "Remote Transfer"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_DESC
@@ -355150,7 +355205,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_TITLE"
-msgid "RC Enthusiast I"
+msgid "Telemechanical Enthusiast I"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_DESC
@@ -355160,7 +355215,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_TITLE"
-msgid "RC Enthusiast II"
+msgid "Telemechanical Enthusiast II"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.abigail_ancient

@@ -331,6 +331,16 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"balloonhat",
 
 	-- WX-78
+
+    "wx78_moduleremover",
+    "wx78_scanner_item",
+    -- WX-78 skill tree
+    "wx78_backupbody",
+	"wx78_drone_scout",
+	"wx78_drone_delivery_item",
+	"wx78_drone_delivery_small_item",
+	"wx78_drone_zap_remote",
+
 	"wx78module_maxhealth",
     "wx78module_maxhealth2",
     "wx78module_maxhunger1",
@@ -351,15 +361,6 @@ CRAFTING_FILTERS.CHARACTER.recipes =
     "wx78module_light2",
     "wx78module_nightvision",
     "wx78module_stacksize",
-
-    "wx78_moduleremover",
-    "wx78_scanner_item",
-    -- WX-78 skill tree
-    "wx78_backupbody",
-	"wx78_drone_scout",
-	"wx78_drone_delivery_item",
-	"wx78_drone_delivery_small_item",
-	"wx78_drone_zap_remote",
 }
 
 CRAFTING_FILTERS.SPECIAL_EVENT.recipes =

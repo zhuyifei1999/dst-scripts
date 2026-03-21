@@ -147,9 +147,9 @@ function Tune(overrides)
         WX78_MAX_HUNGER = 200,
         WX78_MAX_SANITY = 300,
 
-        WX78_HEALTH = 125,
-        WX78_HUNGER = 125,
-        WX78_SANITY = 150,
+        WX78_HEALTH = 100,
+        WX78_HUNGER = 100,
+        WX78_SANITY = 100,
 
         HAMMER_LOOT_PERCENT = .5,
         BURNT_HAMMER_LOOT_PERCENT = .25,
@@ -7447,29 +7447,28 @@ function Tune(overrides)
                 -- wx78_circuitry_lesschargeloss
                 SAVE_CHARGE_ON_UNPLUG = 1,
                 -- wx78_circuitry_alphabuffs_1
-                MAXHEALTH_ARMOR = 0.025,
-                MAXHEALTH2_ARMOR_MULT = 4,
                 MAXHUNGER_SLOWPERCENT_ALPHABUFF = 0.70,
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF = 0.95,
                 MAXSANITY1_SANITY_MOD_ALPHABUFF = 0.8,
                 MAXSANITY_SANITY_MOD_ALPHABUFF = 0.5,
                 BEE_HEALTHPERTICK_MULT_ALPHABUFF = 2,
                 BEE_TICKPERIOD_ALPHABUFF = seg_time * 0.5,
-                RADAR_ZAPDRONERANGE = 5,
-                RADAR_SCOUTDRONERANGE = 100,
                 -- wx78_circuitry_alphabuffs_2
-                MAXHEALTH_ARMOR_ALPHABUFF_2 = 0.05,
+                MAXHEALTH_ARMOR_ALPHABUFF_2 = 0.025,
+                MAXHEALTH2_ARMOR_MULT = 4,
                 MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.50,
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
                 MAXSANITY1_DAPPERNESS_MULT = 0.20,
                 MAXSANITY_DAPPERNESS_MULT = 0.50,
-                BEE_SHIELDPERTICK = 0.5,
+                BEE_SHIELDPERTICK = 0.25,
                 BEE_SHIELDPERCENT = 0.2, -- how much shield dependant on max health.
 
                 -- wx78_circuitry_betabuffs_1
-                HEAT_FIRE_DAMAGE_SCALE = 0.5, -- 50% per module
-                COLD_FREEZE_RESISTANCE = 2, -- 2x per module resistance to freezing (immune to freezing at 2 cold circuits)
+                COLD_FIRE_DAMAGE_SCALE = 0.5, -- 50% per module
+                HEAT_FREEZE_RESISTANCE = 2, -- 2x per module resistance to freezing (immune to freezing at 2 fire circuits)
                 MUSIC_MAXFOLLOWERS = 10, -- 10 max followers per module
+                RADAR_ZAPDRONERANGE = 5,
+                RADAR_SCOUTDRONERANGE = 100,
 
                 -- wx78_circuitry_betabuffs_2
                 TASER_MAXBUILDUP = 100,

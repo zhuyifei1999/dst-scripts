@@ -1,9 +1,9 @@
 local assets =
 {
     Asset("ANIM", "anim/wx_scanner.zip"),
+    Asset("ANIM", "anim/wx_scanner_ring_fx.zip"),
     Asset("INV_IMAGE", "wx78_scanner_item_on"),
     Asset("MINIMAP_IMAGE", "wx78_scanner_item"),
-    Asset("ANIM", "anim/winona_catapult_placement.zip"),
 }
 
 local item_prefabs =
@@ -20,12 +20,22 @@ local scanner_prefabs =
 
 local GetCreatureScanData = require("wx78_moduledefs").GetCreatureScanDataDefinition
 
-
 local brain = require "brains/wx78_scannerbrain"
+
+local RING_FX =
+{
+    NONE = 0,
+    SCANNING = 1,
+    FAILED = 2,
+    SUCCESS = 3,
+}
 
 ---------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------
 -- Scanner Ring Non-networked FX
+
+local MAGIC_NUMBER = 8.75 -- Who knows where this number came from!
+local RING_SCALE = TUNING.WX78_SCANNER_PLAYER_PROX / MAGIC_NUMBER
 
 local function CreateRingFX()
     local inst = CreateEntity()
@@ -41,9 +51,9 @@ local function CreateRingFX()
     inst:AddTag("DECOR")
     inst:AddTag("NOCLICK")
 
-    inst.AnimState:SetBank("winona_catapult_placement")
-    inst.AnimState:SetBuild("winona_catapult_placement")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetBank("wx_scanner_ring_fx")
+    inst.AnimState:SetBuild("wx_scanner_ring_fx")
+    inst.AnimState:PlayAnimation("scan_loop", true)
 
     inst.AnimState:Hide("inner")
 
@@ -52,8 +62,7 @@ local function CreateRingFX()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(1)
 
-    local scale = TUNING.WX78_SCANNER_PLAYER_PROX/8.5
-    inst.Transform:SetScale(scale,scale,scale)
+    inst.Transform:SetScale(RING_SCALE, RING_SCALE, RING_SCALE)
 
     inst:AddComponent("fader")
 
@@ -370,7 +379,7 @@ local function OnTargetFound(inst, scan_target)
         inst.AnimState:Hide("bottom_light")
         inst.components.updatelooper:RemoveOnUpdateFn(proximityscan)
 
-        inst._showringfx:set(1)
+        inst._showringfx:set(RING_FX.SCANNING)
 
         inst.components.entitytracker:TrackEntity("scantarget", scan_target)
         inst:ListenForEvent("onremove", inst._OnScanTargetRemoved, scan_target)
@@ -517,13 +526,10 @@ local function StopAllScanning(inst, status)
 
     inst.components.timer:StopTimer(TOP_LIGHT_FLASH_TIMERNAME)
 
-    if status == "fail" then
-        inst._showringfx:set(2)
-    elseif status == "succeed" then
-        inst._showringfx:set(3)
-    else
-        inst._showringfx:set(0)
-    end
+    local ringfx_type = (status == "fail" and RING_FX.FAILED) or
+        (status == "succeed" and RING_FX.SUCCESS) or
+        RING_FX.NONE
+    inst._showringfx:set(ringfx_type)
 
     inst.AnimState:Hide("top_light")
     inst.AnimState:Hide("bottom_light")
@@ -537,78 +543,42 @@ end
 local function OnShowRingFXDirty(inst)
     local show_ring_fx_value = inst._showringfx:value()
 
-    if show_ring_fx_value == 0 then
+    if show_ring_fx_value == RING_FX.NONE then
         if inst.prox_range ~= nil and inst.prox_range:IsValid() then
             inst.prox_range:Remove()
         end
         inst.prox_range = nil
-    elseif show_ring_fx_value == 1 then
+    elseif show_ring_fx_value == RING_FX.SCANNING then
         if inst.prox_range == nil then
             inst.prox_range = CreateRingFX()
+            inst.prox_range.AnimState:PlayAnimation("scan_pre")
+            inst.prox_range.AnimState:PushAnimation("scan_loop", true)
         end
         inst:AddChild(inst.prox_range)
-
-        inst.prox_range.AnimState:SetAddColour(0, 0.5, 0.2, 0)
-    elseif show_ring_fx_value == 2 then
+    elseif show_ring_fx_value == RING_FX.FAILED then
         local fail_prox_range = CreateRingFX()
+        fail_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fail_prox_range.AnimState:PlayAnimation("scan_fail")
+        fail_prox_range:ListenForEvent("animover", fail_prox_range.Remove)
 
         if inst.prox_range ~= nil and inst.prox_range:IsValid() then
             fail_prox_range.Transform:SetRotation(inst.prox_range.Transform:GetRotation())
-
             inst.prox_range:Remove()
-            inst.prox_range = nil
         end
 
-        fail_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-        fail_prox_range.components.fader:Fade(1, 0, 1,
-            function(alphaval, fx)
-                fx.AnimState:SetMultColour(1, 1, 1, alphaval)
-                fx.AnimState:SetAddColour(0.5*alphaval, 0.1*alphaval, 0.1*alphaval, 0)
-            end,
-            function(fx, alphaval)
-                fx:Remove()
-            end
-        )
-
+        inst.prox_range = nil
         inst._showringfx:set_local(0)
-    elseif show_ring_fx_value == 3 then
-        local matched_rotation = 0
-        
-        -- Since we're going to make multiple rings here,
-        -- just kill our stored one and make 3 new ones. They're frame delayed anyway.
-        if inst.prox_range ~= nil and inst.prox_range:IsValid() then
-            matched_rotation = inst.prox_range.Transform:GetRotation()
+    elseif show_ring_fx_value == RING_FX.SUCCESS then
+        local success_prox_range = CreateRingFX()
+        success_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        success_prox_range.AnimState:PlayAnimation("scan_success")
+        success_prox_range:ListenForEvent("animover", success_prox_range.Remove)
 
+        if inst.prox_range ~= nil and inst.prox_range:IsValid() then
+            success_prox_range.Transform:SetRotation(inst.prox_range.Transform:GetRotation())
             inst.prox_range:Remove()
         end
         inst.prox_range = nil
-
-        for i=0,2 do
-            inst:DoTaskInTime(i*0.15,function()
-                local prox_range = CreateRingFX()
-                prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                prox_range.Transform:SetRotation(matched_rotation)
-                prox_range.AnimState:SetAddColour(0, 0.5, 0.2, 0)
-
-                prox_range.components.fader:Fade(1 - (i*0.4), 0, 1,
-                    function(alphaval, fx)
-                        fx.AnimState:SetMultColour(1, 1, 1, alphaval)
-                        fx.AnimState:SetAddColour(0, 0.5*alphaval, 0.2*alphaval, 0)
-                    end,
-                    function(fx, alphaval)
-                        fx:Remove()
-                    end
-                )
-                prox_range.components.fader:Fade(1, 1.3, 1,
-                    function(scaleval, fx)
-                        local scale = (TUNING.WX78_SCANNER_PLAYER_PROX/8.5) * scaleval
-                        fx.Transform:SetScale(scale, scale, scale)
-                    end
-                )
-            end)
-        end
-
         inst._showringfx:set_local(0)
     end
 end
@@ -1010,6 +980,7 @@ local function on_succeeded_timeout(inst)
     local scanner_item = SpawnPrefab("wx78_scanner_item", inst.linked_skinname, inst.skin_id)
     scanner_item.Transform:SetPosition(inst.Transform:GetWorldPosition())
     scanner_item.Transform:SetRotation(inst.Transform:GetRotation())
+    scanner_item.AnimState:MakeFacingDirty() --not needed for clients
 
     inst:Remove()
 end
@@ -1097,7 +1068,7 @@ end
 
 local function goAway(inst)
     inst.AnimState:PlayAnimation("scan_fx_pst")
-    inst:ListenForEvent("animover", function() inst:Remove() end)
+    inst:ListenForEvent("animover", inst.Remove)
 end
 
 local function scanfx_fn()

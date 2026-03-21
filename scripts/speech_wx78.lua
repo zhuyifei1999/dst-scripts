@@ -6075,8 +6075,8 @@ return{
 
         WX78_FOODBRICK =
         {
-            WET = "TODO", -- The food brick is moistened, and can be eaten. Omar says wait.
-            GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten. Omar says wait.
+            --WET = "TODO", -- The food brick is moistened, and can be eaten. Omar says wait.
+            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten. Omar says wait.
         },
     },
 

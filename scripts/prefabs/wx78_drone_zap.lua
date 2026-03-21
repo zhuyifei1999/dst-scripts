@@ -1,3 +1,5 @@
+local easing = require("easing")
+
 local assets =
 {
 	Asset("ANIM", "anim/wx78_drone_zap.zip"),
@@ -29,7 +31,7 @@ local function OnUpdate(inst, dt)
 			return
 		end
 		local pan_gain, heading_gain, distance_gain = TheCamera:GetGains()
-		TheCamera:SetGains(4, heading_gain, distance_gain)
+		TheCamera:SetGains(15, heading_gain, distance_gain)
 		owner:PushEvent("dronevision", { enable = true, source = inst })
 	end
 	inst:RemoveComponent("updatelooper")
@@ -41,24 +43,31 @@ local function OnOwnerDirty(inst)
 		TheFocalPoint.components.focalpoint:StartFocusSource(inst, "drone_cam", nil, math.huge, math.huge, 10, {
 			UpdateFn = function(dt, params, parent, dist_sq)
 				local offs = FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
+				local old = offs.y
+				--dampen the hover bobbing
+				local hover_miny, hover_maxy, dampen_maxy = 6.7, 7.13, 6.85
+				local dampen_y = offs.y
+				if dampen_y > hover_miny then
+					dampen_y = easing.linear(dampen_y - hover_miny, hover_miny, dampen_maxy - hover_miny, hover_maxy - hover_miny)
+				end
 				local offs_scrndn1 = -0.4
 				local offs_scrndn2 = 0.9
-				local offs_y1 = 1.5
-				local offs_y2 = -0.1
+				local offs_y1 = offs.y + 1.5
+				local offs_y2 = dampen_y
 				if inst.AnimState:IsCurrentAnimation("deploy") then
 					local fr = inst.AnimState:GetCurrentAnimationFrame()
 					if fr < 10 then
 						offs = offs + TheCamera:GetDownVec() * offs_scrndn1
-						offs.y = offs.y + offs_y1
+						offs.y = offs_y1
 					else
 						local numfr = inst.AnimState:GetCurrentAnimationNumFrames()
 						local k = (fr - 10) / (numfr - 10)
 						offs = offs + TheCamera:GetDownVec() * Lerp(offs_scrndn1, offs_scrndn2, k)
-						offs.y = offs.y + Lerp(offs_y1, offs_y2, k)
+						offs.y = Lerp(offs_y1, offs_y2, k)
 					end
 				else
 					offs = offs + TheCamera:GetDownVec() * offs_scrndn2
-					offs.y = offs.y + offs_y2
+					offs.y = offs_y2
 				end
 				TheCamera:SetOffset(offs)
 			end,

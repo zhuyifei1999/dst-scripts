@@ -462,7 +462,7 @@ local function OnAllUpgradeModulesRemoved(inst)
     inst:PushEvent("upgrademoduleowner_popallmodules")
 
     if inst.wx78_classified ~= nil then
-        for i, modules in ipairs(inst.wx78_classified.upgrademodulebars) do
+        for i, modules in pairs(inst.wx78_classified.upgrademodulebars) do
             for j, netvar in ipairs(modules) do
                 netvar:set(0)
             end

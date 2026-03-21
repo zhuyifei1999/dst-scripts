@@ -129,7 +129,7 @@ local function UpdateHover(inst, dt)
 	local theta = dir * DEGREES
 	local costheta = math.cos(theta)
 	local sintheta = math.sin(theta)
-	local vx, vz = CalcDecelVelXZ(inst, 10 * dt, costheta, sintheta)
+	local vx, vz = CalcDecelVelXZ(inst, 15 * dt, costheta, sintheta)
 
 	if inst.sg:HasStateTag("moving") and inst.sg.statemem.speedmult ~= 0 then
 		local speed = TUNING.SKILLS.WX78.ZAPDRONE_SPEED * (inst.sg.statemem.speedmult or 1)
@@ -221,7 +221,7 @@ local function UpdateAttackHover(inst, dt)
 	local theta = dir * DEGREES
 	local costheta = math.cos(theta)
 	local sintheta = math.sin(theta)
-	local vx, vz = CalcDecelVelXZ(inst, 15 * dt, costheta, sintheta)
+	local vx, vz = CalcDecelVelXZ(inst, 20 * dt, costheta, sintheta)
 
 	inst.sg.mem.vel.x, inst.sg.mem.vel.y, inst.sg.mem.vel.z = vx, vy, vz
 	--now convert back to local space
@@ -332,13 +332,14 @@ local states =
 			end
 			inst.sg.statemem.t = t
 			inst.sg.statemem.speedmult = 0
+			inst.sg.statemem.speedk = 0
 		end,
 
 		onupdate = function(inst, dt)
 			local k = inst.sg.statemem.speedk
 			if k then
 				k = k + 1
-				local numaccelframes = 5
+				local numaccelframes = 8
 				if k < numaccelframes then
 					inst.sg.statemem.speedk = k
 					k = k / numaccelframes
@@ -350,13 +351,6 @@ local states =
 			end
 			UpdateHover(inst, dt)
 		end,
-
-		timeline =
-		{
-			FrameEvent(4, function(inst)
-				inst.sg.statemem.speedk = 0
-			end),
-		},
 
 		events =
 		{

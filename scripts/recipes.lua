@@ -760,7 +760,7 @@ Recipe2("wx78module_nightvision",			{Ingredient("scandata", 4), Ingredient("mole
 Recipe2("wx78module_light",					{Ingredient("scandata", 3), Ingredient("lightbulb", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_radar",					{Ingredient("scandata", 2), Ingredient("compass", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_light2",				{Ingredient("scandata", 6), Ingredient("fireflies", 1), Ingredient("wx78module_light", 1)},					TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78module_stacksize",				{Ingredient("scandata", 6), Ingredient("moonrocknugget", 1), Ingredient("moonglass_charged", 1)},			TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_stacksize",				{Ingredient("scandata", 8), Ingredient("moonglass_charged", 1)},											TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 
 -- Gamma Circuits
 

@@ -50,6 +50,10 @@ local DroneZapOver = Class(UIAnim, function(self, owner)
 	end
 end)
 
+function DroneZapOver:GetDrone()
+	return self.source
+end
+
 local function OnAnimOver(inst)
 	inst:RemoveEventCallback("animover", OnAnimOver)
 	inst.widget:Hide()

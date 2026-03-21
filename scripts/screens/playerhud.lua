@@ -1791,4 +1791,9 @@ function PlayerHud:TryStopInspectingModules(nomoduleremover)
     end
 end
 
+--V2C: for clients, this is the best way to poll for drone in client stategraph
+function PlayerHud:GetCurrentDrone()
+	return self.dronezapover:GetDrone()
+end
+
 return PlayerHud

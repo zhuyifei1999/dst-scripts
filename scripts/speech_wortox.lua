@@ -6072,7 +6072,7 @@ return{
 		-- Meta 6
 
 		--WX78_DRONE_SCOUT = "TODO",
-		--WX78_DRONE_DELIVERY = "TODO",
+		WX78_DRONE_DELIVERY = "WX Express!",
 		--WX78_DRONE_ZAP = "TODO",
 		WX78_DRONE_ZAP_REMOTE =
 		{

@@ -6059,10 +6059,10 @@ return{
 
 		--WX78_DRONE_SCOUT = "TODO",
 		--WX78_DRONE_DELIVERY = "TODO",
-		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_ZAP = "I know who's really in control!",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			--GENERIC = "TODO",
+			GENERIC = "WX don't like to share.",
 --fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
 		},
 

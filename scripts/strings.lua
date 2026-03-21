@@ -628,7 +628,7 @@ STRINGS =
             FAKE_PICKUP = "Pick up",
             PLAY_WITH = "Play with",
 			PULL = "Pull",
-            EXCHANGEKNOWLEDGE = "Exchange Knowledge",
+            EXCHANGEKNOWLEDGE = "Transfer Consciousness",
         },
 
 		OPEN_CRAFTING =
@@ -1161,7 +1161,7 @@ STRINGS =
 		MAPSCOUTSELECT_MAP = "Explore",
 		STARTMAPDELIVER = "Deliver",
 		MAPDELIVER_MAP = "Send",
-        SWAPBODIES_MAP = "Exchange Knowledge",
+        SWAPBODIES_MAP = "Transfer Consciousness",
     },
 
 	WOBY_COMMANDS =
@@ -4544,8 +4544,8 @@ STRINGS =
         PLAYBILL_THE_PRINCESS_YOTH = "My Knights Four and I\nA Stage Play",
 
         -- Meta 6
-        WX78_BACKUPBODY_FMT = "{name}'s Backup",
-        WX78_BACKUPBODY = "WX-78's Backup", -- For an unnamed backup body.
+        WX78_BACKUPBODY_FMT = "{name}'s Backup Chassis",
+        WX78_BACKUPBODY = "WX-78's Backup Chassis", -- For an unnamed backup body.
 		WX78_DRONE_SCOUT = "Roto-Mapper",
 		WX78_DRONE_DELIVERY = "Portable Storage Unit",
 		WX78_DRONE_ZAP = "Zaptrocuter",
@@ -5445,7 +5445,7 @@ STRINGS =
         WX78MODULE_BEE = "Get your brain and body buzzing with powerful potential!",
         WX78MODULE_MAXHEALTH2 = "Make your robotic body much more robust.",
         -- WX-78 skill tree
-        WX78_BACKUPBODY = "It never hurts to have a spare chassis. Although data transfer is always a pain.",
+        WX78_BACKUPBODY = "It never hurts to have spare hardware. Although data transfer is always a pain.",
 		WX78_DRONE_SCOUT = "Explore uncharted lands with this brave little robo-scout.",
 		WX78_DRONE_DELIVERY_ITEM = "Enjoy free shipping.",
 		WX78_DRONE_ZAP_REMOTE = "Shocking new technology.",
@@ -17641,7 +17641,7 @@ STRINGS.SKILLTREE = {
         WX78_UNPLUG_ANY_CIRCUIT_TITLE = "Right To Modify",
         WX78_UNPLUG_ANY_CIRCUIT_DESC = "Gain the ability to unplug any circuit in the bar stack.",
 
-        WX78_LESS_CHARGE_LOSS_TITLE = "Hot Swap",
+        WX78_LESS_CHARGE_LOSS_TITLE = "Energy-Efficient",
         WX78_LESS_CHARGE_LOSS_DESC = "Lose one less charge when unplugging a charged circuit with two or more slots.",
 
         WX78_ALPHA_CIRCUIT_BUFFS_1_TITLE = "Alpha Circuits Tinkering I",
@@ -17660,21 +17660,22 @@ STRINGS.SKILLTREE = {
         WX78_GAMMA_CIRCUIT_BUFFS_2_DESC = "Even more Gamma Circuits will grant a new effect in addition to their original effect.",
 
         -- CHASSIS
-        WX78_EXTRABODY_1_TITLE = "System Backup I",
-        WX78_EXTRABODY_1_DESC = "Learn to craft a reliable Backup Body.",
-        WX78_EXTRABODY_X_DESC = "Allows for an additional Backup Body at once.",
-        WX78_EXTRABODY_2_TITLE = "System Backup II",
-        WX78_EXTRABODY_3_TITLE = "System Backup III",
-        WX78_REMOTEBODYSWAP_TITLE = "Remote Backup",
-        WX78_REMOTEBODYSWAP_DESC = "Backup bodies may now Exchange Knowledge through the Map.",
-        WX78_BODYCIRCUITS_TITLE = "Backup Generator",
-        WX78_BODYCIRCUITS_DESC = "Backup bodies keep their Beta circuits active when powered down.",
-        WX78_GHOSTREVIVE_1_TITLE = "Inhabited Machines I",
-        WX78_GHOSTREVIVE_1_DESC = "Haunting a Backup Body will Transfer Knowledge into it at the price of all of its stored energy.",
-        WX78_GHOSTREVIVE_2_TITLE = "Inhabited Machines II",
-        WX78_GHOSTREVIVE_2_DESC = "While at full energy and having an extra Backup Body to create, dying will leave behind a Backup Body.",
-        WX78_GHOSTREVIVE_3_TITLE = "Inhabited Machines III",
-        WX78_GHOSTREVIVE_3_DESC = "Reviving with a Backup Body will revitalize your health fully.",
+        WX78_EXTRABODY_1_TITLE = "Cold Standby I",
+        WX78_EXTRABODY_1_DESC = "Learn to craft a reliable Backup Chassis.",
+        WX78_EXTRABODY_2_DESC = "Build up to two Backup Chassis.",
+        WX78_EXTRABODY_3_DESC = "Build up to three Backup Chassis.",
+        WX78_EXTRABODY_2_TITLE = "Cold Standby II",
+        WX78_EXTRABODY_3_TITLE = "Cold Standby III",
+        WX78_REMOTEBODYSWAP_TITLE = "Remote Transfer",
+        WX78_REMOTEBODYSWAP_DESC = "Remotely transfer consciousness to any Backup Chassis on the map.",
+        WX78_BODYCIRCUITS_TITLE = "Warm Standby",
+        WX78_BODYCIRCUITS_DESC = "Backup Chassis keep their Beta Circuits active even when powered down.",
+        WX78_GHOSTREVIVE_1_TITLE = "Inhabited Machine I",
+        WX78_GHOSTREVIVE_1_DESC = "Haunting a Backup Chassis transfers your consciousness into it, consuming all of the chassis' charge units.",
+        WX78_GHOSTREVIVE_2_TITLE = "Inhabited Machine II",
+        WX78_GHOSTREVIVE_2_DESC = "If you die with full charge and have not yet reached your maximum number of Backup Chassis, one is left behind.",--tbd
+        WX78_GHOSTREVIVE_3_TITLE = "Inhabited Machine III",
+        WX78_GHOSTREVIVE_3_DESC = "Reviving with a Backup Chassis fully restores your health.",
 
         -- DRONES
         WX78_SCOUTDRONE_1_TITLE = "Field Survey I",
@@ -17685,15 +17686,15 @@ STRINGS.SKILLTREE = {
         WX78_DELIVERYDRONE_1_DESC = "Learn to craft a Portable Storage Unit to send items to any mapped location.",
         WX78_DELIVERYDRONE_2_TITLE = "Transport II",
         WX78_DELIVERYDRONE_2_DESC = "Learn to craft a larger Portable Storage Unit.",
-        WX78_ZAPDRONE_1_TITLE = "RC Enthusiast I",
+        WX78_ZAPDRONE_1_TITLE = "Telemechanical Enthusiast I",
         WX78_ZAPDRONE_1_DESC = "Learn to craft a Zaptrocuter to zap enemies remotely.",
-        WX78_ZAPDRONE_2_TITLE = "RC Enthusiast II",
+        WX78_ZAPDRONE_2_TITLE = "Telemechanical Enthusiast II",
         WX78_ZAPDRONE_2_DESC = "Learn to craft a Zaptrocuter with greater range and capacity.",
 
         -- ALLEGIANCE
-        WX78_ALLEGIANCE_LUNAR_TITLE = "Lunar Affinity", -- TODO
+        WX78_ALLEGIANCE_LUNAR_TITLE = "Lunar Vessel",
         WX78_ALLEGIANCE_LUNAR_DESC = "The Cryptic Founder is going to provide something later.", -- TODO
-        WX78_ALLEGIANCE_SHADOW_TITLE = "Shadow Affinity", -- TODO
+        WX78_ALLEGIANCE_SHADOW_TITLE = "Shadow Servitor",
         WX78_ALLEGIANCE_SHADOW_DESC = "The Queen will be providing something later.", -- TODO
     },
 }

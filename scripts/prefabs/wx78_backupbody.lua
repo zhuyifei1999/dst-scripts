@@ -16,6 +16,7 @@ local prefabs = JoinArrays({
     "explode_reskin",
     "collapse_small",
     "wx78_heat_steam",
+    "wx78_backupbody_inventory",
 }, WX78Common.DEPENDENCIES.prefabs)
 
 local PHYSICS_RADIUS = 0.5
@@ -62,9 +63,9 @@ end
 local function OnHit(inst, worker, workleft)
     if workleft > 0 then
         inst.SoundEmitter:PlaySound("WX_rework/shock/big")
-        if inst.AnimState:IsCurrentAnimation("wx_chassis_idle") then
-            inst.AnimState:PlayAnimation("wx_chassis_hit")
-            inst.AnimState:PushAnimation("wx_chassis_idle", true)
+        if inst.wx78_backupbody_inventory.AnimState:IsCurrentAnimation("wx_chassis_idle") then
+            inst.wx78_backupbody_inventory.AnimState:PlayAnimation("wx_chassis_hit")
+            inst.wx78_backupbody_inventory.AnimState:PushAnimation("wx_chassis_idle", true)
         end
     end
 end
@@ -123,8 +124,8 @@ local function TryToAttachToOwner(inst, owner)
     if owner.wx78_classified and (owner.wx78_classified:GetNumFreeBackupBodies() > numfreeneeded) then
         linkeditem:LinkToOwnerUserID(owner.userid)
         if owner.isplayer then
-            inst.components.skinner:CopySkinsFromPlayer(owner, true)
-            if inst._hide_body_skinfx then
+            inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(owner, true)
+            if not inst._hide_body_skinfx then
                 local x, y, z = inst.Transform:GetWorldPosition()
                 local fx = SpawnPrefab("explode_reskin")
                 fx.Transform:SetPosition(x, y, z)
@@ -132,7 +133,7 @@ local function TryToAttachToOwner(inst, owner)
                 inst._hide_body_skinfx = nil
             end
         else
-            inst.components.skinner:SetupNonPlayerData()
+            inst.wx78_backupbody_inventory.components.skinner:SetupNonPlayerData()
         end
         inst:CheckBetaCircuitStatesFrom(owner)
         return true
@@ -144,8 +145,8 @@ end
 local function OnBuiltFn(inst, builder)
     inst._hide_body_skinfx = true
     inst:TryToAttachToOwner(builder)
-    inst.AnimState:PlayAnimation("wx_chassis_place")
-    inst.AnimState:PushAnimation("wx_chassis_idle", true)
+    inst.wx78_backupbody_inventory.AnimState:PlayAnimation("wx_chassis_place")
+    inst.wx78_backupbody_inventory.AnimState:PushAnimation("wx_chassis_idle", true)
 end
 
 local function CanDoerActivate(inst, doer)
@@ -172,7 +173,7 @@ local function OnActivateFn(inst, doer)
     local x, y, z = inst.Transform:GetWorldPosition()
     local x2, y2, z2 = doer.Transform:GetWorldPosition()
 
-    inst.components.inventory:SwapEquipment(doer, nil, true)
+    inst.wx78_backupbody_inventory.components.inventory:SwapEquipment(doer, nil, true)
 
     if doer.components.inventory then
         doer.components.inventory.ignoresound = true
@@ -236,8 +237,8 @@ local function OnActivateFn(inst, doer)
     end
 
     if doer.components.skinner then
-        local skindata = deepcopy(inst.components.skinner:OnSave())
-        inst.components.skinner:CopySkinsFromPlayer(doer, true)
+        local skindata = deepcopy(inst.wx78_backupbody_inventory.components.skinner:OnSave())
+        inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(doer, true)
         doer.components.skinner:OnLoad(skindata)
     end
 
@@ -324,7 +325,9 @@ local function OnOwnerInstRemovedFn(inst, owner)
         end
         inst.globalmapicon = nil
     end
-    
+
+    inst:TryToDeactivateBetaCircuitStates()
+
     if owner and owner.wx78_classified then
         owner.wx78_classified:TryToRemoveBackupBody(inst)
     end
@@ -380,7 +383,7 @@ local function OnAllUpgradeModulesRemoved(inst)
     inst:PushEvent("upgrademoduleowner_popallmodules")
 
     if inst.wx78_classified ~= nil then
-        for i, modules in ipairs(inst.wx78_classified.upgrademodulebars) do
+        for i, modules in pairs(inst.wx78_classified.upgrademodulebars) do
             for j, netvar in ipairs(modules) do
                 netvar:set(0)
             end
@@ -426,13 +429,27 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function OnSave(inst, data)
+    data.body_inventory = inst.wx78_backupbody_inventory:GetSaveRecord()
+end
+
+local function OnLoad(inst, data, newents)
+    if data and data.body_inventory then
+        inst.wx78_backupbody_inventory:Remove()
+        inst.wx78_backupbody_inventory = SpawnSaveRecord(data.body_inventory, newents)
+        inst.wx78_backupbody_inventory.entity:SetParent(inst.entity)
+        inst.wx78_backupbody_inventory.Transform:SetPosition(0, 0, 0) -- Remove saved position from stored record.
+        if not TheNet:IsDedicated() then
+            inst.highlightchildren[1] = inst.wx78_backupbody_inventory
+        end
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    inst.entity:AddDynamicShadow()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
@@ -446,16 +463,9 @@ local function fn()
     MakeSmallObstaclePhysics(inst, PHYSICS_RADIUS)
     inst:SetPhysicsRadiusOverride(PHYSICS_RADIUS)
 
-    inst.DynamicShadow:SetSize(1.3, .6)
     inst.Transform:SetFourFaced()
 
-    PlayerCommonExtensions.SetupBaseSymbolVisibility(inst)
     WX78Common.SetupUpgradeModuleOwnerInstanceFunctions(inst)
-
-    inst.AnimState:SetBank("wilson")
-    inst.AnimState:SetBuild("wx78")
-	inst.AnimState:AddOverrideBuild("wx_chassis")
-    inst.AnimState:PlayAnimation("wx_chassis_idle")
 
     inst:AddTag("scarytoprey")
     inst:AddTag("equipmentmodel")
@@ -485,15 +495,17 @@ local function fn()
     inst.wx78_classified.entity:SetParent(inst.entity)
     inst.wx78_classified.Network:SetClassifiedTarget(inst)
 
+    inst.wx78_backupbody_inventory = SpawnPrefab("wx78_backupbody_inventory")
+    inst.wx78_backupbody_inventory.entity:SetParent(inst.entity)
+    if not TheNet:IsDedicated() then
+        inst.highlightchildren = { inst.wx78_backupbody_inventory }
+    end
+
     local workable = inst:AddComponent("workable")
     workable:SetWorkAction(ACTIONS.HAMMER)
     workable:SetWorkLeft(TUNING.SKILLS.WX78.BACKUPBODY_WORK_REQUIRED)
     workable:SetOnFinishCallback(OnWorked)
     workable:SetOnWorkCallback(OnHit)
-
-    local skinner = inst:AddComponent("skinner")
-    skinner:SetupNonPlayerData()
-    skinner.useskintypeonload = true -- Hack.
 
     local inspectable = inst:AddComponent("inspectable")
     inspectable.getspecialdescription = GetSpecialDescription
@@ -515,9 +527,6 @@ local function fn()
     container:WidgetSetup("wx78_backupbody")
     container.onopenfn = OnOpen
     container.onclosefn = OnClose
-
-    local inventory = inst:AddComponent("inventory") -- For equipment only.
-    inventory.maxslots = 0
 
 	inst:AddComponent("globaltrackingicon")
 	inst.components.globaltrackingicon:StartTracking(nil, "wx78_backupbody")
@@ -541,8 +550,68 @@ local function fn()
     inst.TryToDeactivateBetaCircuitStates = TryToDeactivateBetaCircuitStates
     inst.CheckBetaCircuitStatesFrom = CheckBetaCircuitStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     WX78Common.Initialize_Master(inst)
+
+    return inst
+end
+
+-------------------------------
+-- Inventory handler.
+
+local function OnRemoveEntity(inst)
+	if inst.wx78_backupbody ~= nil and inst.wx78_backupbody.highlightchildren ~= nil then
+		table.removearrayvalue(inst.wx78_backupbody.highlightchildren, inst)
+		if #inst.wx78_backupbody.highlightchildren <= 0 then
+			inst.wx78_backupbody.highlightchildren = nil
+		end
+	end
+end
+
+local function OnEntityReplicated(inst)
+	local parent = inst.entity:GetParent()
+	if parent ~= nil and parent.prefab == "wx78_backupbody" then
+		if parent.highlightchildren == nil then
+			parent.highlightchildren = { inst }
+		else
+			table.insert(parent.highlightchildren, inst)
+		end
+
+		inst.wx78_backupbody = parent
+		inst.OnRemoveEntity = OnRemoveEntity
+	end
+end
+
+local function fn_inventory()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("equipmentmodel")
+    inst:AddTag("FX")
+
+    PlayerCommonExtensions.SetupBaseSymbolVisibility(inst)
+    inst.AnimState:SetBank("wilson")
+    inst.AnimState:SetBuild("wx78")
+    inst.AnimState:AddOverrideBuild("wx_chassis")
+    inst.AnimState:PlayAnimation("wx_chassis_idle")
+
+    inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+        inst.OnEntityReplicated = OnEntityReplicated
+        return inst
+    end
+
+    local inventory = inst:AddComponent("inventory") -- For equipment only.
+    inventory.maxslots = 0
+
+    local skinner = inst:AddComponent("skinner")
+    skinner:SetupNonPlayerData()
+    skinner.useskintypeonload = true -- Hack.
 
     return inst
 end
@@ -615,6 +684,7 @@ local globalicon, revealableicon =
 	})
 
 return Prefab("wx78_backupbody", fn, assets, prefabs),
+    Prefab("wx78_backupbody_inventory", fn_inventory),
     MakePlacer("wx78_backupbody_placer", "wilson", "wx78", "wx_chassis_idle", nil, nil, nil, nil, 0, "four", PlacerPostinit),
 	globalicon,
 	revealableicon

@@ -379,6 +379,25 @@ function UpgradeModulesDisplay:OnModulesDirty(modules_data)
         end
     end
 
+    local module_changed_count = 0
+    for bartype, modules in pairs(modules_data) do
+        if module_changed_count >= 2 then
+            break
+        end
+        local oldmodules = self._oldmodulesdata ~= nil and self._oldmodulesdata[bartype] or nil
+        for i, module_index in ipairs(modules) do
+            local oldmodule_index = oldmodules ~= nil and oldmodules[i] or 0
+            if module_index ~= oldmodule_index then
+                module_changed_count = module_changed_count + 1
+                if module_changed_count >= 2 then
+                    self._oldmodulesdata = nil
+                    self:PopAllModules(true)
+                    break
+                end
+            end
+        end
+    end
+
     for bartype, modules in pairs(modules_data) do
         local oldmodules = self._oldmodulesdata ~= nil and self._oldmodulesdata[bartype] or nil
         for i, module_index in ipairs(modules) do
@@ -387,7 +406,6 @@ function UpgradeModulesDisplay:OnModulesDirty(modules_data)
             -- Unplugged a circuit in the middle
             if module_index ~= 0 and oldmodule_index ~= 0 and module_index ~= oldmodule_index then
                 self:PopModuleAtIndex(bartype, i)
-
                 PlayFirstSound("WX_rework/tube/HUD_out")
                 break
             -- Plugged a circuit
@@ -428,7 +446,7 @@ function UpgradeModulesDisplay:PopOneModule(bartype)
     self:DropChip(falling_chip)
 end
 
-function UpgradeModulesDisplay:PopAllModules()
+function UpgradeModulesDisplay:PopAllModules(skip_sound)
     local play_sound = false
 
     for bartype, pool in pairs(self.chip_objectpools) do
@@ -442,7 +460,7 @@ function UpgradeModulesDisplay:PopAllModules()
         end
     end
 
-    if play_sound then
+    if play_sound and not skip_sound then
         self:PlayUpgradeModuleSound("WX_rework/tube/HUD_out")
     end
 

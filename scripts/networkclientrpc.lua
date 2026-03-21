@@ -1275,7 +1275,7 @@ local RPC_HANDLERS =
 		end
 	end,
 
-	StopInspectingModule = function(player)
+	StopInspectingModules = function(player)
 		if player.StopInspectingModules then
 			player:StopInspectingModules()
 		else

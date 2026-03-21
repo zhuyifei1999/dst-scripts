@@ -2031,6 +2031,23 @@ local PREFABS =
     ["hermithouse_laundry_shorts"] = true,
     ["hermit_chair_rocking"] = true,
 
+    -- [[ Meta 6 ]]
+
+    -- ["wx78_drone_scout"] = true,
+    -- ["wx78_drone_delivery"] = true,
+    -- ["wx78_drone_delivery_small"] = true,
+    -- ["wx78_drone_zap"] = true,
+
+    -- ["wx78module_radar"] = true,
+    -- ["wx78module_stacksize"] = true,
+    -- ["wx78module_light2"] = true,
+    -- ["wx78module_digestion"] = true,
+    -- ["wx78module_screech"] = true,
+
+    -- ["wx78_backupbody"] = true,
+
+    -- ["wx78_foodbrick"] = true,
+
     -----------------------------------------------
 
     --["archive_switch"] = true, proxy for archive_switch_base

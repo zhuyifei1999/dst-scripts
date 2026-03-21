@@ -20958,6 +20958,16 @@ local states =
             end
         end,
 
+		events =
+		{
+			EventHandler("unequip", function(inst, data)
+				local joustsource = inst.sg.statemem.joustdata and inst.sg.statemem.joustdata.source
+				if joustsource and data and data.item == joustsource then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
         onexit = function(inst)
 			if not inst.sg.statemem.keepeightfaced then
 				inst.Transform:SetFourFaced()
@@ -21016,6 +21026,12 @@ local states =
 
         events =
         {
+			EventHandler("unequip", function(inst, data)
+				local joustsource = inst.sg.statemem.joustdata and inst.sg.statemem.joustdata.source
+				if joustsource and data and data.item == joustsource then
+					inst.sg:GoToState("idle")
+				end
+			end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg.statemem.jousting = true
@@ -21133,6 +21149,12 @@ local states =
         end,
 
 		events = {
+			EventHandler("unequip", function(inst, data)
+				local joustsource = inst.sg.statemem.joustdata and inst.sg.statemem.joustdata.source
+				if joustsource and data and data.item == joustsource then
+					inst.sg:GoToState("idle")
+				end
+			end),
             EventHandler("joust_collide", function(inst)
 				inst.sg.statemem.stopping = true
                 inst.sg:GoToState("joust_collide")
@@ -27410,8 +27432,6 @@ local states =
 				inst.components.talker:ShutUp()
 				inst.components.talker:IgnoreAll("wx_poweroff")
 			end
-
-			--inst.sg.mem._DBG_WX_POWEROFF_NOFADE = true
 		end,
 
 		timeline =
@@ -27420,14 +27440,20 @@ local states =
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f0") end),
 			FrameEvent(16, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f16") end),
 
+			FrameEvent(19, function(inst)
+				inst.sg:AddStateTag("nointerrupt")
+				inst.sg:AddStateTag("noattack")
+				inst.components.health:SetInvincible(true)
+			end),
 			FrameEvent(28, function(inst)
-				if inst.wx78_classified and not inst.sg.mem._DBG_WX_POWEROFF_NOFADE then
+				if inst.wx78_classified then
 					inst.wx78_classified.poweroffoverlay:set(true)
 				end
 			end),
 			FrameEvent(48, function(inst)
 				if inst.wx78_classified and inst.wx78_classified.poweroffoverlay:value() then
 					inst.wx78_classified.poweroffoverlay:set(false)
+					inst.sg.statemem.faded = true
 					inst:ScreenFade(false, 0)
 				end
 			end),
@@ -27446,6 +27472,9 @@ local states =
 				inst.sg.mem.wx_chassis_build = nil
 				inst.AnimState:ClearOverrideBuild("wx_chassis")
 
+				if inst.sg:HasStateTag("noattack") then
+					inst.components.health:SetInvincible(false)
+				end
 				inst.components.inventory:Show()
 				inst:ShowActions(true)
 				if inst.components.playercontroller then
@@ -27456,7 +27485,7 @@ local states =
 				if inst.components.talker then
 					inst.components.talker:StopIgnoringAll("wx_poweroff")
 				end
-				if inst.wx78_classified and inst.wx78_classified.poweroffoverlay:value() then
+				if inst.sg.statemem.faded or (inst.wx78_classified and inst.wx78_classified.poweroffoverlay:value()) then
 					inst:ScreenFade(true, 0.5)
 				end
 			end
@@ -27468,7 +27497,7 @@ local states =
 
 	State{
 		name = "wx_poweron",
-		tags = { "busy", "nopredict", "notalking" },
+		tags = { "busy", "nopredict", "notalking", "noattack", "nointerrupt" },
 
 		onenter = function(inst, moved)
 			inst.components.locomotor:Stop()
@@ -27486,6 +27515,7 @@ local states =
 				end
 			end
 
+			inst.components.health:SetInvincible(true)
 			inst.components.inventory:Hide()
 			inst:PushEvent("ms_closepopups")
 			inst:ShowActions(false)
@@ -27500,9 +27530,7 @@ local states =
 				inst.components.talker:IgnoreAll("wx_poweroff")
 			end
 
-			if not inst.sg.mem._DBG_WX_POWEROFF_NOFADE then
-				inst:ScreenFade(true, 1)
-			end
+			inst:ScreenFade(true, 1)
 		end,
 
 		timeline =
@@ -27528,6 +27556,11 @@ local states =
 					inst.components.talker:StopIgnoringAll("wx_poweroff")
 				end
 			end),
+			FrameEvent(15 + 67, function(inst)
+				inst.sg:RemoveStateTag("nointerrupt")
+				inst.sg:RemoveStateTag("noattack")
+				inst.components.health:SetInvincible(false)
+			end),
 			FrameEvent(15 + 76, function(inst)
 				inst.sg:GoToState("idle", true)
 			end),
@@ -27537,6 +27570,9 @@ local states =
 			inst.sg.mem.wx_chassis_build = nil
 			inst.AnimState:ClearOverrideBuild("wx_chassis")
 
+			if inst.sg:HasStateTag("noattack") then
+				inst.components.health:SetInvincible(false)
+			end
 			inst.components.inventory:Show()
 			inst:ShowActions(true)
 			if inst.components.playercontroller then
@@ -27713,6 +27749,17 @@ local states =
 				inst.sg.statemem.item = nil
 				inst.sg:GoToState("wx_stop_using_drone")
 				return
+			elseif inst.sg.statemem.canrepeatfire then
+				if item.components.finiteuses and
+					item.components.finiteuses:GetUses() > 0 and
+					inst.components.playercontroller and
+					inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_ATTACK, CONTROL_CONTROLLER_ATTACK)
+				then
+					item.drone:PushEventImmediate("doattack")
+				end
+				if not item.drone.sg:HasStateTag("attack") then
+					inst.sg.statemem.canrepeatfire = false
+				end
 			end
 		end,
 
@@ -27729,7 +27776,7 @@ local states =
 				if not inst.components.locomotor:HasDestination() then
 					local drone = inst.sg.statemem.item and inst.sg.statemem.item.drone
 					if drone and drone:IsValid() then
-						drone:PushEvent("locomote", data)
+						drone:PushEventImmediate("locomote", data)
 					end
 				end
 				return true
@@ -27741,7 +27788,10 @@ local states =
 					item.drone:IsValid() and
 					not (item.components.finiteuses and item.components.finiteuses:GetUses() <= 0)
 				then
-					item.drone:PushEvent("doattack")
+					item.drone:PushEventImmediate("doattack")
+					if item.drone.sg:HasStateTag("attack") then
+						inst.sg.statemem.canrepeatfire = true
+					end
 				end
 			end),
 		},

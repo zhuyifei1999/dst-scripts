@@ -67,6 +67,7 @@ local sounds =
 }
 
 local function OnHarvested(inst)
+    inst.trappedbuild = nil
     if inst.components.finiteuses then
         inst.components.finiteuses:Use(1)
     end

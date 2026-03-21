@@ -7918,12 +7918,16 @@ local states =
 		events =
 		{
 			EventHandler("locomote", function(inst, data)
+				local drone = inst.HUD and inst.HUD:GetCurrentDrone()
 				--direct movement only, no drag or point destination.
-				if inst.bufferedaction == nil and not inst.components.locomotor:HasDestination() then
-					local dir = data and data.dir
-					if dir ~= inst.sg.statemem.lastdir then
-						inst.sg.statemem.lastdir = dir
-						inst.components.playercontroller:RemotePredictOverrideLocomote(dir, false)
+				if drone and inst.bufferedaction == nil and not inst.components.locomotor:HasDestination() then
+					local busy = drone:HasTag("busy")
+					if not busy or (drone.AnimState:IsCurrentAnimation("atk_pst") and drone.AnimState:GetCurrentAnimationFrame() > drone.AnimState:GetCurrentAnimationNumFrames() - 3) then
+						local dir = data and data.dir
+						if busy or dir ~= inst.sg.statemem.lastdir then
+							inst.sg.statemem.lastdir = busy or dir
+							inst.components.playercontroller:RemotePredictOverrideLocomote(dir, false)
+						end
 					end
 				end
 				return true

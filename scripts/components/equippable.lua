@@ -127,13 +127,16 @@ function Equippable:GetWalkSpeedMult()
     local speed = self.walkspeedmult or 1.0
 
     local owner = self.inst.components.inventoryitem and self.inst.components.inventoryitem.owner
-    if speed < 1 and self.isequipped and owner and owner:HasTag("vigorbuff") then
-        speed = math.min(1, speed + 0.25)
-    end
 
-    local speedmodifierfn = owner.components.inventory:GetEquippableWalkSpeedMultModifier()
-    if speedmodifierfn ~= nil then
-        speed = speedmodifierfn(owner, speed, self.inst)
+    if owner and self.isequipped then
+        if speed < 1 and owner:HasTag("vigorbuff") then
+            speed = math.min(1, speed + 0.25)
+        end
+
+        local speedmodifierfn = owner.components.inventory:GetEquippableWalkSpeedMultModifier()
+        if speedmodifierfn ~= nil then
+            speed = speedmodifierfn(owner, speed, self.inst)
+        end
     end
 
     return speed

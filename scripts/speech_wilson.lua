@@ -6063,10 +6063,10 @@ return {
 
 		--WX78_DRONE_SCOUT = "TODO",
 		--WX78_DRONE_DELIVERY = "TODO",
-		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_ZAP = "It uses current technology.",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			--GENERIC = "TODO",
+			GENERIC = "It remotely controls, so it's a.... Detached Telecommand Apparatus!",
 			CANUSE = "only_used_by_wx78",
 		},
 
@@ -6080,7 +6080,7 @@ return {
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "Finite like that.", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
