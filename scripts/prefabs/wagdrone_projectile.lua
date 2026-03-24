@@ -265,7 +265,10 @@ local function wx78_drone_zap_CheckTarget(inst, target)
 end
 
 local function wx78_drone_zap_OnAttackedTarget(inst, target)
-	if inst.caster and inst.caster:IsValid() and inst.caster:IsNear(target, TUNING.SKILLS.WX78.ZAPDRONE_AGGRO_RANGE) then
+	if target and target:IsValid() and
+		inst.caster and inst.caster:IsValid() and
+		inst.caster:IsNear(target, TUNING.SKILLS.WX78.ZAPDRONE_AGGRO_RANGE)
+	then
 		target:PushEvent("attacked", { attacker = inst.caster, damage = 0, weapon = inst.weapon })
 	end
 end

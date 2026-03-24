@@ -6058,12 +6058,12 @@ return{
 
 		-- Meta 6
 
-		--WX78_DRONE_SCOUT = "TODO",
-		--WX78_DRONE_DELIVERY = "TODO",
-		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_SCOUT = "Get lost, Scott!",
+		WX78_DRONE_DELIVERY = "WX gets free delivery? No fair!",
+		WX78_DRONE_ZAP = "I got my eye on you, zappy.",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			--GENERIC = "TODO",
+			GENERIC = "I don't trust WX with this thing.",
 --fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
 		},
 

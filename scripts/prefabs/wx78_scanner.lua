@@ -30,14 +30,30 @@ local RING_FX =
     SUCCESS = 3,
 }
 
+local function GetScannerScanDistance(inst)
+    return TUNING.WX78_SCANNER_SCANDIST + (inst._radarboosters:value() * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_SCANDIST)
+end
+
+local function GetScannerPlayerProximityDistance(inst)
+    return TUNING.WX78_SCANNER_PLAYER_PROX + (inst._radarboosters:value() * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_PLAYER_PROX)
+end
+
 ---------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------
 -- Scanner Ring Non-networked FX
 
-local MAGIC_NUMBER = 8.75 -- Who knows where this number came from!
-local RING_SCALE = TUNING.WX78_SCANNER_PLAYER_PROX / MAGIC_NUMBER
+local CIRCLE_RADIUS_SCALE = 3201.5 / 150 / 2 -- Source art size / anim_scale / 2 (halved to get radius).
+local function RingFX_UpdateRadius(inst, scanner)
+    local dist = TUNING.WX78_SCANNER_PLAYER_PROX
+    if scanner ~= nil and scanner:IsValid() then
+        dist = scanner:GetScannerPlayerProximityDistance()
+    end
 
-local function CreateRingFX()
+    local scale = dist / CIRCLE_RADIUS_SCALE
+    inst.AnimState:SetScale(scale, scale)
+end
+
+local function CreateRingFX(scanner)
     local inst = CreateEntity()
 
     --[[Non-networked entity]]
@@ -62,7 +78,8 @@ local function CreateRingFX()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(1)
 
-    inst.Transform:SetScale(RING_SCALE, RING_SCALE, RING_SCALE)
+    inst.UpdateRadius = RingFX_UpdateRadius
+    inst:UpdateRadius(scanner)
 
     inst:AddComponent("fader")
 
@@ -147,10 +164,32 @@ local function CanDeploy(inst, pt, mouseover, deployer, rot)
     return (deployer.components.upgrademoduleowner ~= nil and inst.components.deployable:IsDeployable(deployer))
 end
 
+local function UpdateScannerRadarBoosters(inst)
+    local owner = inst:OwnerFn()
+    if owner ~= nil and owner.GetModuleTypeCount ~= nil 
+        and owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
+        inst._radarboosters:set(owner:GetModuleTypeCount("radar"))
+    else
+        inst._radarboosters:set(0)
+    end
+    if inst.prox_range ~= nil then
+        inst.prox_range:UpdateRadius(inst)
+    end
+end
+
 local function OnChangedLeader(inst, new_leader, old_leader)
+    if old_leader ~= nil then
+        inst:RemoveEventCallback("rangecircuitupdate", inst._oncircuitrefresh, old_leader)
+    end
+
     if not inst._donescanning and new_leader == nil and old_leader ~= nil then
         inst:StopAllScanning("fail")
         inst:PushEvent("turn_off", { changetoitem=true })
+    end
+
+    if new_leader ~= nil then
+        inst:ListenForEvent("rangecircuitupdate", inst._oncircuitrefresh, new_leader)
+        UpdateScannerRadarBoosters(inst)
     end
 end
 
@@ -317,7 +356,8 @@ end
 local function can_scan_target(inst)
     local target = inst.components.entitytracker:GetEntity("scantarget")
     local pos = target:GetPosition()
-    local DSQ = TUNING.WX78_SCANNER_SCANDIST * TUNING.WX78_SCANNER_SCANDIST
+    local scandist = inst:GetScannerScanDistance()
+    local DSQ = scandist * scandist
 
     if inst:GetDistanceSqToPoint(pos) < DSQ then
         -- WX is prevented from scanning things that have the "noattack" tag, unless they also have the "canwxscan" tag.
@@ -374,7 +414,7 @@ end
 
 local function OnTargetFound(inst, scan_target)
     if scan_target ~= nil then
-        inst.SoundEmitter:PlaySound("WX_rework/scanner/locked_on")
+        inst.SoundEmitter:PlaySound(inst.skin_sound and inst.skin_sound.locked_on or "WX_rework/scanner/locked_on")
 
         inst.AnimState:Hide("bottom_light")
         inst.components.updatelooper:RemoveOnUpdateFn(proximityscan)
@@ -491,6 +531,7 @@ end
 
 local function OnSuccessfulScan(inst)
     inst._donescanning = true
+    inst.components.activatable.inactive = false
 
     local owner = inst.components.follower and inst.components.follower:GetLeader()
     local target = inst.components.entitytracker:GetEntity("scantarget")
@@ -550,13 +591,13 @@ local function OnShowRingFXDirty(inst)
         inst.prox_range = nil
     elseif show_ring_fx_value == RING_FX.SCANNING then
         if inst.prox_range == nil then
-            inst.prox_range = CreateRingFX()
+            inst.prox_range = CreateRingFX(inst)
             inst.prox_range.AnimState:PlayAnimation("scan_pre")
             inst.prox_range.AnimState:PushAnimation("scan_loop", true)
         end
         inst:AddChild(inst.prox_range)
     elseif show_ring_fx_value == RING_FX.FAILED then
-        local fail_prox_range = CreateRingFX()
+        local fail_prox_range = CreateRingFX(inst)
         fail_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
         fail_prox_range.AnimState:PlayAnimation("scan_fail")
         fail_prox_range:ListenForEvent("animover", fail_prox_range.Remove)
@@ -569,7 +610,7 @@ local function OnShowRingFXDirty(inst)
         inst.prox_range = nil
         inst._showringfx:set_local(0)
     elseif show_ring_fx_value == RING_FX.SUCCESS then
-        local success_prox_range = CreateRingFX()
+        local success_prox_range = CreateRingFX(inst)
         success_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
         success_prox_range.AnimState:PlayAnimation("scan_success")
         success_prox_range:ListenForEvent("animover", success_prox_range.Remove)
@@ -580,6 +621,12 @@ local function OnShowRingFXDirty(inst)
         end
         inst.prox_range = nil
         inst._showringfx:set_local(0)
+    end
+end
+
+local function OnRadarBoostersDirty(inst)
+    if inst.prox_range ~= nil then
+        inst.prox_range:UpdateRadius(inst)
     end
 end
 
@@ -604,6 +651,7 @@ local function OnActivateFn(inst, doer)
         -- If we got stuck after finishing a scan, and the player turned us off,
         -- go ahead and act like we succeeded as expected. Our data should be set up,
         -- just stuck because of a quirk of how buffered actions are handled.
+        --      NOTE: this bug of jimmy getting stuck shouldn't happen anymore.
         inst:OnReturnedAfterSuccessfulScan()
     else
         inst:StopAllScanning()
@@ -618,7 +666,7 @@ local function GetStatus(inst)
 end
 
 local function IsInRangeOfPlayer(inst)
-    local DISTANCE = TUNING.WX78_SCANNER_PLAYER_PROX
+    local DISTANCE = inst:GetScannerPlayerProximityDistance()
 
     if inst.components.follower == nil or inst.components.follower:GetLeader() == nil or
             inst:GetDistanceSqToInst(inst.components.follower:GetLeader()) < DISTANCE*DISTANCE then
@@ -792,11 +840,17 @@ local function scannerfn()
 
     inst.GetActivateVerb = GetActivateVerb
 
-    inst._showringfx = net_tinybyte(inst.GUID, "showringfx", "OnShowRingFXDirty")
+    inst._showringfx = net_tinybyte(inst.GUID, "showringfx", "showringfxdirty")
+    inst._radarboosters = net_float(inst.GUID, "radarboosters", "radarboostersdirty")
     if not TheNet:IsDedicated() then
-        inst:ListenForEvent("OnShowRingFXDirty", OnShowRingFXDirty)
+        inst:ListenForEvent("showringfxdirty", OnShowRingFXDirty)
+        inst:ListenForEvent("radarboostersdirty", OnRadarBoostersDirty)
     end
     inst._showringfx:set_local(0)
+    inst._radarboosters:set_local(0)
+
+    inst.GetScannerScanDistance = GetScannerScanDistance
+    inst.GetScannerPlayerProximityDistance = GetScannerPlayerProximityDistance
 
     MakeInventoryFloatable(inst, nil, 0.15, ITEM_FLOATER_SCALE)
 
@@ -875,6 +929,10 @@ local function scannerfn()
     inst._OnScanTargetRemoved = function(t)
         OnScanFailed(inst)
     end
+
+	inst._oncircuitrefresh = function(owner)
+		UpdateScannerRadarBoosters(inst)
+	end
 
     -------------------------------------------------------------------
     inst:SetStateGraph("SGwx78_scanner")

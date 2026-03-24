@@ -21,10 +21,11 @@ local function return_to_idle(inst)
     inst.sg:GoToState("idle")
 end
 
-local SCAN_DIST_SQ = TUNING.WX78_SCANNER_SCANDIST * TUNING.WX78_SCANNER_SCANDIST
 local function targetinrange(inst)
+    local scandist = inst:GetScannerScanDistance()
+    local scandist_sq = scandist * scandist
     local scantarget = inst.components.entitytracker:GetEntity("scantarget")
-    return scantarget ~= nil and inst:GetDistanceSqToInst(scantarget) < SCAN_DIST_SQ or nil
+    return scantarget ~= nil and inst:GetDistanceSqToInst(scantarget) < scandist_sq or nil
 end
 
 local function SetShadowScale(inst, scale)
@@ -39,12 +40,9 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
 
-            if targetinrange(inst) then
-                inst.AnimState:PlayAnimation("scan_loop", true)
-            else
-                inst.AnimState:PlayAnimation("idle", true)
-            end
+            inst.AnimState:PlayAnimation(targetinrange(inst) and "scan_loop" or "idle", true)
         end,
 
         events =
@@ -113,7 +111,7 @@ local states =
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation(inst.sg.statemem.washit and "hit_turn_off_pre" or "turn_off_pre")
-            inst.SoundEmitter:PlaySound("WX_rework/scanner/deactivate")
+            inst.SoundEmitter:PlaySound(inst.skin_sound and inst.skin_sound.deactivate or "WX_rework/scanner/deactivate")
 
             -- Stuff that might be on due to scanning
             inst:StopScanFX()

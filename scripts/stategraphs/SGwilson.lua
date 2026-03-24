@@ -27696,7 +27696,7 @@ local states =
 
 				local item = inst.sg.statemem.item
 				if item and item:IsValid() and item.components.useableequippeditem then
-					item.components.useableequippeditem:StopUsing(inst)
+					item.components.useableequippeditem:StopUsingItem(inst)
 				end
 			end
 		end,

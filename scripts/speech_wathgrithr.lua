@@ -6051,12 +6051,12 @@ return{
 
 		-- Meta 6
 
-		--WX78_DRONE_SCOUT = "TODO",
-		--WX78_DRONE_DELIVERY = "TODO",
-		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_SCOUT = "Go forth, valiant scoutling!",
+		WX78_DRONE_DELIVERY = "Loyal courier! Provision thy Iron Lord!",
+		WX78_DRONE_ZAP = "Rain lightening upon thy foes!",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			--GENERIC = "TODO",
+			GENERIC = "By this, the Iron Lord calls a Valkyrie from the heavens!",
 --fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
 		},
 
@@ -6070,7 +6070,7 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "What spoils hath our metal warrior bestowed?", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =

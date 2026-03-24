@@ -21,17 +21,6 @@ local prefabs = JoinArrays({
 
 local PHYSICS_RADIUS = 0.5
 
-local CACHED_WX78_BACKUPBODY_RECIPE_INGREDIENTS = nil
-local function CacheWX78_BackupBodyRecipeIngredients()
-    local recipe = AllRecipes.wx78_backupbody
-
-    if recipe == nil or recipe.ingredients == nil or recipe.ingredients[1] == nil then
-        return nil
-    end
-
-    return shallowcopy(recipe.ingredients)
-end
-
 local function SpawnBigSpark(inst)
     SpawnPrefab("wx78_big_spark"):AlignToTarget(inst)
 end
@@ -42,15 +31,7 @@ local function OnWorked(inst, worker)
     fx.Transform:SetPosition(pt:Get())
     fx:SetMaterial("metal")
 
-    if CACHED_WX78_BACKUPBODY_RECIPE_INGREDIENTS then
-        for _, ingredient in ipairs(CACHED_WX78_BACKUPBODY_RECIPE_INGREDIENTS) do
-            local prefab = ingredient.type
-            local count = ingredient.amount
-            for i = 1, count do
-                inst.components.lootdropper:SpawnLootPrefab(prefab)
-            end
-        end
-    end
+    inst.wx78_backupbody_inventory.components.inventory:DropEverything()
     inst.components.container:DropEverything()
     local modules = inst.components.upgrademoduleowner:PopAllModules()
     for _, onemodule in ipairs(modules) do
@@ -110,6 +91,12 @@ local function CheckBetaCircuitStatesFrom(inst, owner)
     end
 end
 
+local function CheckCircuitSlotStatesFrom(inst, owner)
+    inst._maxcharge = owner ~= nil and owner.components.upgrademoduleowner ~= nil and owner.components.upgrademoduleowner:GetMaxChargeLevel()
+        or TUNING.WX78_INITIAL_MAXCHARGELEVEL
+    inst.components.upgrademoduleowner:SetMaxCharge(inst._maxcharge)
+end
+
 local function TryToAttachToOwner(inst, owner)
     if owner == nil or owner.is_snapshot_user_session then
         return false
@@ -136,6 +123,7 @@ local function TryToAttachToOwner(inst, owner)
             inst.wx78_backupbody_inventory.components.skinner:SetupNonPlayerData()
         end
         inst:CheckBetaCircuitStatesFrom(owner)
+        inst:CheckCircuitSlotStatesFrom(owner)
         return true
     end
 
@@ -313,6 +301,7 @@ local function OnSkillTreeInitializedFn(inst, owner)
         inst:TryToDeactivateBetaCircuitStates()
     else
         inst:CheckBetaCircuitStatesFrom(owner)
+        inst:CheckCircuitSlotStatesFrom(owner)
     end
 end
 local function OnOwnerInstCreatedFn(inst, owner)
@@ -427,20 +416,30 @@ local function OnHaunt(inst, doer)
     return true
 end
 
+local function AnimStateGetterFn(inst)
+    return inst.wx78_backupbody_inventory.AnimState
+end
+
 ----------------------------------------------------------------------------------------
 
 local function OnSave(inst, data)
     data.body_inventory = inst.wx78_backupbody_inventory:GetSaveRecord()
+    data.maxcharge = inst._maxcharge or nil
 end
 
 local function OnLoad(inst, data, newents)
-    if data and data.body_inventory then
-        inst.wx78_backupbody_inventory:Remove()
-        inst.wx78_backupbody_inventory = SpawnSaveRecord(data.body_inventory, newents)
-        inst.wx78_backupbody_inventory.entity:SetParent(inst.entity)
-        inst.wx78_backupbody_inventory.Transform:SetPosition(0, 0, 0) -- Remove saved position from stored record.
-        if not TheNet:IsDedicated() then
-            inst.highlightchildren[1] = inst.wx78_backupbody_inventory
+    if data then
+        if data.body_inventory ~= nil then
+            inst.wx78_backupbody_inventory:Remove()
+            inst.wx78_backupbody_inventory = SpawnSaveRecord(data.body_inventory, newents)
+            inst.wx78_backupbody_inventory.entity:SetParent(inst.entity)
+            inst.wx78_backupbody_inventory.Transform:SetPosition(0, 0, 0) -- Remove saved position from stored record.
+            if not TheNet:IsDedicated() then
+                inst.highlightchildren[1] = inst.wx78_backupbody_inventory
+            end
+        end
+        if data.maxcharge ~= nil then
+            inst.components.upgrademoduleowner:SetMaxCharge(data.maxcharge)
         end
     end
 end
@@ -470,6 +469,7 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("equipmentmodel")
     inst:AddTag("wx78_backupbody")
+    inst:AddTag("followsthroughvirtualrooms")
     --upgrademoduleowner (from upgrademoduleowner component) added to pristine state for optimization
     inst:AddTag("upgrademoduleowner")
 
@@ -485,10 +485,6 @@ local function fn()
 
     if not TheWorld.ismastersim then
         return inst
-    end
-
-    if CACHED_WX78_BACKUPBODY_RECIPE_INGREDIENTS == nil then
-        CACHED_WX78_BACKUPBODY_RECIPE_INGREDIENTS = CacheWX78_BackupBodyRecipeIngredients()
     end
 
     inst.wx78_classified = SpawnPrefab("wx78_classified")
@@ -519,9 +515,10 @@ local function fn()
     inst:AddComponent("lootdropper")
     inst:AddComponent("timer")
 
-    inst:AddComponent("hauntable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
-    inst.components.hauntable:SetOnHauntFn(OnHaunt)
+    local hauntable = inst:AddComponent("hauntable")
+    hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
+    hauntable:SetOnHauntFn(OnHaunt)
+    hauntable:SetAnimStateGetterFn(AnimStateGetterFn)
 
     local container = inst:AddComponent("container")
     container:WidgetSetup("wx78_backupbody")
@@ -549,6 +546,7 @@ local function fn()
     inst.TryToActivateBetaCircuitStates = TryToActivateBetaCircuitStates
     inst.TryToDeactivateBetaCircuitStates = TryToDeactivateBetaCircuitStates
     inst.CheckBetaCircuitStatesFrom = CheckBetaCircuitStatesFrom
+    inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
@@ -588,7 +586,9 @@ local function fn_inventory()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddAnimState()
+    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     inst:AddTag("equipmentmodel")
@@ -599,6 +599,8 @@ local function fn_inventory()
     inst.AnimState:SetBuild("wx78")
     inst.AnimState:AddOverrideBuild("wx_chassis")
     inst.AnimState:PlayAnimation("wx_chassis_idle")
+
+    inst.DynamicShadow:SetSize(1.3, .6)
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

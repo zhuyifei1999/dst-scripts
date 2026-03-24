@@ -326,6 +326,7 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.closes_map = data.closes_map -- Should immediately close the minimap on action start.
     self.map_only = data.map_only -- Action only exists from a map.
     self.map_works_on_unexplored = data.map_works_on_unexplored -- Bypass seeable checks.
+    self.map_works_on_impassable = data.map_works_on_impassable -- Allow impassable tiles for selection.
 end)
 
 -- NOTE: High priority is intended to be a shortcut flag for actions that we expect to always dominate if they are available.
@@ -693,8 +694,8 @@ ACTIONS =
     STARTREMOVINGMODULE = Action({ mount_valid = true, invalid_hold_action=true }),
     REMOVEMODULE = Action({ mount_valid = true, invalid_hold_action=true, instant = true }), -- The action we use when we're already in the UI.
     STOPREMOVINGMODULE = Action({ mount_valid = true, invalid_hold_action=true }),
-	MAPSCOUT_MAP = Action({ instant = true, mount_valid = true, map_only = true, map_works_on_unexplored = true }),
-	MAPSCOUTSELECT_MAP = Action({ instant = true, mount_valid = true, rmb = true, map_only = true, map_works_on_unexplored = true }),
+	MAPSCOUT_MAP = Action({ instant = true, mount_valid = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
+	MAPSCOUTSELECT_MAP = Action({ instant = true, mount_valid = true, rmb = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
 	STARTMAPDELIVER = Action({ rmb = true }),
 	MAPDELIVER_MAP = Action({ map_only=true, closes_map=true, }),
     SWAPBODIES_MAP = Action({ customarrivecheck=ArriveAnywhere, rmb=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
@@ -6713,6 +6714,10 @@ ACTIONS.SWAPBODIES_MAP.maponly_checkvalidpos_fn = function(act)
         return false, "NOTARGET"
     end
 	x, y, z = mapent.Transform:GetWorldPosition()
+    local px, py, pz = act.doer.Transform:GetWorldPosition()
+    if not IsTeleportingPermittedFromPointToPoint(px, py, pz, x, y, z) then
+        return false, "NOTARGET"
+    end
 	return true, nil, x, z, mapent
 end
 

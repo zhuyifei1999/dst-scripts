@@ -10,6 +10,7 @@ end)
 
 function FocalPoint:Reset(no_snap)
 	self.current_focus = nil
+	--V2C: Technically, this conflicts with player_classified camera settings.
     TheCamera:SetDefault()
 	if not no_snap then
 	    TheCamera:Snap()
@@ -124,7 +125,11 @@ function FocalPoint:CameraUpdate(dt)
 		if best_focus ~= nil then
 			if self.current_focus ~= best_focus then
 				if self.current_focus ~= nil then
-					self:StopFocusSource(self.current_focus.source, self.current_focus.id)
+					--V2C: -Don't StopFocusSource, very inconsistent with the priority stack behaviour.
+					--     -Was this was added to fix some other bug?
+					--     -Use Reset(true) instead.
+					--self:StopFocusSource(self.current_focus.source, self.current_focus.id)
+					self:Reset(true)
 				end
 				self.current_focus = best_focus
 				if best_focus.updater ~= nil and best_focus.updater.ActiveFn ~= nil then

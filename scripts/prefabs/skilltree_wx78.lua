@@ -60,6 +60,12 @@ local function DeactivateBetaCircuitsInBody(item, player)
     end
 end
 
+local function CheckCircuitSlotStatesInBody(item, player)
+    if item.CheckCircuitSlotStatesFrom then
+        item:CheckCircuitSlotStatesFrom(player)
+    end
+end
+
 -- FIXME(JBK): WX: Final pass: Rename icons to skill tree skill names.
 
 local function BuildSkillsData(SkillTreeFns)
@@ -233,9 +239,15 @@ local function BuildSkillsData(SkillTreeFns)
 
             onactivate = function(inst)
                 inst.components.upgrademoduleowner:SetMaxCharge(TUNING.WX78_MAXCHARGELEVEL_SKILL)
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", CheckCircuitSlotStatesInBody)
+                end
             end,
             ondeactivate = function(inst)
                 inst.components.upgrademoduleowner:SetMaxCharge(TUNING.WX78_INITIAL_MAXCHARGELEVEL)
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", CheckCircuitSlotStatesInBody)
+                end
             end,
         },
 

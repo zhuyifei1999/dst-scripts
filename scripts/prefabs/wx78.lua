@@ -203,6 +203,10 @@ local function OnLoad(inst, data)
         if data._wx78_hunger then
             inst.components.hunger.current = data._wx78_hunger
         end
+
+        if data._wx78_shield then
+            inst.components.wx78_shield.currentshield = data._wx78_shield
+        end
     end
 end
 
@@ -217,6 +221,7 @@ local function OnSave(inst, data)
     data._wx78_health = inst.components.health.currenthealth
     data._wx78_sanity = inst.components.sanity.current
     data._wx78_hunger = inst.components.hunger.current
+    data._wx78_shield = inst.components.wx78_shield.currentshield
 end
 
 ----------------------------------------------------------------------------------------
@@ -572,9 +577,7 @@ end
 
 local function OnDeactivateSkill(inst, data)
 	if data then
-		if data.skill == "wx78_zapdrone_1" then
-			inst.components.builder:RemoveRecipe("wx78_drone_zap_remote")
-		elseif data.skill == "wx78_scoutdrone_1" then
+		if data.skill == "wx78_scoutdrone_1" then
 			inst.components.wx78_dronescouttracker:ReleaseAllDrones()
 		end
 	end
@@ -582,9 +585,6 @@ end
 
 local function OnSkillTreeInitialized(inst)
 	local skilltreeupdater = inst.components.skilltreeupdater
-	if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_zapdrone_1")) then
-		inst.components.builder:RemoveRecipe("wx78_drone_zap_remote")
-	end
 	if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_scoutdrone_1")) then
 		inst.components.wx78_dronescouttracker:ReleaseAllDrones()
 	end

@@ -145,6 +145,7 @@ local function fn()
 	inst.Light:Enable(false)
 
 	inst:AddTag("rangedweapon")
+    inst:AddTag("staysthroughvirtualrooms") -- Maybe follows?
 
 	inst.GetDroneRange = GetDroneRange -- used in zapdroneover
 

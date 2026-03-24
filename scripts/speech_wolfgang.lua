@@ -6052,7 +6052,7 @@ return{
 
 		-- Meta 6
 
-		WX78_DRONE_SCOUT = "Brave little scout machine!",
+		WX78_DRONE_SCOUT = "Brave little exploring machine!",
 		WX78_DRONE_DELIVERY = "Wolfgang carry more things.",
 		WX78_DRONE_ZAP = "Be careful not zap Wolfgang!",
 		WX78_DRONE_ZAP_REMOTE =

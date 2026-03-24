@@ -114,13 +114,26 @@ function Hauntable:DoHaunt(doer)
 	self.inst:PushEvent("haunted")
 end
 
+function Hauntable:SetAnimStateGetterFn(fn)
+    self.animstatefn = fn
+end
+
+function Hauntable:GetAnimState()
+    if self.animstatefn then
+        return self.animstatefn(self.inst)
+    end
+    return self.inst.AnimState
+end
+
 function Hauntable:StartShaderFx()
-    self.inst.AnimState:SetHaunted(true)
+    local AnimState = self:GetAnimState()
+    AnimState:SetHaunted(true)
 end
 
 function Hauntable:StopShaderFX()
     if self.inst:IsValid() then
-        self.inst.AnimState:SetHaunted(false)
+        local AnimState = self:GetAnimState()
+        AnimState:SetHaunted(false)
     end
 end
 

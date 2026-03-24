@@ -773,7 +773,7 @@ Recipe2("wx78_backupbody",					{Ingredient("gears", 1), Ingredient("redgem", 1)}
 Recipe2("wx78_drone_scout",					{Ingredient("transistor", 1), Ingredient("compass", 1)},													TECH.NONE,	{builder_skill="wx78_scoutdrone_1", getlimitedrecipecount=function(recipe, builder) return builder.wx78_classified and builder.wx78_classified:GetNumFreeScoutingDrones() or 0 end, canbuild=function(recipe, builder, pt, rotation, station, skin) return (builder.wx78_classified and builder.wx78_classified:GetNumFreeScoutingDrones() or 0) > 0 end})
 Recipe2("wx78_drone_delivery_item",			{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", builder_skill="wx78_deliverydrone_2"})
 Recipe2("wx78_drone_delivery_small_item",	{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", description="wx78_drone_delivery_item", builder_skill="wx78_deliverydrone_1", no_builder_skill="wx78_deliverydrone_2"})
-Recipe2("wx78_drone_zap_remote",			{Ingredient("scandata", 10), Ingredient("transistor", 1), Ingredient("wagpunk_bits", 8)},					TECH.LOST,	{})
+Recipe2("wx78_drone_zap_remote",			{Ingredient("scandata", 10), Ingredient("transistor", 1), Ingredient("wagpunk_bits", 8)},					TECH.NONE,	{nameoverride="wx78_drone_zap", builder_skill="wx78_zapdrone_1"})
 
 ------------------------------- CRAFTING STATIONS -------------------------------
 

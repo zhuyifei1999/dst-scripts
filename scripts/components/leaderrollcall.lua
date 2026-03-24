@@ -144,7 +144,7 @@ function LeaderRollCall:DoRollCall()
     end
 
     for ent in pairs(leader.components.leader.followers) do
-        if ent.components.follower:CanBeRollCalled(leader) then
+        if ent:HasAnyTag(ONEOF_TAGS) and ent.components.follower:CanBeRollCalled(leader) then
             ent.components.follower:AddLoyaltyTime(5)
         end
     end

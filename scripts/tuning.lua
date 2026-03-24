@@ -7455,7 +7455,7 @@ function Tune(overrides)
                 BEE_TICKPERIOD_ALPHABUFF = seg_time * 0.5,
                 -- wx78_circuitry_alphabuffs_2
                 MAXHEALTH_ARMOR_ALPHABUFF_2 = 0.025,
-                MAXHEALTH2_ARMOR_MULT = 4,
+                MAXHEALTH2_ARMOR_MULT = 2,
                 MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.50,
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
                 MAXSANITY1_DAPPERNESS_MULT = 0.20,
@@ -7467,8 +7467,11 @@ function Tune(overrides)
                 COLD_FIRE_DAMAGE_SCALE = 0.5, -- 50% per module
                 HEAT_FREEZE_RESISTANCE = 2, -- 2x per module resistance to freezing (immune to freezing at 2 fire circuits)
                 MUSIC_MAXFOLLOWERS = 10, -- 10 max followers per module
+
                 RADAR_ZAPDRONERANGE = 5,
                 RADAR_SCOUTDRONERANGE = 100,
+                RADAR_WX78_SCANNER_SCANDIST = .5, -- how close the scanner needs to be
+                RADAR_WX78_SCANNER_PLAYER_PROX = .75, -- how close the player needs to be.
 
                 -- wx78_circuitry_betabuffs_2
                 TASER_MAXBUILDUP = 100,

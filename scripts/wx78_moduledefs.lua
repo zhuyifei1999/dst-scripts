@@ -475,7 +475,7 @@ local function nightvision_common_activate(inst, wx)
 end
 
 local function nightvision_common_deactivate(inst, wx)
-    wx._nightvision_modcount = math.max(0, wx._nightvision_modcount - 1)
+    wx._nightvision_modcount = math.max(0, (wx._nightvision_modcount or 0) - 1)
 
     if wx._nightvision_modcount == 0 then
         wx:StopWatchingWorldState("isnight", OnNightVisionUpdate)
@@ -1073,8 +1073,9 @@ local function bee_skill_updatemaxshield(inst, wx)
             local maxhealth = wx.components.health.maxhealth
             local maxshield = wx._bee_modcount * TUNING.SKILLS.WX78.BEE_SHIELDPERCENT * maxhealth
             wx.components.wx78_shield:SetMax(math.max(1, maxshield))
-        else
+        elseif wx._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY then
             wx.components.wx78_shield:SetMax(1)
+            wx.components.wx78_shield:SetCurrent(0)
         end
     end
 end
@@ -1511,19 +1512,6 @@ local function GetIsParasitedFn(creature)
 end
 
 -- AddSpecialCreatureScanDataDefinition(PARASITE_SCAN_KEY, GetIsParasitedFn, "parasite", 2)
-
----------------------------------------------------------------
-
--- Not a module, but here anyways since it relates to scanning
-local function GetZapDroneRemoteRecipe(wx)
-    if wx.components.skilltreeupdater ~= nil and wx.components.skilltreeupdater:IsActivated("wx78_zapdrone_1") then
-        return "wx78_drone_zap_remote"
-    end
-end
-
-AddCreatureScanDataDefinition("junk_pile_big", nil, 2, GetZapDroneRemoteRecipe)
-AddCreatureScanDataDefinition("wagstaff_machinery", nil, 4, GetZapDroneRemoteRecipe)
-AddCreatureScanDataDefinition("wagpunk_workstation", nil, 6, GetZapDroneRemoteRecipe)
 
 ---------------------------------------------------------------
 local module_netid = 1

@@ -5775,7 +5775,7 @@ STRINGS =
         WX78MODULE_STACKSIZE = "Infinite storage. Finite space. Don't overthink it.",
         WX78MODULE_SCREECH = "Unleash the fearsome battlecry of the soulless automaton!",
         WX78MODULE_LIGHT2 = "Let them see the light... you.",
-        WX78MODULE_DIGESTION = "Now your friends can enjoy your meal too!",
+        WX78MODULE_DIGESTION = "Give spoiled food a second chance!",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

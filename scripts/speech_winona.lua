@@ -6057,12 +6057,12 @@ return{
 
 		-- Meta 6
 
-		--WX78_DRONE_SCOUT = "TODO",
-		--WX78_DRONE_DELIVERY = "TODO",
+		WX78_DRONE_SCOUT = "Careful out there, lil' fella.",
+		WX78_DRONE_DELIVERY = "Wish I had me a flyin' toolkit.",
 		WX78_DRONE_ZAP = "I know who's really in control!",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			GENERIC = "WX don't like to share.",
+			GENERIC = "WX don't like sharin'.",
 --fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
 		},
 
@@ -6076,7 +6076,7 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "Wonder what WX left behind.", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =

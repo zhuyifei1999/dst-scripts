@@ -514,15 +514,25 @@ function PlayerActionPicker:DoGetMouseActions(position, target, spellbook)
     local lmb = not isaoetargeting and self:GetLeftClickActions(position, target)[1] or nil
     local rmb = not wantsaoetargeting and self:GetRightClickActions(position, target, spellbook)[1] or nil
 
-	--@V2C: Filtering out local UI actions that we do not really want as explicit actions.
-	--e.g. CLOSESPELLBOOK we can just [Esc] or R.Click anywhere to achieve the same thing,
-	--     so we'd rather not have the player highlighted with an action prompt.
-	--     (NOTE: We still generate these actions so that they block lower priority ones.)
-	if rmb and rmb.action == ACTIONS.CLOSESPELLBOOK and rmb.target == rmb.doer then
-		rmb = nil
+	if rmb then
+		if rmb.action == ACTIONS.CLOSESPELLBOOK and rmb.target == rmb.doer then
+			--@V2C: Filtering out local UI actions that we do not really want as explicit actions.
+			--e.g. CLOSESPELLBOOK we can just [Esc] or R.Click anywhere to achieve the same thing,
+			--     so we'd rather not have the player highlighted with an action prompt.
+			--     (NOTE: We still generate these actions so that they block lower priority ones.)
+			rmb = nil
+		elseif lmb and lmb.action == rmb.action then
+			--V2C: Remove duplicate action, unless invobject is different.
+			--     e.g. CHARGE_FROM can be used on self OR on invobject
+			local lmbobj = lmb.invobject ~= lmb.doer and lmb.invobject or nil
+			local rmbobj = rmb.invobject ~= rmb.doer and rmb.invobject or nil
+			if lmbobj == rmbobj then
+				rmb = nil
+			end
+		end
 	end
 
-    return lmb, rmb ~= nil and (lmb == nil or lmb.action ~= rmb.action) and rmb or nil
+	return lmb, rmb
 end
 
 return PlayerActionPicker

@@ -517,6 +517,7 @@ local function MakeDrone(name, numcols, numrows, required_skill)
 
 		inst:AddTag("structure")
 		inst:AddTag("chest")
+        inst:AddTag("staysthroughvirtualrooms")
 
 		inst.showflyingshadow = net_bool(inst.GUID, name..".showflyingshadow", "showflyingshadowdirty")
 		inst.isempty = net_bool(inst.GUID, name..".isempty")

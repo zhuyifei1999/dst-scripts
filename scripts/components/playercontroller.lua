@@ -4960,13 +4960,13 @@ function PlayerController:RemapMapAction(act, position)
                     px, py, pz = act_posx, 0, act_posz
                 end
             end
-            if TheWorld.Map:IsOceanTileAtPoint(px, py, pz) or TheWorld.Map:IsVisualGroundAtPoint(px, py, pz) then
+            if TheWorld.Map:IsOceanTileAtPoint(px, py, pz) or TheWorld.Map:IsVisualGroundAtPoint(px, py, pz) or act.action.map_works_on_impassable and TheWorld.Map:IsImpassableTileAtPoint(px, py, pz) then
                 if act.action.map_works_on_unexplored or self.inst:CanSeePointOnMiniMap(px, py, pz) then
                     act_remap = act
                 end
             end
         elseif ACTIONS_MAP_REMAP[act.action.code] then
-            if TheWorld.Map:IsOceanTileAtPoint(px, py, pz) or TheWorld.Map:IsVisualGroundAtPoint(px, py, pz) then
+            if TheWorld.Map:IsOceanTileAtPoint(px, py, pz) or TheWorld.Map:IsVisualGroundAtPoint(px, py, pz) or act.action.map_works_on_impassable and TheWorld.Map:IsImpassableTileAtPoint(px, py, pz) then
                 if act.action.map_works_on_unexplored or
                     self.inst:CanSeePointOnMiniMap(px, py, pz) or
                     act.invobject and act.invobject:HasTag("mapaction_works_on_unexplored") then

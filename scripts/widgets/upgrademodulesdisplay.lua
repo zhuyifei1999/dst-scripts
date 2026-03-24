@@ -73,7 +73,7 @@ local UpgradeModulesDisplay = Class(Widget, function(self, owner, reversed)
     self.chip_objectpools = {}
     self.chip_poolindexes = {}
     self.chip_slotsinuse = {}
-    for v = 0, GetTableSize(CIRCUIT_BARS) do
+    for v = GetTableSize(CIRCUIT_BARS), 0, -1 do
         local bar_frame = self:AddChild(UIAnim())
         bar_frame:GetAnimState():SetBank("status_wx")
         bar_frame:GetAnimState():SetBuild("status_wx")
@@ -297,9 +297,10 @@ function UpgradeModulesDisplay:UpdateEnergyLevel(new_level, old_level, skipsound
 end
 
 function UpgradeModulesDisplay:GetChipXOffset(chiptypeindex)
+    local BASE_X = -92
     for moduletype, moduleindex in pairs(CIRCUIT_BARS) do
         if chiptypeindex == moduleindex then
-            return -46 * moduleindex
+            return BASE_X + (46 * moduleindex)
         end
     end
 end
@@ -470,15 +471,15 @@ function UpgradeModulesDisplay:PopAllModules(skip_sound)
 end
 
 local function GetBarOpenTimings(bartype)
-    return bartype == CIRCUIT_BARS.ALPHA and .32
+    return bartype == CIRCUIT_BARS.ALPHA and .37
         or bartype == CIRCUIT_BARS.BETA and .36
-        or bartype == CIRCUIT_BARS.GAMMA and .37
+        or bartype == CIRCUIT_BARS.GAMMA and .32
 end
 
 local function GetBarCloseTimings(bartype)
-    return bartype == CIRCUIT_BARS.ALPHA and 2 * FRAMES
+    return bartype == CIRCUIT_BARS.ALPHA and 5 * FRAMES
         or bartype == CIRCUIT_BARS.BETA and 3 * FRAMES
-        or bartype == CIRCUIT_BARS.GAMMA and 5 * FRAMES
+        or bartype == CIRCUIT_BARS.GAMMA and 2 * FRAMES
 end
 
 function UpgradeModulesDisplay:Open()

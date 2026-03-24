@@ -244,6 +244,7 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("mapscout")
+    inst:AddTag("staysthroughvirtualrooms")
 
 	inst.scanning = net_bool(inst.GUID, "wx78_drone_scout.scanning", "scanningdirty")
 
