@@ -30,6 +30,7 @@ local function CreateLight(i, light_rad)
 
     inst:AddTag("FX")
 	inst:AddTag("NOCLICK")
+    inst:AddTag("staysthroughvirtualrooms")
 
     inst.SetLightRadius = LightFx_SetLightRadius
     inst:SetLightRadius(light_rad)
@@ -179,6 +180,7 @@ local function fn()
         return inst
     end
 
+    inst.persists = false
     inst.lightbeam_rotation = 0
 
     inst.AttachToOwner = AttachToOwner

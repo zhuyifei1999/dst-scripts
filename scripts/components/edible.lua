@@ -73,7 +73,9 @@ function Edible:GetSanity(eater)
     local sanityvalue = self.getsanityfn ~= nil and self.getsanityfn(self.inst, eater) or self.sanityvalue
     local ignore_spoilage = not self.degrades_with_spoilage or sanityvalue < 0 or (eater ~= nil and eater.components.eater ~= nil and eater.components.eater.ignoresspoilage)
 
-    if not ignore_spoilage and self.inst.components.perishable ~= nil then
+    if eater.components.eater:IsSpoiledProcessor() and self.inst:HasTag("show_spoiled") then
+        return 0
+    elseif not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
             if sanityvalue > 0 then
                 return 0
@@ -95,7 +97,9 @@ function Edible:GetHunger(eater)
     local multiplier = 1
     local ignore_spoilage = not self.degrades_with_spoilage or self.hungervalue < 0 or (eater ~= nil and eater.components.eater ~= nil and eater.components.eater.ignoresspoilage)
 
-    if not ignore_spoilage and self.inst.components.perishable ~= nil then
+    if eater.components.eater:IsSpoiledProcessor() and self:IsSpoiled() then
+        return 0
+    elseif not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
             multiplier = eater ~= nil and eater.components.eater ~= nil and eater.components.eater.stale_hunger or self.stale_hunger
         elseif self.inst.components.perishable:IsSpoiled() then
@@ -117,10 +121,11 @@ function Edible:GetHealth(eater)
     local multiplier = 1
     local healthvalue = self.gethealthfn ~= nil and self.gethealthfn(self.inst, eater) or self.healthvalue
     local spice_source = self.spice
-
     local ignore_spoilage = not self.degrades_with_spoilage or healthvalue < 0 or (eater ~= nil and eater.components.eater ~= nil and eater.components.eater.ignoresspoilage)
 
-    if not ignore_spoilage and self.inst.components.perishable ~= nil then
+    if eater.components.eater:IsSpoiledProcessor() and self:IsSpoiled() then
+        return 0
+    elseif not ignore_spoilage and self.inst.components.perishable ~= nil then
         if self.inst.components.perishable:IsStale() then
             multiplier = eater ~= nil and eater.components.eater ~= nil and eater.components.eater.stale_health or self.stale_health
         elseif self.inst.components.perishable:IsSpoiled() then
@@ -150,6 +155,20 @@ end
 
 function Edible:SetOverrideStackMultiplierFn(fn)
     self.overridestackmultiplierfn = fn
+end
+
+function Edible:SetForceSpoiledFood(spoiled)
+    if spoiled then
+        self.inst:AddTag("spoiledfood")
+        self.spoiledfood = true
+    elseif self.spoiledfood then
+        self.inst:RemoveTag("spoiledfood")
+        self.spoiledfood = false
+    end
+end
+
+function Edible:IsSpoiled()
+    return self.spoiledfood or (self.inst.components.perishable and self.inst.components.perishable:IsSpoiled())
 end
 
 function Edible:SetGetHealthFn(fn)

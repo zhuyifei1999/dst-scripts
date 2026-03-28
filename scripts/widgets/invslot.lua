@@ -39,7 +39,21 @@ function InvSlot:OnControl(control, down)
             return true
         end
         if TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
-            self:DropItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+			local single = TheInput:IsControlPressed(CONTROL_FORCE_STACK)
+			if (	self.tile and
+					self.tile.item and
+					self.tile.item.replica.inventoryitem and
+					self.tile.item.replica.inventoryitem:IsLockedInSlot()
+				) and
+				not (	single and
+						self.tile.item.replica.stackable and
+						self.tile.item.replica.stackable:IsStack()
+					)
+			then
+				self:UseItem()
+			else
+				self:DropItem(single)
+			end
         else
             self:UseItem()
         end
@@ -122,8 +136,15 @@ function InvSlot:Click(stack_mod)
                     if stack_mod then
                         takecount = math.max(math.floor(takecount / 2), 1)
                     end
-                    container:TakeActiveItemFromCountOfSlot(slot_number, takecount)
-                    TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+					if not (container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot()) or
+						(container_item.replica.stackable and container_item.replica.stackable:StackSize() > takecount)
+					then
+						container:TakeActiveItemFromCountOfSlot(slot_number, takecount)
+						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+					else
+						-- Block taking entire stack out of a locked slot.
+						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
+					end
                 else
                     -- Block taking anything if this override exists.
                     TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
@@ -134,6 +155,9 @@ function InvSlot:Click(stack_mod)
                 --Take one only
                 container:TakeActiveItemFromHalfOfSlot(slot_number)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+			elseif container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot() then
+				-- Block taking entire stack out of a locked slot.
+				TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
             else
                 --Take entire stack
                 container:TakeActiveItemFromAllOfSlot(slot_number)

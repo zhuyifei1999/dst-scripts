@@ -404,19 +404,19 @@ function UpgradeModulesDisplay:OnModulesDirty(modules_data)
         for i, module_index in ipairs(modules) do
             local oldmodule_index = oldmodules ~= nil and oldmodules[i] or 0
 
-            -- Unplugged a circuit in the middle
-            if module_index ~= 0 and oldmodule_index ~= 0 and module_index ~= oldmodule_index then
-                self:PopModuleAtIndex(bartype, i)
-                PlayFirstSound("WX_rework/tube/HUD_out")
-                break
             -- Plugged a circuit
-            elseif module_index ~= 0 and i == self.chip_poolindexes[bartype] then
+            if module_index ~= 0 and i == self.chip_poolindexes[bartype] then
                 self:OnModuleAdded(bartype, module_index)
                 PlayFirstSound("WX_rework/tube/HUD_in")
             -- Popped the top module
             elseif module_index == 0 and i == (self.chip_poolindexes[bartype] - 1) then
                 self:PopOneModule(bartype)
                 PlayFirstSound("WX_rework/tube/HUD_out")
+            -- Unplugged a circuit in the middle
+            elseif module_index ~= 0 and oldmodule_index ~= 0 and module_index ~= oldmodule_index then
+                self:PopModuleAtIndex(bartype, i)
+                PlayFirstSound("WX_rework/tube/HUD_out")
+                break
             end
         end
     end
@@ -456,7 +456,9 @@ function UpgradeModulesDisplay:PopAllModules(skip_sound)
 
             while self.chip_poolindexes[bartype] > 1 do
                 self.chip_poolindexes[bartype] = self.chip_poolindexes[bartype] - 1
-                self:DropChip(pool[self.chip_poolindexes[bartype]])
+                local chip = pool[self.chip_poolindexes[bartype]]
+                self:DropChip(chip)
+                chip._power_hidden = true
             end
         end
     end
@@ -493,7 +495,7 @@ function UpgradeModulesDisplay:Open()
                 if chip.chip_pos then
                     local i = k + 1
                     local pos = chip.chip_pos
-                    local hidden_pos = Vector3(20 - (i * 20), pos.y, 0)
+                    local hidden_pos = Vector3((i * 20) - 20, pos.y, 0)
                     chip:CancelMoveTo()
                     chip:MoveTo(hidden_pos, pos, GetBarOpenTimings(k), function()  end)
                     chip:Show()

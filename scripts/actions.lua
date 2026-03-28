@@ -695,6 +695,7 @@ ACTIONS =
     REMOVEMODULE = Action({ mount_valid = true, invalid_hold_action=true, instant = true }), -- The action we use when we're already in the UI.
     STOPREMOVINGMODULE = Action({ mount_valid = true, invalid_hold_action=true }),
 	MAPSCOUT_MAP = Action({ instant = true, mount_valid = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
+	MAPSCOUT_MAP_TOOFAR = Action({ instant = true, mount_valid = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
 	MAPSCOUTSELECT_MAP = Action({ instant = true, mount_valid = true, rmb = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
 	STARTMAPDELIVER = Action({ rmb = true }),
 	MAPDELIVER_MAP = Action({ map_only=true, closes_map=true, }),
@@ -740,8 +741,13 @@ ACTIONS.APPRAISE.fn = function(act)
 end
 
 ACTIONS.EAT.strfn = function(act)
-    return (act.invobject ~= nil and act.invobject:HasTag("fooddrink")) and "DRINK"
-        or nil
+    if act.invobject ~= nil then
+        return (act.doer ~= nil and act.doer:HasTag("spoiledprocessor") and act.invobject:HasTag("show_spoiled")) and "PROCESS"
+            or act.invobject:HasTag("fooddrink") and "DRINK"
+            or nil
+    end
+
+    return nil
 end
 
 ACTIONS.EAT.fn = function(act)
@@ -6615,12 +6621,12 @@ ACTIONS.MAPSCOUTSELECT_MAP.maponly_checkvalidpos_fn = function(act)
 	if mapent == nil then
 		return false, "NOTARGET"
 	end
-	x, y, z = mapent.Transform:GetWorldPosition()
+	--[[x, y, z = mapent.Transform:GetWorldPosition()
     local validdist = mapent:GetDroneRange(act.doer) + 1 -- Small fudge factor for selection to avoid floating precision inaccuracies.
     local px, py, pz = act.doer.Transform:GetWorldPosition()
     if math2d.DistSq(x, z, px, pz) > validdist * validdist then
         return false, "NOTARGET"
-    end
+    end]]
 	return true, nil, x, z, mapent
 end
 
@@ -6659,8 +6665,6 @@ ACTIONS.MAPSCOUT_MAP.maponly_checkvalidpos_fn = function(act)
     return true, nil, ndx, ndz, act.target
 end
 
-
-
 ACTIONS.MAPSCOUT_MAP.pre_action_cb = function(act)
 	if act.doer.HUD and act.doer.HUD:IsMapScreenOpen() then
 		local mapscreen = TheFrontEnd:GetActiveScreen()
@@ -6686,15 +6690,50 @@ ACTIONS.MAPSCOUT_MAP.fn = function(act)
 	return false
 end
 
+ACTIONS.MAPSCOUT_MAP_TOOFAR.maponly_checkvalidpos_fn = ACTIONS.MAPSCOUT_MAP.maponly_checkvalidpos_fn
+ACTIONS.MAPSCOUT_MAP_TOOFAR.stroverridefn = function(act)
+    return STRINGS.ACTIONS.MAPSCOUT_MAP_TOOFAR
+end
+ACTIONS.MAPSCOUT_MAP_TOOFAR.pre_action_cb = function(act)
+    if act.doer.HUD and act.doer.HUD:IsMapScreenOpen() then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
+    end
+end
+ACTIONS.MAPSCOUT_MAP_TOOFAR.fn = function(act)
+    return true
+end
+
 ACTIONS.STARTMAPDELIVER.fn = function(act)
 	if act.target and act.target.components.mapdeliverable then
+        if not IsFlyingPermittedFromPoint(act.target.Transform:GetWorldPosition()) then
+            return false
+        end
 		return act.target.components.mapdeliverable:StartMapAction(act.doer)
 	end
+end
+
+ACTIONS.MAPDELIVER_MAP.maponly_checkvalidpos_fn = function(act)
+    local mapent = act.target
+    if mapent == nil then
+        return false
+    end
+
+    local fx, fy, fz = mapent.Transform:GetWorldPosition()
+    local tx, ty, tz = act:GetActionPoint():Get()
+    if not IsFlyingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz) then
+        return false
+    end
+
+	return true, nil, tx, tz, mapent
 end
 
 ACTIONS.MAPDELIVER_MAP.fn = function(act)
     local pt = act:GetActionPoint()
 	if pt and act.target and act.target.components.mapdeliverable then
+        local fx, fy, fz = act.target.Transform:GetWorldPosition()
+        if not IsFlyingPermittedFromPointToPoint(fx, fy, fz, pt.x, pt.y, pt.z) then
+            return false
+        end
 		return act.target.components.mapdeliverable:SendToPoint(pt, act.doer)
     end
 	return false

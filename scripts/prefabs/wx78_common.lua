@@ -1,10 +1,11 @@
 -- Thse functions can also be used for wx78_backupbody so check everything.
 
 local DEPENDENCIES = {
-    assets = {},
-    prefabs = {
-        "wx78_heat_steam",
-    },
+	assets =
+	{
+		Asset("ANIM", "anim/wx_fx.zip"),
+	},
+	prefabs = {},
 }
 
 ---------------------------------------------------------------------------
@@ -134,13 +135,90 @@ local function SetupUpgradeModuleOwnerInstanceFunctions(inst)
 end
 
 --------------------------------------------------------------------------
+
+local _steam_fx_pool
+
+local function OnSteamFxTimeOut(inst)
+	inst:Remove()
+	table.removearrayvalue(_steam_fx_pool, inst)
+	if #_steam_fx_pool <= 0 then
+		_steam_fx_pool = nil
+	end
+end
+
+local function OnSteamFxAnimOver(inst)
+	inst.Follower:StopFollowing()
+	inst:RemoveFromScene()
+	if _steam_fx_pool then
+		table.insert(_steam_fx_pool, inst)
+	else
+		_steam_fx_pool = { inst }
+	end
+	--assert(inst._timeouttask == nil)
+	inst._timeouttask = inst:DoTaskInTime(30, OnSteamFxTimeOut)
+end
+
+local function CreateSteamFx(frame)
+	local inst = _steam_fx_pool and table.remove(_steam_fx_pool)
+	if inst then
+		inst:ReturnToScene()
+		inst._timeouttask:Cancel()
+		inst._timeouttask = nil
+	else
+		inst = CreateEntity()
+
+		--[[Non-networked entity]]
+		inst.entity:SetCanSleep(false)
+		inst.persists = false
+
+		inst.entity:AddTransform()
+		inst.entity:AddAnimState()
+		inst.entity:AddFollower()
+
+		inst:AddTag("DECOR")
+		inst:AddTag("NOCLICK")
+
+		inst.AnimState:SetBank("wx_fx")
+		inst.AnimState:SetBuild("wx_fx")
+		inst.AnimState:SetFinalOffset(1)
+
+		inst:ListenForEvent("animover", OnSteamFxAnimOver)
+	end
+
+	inst.AnimState:PlayAnimation("steam_"..tostring(frame))
+
+	return inst
+end
+
+local function OnSteamFx_NoFaced(inst)
+	if not inst:IsAsleep() then
+		CreateSteamFx(1).Follower:FollowSymbol(inst.GUID, "headbase", 0, 0, 0, true)
+	end
+end
+
+local function OnSteamFx(inst)
+	if not inst:IsAsleep() then
+		CreateSteamFx(1).Follower:FollowSymbol(inst.GUID, "headbase", 0, 0, 0, true, nil, 0)
+		CreateSteamFx(2).Follower:FollowSymbol(inst.GUID, "headbase", 0, 0, 0, true, nil, 1)
+		CreateSteamFx(1).Follower:FollowSymbol(inst.GUID, "headbase", 0, 0, 0, true, nil, 2, 5)
+	end
+end
+
+local function AddHeatSteamFx_Common(inst, nofacings)
+	inst.steamfx = net_event(inst.GUID, "wx78_common.steamfx")
+
+	if not TheNet:IsDedicated() then
+		inst:ListenForEvent("wx78_common.steamfx", nofacings and OnSteamFx_NoFaced or OnSteamFx)
+	end
+end
+
 local HEATSTEAM_TIMERNAME = "heatsteam_tick"
 local HEATSTEAM_TICKRATE = 5
 
 local function do_steam_fx(inst)
-    local steam_fx = SpawnPrefab("wx78_heat_steam")
-    steam_fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    steam_fx.Transform:SetRotation(inst.Transform:GetRotation())
+	--NOTE: steamfx could be a reference to net_event on another prefab! (see wx78_backupbody)
+	--      That's why we use event listener even on server.
+	inst.steamfx:push()
 
     if inst.components.timer then
         inst.components.timer:StartTimer(HEATSTEAM_TIMERNAME, HEATSTEAM_TICKRATE)
@@ -234,6 +312,7 @@ return {
 
 
     -- Initialization functions should be last in the file do not add your functions below this line unless it is for initialization.
+	AddHeatSteamFx_Common = AddHeatSteamFx_Common,
     Initialize_Common = Initialize_Common,
     Initialize_Master = Initialize_Master,
 }

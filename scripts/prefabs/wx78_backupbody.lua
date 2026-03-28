@@ -15,7 +15,6 @@ local prefabs = JoinArrays({
 	"wx78_backupbody_revealableicon",
     "explode_reskin",
     "collapse_small",
-    "wx78_heat_steam",
     "wx78_backupbody_inventory",
 }, WX78Common.DEPENDENCIES.prefabs)
 
@@ -133,6 +132,7 @@ end
 local function OnBuiltFn(inst, builder)
     inst._hide_body_skinfx = true
     inst:TryToAttachToOwner(builder)
+    inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk")
     inst.wx78_backupbody_inventory.AnimState:PlayAnimation("wx_chassis_place")
     inst.wx78_backupbody_inventory.AnimState:PushAnimation("wx_chassis_idle", true)
 end
@@ -308,12 +308,7 @@ local function OnOwnerInstCreatedFn(inst, owner)
 	inst.components.globaltrackingicon:StartTracking(owner)
 end
 local function OnOwnerInstRemovedFn(inst, owner)
-    if inst.globalmapicon then
-        if inst.globalmapicon:IsValid() then
-            inst.globalmapicon:Remove()
-        end
-        inst.globalmapicon = nil
-    end
+    inst.components.globaltrackingicon:StartTracking(nil, "wx78_backupbody")
 
     inst:TryToDeactivateBetaCircuitStates()
 
@@ -496,6 +491,7 @@ local function fn()
     if not TheNet:IsDedicated() then
         inst.highlightchildren = { inst.wx78_backupbody_inventory }
     end
+	inst.steamfx = inst.wx78_backupbody_inventory.steamfx
 
     local workable = inst:AddComponent("workable")
     workable:SetWorkAction(ACTIONS.HAMMER)
@@ -601,6 +597,8 @@ local function fn_inventory()
     inst.AnimState:PlayAnimation("wx_chassis_idle")
 
     inst.DynamicShadow:SetSize(1.3, .6)
+
+	WX78Common.AddHeatSteamFx_Common(inst, true) --true for no facings
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

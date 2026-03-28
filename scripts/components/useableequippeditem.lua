@@ -36,9 +36,13 @@ function UseableEquippedItem:StartUsingItem(doer)
 
 	self.inuse = true
 
-	if self.onusefn then
-		self.onusefn(self.inst, doer)
-	end
+    if self.onusefn then
+        local success, reason = self.onusefn(self.inst, doer)
+        if not success and success ~= nil then -- Fail state backwards compatible needs to check for nil.
+            self.inuse = false
+            return false, reason
+        end
+    end
 	return true
 end
 

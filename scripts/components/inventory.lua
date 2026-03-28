@@ -226,11 +226,26 @@ function Inventory:OnSave()
 end
 
 function Inventory:CanTakeItemInSlot(item, slot)
-    return item ~= nil
-        and item.components.inventoryitem ~= nil
-        and (item.components.inventoryitem.cangoincontainer or self.ignorescangoincontainer)
-        and (slot == nil or (slot >= 1 and slot <= self.maxslots))
-        and not (GetGameModeProperty("non_item_equips") and item.components.equippable ~= nil)
+	if not (item and item.components.inventoryitem and (item.components.inventoryitem.cangoincontainer or self.ignorescangoincontainer)) then
+		return false
+	elseif GetGameModeProperty("non_item_equips") and item.components.equippable then
+		return false
+	elseif slot then
+		if slot < 1 or slot > self.maxslots then
+			return false
+		end
+		local existingitem = self:GetItemInSlot(slot)
+		if existingitem and
+			existingitem.components.inventoryitem.islockedinslot and
+			not (	existingitem.components.stackable and
+					not existingitem.components.stackable:IsFull() and
+					existingitem.components.stackable:CanStackWith(item)
+				)
+		then
+			return false
+		end
+	end
+	return true
 end
 
 function Inventory:AcceptsStacks()
@@ -508,7 +523,7 @@ function Inventory:CombineActiveStackWithSlot(slot, stack_mod)
     end
 
     local handitem = self.activeitem
-    if handitem == nil or handitem.prefab ~= invitem.prefab or handitem.skinname ~= invitem.skinname or handitem.components.stackable == nil then
+	if not (handitem and handitem.components.stackable and handitem.components.stackable:CanStackWith(invitem)) then
         return
     end
 
@@ -522,12 +537,15 @@ function Inventory:CombineActiveStackWithSlot(slot, stack_mod)
 end
 
 function Inventory:SelectActiveItemFromSlot(slot)
-    if self.itemslots[slot] == nil then
+	local newitem = self.itemslots[slot]
+	if newitem == nil then
         return
+	elseif newitem.components.inventoryitem and newitem.components.inventoryitem.islockedinslot then
+		assert(BRANCH ~= "dev")
+		return
     end
 
     local olditem = self.activeitem
-    local newitem = self.itemslots[slot]
     self.itemslots[slot] = nil
     self.inst:PushEvent("itemlose", { slot = slot, prev_item = newitem })
 
@@ -694,6 +712,13 @@ end
 function Inventory:DropItem(item, wholestack, randomdir, pos, keepoverstacked)
     if item == nil or item.components.inventoryitem == nil then
         return
+	elseif item.components.inventoryitem.islockedinslot and
+		(	wholestack or
+			not (item.components.stackable and item.components.stackable:IsStack())
+		)
+	then
+		assert(BRANCH ~= "dev")
+		return
     end
 
 	local dropped = item.components.inventoryitem:RemoveFromOwner(wholestack, keepoverstacked) or item
@@ -1075,7 +1100,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
         end
     end
     if shouldwisecrack and not (self.isloading or self.silentfull) and self.maxslots > 0 then
-        self.inst:PushEvent("inventoryfull", { item = inst })
+    self.inst:PushEvent("inventoryfull", { item = inst })
     end
     return returnvalue
 end
@@ -1112,7 +1137,10 @@ function Inventory:Unequip(equipslot, slip, force)
 end
 
 function Inventory:SetActiveItem(item)
-    if item and item.components.inventoryitem.cangoincontainer or item == nil then
+	if item and item.components.inventoryitem.islockedinslot then
+		assert(BRANCH ~= "dev")
+		return
+	elseif item == nil or item.components.inventoryitem.cangoincontainer then
         self.activeitem = item
         self.inst:PushEvent("newactiveitem", {item=item})
 
@@ -1704,12 +1732,28 @@ function Inventory:DropEverything(ondeath, keepequip)
         self:SetActiveItem(nil)
     end
 
+	local internal_containers
+
     for k = 1, self.maxslots do
         local v = self.itemslots[k]
         if v ~= nil and not (ondeath and v.components.inventoryitem.keepondeath) and not v.components.curseditem then
-            self:DropItem(v, true, true)
+			if not v.components.inventoryitem.islockedinslot then
+				self:DropItem(v, true, true)
+			elseif v.components.container then
+				if internal_containers then
+					table.insert(internal_containers, v)
+				else
+					internal_containers = { v }
+				end
+			end
         end
     end
+
+	if internal_containers then
+		for _, v in ipairs(internal_containers) do
+			v.components.container:DropEverything()
+		end
+	end
 
     if not keepequip then
         if self.inst.EmptyBeard ~= nil then
@@ -1991,6 +2035,8 @@ function Inventory:TakeActiveItemFromCountOfSlot(slot, count)
             countedstack.prevslot = slot
             countedstack.prevcontainer = nil
             self:GiveActiveItem(countedstack)
+		elseif item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
+			assert(BRANCH ~= "dev")
         else
             self:RemoveItemBySlot(slot)
             self:GiveActiveItem(item)
@@ -2002,7 +2048,10 @@ function Inventory:TakeActiveItemFromAllOfSlot(slot)
     local item = self:GetItemInSlot(slot)
     if item ~= nil and
         self:GetActiveItem() == nil then
-
+		if item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
+			assert(BRANCH ~= "dev")
+			return
+		end
         self:RemoveItemBySlot(slot)
         self:GiveActiveItem(item)
     end
@@ -2316,6 +2365,11 @@ end
 function Inventory:MoveItemFromAllOfSlot(slot, container)
     local item = self:GetItemInSlot(slot)
     if item ~= nil and container ~= nil then
+		if item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
+			assert(BRANCH ~= "dev")
+			return
+		end
+
         container = container.components.container
         if container ~= nil and container:IsOpenedBy(self.inst) then
 
@@ -2404,6 +2458,8 @@ function Inventory:MoveItemFromCountOfSlot(slot, container, count)
                         self:GiveItem(countedstack, slot)
                         self.ignoresound = false
                     end
+				elseif item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
+					assert(BRANCH ~= "dev")
                 else
                     item = self:RemoveItemBySlot(slot)
                     item.prevcontainer = nil

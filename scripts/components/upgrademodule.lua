@@ -7,6 +7,7 @@ local UpgradeModule = Class(function(self, inst)
     --self.target = nil
     --self.onactivatedfn = nil
     --self.ondeactivatedfn = nil
+	--self.onaddedtoownerfn = nil
     --self.onremovedfromownerfn = nil
 end)
 
@@ -18,8 +19,11 @@ function UpgradeModule:GetSlots()
     return self.slots
 end
 
-function UpgradeModule:SetTarget(target)
+function UpgradeModule:SetTarget(target, isloading)
     self.target = target
+	if target and self.onaddedtoownerfn then
+		self.onaddedtoownerfn(self.inst, target, isloading)
+	end
 end
 
 function UpgradeModule:SetType(bartype)

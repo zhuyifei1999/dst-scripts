@@ -438,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6090,13 +6094,13 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            GENERIC = "A case with endless space, dropped by ol' metal face!", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "Once a case with endless space, dropped by ol' metal face!", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+            WET = "Moisturized, yet still not appetized.",
+            GENERIC = "Not appetizing without first moisturizing.",
         },
     },
 

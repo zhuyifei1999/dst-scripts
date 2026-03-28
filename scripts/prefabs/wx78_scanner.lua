@@ -127,9 +127,11 @@ local function proximityscan(inst, dt)
         if new_target ~= nil then
             local distsq = inst:GetDistanceSqToInst(new_target)
             local nextpingtime = TUNING.WX78_SCANNER_DISTANCES[#TUNING.WX78_SCANNER_DISTANCES].pingtime
-            for k, v in ipairs(TUNING.WX78_SCANNER_DISTANCES) do
+			local sfxproximity = #TUNING.WX78_SCANNER_DISTANCES + 1
+			for i, v in ipairs(TUNING.WX78_SCANNER_DISTANCES) do
                 if v.maxdist*v.maxdist >= distsq then
                     nextpingtime = v.pingtime
+					sfxproximity = i
                     break
                 end
             end
@@ -139,6 +141,12 @@ local function proximityscan(inst, dt)
                 or GetTime()
 
             if (inst._ping_time_current - inst._ping_time_last) > nextpingtime then
+				--[[sfxproximity =
+					(sfxproximity == 1 and 0.8) or
+					(sfxproximity == 2 and 0.5) or
+					0.2
+
+				inst.SoundEmitter:PlaySoundWithParams("WX_rework/scanner/ping", { proximity = sfxproximity })]]
                 inst.SoundEmitter:PlaySound("WX_rework/scanner/ping")
                 inst:LoopFn(new_target)
 
@@ -234,6 +242,21 @@ local function item_loop_fn(inst, target)
             owner.components.talker:Say(GetString(owner,"ANNOUNCE_WX_SCANNER_NEW_FOUND"))
             owner.components.timer:StartTimer("ANNOUNCE_WX_SCANNER_NEW_FOUND", 15)
 
+			--[[local distsq = owner:GetDistanceSqToInst(target)
+			local sfxproximity = #TUNING.WX78_SCANNER_DISTANCES + 1
+			for i, v in ipairs(TUNING.WX78_SCANNER_DISTANCES) do
+				if v.maxdist * v.maxdist >= distsq then
+					sfxproximity = i
+					break
+				end
+			end
+
+			sfxproximity =
+				(sfxproximity == 1 and 0.8) or
+				(sfxproximity == 2 and 0.5) or
+				0.2
+
+			owner.SoundEmitter:PlaySoundWithParams("WX_rework/scanner/ping", { proximity = sfxproximity })]]
             owner.SoundEmitter:PlaySound("WX_rework/scanner/ping")
         end
     end

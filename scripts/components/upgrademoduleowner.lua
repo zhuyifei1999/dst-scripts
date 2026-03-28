@@ -196,7 +196,7 @@ function UpgradeModuleOwner:PushModule(bartype, module, isloading)
     table.insert(bar_modules, module)
 
     module.components.inventoryitem:RemoveFromOwner()
-    module.components.upgrademodule:SetTarget(self.inst)
+	module.components.upgrademodule:SetTarget(self.inst, isloading)
 
     self.inst:AddChild(module)
     module:RemoveFromScene()

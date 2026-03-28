@@ -9324,6 +9324,9 @@ function Tune(overrides)
 
         WX78_RADAR_EXTRA_VIEW_DIST = 5,
 
+        WX78_SCREECH_RANGE = 12,
+        WX78_SCREECH_PANIC_TIME = 5,
+
         WX78_FOODBRICK_FERTILIZE = day_time*0.75,
         WX78_FOODBRICK_SOILCYCLES = 8,
         WX78_FOODBRICK_WITHEREDCYCLES = 0.5,

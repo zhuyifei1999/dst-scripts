@@ -611,14 +611,32 @@ function MapScreen:UpdateStaticDecorations()
 end
 
 function MapScreen:ProcessLMBDecorations_MAPSCOUT_MAP(lmb, fresh)
-    local decor1
+    local decor1, decor2, decor3, decor4
+    local R, G, B = 239 / 255, 166 / 255, 32 / 255
     if fresh then
         local image = "wx78_drone_scout.png"
         local atlas = GetMinimapAtlas(image)
         decor1 = self.decorationrootlmb:AddChild(Image(atlas, image))
+        decor2 = self.decorationrootlmb:AddChild(Image("images/ui.xml", "white.tex"))
+        decor3 = self.decorationrootlmb:AddChild(Image(atlas, image))
+        decor4 = self.decorationrootlmb:AddChild(Image("images/ui.xml", "white.tex"))
+        decor4:SetTint(R * 0.7, G * 0.7, B * 0.7, 0.5)
+        decor4:SetHRegPoint(ANCHOR_LEFT)
+        decor3:SetTint(.75, .25, .25, 1)
+        decor2:SetTint(R * 0.9, G * 0.9, B * 0.9, 0.5) -- For antialiasing we fake it with a second bar with lower alpha and brightness.
+        decor2:SetHRegPoint(ANCHOR_LEFT)
+        decor2.centerbar = decor2:AddChild(Image("images/ui.xml", "white.tex"))
+        decor2.centerbar:SetHRegPoint(ANCHOR_LEFT)
+        decor2.centerbar:SetTint(R, G, B, 1)
         self.decorationdata.lmbents[1] = decor1
+        self.decorationdata.lmbents[2] = decor2
+        self.decorationdata.lmbents[3] = decor3
+        self.decorationdata.lmbents[4] = decor4
     else
         decor1 = self.decorationdata.lmbents[1]
+        decor2 = self.decorationdata.lmbents[2]
+        decor3 = self.decorationdata.lmbents[3]
+        decor4 = self.decorationdata.lmbents[4]
     end
     local lmb_pos = lmb:GetActionPoint()
     local px, py, pz = 0, 0, 0
@@ -626,6 +644,7 @@ function MapScreen:ProcessLMBDecorations_MAPSCOUT_MAP(lmb, fresh)
         px, py, pz = self.owner.Transform:GetWorldPosition()
     end
 
+    local tx, ty, tz = lmb.target.Transform:GetWorldPosition()
     local validdist = lmb.target:GetDroneRange(self.owner)
     local dx, dz = lmb_pos.x - px, lmb_pos.z - pz
     local dist = math.sqrt(dx * dx + dz * dz)
@@ -637,10 +656,44 @@ function MapScreen:ProcessLMBDecorations_MAPSCOUT_MAP(lmb, fresh)
     if dist > 0 then
         dx, dz = dx / dist, dz / dist
     end
+    if dist > validdist then
+        decor1:SetTint(1, 1, 1, 0.5)
+        decor2.centerbar:SetTint(R, G, B, 0.3)
+        decor3:Show()
+        decor4:Show()
+        if self.forced_actiondef == ACTIONS.MAPSCOUT_MAP then
+            self.forced_actiondef = ACTIONS.MAPSCOUT_MAP_TOOFAR
+        end
+    else
+        decor1:SetTint(1, 1, 1, 1)
+        decor2.centerbar:SetTint(R, G, B, 1)
+        decor3:Hide()
+        decor4:Hide()
+        if self.forced_actiondef == ACTIONS.MAPSCOUT_MAP_TOOFAR then
+            self.forced_actiondef = ACTIONS.MAPSCOUT_MAP
+        end
+    end
     local ndx, ndz = dx * r + px, dz * r + pz
     local x, y = self.minimap:WorldPosToMapPos(ndx, ndz, 0)
     decor1:SetPosition(x * w, y * h)
     decor1:SetScale(zoomscale, zoomscale, 1)
+    x, y = self.minimap:WorldPosToMapPos(tx, tz, 0)
+    decor2:SetPosition(x * w, y * h)
+    local cameraheading = TheCamera and (TheCamera:GetHeading() + 90) or 0
+    local dtz, dtx = lmb_pos.z - tz, lmb_pos.x - tx
+    local barlength = math.sqrt(dtx * dtx + dtz * dtz) * 6 * zoomscale
+    decor2:SetRotation(cameraheading - math.atan2(dtz, dtx) * RADIANS)
+    decor2:SetSize(barlength, 2.5)
+    decor2.centerbar:SetSize(barlength, 1)
+    x, y = self.minimap:WorldPosToMapPos(lmb_pos.x, lmb_pos.z, 0)
+    decor3:SetPosition(x * w, y * h)
+    decor3:SetScale(zoomscale, zoomscale, 1)
+    --x, y = self.minimap:WorldPosToMapPos(lmb_pos.x, lmb_pos.z, 0) -- Same x, y from above.
+    dtz, dtx = ndz - lmb_pos.z, ndx - lmb_pos.x
+    barlength = math.sqrt(dtx * dtx + dtz * dtz) * 6 * zoomscale
+    decor4:SetPosition(x * w, y * h)
+    decor4:SetRotation(cameraheading - math.atan2(dtz, dtx) * RADIANS)
+    decor4:SetSize(barlength, 2)
 end
 
 function MapScreen:ProcessLMBDecorations_MAPDELIVER_MAP(lmb, fresh)
@@ -669,7 +722,7 @@ function MapScreen:ProcessLMBDecorations(lmb, fresh)
         self.decorationdata.lmbents = {}
     end
 
-    if lmb.action == ACTIONS.MAPSCOUT_MAP then
+    if lmb.action == ACTIONS.MAPSCOUT_MAP or lmb.action == ACTIONS.MAPSCOUT_MAP_TOOFAR then
         self:ProcessLMBDecorations_MAPSCOUT_MAP(lmb, fresh)
     elseif lmb.action == ACTIONS.MAPDELIVER_MAP then
         self:ProcessLMBDecorations_MAPDELIVER_MAP(lmb, fresh)

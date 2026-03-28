@@ -20,12 +20,14 @@ local WxPowerOver =  Class(Widget, function(self, owner)
 end)
 
 function WxPowerOver:PowerOff()
+    TheFrontEnd:GetSound():PlaySound("WX_rework/chassis/deactivate_HUD")
 	self.fx:GetAnimState():PlayAnimation("wx_turnoff")
 	self:MoveToFront()
 	self:Show()
 end
 
 function WxPowerOver:Clear()
+    TheFrontEnd:GetSound():PlaySound("WX_rework/chassis/activate_HUD")
 	self:Hide()
 end
 

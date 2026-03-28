@@ -234,15 +234,26 @@ end
 function PlayerActionPicker:GetInventoryActions(useitem, right)
     local actions = {}
 
-	if not self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_TRADE) then
+	local drop = false
+	local stack_mod = self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)
+	if self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_TRADE) then
+		local inventoryitem = useitem.replica.inventoryitem
+		if not (inventoryitem and inventoryitem:IsLockedInSlot()) then
+			drop = true
+		elseif stack_mod then
+			local stackable = useitem.replica.stackable
+			drop = stackable ~= nil and stackable:IsStack()
+		end
+	end
+	if not drop then
 		useitem:CollectActions("INVENTORY", self.inst, actions, right)
 	else
-		actions = {ACTIONS.DROP}
+		table.insert(actions, ACTIONS.DROP)
 	end
 
     local sorted_acts = self:SortActionList(actions, nil, useitem)
 
-    if not self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK) then
+	if not stack_mod then
         for i, v in ipairs(sorted_acts) do
             if v.action == ACTIONS.DROP then
                 v.options.wholestack = true

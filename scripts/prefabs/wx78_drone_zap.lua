@@ -224,6 +224,9 @@ local function OnUnequip(inst, owner)
 end
 
 local function OnUse(inst, doer)
+    if not IsFlyingPermittedFromPoint(doer.Transform:GetWorldPosition()) then
+        return false, "BADPOSITION"
+    end
 	--inst.components.inventoryitem:ChangeImageName("wx78_drone_zap_remote_using")
 
 	if inst.drone == nil then

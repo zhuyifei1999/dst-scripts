@@ -438,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6075,8 +6079,8 @@ return{
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+            WET = "Made inside Ironfolk? Florp!",
+            GENERIC = "So hard!",
         },
     },
 

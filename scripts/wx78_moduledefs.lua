@@ -1270,10 +1270,14 @@ AddSpecialCreatureScanDataDefinition("canary", GetIsBirdFn, "radar", 4)
 ---------------------------------------------------------------
 
 local function screech_activate(inst, wx, isloading)
+    wx._screech_modules = (wx._screech_modules or 0) + 1
+
 
 end
 
 local function screech_deactivate(inst, wx)
+    wx._screech_modules = (wx._screech_modules or 1) - 1
+
 
 end
 
@@ -1292,34 +1296,75 @@ table.insert(module_definitions, SCREECH_MODULE_DATA)
 
 ---------------------------------------------------------------
 
-local function stacksize_activate(inst, wx, isloading)
+local function stacksize_addedtoownerfn(inst, wx, isloading)
     if wx.components.inventory then
         wx._stacksize_modules = (wx._stacksize_modules or 0) + 1
 
         if not isloading then
             local invslot = wx.components.inventory.maxslots - (wx._stacksize_modules - 1)
             local itemtomove = wx.components.inventory:GetItemInSlot(invslot)
+			if itemtomove and itemtomove.components.inventoryitem.islockedinslot then
+				--can't install slot, something locked in this slot already.
+				return
+			end
 
-            local container = SpawnPrefab("wx78_inventorycontainer")
-            wx.components.inventory:RemoveItemBySlot(invslot)
-            container.components.container:GiveItem(itemtomove)
+			local chargelevel = wx.components.upgrademoduleowner:GetChargeLevel()
+			if chargelevel < wx._stacksize_modules then
+				wx.components.inventory:DropItem(itemtomove, true, true)
+				itemtomove = nil
+			else
+				itemtomove = wx.components.inventory:RemoveItem(itemtomove, true)
+			end
 
-            wx.components.inventory:GiveItem(container, invslot)
+			local containerinst = SpawnPrefab("wx78_inventorycontainer")
+			wx.components.inventory:GiveItem(containerinst, invslot)
+			containerinst.components.inventoryitem.islockedinslot = true
+
+			if itemtomove then
+				containerinst.components.container:GiveItem(itemtomove)
+			end
         end
     end
 end
 
-local function stacksize_deactivate(inst, wx)
+local function stacksize_removedfromownerfn(inst, wx)
     if wx.components.inventory then
         wx._stacksize_modules = (wx._stacksize_modules or 1) - 1
 
         local invslot = wx.components.inventory.maxslots - wx._stacksize_modules
 
-        local container = wx.components.inventory:GetItemInSlot(invslot)
-        if container ~= nil then
-            wx.components.inventory:DropItem(container)
+		local containerinst = wx.components.inventory:GetItemInSlot(invslot)
+		if containerinst and containerinst.prefab == "wx78_inventorycontainer" then
+			containerinst.components.inventoryitem.islockedinslot = false
+			wx.components.inventory:DropItem(containerinst)
         end
     end
+end
+
+local function stacksize_activate(inst, wx, isloading)
+	if wx.components.inventory then
+		wx._stacksize_active_modules = (wx._stacksize_active_modules or 0) + 1
+
+		local invslot = wx.components.inventory.maxslots - (wx._stacksize_active_modules - 1)
+
+		local containerinst = wx.components.inventory:GetItemInSlot(invslot)
+		if containerinst and containerinst.prefab == "wx78_inventorycontainer" then
+			containerinst:SetPowered(true)
+		end
+	end
+end
+
+local function stacksize_deactivate(inst, wx)
+	if wx.components.inventory then
+		wx._stacksize_active_modules = (wx._stacksize_active_modules or 1) - 1
+
+		local invslot = wx.components.inventory.maxslots - wx._stacksize_active_modules
+
+		local containerinst = wx.components.inventory:GetItemInSlot(invslot)
+		if containerinst and containerinst.prefab == "wx78_inventorycontainer" then
+			containerinst:SetPowered(false)
+		end
+	end
 end
 
 local STACKSIZE_MODULE_DATA =
@@ -1327,6 +1372,8 @@ local STACKSIZE_MODULE_DATA =
     name = "stacksize",
     type = CIRCUIT_BARS.BETA,
     slots = 1,
+	addedtoownerfn = stacksize_addedtoownerfn,
+	removedfromownerfn = stacksize_removedfromownerfn,
     activatefn = stacksize_activate,
     deactivatefn = stacksize_deactivate,
 
@@ -1462,11 +1509,27 @@ local LESSMAXSANITY2_MODULE_DATA =
 ---------------------------------------------------------------
 
 local function digestion_activate(inst, wx, isloading)
-
+    wx._digestion_modules = (wx._digestion_modules or 0) + 1
+    if wx.components.eater ~= nil then
+        wx.components.eater:SetSpoiledProcessor(true)
+        if inst._oneaten == nil then
+            inst._oneaten = function(wx)
+                -- wx.sg:GoToState("wx_bake")
+            end
+        end
+        inst:ListenForEvent("oneat", inst._oneaten, wx)
+    end
 end
 
 local function digestion_deactivate(inst, wx)
-
+    wx._digestion_modules = (wx._digestion_modules or 1) - 1
+    if wx.components.eater ~= nil then
+        if wx._digestion_modules == 0 then
+            wx.components.eater:SetSpoiledProcessor(false)
+        end
+        inst:RemoveEventCallback("oneat", inst._oneaten, wx)
+        inst._oneaten = nil
+    end
 end
 
 local DIGESTION_MODULE_DATA =
@@ -1479,9 +1542,9 @@ local DIGESTION_MODULE_DATA =
 
     extra_prefabs = { "wx78_foodbrick" },
 }
--- table.insert(module_definitions, DIGESTION_MODULE_DATA)
+table.insert(module_definitions, DIGESTION_MODULE_DATA)
 
--- AddCreatureScanDataDefinition("catcoon", "digestion", 2)
+AddCreatureScanDataDefinition("catcoon", "digestion", 2)
 
 ---------------------------------------------------------------
 

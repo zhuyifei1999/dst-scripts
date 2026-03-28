@@ -600,8 +600,11 @@ local function GetWerenessDrainRate(inst)
     end
 end
 
-local function CanShaveTest(inst)
-    return false, "REFUSE"
+local function CanShaveTest(inst, doer)
+    if inst == doer then
+        return false, "REFUSE"
+    end
+    return false
 end
 
 local function OnResetBeard(inst)

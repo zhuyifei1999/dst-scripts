@@ -438,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6051,12 +6055,12 @@ return{
 
 		-- Meta 6
 
-		--WX78_DRONE_SCOUT = "TODO",
-		--WX78_DRONE_DELIVERY = "TODO",
-		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_SCOUT = "We are indebted to this intrepid little scout.",
+		WX78_DRONE_DELIVERY = "The automaton deomonstrates an unusual attachment to its belongings.",
+		WX78_DRONE_ZAP = "It permits the automaton to engage its foes from a distance.",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			--GENERIC = "TODO",
+			GENERIC = "Through signal transmission, the automaton may maneuver the aerial device and discharge electrical shocks.",
 --fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
 		},
 
@@ -6070,13 +6074,13 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "Once a repository whose capacity challenged the very laws of physics.", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+            WET = "The automaton has reconstituted spoiled food matter into a compact edible brick.",
+            GENERIC = "The nutrient brick is inedible in its desicated form.",
         },
     },
 

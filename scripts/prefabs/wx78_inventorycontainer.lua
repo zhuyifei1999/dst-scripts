@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/wx78_inventorycontainer.zip"),
     Asset("INV_IMAGE", "wx78_inventorycontainer_open"),
+	Asset("INV_IMAGE", "wx78_inventorycontainer_powered"),
     Asset("ANIM", "anim/ui_wx78_inventorycontainer_1x1.zip"),
 }
 
@@ -21,8 +22,9 @@ local function ShouldCollapse(inst)
     return false
 end
 
-local function OnPickup(inst)
+local function OnPutInInventory(inst)
     inst:RemoveTag("no_container_store")
+	inst.components.inventoryitem.islockedinslot = true
 end
 
 local function OnDropped(inst)
@@ -64,20 +66,71 @@ local function OnPicked(inst, picker, loot)
 	end
 end
 
-local function OnOpen(inst)
-    local skin_name = inst:GetSkinName() or "wx78_inventorycontainer"
-    inst.components.inventoryitem:ChangeImageName(skin_name .. "_open")
+local function RefreshIcon(inst)
+	local skin_name = inst:GetSkinName()
+	inst.components.inventoryitem:ChangeImageName(
+		(inst.components.container:IsOpen() and ((skin_name or "wx78_inventorycontainer").."_open")) or
+		(inst.components.container.canbeopened and ((skin_name or "wx78_inventorycontainer").."_powered")) or
+		skin_name
+	)
 end
 
-local function OnClose(inst)
-    local skin_name = inst:GetSkinName()
-    inst.components.inventoryitem:ChangeImageName(skin_name)
+local function OnOpen(inst)--, data)
+	RefreshIcon(inst)
+end
+
+local function OnClose(inst)--, data)
+	RefreshIcon(inst)
+end
+
+local function SetPowered(inst, powered)
+	if inst.components.container.canbeopened ~= powered then
+		inst.components.container.canbeopened = powered
+		if not powered and inst.components.container:IsOpen() then
+			inst.components.container:Close()
+		else
+			RefreshIcon(inst)
+		end
+	end
+end
+
+local function ValidateOnLoad(inst)
+	local owner = inst.components.inventoryitem.owner
+	if owner == nil then
+		return --valid!
+	elseif owner.components.inventory == nil then
+		if owner.components.container then
+			owner.components.container:DropItem(inst)
+		end
+		return --should not get here!
+	end
+
+	local maxcount = owner._stacksize_modules or 0
+	local minslot = owner.components.inventory:GetNumSlots() - (maxcount - 1)
+	local slot = owner.components.inventory:GetItemSlot(inst)
+	if slot and slot >= minslot then
+		return --valid!
+	end
+
+	--invalid
+	owner.components.inventory:DropItem(inst, true, true)
+end
+
+local function OnLoad(inst)--, data, ents)
+	inst:DoTaskInTime(0, ValidateOnLoad)
+end
+
+local function GetStatus(inst)--, viewer)
+	return inst.components.inventoryitem:IsHeld()
+		and (inst.components.container.canbeopened and "HELD" or "NOPOWER")
+		or nil
 end
 
 local function DisplayNameFn(inst)
-    return (inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:IsHeld()
-        and STRINGS.NAMES.WX78_INVENTORYCONTAINER_HELD)
-        or STRINGS.NAMES.WX78_INVENTORYCONTAINER
+	local inventoryitem = inst.replica.inventoryitem
+	return inventoryitem and inventoryitem:IsHeld()
+		and STRINGS.NAMES.WX78_INVENTORYCONTAINER_HELD
+		or STRINGS.NAMES.WX78_INVENTORYCONTAINER
 end
 
 local FLOATER_SWAP_DATA = { bank = "wx78_inventorycontainer", anim = "dropped_idle" }
@@ -96,7 +149,6 @@ local function fn()
     MakeInventoryPhysics(inst)
     MakeInventoryFloatable(inst, "small", 0.35, 1.15, nil, nil, FLOATER_SWAP_DATA)
 
-    inst:AddTag("portablestorage")
     inst:AddTag("nosteal")
     inst:AddTag("pickable_rummage_str")
     inst:AddTag("no_container_store")
@@ -110,21 +162,20 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetOnPickupFn(OnPickup)
+	inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem.canbepickedup = false
-    -- inst.components.inventoryitem.cangoincontainer = false
-    --inst.components.inventoryitem:SetLocked(true) -- TODO FIXME: for Vito to do.
+	inst.components.inventoryitem.canonlygoinpocket = true
 
     inst:AddComponent("container")
     inst.components.container:EnableInfiniteStackSize(true)
     inst.components.container:WidgetSetup("wx78_inventorycontainer")
     inst.components.container.onopenfn = OnOpen
     inst.components.container.onclosefn = OnClose
-    inst.components.container.skipclosesnd = true
-    inst.components.container.skipopensnd = true
+	inst.components.container.canbeopened = false
 
 	inst:AddComponent("pickable")
 	inst.components.pickable.onpickedfn = OnPicked
@@ -134,6 +185,9 @@ local function fn()
     -- inst.components.preserver:SetPerishRateMultiplier(TUNING.BEARGERFUR_SACK_PRESERVER_RATE)
 
     MakeHauntableLaunchAndDropFirstItem(inst)
+
+	inst.SetPowered = SetPowered
+	inst.OnLoad = OnLoad
 
     return inst
 end

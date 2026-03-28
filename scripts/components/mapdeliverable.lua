@@ -136,7 +136,7 @@ function MapDeliverable:OnUpdate(dt)
 		self.ondeliveryprogressfn(self.inst, self.t, self.len, self.origin, self.dest)
 	end
 
-	if self.t >= self.len then
+	if self.t and self.t >= self.len then
 		local dest = self.dest
 		self:Reset_Internal()
 		self.inst:StopUpdatingComponent(self)
@@ -156,7 +156,7 @@ function MapDeliverable:Stop()
 		if self.onstopdeliveryfn then
 			self.onstopdeliveryfn(self.inst)
 		end
-		self:_dbg_print(string.format("\n\tItem: <%s>\n\tStatus: \"STOPPED", tostring(self.inst)))
+		self:_dbg_print(string.format("\n\tItem: <%s>\n\tStatus: \"STOPPED\"", tostring(self.inst)))
 	end
 end
 

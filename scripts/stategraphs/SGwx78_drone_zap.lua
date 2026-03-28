@@ -10,7 +10,25 @@ local function CanMoveInDir2(inst, costheta, sintheta)
 	local x1 = x + 10 * costheta
 	local z1 = z - 10 * sintheta
 
-	return math2d.LineIntersectsCircle(x, z, x1, z1, cx, cz, inst.range)
+	if not math2d.LineIntersectsCircle(x, z, x1, z1, cx, cz, inst.range) then
+		return false
+	end
+
+	x1 = x + 1.5 * costheta
+	z1 = z - 1.5 * sintheta
+	if not IsFlyingPermittedFromPointToPoint(cx, 0, cz, x1, 0, z1) then
+		if IsFlyingPermittedFromPointToPoint(cx, 0, cz, x, 0, z) then
+			return false --going from valid to invalid, definitely not allowed
+		end
+		--we're in invalid territory => extra leeway for getting back into valid territory
+		x1 = x + 3 * costheta
+		z1 = z - 3 * costheta
+		if not IsFlyingPermittedFromPointToPoint(cx, 0, cz, x1, 0, z1) then
+			return false
+		end
+	end
+
+	return true
 end
 
 local function CanMoveInDir(inst, dir)

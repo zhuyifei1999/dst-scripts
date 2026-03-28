@@ -1347,7 +1347,13 @@ function PlayerController:OnRemoteControllerAttackButton(target, isreleased, nof
 end
 
 function PlayerController:DoControllerDropItemFromInvTile(item, single)
-    self.inst.replica.inventory:DropItemFromInvTile(item, single)
+	if item and item.replica.inventoryitem and
+		(	not item.replica.inventoryitem:IsLockedInSlot() or
+			(single and inventoryitem.replica.stackable and inventoryitem.replica.stackable:IsStack())
+		)
+	then
+		self.inst.replica.inventory:DropItemFromInvTile(item, single)
+	end
 end
 
 function PlayerController:DoControllerInspectItemFromInvTile(item)

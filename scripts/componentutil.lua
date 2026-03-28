@@ -1118,6 +1118,68 @@ function GetActionPassableTestFn(inst)
 	return GetActionPassableTestFnAt(inst.Transform:GetWorldPosition())
 end
 
+-------
+-- Flying checks for restrictions.
+
+function IsFlyingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
+    local map = TheWorld.Map
+
+    if map:IsWagPunkArenaBarrierUp() then
+        if map:IsPointInWagPunkArena(fx, fy, fz) then
+            return map:IsPointInWagPunkArena(tx, ty, tz)
+        end
+    end
+
+    if map:IsPointInOrAdjacentToAnyVault(fx, fy, fz) or map:IsPointInOrAdjacentToAnyVault(tx, ty, tz) then
+        return false
+    end
+
+    return true
+end
+
+function IsFlyingPermittedFromPoint(fx, fy, fz)
+    local map = TheWorld.Map
+
+    if map:IsPointInOrAdjacentToAnyVault(fx, fy, fz) then
+        return false
+    end
+
+    return true
+end
+
+-------
+-- Teleporting checks for restrictions.
+
+function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
+    local map = TheWorld.Map
+
+    if map:IsWagPunkArenaBarrierUp() then
+        if map:IsPointInWagPunkArena(fx, fy, fz) ~= map:IsPointInWagPunkArena(tx, ty, tz) then
+            return false
+        end
+    end
+
+    if map:IsPointInAnyVault(tx, ty, tz) then
+        return false
+    end
+
+    return true
+end
+
+function IsTeleportLinkingPermittedFromPoint(fx, fy, fz)
+    local map = TheWorld.Map
+
+    if map:IsPointInWagPunkArenaAndBarrierIsUp(fx, fy, fz) then
+        return false
+    end
+
+    if map:IsPointInAnyVault(fx, fy, fz) then
+        return false
+    end
+
+    return true
+end
+
 --------------------------------------------------------------------------
 
 --Mutation stuff

@@ -646,19 +646,19 @@ function UpgradeModulesDisplay_Inspecting:OnModulesDirty(modules_data, init)
         for i, module_index in ipairs(modules) do
             local oldmodule_index = oldmodules ~= nil and oldmodules[i] or 0
 
-            -- Unplugged a circuit in the middle
-            if module_index ~= 0 and oldmodule_index ~= 0 and module_index ~= oldmodule_index then
-                self:PopModuleAtIndex(bartype, i)
-                PlayFirstSound("WX_rework/tube/HUD_out")
-                break -- We can stop here for the module bar.
             -- Plugged a circuit
-            elseif module_index ~= 0 and i == self.chip_poolindexes[bartype] then
+            if module_index ~= 0 and i == self.chip_poolindexes[bartype] then
                 self:OnModuleAdded(bartype, module_index, init)
                 PlayFirstSound("WX_rework/tube/HUD_in")
             -- Popped the top module
             elseif module_index == 0 and i == (self.chip_poolindexes[bartype] - 1) then
                 self:PopOneModule(bartype)
                 PlayFirstSound("WX_rework/tube/HUD_out")
+            -- Unplugged a circuit in the middle
+            elseif module_index ~= 0 and oldmodule_index ~= 0 and module_index ~= oldmodule_index then
+                self:PopModuleAtIndex(bartype, i)
+                PlayFirstSound("WX_rework/tube/HUD_out")
+                break -- We can stop here for the module bar.
             end
         end
     end

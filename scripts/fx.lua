@@ -2649,7 +2649,7 @@ local fx =
         end,
     },
 
-    {
+	{	--Deprecated
         name = "wx78_heat_steam",
         bank = "wx_fx",
         build = "wx_fx",

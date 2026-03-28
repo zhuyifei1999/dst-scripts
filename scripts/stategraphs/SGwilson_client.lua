@@ -837,7 +837,6 @@ local actionhandlers =
     ActionHandler(ACTIONS.LIFT_GYM_SUCCEED_PERFECT, "mighty_gym_success_perfect"),
     ActionHandler(ACTIONS.LIFT_GYM_SUCCEED, "mighty_gym_success"),
 
-    ActionHandler(ACTIONS.APPLYMODULE, "applyupgrademodule"),
     ActionHandler(ACTIONS.REMOVEMODULES, "removeupgrademodules"),
     ActionHandler(ACTIONS.CHARGE_FROM, function(inst, action)
         return action.invobject and "catchonfire" or "doshortaction"
@@ -918,6 +917,12 @@ local actionhandlers =
 
     -- Meta 6
 
+	ActionHandler(ACTIONS.APPLYMODULE, function(inst)
+		if inst:HasTag("inspectingupgrademodules") then
+			return "plug_module"
+		end
+		return "start_plugging_module"
+	end),
 	ActionHandler(ACTIONS.STARTREMOVINGMODULE, "start_removing_module"),
 	ActionHandler(ACTIONS.STOPREMOVINGMODULE, "stop_removing_module"),
 	ActionHandler(ACTIONS.STARTMAPDELIVER, "startcontinuousaction"),
@@ -6554,8 +6559,10 @@ local states =
 
 		events =
 		{
-			EventHandler("locomote", function(inst)
-				inst.sg:GoToState("stop_using_tophat", true)
+			EventHandler("locomote", function(inst, data)
+				if data and data.dir then
+					inst.sg:GoToState("stop_using_tophat", true)
+				end
 				return true
 			end),
 		},
@@ -7696,46 +7703,173 @@ local states =
     -- Meta 6
 
 	State{
-		name = "start_removing_module",
+		name = "start_plugging_module",
 		tags = { "doing", "busy" },
-		server_states = { "start_removing_module", "removing_module" },
+		server_states = { "start_plugging_module", "plug_module", "plugging_module", "removing_module" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("wx_upgrade_pre")
+			inst.AnimState:PushAnimation("wx_upgrade_loop")
 
-			local buffaction = inst:GetBufferedAction()
-
-            inst.AnimState:PlayAnimation("useitem_pre")
-            inst.AnimState:PushAnimation("useitem_lag", false)
-
-			if buffaction ~= nil then
-				inst:PerformPreviewBufferedAction()
-			end
+			inst:PerformPreviewBufferedAction()
 			inst.sg:SetTimeout(TIMEOUT)
 		end,
-
-		timeline =
-		{
-            -- useitem_pre len + extra delay
-			FrameEvent(8 + 10, function(inst)
-				inst.sg:RemoveStateTag("busy")
-			end),
-		},
 
 		onupdate = function(inst)
 			if inst.sg:ServerStateMatches() then
 				if inst.entity:FlattenMovementPrediction() then
-					inst.sg:GoToState("removing_module")
+					local inventory = inst.replica.inventory
+					local activeitem = inventory and inventory:GetActiveItem()
+					inst.sg:GoToState(activeitem and activeitem:HasActionComponent("upgrademoduleremover") and "removing_module" or "plugging_module")
 				end
 			elseif inst.bufferedaction == nil then
-				inst.AnimState:PlayAnimation("useitem_pst", false)
+				inst.AnimState:PlayAnimation("wx_upgrade_pst")
 				inst.sg:GoToState("idle", true)
 			end
 		end,
 
 		ontimeout = function(inst)
 			inst:ClearBufferedAction()
-			inst.AnimState:PlayAnimation("useitem_pst", false)
+			inst.AnimState:PlayAnimation("wx_upgrade_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+	},
+
+	State{
+		name = "plugging_module",
+		tags = { "doing", "overridelocomote" },
+
+		onenter = function(inst)
+			inst.entity:SetIsPredictingMovement(false)
+			ClearCachedServerState(inst)
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.bufferedaction == nil and not inst:HasTag("inspectingupgrademodules") then
+				inst.sg:GoToState("idle", "noanim")
+			end
+		end,
+
+		ontimeout = function(inst)
+			if inst.bufferedaction and inst.bufferedaction.ispreviewing then
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		events =
+		{
+			EventHandler("newactiveitem", function(inst, data)
+				if data and data.item and data.item:HasActionComponent("upgrademoduleremover") then
+					inst.sg:GoToState("removing_module")
+				end
+			end),
+			EventHandler("locomote", function(inst, data)
+				if data and data.dir then
+					inst.sg:GoToState("stop_plugging_module")
+				end
+				return true
+			end),
+		},
+
+		onexit = function(inst)
+			inst.entity:SetIsPredictingMovement(true)
+		end,
+	},
+
+	State{
+		name = "plug_module",
+
+		onenter = function(inst)
+			--assert(inst:HasTag("inspectingupgrademodules"))
+			inst:PerformPreviewBufferedAction()
+			local inventory = inst.replica.inventory
+			local activeitem = inventory and inventory:GetActiveItem()
+			inst.sg:GoToState(activeitem and activeitem:HasActionComponent("upgrademoduleremover") and "removing_module" or "plugging_module")
+		end,
+	},
+
+	State{
+		name = "stop_plugging_module",
+		tags = { "idle", "overridelocomote" },
+
+		onenter = function(inst)
+			inst.AnimState:PlayAnimation("wx_upgrade_pst")
+			inst.components.playercontroller:RemotePredictOverrideLocomote()
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:HasStateTag("overridelocomote") then
+				inst.components.playercontroller:RemotePredictOverrideLocomote()
+			elseif not inst.components.locomotor:HasDestination() then
+				inst.sg:GoToState("idle", "noanim")
+				return
+			end
+			if inst.sg.statemem.stopped then
+				if not inst.AnimState:IsCurrentAnimation("wx_upgrade_pst") then
+					inst.sg:GoToState("idle", "noanim")
+					return
+				end
+			elseif not inst:HasTag("inspectingupgrademodules") then
+				inst.sg.statemem.stopped = true
+				inst.entity:SetIsPredictingMovement(false)
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(10, function(inst)
+				inst.sg:AddStateTag("canrotate")
+			end),
+			FrameEvent(11, function(inst)
+				inst.sg:RemoveStateTag("overridelocomote")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("locomote", function(inst)
+				return inst.sg:HasStateTag("overridelocomote")
+			end),
+		},
+
+		onexit = function(inst)
+			inst.entity:SetIsPredictingMovement(true)
+		end,
+	},
+
+	State{
+		name = "start_removing_module",
+		tags = { "doing", "busy" },
+		server_states = { "start_removing_module", "removing_module", "plugging_module" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("useitem_pre")
+			inst.AnimState:PushAnimation("useitem_lag", false)
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					local inventory = inst.replica.inventory
+					local activeitem = inventory and inventory:GetActiveItem()
+					inst.sg:GoToState(activeitem and activeitem:HasActionComponent("upgrademoduleremover") and "removing_module" or "plugging_module")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.AnimState:PlayAnimation("useitem_pst")
+				inst.sg:GoToState("idle", true)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("useitem_pst")
 			inst.sg:GoToState("idle", true)
 		end,
 	},
@@ -7745,9 +7879,6 @@ local states =
 		tags = { "doing", "overridelocomote" },
 
 		onenter = function(inst)
-            local buffaction = inst:GetBufferedAction()
-            local moduleremover = buffaction ~= nil and buffaction.invobject or nil
-            inst.sg.statemem.moduleremover = moduleremover
 			inst.entity:SetIsPredictingMovement(false)
 			ClearCachedServerState(inst)
 			inst.sg:SetTimeout(TIMEOUT)
@@ -7768,14 +7899,16 @@ local states =
 
 		events =
 		{
-			EventHandler("locomote", function(inst)
-				inst.sg:GoToState("stop_removing_module", true)
-				return true
-			end),
-            EventHandler("newactiveitem", function(inst, data)
-                if data ~= nil and data.item ~= inst.sg.statemem.moduleremover then
-				    inst.sg:GoToState("stop_removing_module")
+			EventHandler("newactiveitem", function(inst, data)
+				if not (data and data.item and data.item:HasActionComponent("upgrademoduleremover")) then
+					inst.sg:GoToState("plugging_module")
 				end
+			end),
+			EventHandler("locomote", function(inst, data)
+				if data and data.dir then
+					inst.sg:GoToState("stop_removing_module", true)
+				end
+				return true
 			end),
 		},
 
@@ -7789,7 +7922,7 @@ local states =
 		tags = { "idle", "overridelocomote" },
 
 		onenter = function(inst, locomoting)
-            inst.AnimState:PlayAnimation("wx_downgrade_pst", false)
+			inst.AnimState:PlayAnimation("wx_downgrade_pst")
             inst.AnimState:PushAnimation("useitem_pst", false)
 			if locomoting then
 				inst.sg.statemem.overridelocomote = true
@@ -7822,10 +7955,10 @@ local states =
 
 		timeline =
 		{
-			FrameEvent(19, function(inst)
+			FrameEvent(10, function(inst)
 				inst.sg:AddStateTag("canrotate")
 			end),
-			FrameEvent(20, function(inst)
+			FrameEvent(11, function(inst)
 				inst.sg:RemoveStateTag("overridelocomote")
 			end),
 		},

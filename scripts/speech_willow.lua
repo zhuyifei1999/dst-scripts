@@ -438,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6060,7 +6064,7 @@ return{
 
 		WX78_DRONE_SCOUT = "Get lost, Scott!",
 		WX78_DRONE_DELIVERY = "WX gets free delivery? No fair!",
-		WX78_DRONE_ZAP = "I got my eye on you, zappy.",
+		WX78_DRONE_ZAP = "I got my eye on you, Zappy.",
 		WX78_DRONE_ZAP_REMOTE =
 		{
 			GENERIC = "I don't trust WX with this thing.",
@@ -6077,13 +6081,13 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "What do I care about WX's old stuff?", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+            WET = "Gee thanks, WX.",
+            GENERIC = "It would be like trying to eat an actual brick.",
         },
     },
 

@@ -470,6 +470,7 @@ STRINGS =
         {
             GENERIC = "Eat",
             DRINK = "Drink",
+            PROCESS = "Process", -- For wx redigestion circuit.
         },
         BAIT = "Bait",
         COOK = "Cook",
@@ -1161,6 +1162,7 @@ STRINGS =
 		MAPSCOUTSELECT_MAP = "Explore",
 		STARTMAPDELIVER = "Deliver",
 		MAPDELIVER_MAP = "Send",
+        MAPSCOUT_MAP_TOOFAR = "Out of Range",
         SWAPBODIES_MAP = "Transfer Consciousness",
     },
 
@@ -17693,9 +17695,9 @@ STRINGS.SKILLTREE = {
 
         -- ALLEGIANCE
         WX78_ALLEGIANCE_LUNAR_TITLE = "Lunar Vessel",
-        WX78_ALLEGIANCE_LUNAR_DESC = "The Cryptic Founder is going to provide something later.", -- TODO
+        WX78_ALLEGIANCE_LUNAR_DESC = "Coming soon.", -- TODO
         WX78_ALLEGIANCE_SHADOW_TITLE = "Shadow Servitor",
-        WX78_ALLEGIANCE_SHADOW_DESC = "The Queen will be providing something later.", -- TODO
+        WX78_ALLEGIANCE_SHADOW_DESC = "Coming soon.", -- TODO
     },
 }
 

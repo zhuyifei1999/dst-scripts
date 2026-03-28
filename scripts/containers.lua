@@ -1801,14 +1801,14 @@ params.alterguardianhat =
         slotbg = {},
         animbank = "ui_alterguardianhat_1x6",
         animbuild = "ui_alterguardianhat_1x6",
-        pos = Vector3(106, 150, 0),
+		pos = Vector3(106, 10, 0),
     },
     acceptsstacks = false,
     type = "hand_inv",
     excludefromcrafting = true,
 }
 
-local AGHAT_SLOTSTART = 95
+local AGHAT_SLOTSTART = 72 * 5 - 22
 local AGHAT_SLOTDIFF = 72
 local SLOT_BG = { image = "spore_slot.tex", atlas = "images/hud2.xml" }
 for i = 0, 4 do
@@ -2198,6 +2198,10 @@ params.wx78_inventorycontainer =
         animbuild = "ui_wx78_inventorycontainer_1x1",
         scale = 0.9,
         -- pos = Vector3(0, 60, 0),
+		--Override the widget sound, which is heard only by the client
+		opensound = "balatro/balatro_cabinet/cards_flip_HUD",
+		closesound = "balatro/balatro_cabinet/cards_flip_HUD",
+		--
     },
     type = "inv",
     -- excludefromcrafting = true,

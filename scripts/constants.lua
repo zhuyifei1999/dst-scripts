@@ -986,11 +986,12 @@ SPECIAL_EVENT_MUSIC =
     },  
     ]]  
 
+	--[[ Wx BETA has this event turned on, but is using the meta 6 banner and music
     [SPECIAL_EVENTS.YOTH] =
     {
-        bank = "music_frontend_yoth2026.fsb",
-        sound = "dontstarve/music/music_FE_yoth2026",
-    },
+		bank = "music_frontend_yoth2026.fsb",
+		sound = "dontstarve/music/music_FE_yoth2026",
+	},]]
 }
 
 FESTIVAL_EVENT_MUSIC =
@@ -1009,6 +1010,42 @@ FESTIVAL_EVENT_MUSIC =
     },
 }
 
+DEFAULT_FE_MUSIC =
+{
+	bank = "music_frontend_WX2.fsb",
+	--bank = "music_frontend.fsb",
+	sound = "dontstarve/music/music_FE_WX2",
+	--sound = "dontstarve/music/music_FE_cavepuzzle",
+	--sound = "dontstarve/music/music_FE_wagboss",
+	--sound = "dontstarve/music/music_FE_balatro",
+	--sound = "dontstarve/music/music_FE_rifts4",
+	--sound = "dontstarve/music/music_FE_winonawurt",
+	--sound = "dontstarve/music/music_FE_junkyardhog",
+	--sound = "dontstarve/music/music_FE_riftsthree",
+	--sound = "dontstarve/music/music_FE_survivorsguideone",
+	--sound = "dontstarve/music/music_FE_shadowrift",
+	--sound = "dontstarve/music/music_FE_lunarrift",
+	--sound = "dontstarve/music/music_FE_daywalker",
+	--sound = "dontstarve/music/music_FE_maxwell",
+	--sound = "dontstarve/music/music_FE_charliestage",
+	--sound = "dontstarve/music/music_FE_wickerbottom",
+	--sound = "dontstarve/music/music_FE",
+	--sound = "dontstarve/music/music_FE_pirates",
+	--sound = "dontstarve/music/music_FE_WX",
+	--sound = "dontstarve/music/music__moonstorm_FE",
+	--sound = "dontstarve/music/musicFE_webber",
+	--sound = "dontstarve/music/music_FE_wanda",
+	--sound = "terraria1/common/music_main_eot",
+	--sound = "dontstarve/music/music_FE",
+}
+
+---------------------------------------------------------
+--If changing this logic, remember to update preloadsounds.lua
+FE_MUSIC = (
+	FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] or
+	SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] or
+	DEFAULT_FE_MUSIC
+).sound
 
 ---------------------------------------------------------
 local SPECIAL_EVENT_SKIN_TAGS =
@@ -1041,7 +1078,6 @@ local FESTIVAL_EVENT_INFO =
         LATEST_SEASON = 1,
     },
 }
-
 
 ---------------------------------------------------------
 -- Refers to holiday-specific events.
@@ -1166,37 +1202,6 @@ function Client_IsTournamentActive() -- ticket_name is optional
 end
 
 ---------------------------------------------------------
---If changing this logic, remember to update preloadsounds.lua
---default:
---  bank = "music_frontend.fsb"
---  sound = "dontstarve/music/music_FE"
-FE_MUSIC =
-    (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
-    (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE_cavepuzzle"
-    --"dontstarve/music/music_FE_wagboss"
-    --"dontstarve/music/music_FE_balatro"
-    --"dontstarve/music/music_FE_rifts4"
-    --"dontstarve/music/music_FE_winonawurt"
-    --"dontstarve/music/music_FE_junkyardhog"
-    --"dontstarve/music/music_FE_riftsthree"
-    --"dontstarve/music/music_FE_survivorsguideone"
-    --"dontstarve/music/music_FE_shadowrift"
-    --"dontstarve/music/music_FE_lunarrift"
-    --"dontstarve/music/music_FE_daywalker"
-    --"dontstarve/music/music_FE_maxwell"
-    --"dontstarve/music/music_FE_charliestage"
-    --"dontstarve/music/music_FE_wickerbottom"
-    --"dontstarve/music/music_FE"
-    --"dontstarve/music/music_FE_pirates"
-    --"dontstarve/music/music_FE_WX"
-    --"dontstarve/music/music__moonstorm_FE"
-    --"dontstarve/music/musicFE_webber"
-    --"dontstarve/music/music_FE_wanda"
-    --"terraria1/common/music_main_eot"
-
-
----------------------------------------------------------
 -- Pickup sounds for in game events.
 PICKUPSOUNDS = {
     ["wood"] = "aqol/new_test/wood",
@@ -1221,7 +1226,6 @@ NUM_WINTERFOOD = 9
 
 SANITY_MODE_INSANITY = 0
 SANITY_MODE_LUNACY = 1
-
 
 TECH =
 {

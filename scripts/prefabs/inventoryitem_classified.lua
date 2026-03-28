@@ -172,6 +172,7 @@ local function fn()
     inst.walkspeedmult = net_byte(inst.GUID, "equippable.walkspeedmult")
     inst.equiprestrictedtag = net_hash(inst.GUID, "equippable.restrictedtag")
     inst.moisture = net_float(inst.GUID, "inventoryitemmoisture.moisture")
+	inst.islockedinslot = net_bool(inst.GUID, "inventoryitem.islockedinslot")
 
     inst.image:set(0)
     inst.atlas:set(0)
@@ -191,6 +192,7 @@ local function fn()
     inst.walkspeedmult:set(1)
     inst.equiprestrictedtag:set(0)
     inst.moisture:set(0)
+	inst.islockedinslot:set(false)
 
     inst.entity:SetPristine()
 

@@ -256,6 +256,20 @@ local function _auratest(inst, target, can_initiate)
 		return false
 	end
 
+	if inst.components.combat:TargetIs(target) then
+		return true
+	end
+
+	if target.components.combat then
+		if target.components.combat:TargetIs(inst) then
+			return true
+		end
+		local leader = inst.components.follower and inst.components.follower:GetLeader()
+		if target.components.combat:TargetIs(leader) then
+			return true
+		end
+	end
+
 	return can_initiate or target:HasAnyTag("monster", "prey")
 end
 

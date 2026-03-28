@@ -203,10 +203,30 @@ function Inventory:GetNumSlots()
 end
 
 function Inventory:CanTakeItemInSlot(item, slot)
-    return item ~= nil
-        and item.replica.inventoryitem ~= nil
-        and (self:IgnoresCanGoInContainer() or item.replica.inventoryitem:CanGoInContainer())
-        and not (GetGameModeProperty("non_item_equips") and item.replica.equippable ~= nil)
+	local inventoryitem = item and item.replica.inventoryitem
+	if inventoryitem == nil then
+		return false
+	elseif not (self:IgnoresCanGoInContainer() or inventoryitem:CanGoInContainer()) then
+		return false
+	elseif GetGameModeProperty("non_item_equips") and item.replica.equippable then
+		return false
+	elseif slot then
+		if slot < 1 or slot > self:GetNumSlots() then
+			return false
+		end
+		local existingitem = self:GetItemInSlot(slot)
+		local existing_inventoryitem = existingitem and existingitem.replica.inventoryitem
+		if existing_inventoryitem and existing_inventoryitem:IsLockedInSlot() then
+			local existing_stackable = existingitem.replica.stackable
+			if not (existing_stackable and
+					not existing_stackable:IsFull() and
+					existing_stackable:CanStackWith(item))
+			then
+				return false
+			end
+		end
+	end
+	return true
 end
 
 function Inventory:AcceptsStacks()

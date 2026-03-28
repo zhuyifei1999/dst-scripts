@@ -438,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+            BADPOSITION = "ERROR: LOCATION INVALID",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6070,13 +6074,14 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "BOUNDLESS SPACE", -- Held, and working as a container
+			NOPOWER = "ACCESS DENIED. INSUFFICIENT POWER", -- Held but can't open due to wx charge level too low
             GENERIC = "RECOVERY MODE", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten. Omar says wait.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten. Omar says wait.
+            WET = "READY FOR REDIGESTION",
+            GENERIC = "MISSING INPUT",
         },
     },
 

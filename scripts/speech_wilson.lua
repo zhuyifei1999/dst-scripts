@@ -448,6 +448,10 @@ return {
         {
             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+            BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6061,12 +6065,12 @@ return {
 
 		-- Meta 6
 
-		--WX78_DRONE_SCOUT = "TODO",
-		--WX78_DRONE_DELIVERY = "TODO",
+		WX78_DRONE_SCOUT = "So far, so good.",
+		WX78_DRONE_DELIVERY = "A freight it will get lost!",
 		WX78_DRONE_ZAP = "It uses current technology.",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			GENERIC = "It remotely controls, so it's a.... Detached Telecommand Apparatus!",
+			GENERIC = "It controls remotely? It's a.... Detached Telecommand Apparatus!",
 			CANUSE = "only_used_by_wx78",
 		},
 
@@ -6080,13 +6084,14 @@ return {
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
+			NOPOWER = "only_used_by_wx78", -- Held but can't open due to wx charge level too low
             GENERIC = "Finite like that.", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+            WET = "It's a moist try!",
+            GENERIC = "It's too hard to eat.",
         },
     },
 

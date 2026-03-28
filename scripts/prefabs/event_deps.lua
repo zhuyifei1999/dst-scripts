@@ -183,7 +183,7 @@ local SPECIAL_EVENT_DEPS =
                 Asset("ANIM", "anim/dst_menu_carrat_bg.zip"),
                 Asset("ANIM", "anim/dst_menu_carrat.zip"),
                 Asset("ANIM", "anim/dst_menu_carrat_swaps.zip"),
-                Asset("SOUND", "sound/music_frontend_yotc.fsb"),
+				Asset("PKGREF", "sound/music_frontend_yotc.fsb"),
             },
         },
     },
@@ -243,7 +243,7 @@ local SPECIAL_EVENT_DEPS =
             {
                 Asset("ANIM", "anim/dst_menu_beefalo.zip"),
                 Asset("ANIM", "anim/dst_menu_beefalo_bg.zip"),
-                Asset("SOUND", "sound/music_frontend_yotb.fsb"),
+				Asset("PKGREF", "sound/music_frontend_yotb.fsb"),
             },
         },
     },
@@ -254,9 +254,10 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                Asset("ANIM", "anim/dst_menu_yoth.zip"),
-                Asset("ANIM", "anim/dst_menu_meta6.zip"), -- FIXME remove later.
-                Asset("SOUND", "sound/music_frontend_yoth2026.fsb"),
+				Asset("ANIM", "anim/dst_menu_meta6.zip"), -- #TODO FIXME remove later.
+				Asset("PKGREF", "anim/dst_menu_yoth.zip"),
+				Asset("PKGREF", "sound/music_frontend_WX2.fsb"), -- #TODO FIXME remove later
+				Asset("PKGREF", "sound/music_frontend_yoth2026.fsb"),
             },
         },
     },
@@ -268,6 +269,8 @@ local SPECIAL_EVENT_DEPS =
             assets =
             {
                 Asset("ANIM", "anim/dst_menu_meta6.zip"),
+				Asset("PKGREF", "sound/music_frontend_WX2.fsb"),
+
                 Asset("PKGREF", "anim/dst_menu_rift6.zip"),
 				Asset("PKGREF", "anim/dst_menu_rift5.zip"),
 				Asset("PKGREF", "anim/dst_menu_meta5.zip"),

@@ -177,6 +177,13 @@ function ContainerWidget:Open(container, doer)
     self:Refresh()
 end
 
+function ContainerWidget:RefreshPosition()
+	local widget = self.container.replica.container:GetWidget()
+	if widget.pos then
+		self:SetPosition(FunctionOrValue(widget.pos, self.container, self.owner))
+	end
+end
+
 local READONLYCONTAINER_BRIGHTNESS_SCALE = 0.6
 
 function ContainerWidget:Refresh()

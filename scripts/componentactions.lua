@@ -562,7 +562,9 @@ local COMPONENT_ACTIONS =
 						table.insert(actions, ACTIONS.MAPDELIVER_MAP)
 					end
 				elseif right and (inst.canmapdeliver == nil or inst:canmapdeliver(doer)) then
-					table.insert(actions, ACTIONS.STARTMAPDELIVER)
+                    if IsFlyingPermittedFromPoint(inst.Transform:GetWorldPosition()) then
+                        table.insert(actions, ACTIONS.STARTMAPDELIVER)
+                    end
 				end
 			end
 		end,
@@ -2061,9 +2063,13 @@ local COMPONENT_ACTIONS =
 				local inventoryitem = inst.replica.inventoryitem
 				if inventoryitem:IsHeldBy(doer) then
 					local equippable = inst.replica.equippable
-					if not (equippable and equippable:IsEquipped() and equippable:ShouldPreventUnequipping()) then
+					local isequipped = equippable ~= nil and equippable:IsEquipped()
+					if not (isequipped and equippable:ShouldPreventUnequipping()) then
 						local inventory = doer.replica.inventory
-						if not (inventory and inventory:IsFloaterHeld()) then
+						if inventory and
+							(not inventoryitem:IsLockedInSlot() or isequipped or inventory:GetActiveItem() == inst) and
+							not inventory:IsFloaterHeld()
+						then
 							table.insert(actions, ACTIONS.DROP)
 						end
 					end

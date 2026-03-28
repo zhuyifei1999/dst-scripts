@@ -259,7 +259,13 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
 				k = easing.outQuad(t - len + 1, 1 - accelpart, accelpart, 1)
 			end
 		end
-		inst.Transform:SetPosition(origin.x + k * dx, 0, origin.z + k * dz)
+        local x, _, z = inst.Transform:GetWorldPosition()
+        local desiredx, desiredz = origin.x + k * dx, origin.z + k * dz
+        if IsFlyingPermittedFromPointToPoint(x, 0, z, desiredx, 0, desiredz) then
+            inst.Transform:SetPosition(desiredx, 0, desiredz)
+        else
+            inst.components.mapdeliverable:Stop()
+        end
 	end
 	CheckSender(inst)
 end

@@ -165,16 +165,32 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
 		inst.sg:GoToState("run_stop")
 	end]]
 
-	local owner = inst.components.globaltrackingicon.owner
-	if owner and owner.player_classified then
-		if owner._PostActivateHandshakeState_Server ~= POSTACTIVATEHANDSHAKE.READY then
-			return -- Wait until the player client is ready and has received the world size info.
-		end
-		if math2d.DistSq(x, z, inst._x, inst._z) >= 16 then
-			inst._x, inst._z = x, z
-			owner.player_classified.MapExplorer:RevealArea(x, 0, z)
-		end
-	end
+    local isscanning = inst.scanning:value()
+    if IsFlyingPermittedFromPoint(x, y, z) then
+        if not isscanning then
+            SetScanning(inst, true)
+            inst:Show()
+            if not inst.SoundEmitter:PlayingSound("idle") then
+                inst.SoundEmitter:PlaySound("rifts5/wagdrone_flying/idle", "idle")
+            end
+        end
+        local owner = inst.components.globaltrackingicon.owner
+        if owner and owner.player_classified then
+            if owner._PostActivateHandshakeState_Server ~= POSTACTIVATEHANDSHAKE.READY then
+                return -- Wait until the player client is ready and has received the world size info.
+            end
+            if math2d.DistSq(x, z, inst._x, inst._z) >= 16 then
+                inst._x, inst._z = x, z
+                owner.player_classified.MapExplorer:RevealArea(x, 0, z)
+            end
+        end
+    else
+        if isscanning then
+            SetScanning(inst, false)
+            inst:Hide()
+            inst.SoundEmitter:KillSound("idle")
+        end
+    end
 end
 
 local function OnStopDelivery(inst, dest)

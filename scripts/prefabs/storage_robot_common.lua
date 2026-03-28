@@ -73,7 +73,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 local CONTAINER_MUST_TAGS = { "_container" }
-local CONTAINER_CANT_TAGS = { "portablestorage", "mermonly", "mastercookware", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local CONTAINER_CANT_TAGS = { "wx78_backupbody", "companion", "portablestorage", "mermonly", "mastercookware", "FX", "NOCLICK", "DECOR", "INLIMBO" }
 
 local ALLOWED_CONTAINER_TYPES = { "chest", "pack" }
 

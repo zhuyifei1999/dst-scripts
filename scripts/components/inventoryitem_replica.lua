@@ -120,6 +120,14 @@ function InventoryItem:CanOnlyGoInPocketOrPocketContainers()
     return self.classified ~= nil and self.classified.canonlygoinpocketorpocketcontainers:value()
 end
 
+function InventoryItem:SetIsLockedInSlot(locked)
+	self.classified.islockedinslot:set(locked)
+end
+
+function InventoryItem:IsLockedInSlot()
+	return self.classified ~= nil and self.classified.islockedinslot:value()
+end
+
 function InventoryItem:SetImage(imagename)
     self.classified.image:set(imagename ~= nil and (imagename..".tex") or 0)
 end

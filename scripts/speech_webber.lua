@@ -438,6 +438,10 @@ return{
         {
             BEDAZZLED = "But we made it look so nice! Let's keep it the way it is.",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -6051,12 +6055,12 @@ return{
 
 		-- Meta 6
 
-		--WX78_DRONE_SCOUT = "How come it's allowed to wander off?",
-		--WX78_DRONE_DELIVERY = "TODO",
-		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_SCOUT = "How come it's allowed to wander off?",
+		WX78_DRONE_DELIVERY = "Are there surprises inside?",
+		WX78_DRONE_ZAP = "We don't like zaps.",
 		WX78_DRONE_ZAP_REMOTE =
 		{
-			--GENERIC = "TODO",
+			GENERIC = "Can we have a turn?",
 --fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
 		},
 
@@ -6070,13 +6074,13 @@ return{
         WX78_INVENTORYCONTAINER =
         {
             HELD = "only_used_by_wx78", -- Held, and working as a container
-            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+            GENERIC = "It was forever in there.", -- It was dropped, treat it as if its broken down, and is rummagable
         },
 
         WX78_FOODBRICK =
         {
-            --WET = "TODO", -- The food brick is moistened, and can be eaten.
-            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+            WET = "A robot cake?",
+            GENERIC = "It's sooooo dry!",
         },
     },
 

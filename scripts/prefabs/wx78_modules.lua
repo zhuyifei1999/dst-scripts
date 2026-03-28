@@ -68,7 +68,14 @@ local function MakeModule(data)
         inst.components.upgrademodule:SetType(data.type)
         inst.components.upgrademodule.onactivatedfn = data.activatefn
         inst.components.upgrademodule.ondeactivatedfn = data.deactivatefn
-        inst.components.upgrademodule.onremovedfromownerfn = on_module_removed
+		inst.components.upgrademodule.onaddedtoownerfn = data.addedtoownerfn
+		inst.components.upgrademodule.onremovedfromownerfn =
+			data.removedfromownerfn and
+			function(inst, wx)
+				data.removedfromownerfn(inst, wx)
+				on_module_removed(inst, wx)
+			end or
+			on_module_removed
 
         --------------------------------------------------------------------------
         inst:AddComponent("finiteuses")

@@ -701,6 +701,8 @@ local function common_postinit(inst)
 
     inst.foleysound = "dontstarve/movement/foley/wx78"
 
+	WX78Common.AddHeatSteamFx_Common(inst)
+
     inst.GetMinimumAcceptableMoisture = COMMON_GetMinimumAcceptableMoisture
     inst.GetShieldPenetrationThreshold = COMMON_GetShieldPenetrationThreshold
     inst.GetCurrentShield = COMMON_GetCurrentShield
