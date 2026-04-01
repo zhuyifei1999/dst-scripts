@@ -354326,6 +354326,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_hound"
 msgid "Don't worry, it doesn't bite. Hard."
 msgstr "別擔心，它不咬人。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_invisible
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_invisible"
+msgid "Convey an incredibly convincing impression of a backpack."
+msgstr "惟妙惟肖地模仿了背包。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_koalefant
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_koalefant"
 msgid "It's an adorable portable item trunk."
@@ -373645,6 +373650,11 @@ msgstr "丘比特旅行包"
 msgctxt "STRINGS.SKIN_NAMES.backpack_hound"
 msgid "Hound Haversack"
 msgstr "獵犬背包"
+
+#. STRINGS.SKIN_NAMES.backpack_invisible
+msgctxt "STRINGS.SKIN_NAMES.backpack_invisible"
+msgid "Pantomimed Backpack"
+msgstr "擬真背包"
 
 #. STRINGS.SKIN_NAMES.backpack_koalefant
 msgctxt "STRINGS.SKIN_NAMES.backpack_koalefant"

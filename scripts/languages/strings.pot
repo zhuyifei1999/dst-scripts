@@ -354323,6 +354323,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_hound"
 msgid "Don't worry, it doesn't bite. Hard."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_invisible
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_invisible"
+msgid "Convey an incredibly convincing impression of a backpack."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_koalefant
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_koalefant"
 msgid "It's an adorable portable item trunk."
@@ -373641,6 +373646,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.backpack_hound
 msgctxt "STRINGS.SKIN_NAMES.backpack_hound"
 msgid "Hound Haversack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_invisible
+msgctxt "STRINGS.SKIN_NAMES.backpack_invisible"
+msgid "Pantomimed Backpack"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_koalefant

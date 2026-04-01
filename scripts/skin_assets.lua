@@ -364,6 +364,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/backpack_heart.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/backpack_hound.zip"),
 	Asset("PKGREF", "anim/dynamic/backpack_hound.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/backpack_invisible.zip"),
+	Asset("PKGREF", "anim/dynamic/backpack_invisible.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/backpack_koalefant.zip"),
 	Asset("PKGREF", "anim/dynamic/backpack_koalefant.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/backpack_labrat.zip"),

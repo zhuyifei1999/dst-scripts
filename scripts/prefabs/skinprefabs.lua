@@ -1326,6 +1326,17 @@ table.insert(prefs, CreatePrefabSkin("backpack_hound",
 	release_group = 78,
 }))
 
+table.insert(prefs, CreatePrefabSkin("backpack_invisible",
+{
+	base_prefab = "backpack",
+	type = "item",
+	rarity = "Classy",
+	rarity_modifier = "Woven",
+	init_fn = function(inst, skin_custom) backpack_init_fn(inst, "backpack_invisible", skin_custom) end,
+	skin_tags = { "INVISIBLE", "BACKPACK", "CRAFTABLE", },
+	release_group = 179,
+}))
+
 table.insert(prefs, CreatePrefabSkin("backpack_koalefant",
 {
 	base_prefab = "backpack",
