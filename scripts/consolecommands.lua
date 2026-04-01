@@ -431,13 +431,6 @@ function c_addelectricity(n)
     end
 end
 
-function c_setwxshield(n)
-    local player = ConsoleCommandPlayer()
-    if player ~= nil and player.components.wx78_shield ~= nil then
-        player.components.wx78_shield:SetPercent(n)
-    end
-end
-
 function c_setwereness(n)
     local player = ConsoleCommandPlayer()
     if player ~= nil and player.components.wereness ~= nil and not player:HasTag("playerghost") then

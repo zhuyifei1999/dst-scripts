@@ -64,7 +64,10 @@ function GestaltBrain:OnStart()
 				WhileNode( function() return self.inst.behaviour_level == 2 end, "level2",
 					PriorityNode({
 						WhileNode( function() return self.inst.components.combat.target ~= nil end, "aggressive",
-							StandAndAttack(self.inst, nil, L3_ATTACK_CHASE_TIME)),
+							SequenceNode{
+								ActionNode(function() self.inst.components.locomotor:Stop() end),
+								StandAndAttack(self.inst, nil, L3_ATTACK_CHASE_TIME),
+							}),
 						IfNode(function() return self.inst.components.combat:InCooldown() end, "combat_pst",
 							RunAway(self.inst, "player", L2_AVOID_PLAYER_DIST, L2_AVOID_PLAYER_STOP)),
 					}, 0.1)),

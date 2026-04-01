@@ -23,9 +23,6 @@ return{
             NOTMERM = "Fish men only trust Wurt.",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
-            NOTAROBOT = "Is robot things.",
---fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -67,7 +64,6 @@ return{
             HASPET = "Wolfgang has animal friend already!",
 			TICOON = "Wolfgang already has good furry friend.",
             BUSY_STATION = "Wolfgang must wait.",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -225,7 +221,6 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "Wolfgang thinks it only speaks robot.",
---fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -360,9 +355,6 @@ return{
             NOTAMERM = "Wolfgang not want upset fish man.",
             NOTSOULJARHANDLER = "No thank you.",
             RESTRICTED = "Not for Wolfgang.",
-            NOTAROBOT = "Is robot things.",
---fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -396,20 +388,7 @@ return{
             NOTMASTERCHEF = "Warly is very nice to cook. Wolfgang will not get in way.",
             NOTSOULJARHANDLER = "No thank you.",
             RESTRICTED = "Not for Wolfgang.",
-            NOTAROBOT = "Is robot things.",
---fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
-		STARTMAPDELIVER =
-		{
---fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
---fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
---fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
-		},
-        SWAPBODIES_MAP =
-        {
---fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
-        },
         TEACH =
         {
             --Recipes/Teacher
@@ -437,10 +416,6 @@ return{
         UPGRADE =
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
-        },
-        USEEQUIPPEDITEM =
-        {
---fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
         },
         USEITEMON =
         {
@@ -1226,12 +1201,6 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Maybe horsey not ready come to Wolfgang.",
-
-    -- wx specific
---fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
---fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
---fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
---fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6053,36 +6022,6 @@ return{
 
         YOTH_KNIGHTSTICK = "Wolfgang love to gallop.",
         YOTH_CHAIR_ROCKING_ITEM = "It remind Wolfgang of childhood.", -- The chair itself uses WOOD_CHAIR inspect states.
-
-		-- Meta 6
-
-		WX78_DRONE_SCOUT = "Brave little exploring machine!",
-		WX78_DRONE_DELIVERY = "Wolfgang carry more things.",
-		WX78_DRONE_ZAP = "Be careful not zap Wolfgang!",
-		WX78_DRONE_ZAP_REMOTE =
-		{
-			GENERIC = "Robot have all the fun toy.",
---fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
-		},
-
-        -- All other characters but Wx-78 share one quote.
-        WX78MODULE_RADAR = "Is robot snacks, yes?",
-        WX78MODULE_STACKSIZE = "Is robot snacks, yes?",
-        WX78MODULE_DIGESTION = "Is robot snacks, yes?",
-        WX78MODULE_SCREECH = "Is robot snacks, yes?",
-        WX78MODULE_LIGHT2 = "Is robot snacks, yes?",
-
-        WX78_INVENTORYCONTAINER =
-        {
-            HELD = "only_used_by_wx78", -- Held, and working as a container
-            GENERIC = "Any goodie for Wolfgang?", -- It was dropped, treat it as if its broken down, and is rummagable
-        },
-
-        WX78_FOODBRICK =
-        {
-            WET = "Thank you for snack, robot!",
-            GENERIC = "It is too hard for even Wolfgang mighty teeth.",
-        },
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

@@ -29,7 +29,6 @@ local Follower = Class(function(self, inst)
     --self.keepdeadleader = nil
     --self.keepleaderonattacked = nil
 	--self.noleashing = nil
-    --self.canberollcalledfn = nil
 
     self.inst:ListenForEvent("attacked", onattacked)
     self.OnLeaderRemoved = function()
@@ -196,18 +195,6 @@ function Follower:EnableLeashing()
             OnEntitySleep(self.inst)
         end
     end
-end
-
-function Follower:SetCanBeRollCalledFn(fn)
-    self.canberollcalledfn = fn
-end
-
-function Follower:CanBeRollCalled(leader)
-    if leader.components.leaderrollcall and not leader.components.leaderrollcall:IsEnabled() then
-        return false
-    end
-
-    return self.canberollcalledfn == nil or self.canberollcalledfn(self.inst, leader)
 end
 
 OnPlayerJoined = function(self, player)

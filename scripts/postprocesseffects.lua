@@ -76,21 +76,6 @@ function PostProcessor__index:SetDistortionFishEyeTime(time)
     self:SetUniformVariable(UniformVariables.DISTORTION_FISHEYE_PARAMS, nil, time)
 end
 
-local distortion_enabled = false
-local lunacy_enabled = false
-local fishlens_active = false
-
-function PostProcessor__index:SetDistortionFishLensRadius(r)
-	self:SetUniformVariable(UniformVariables.DISTORTION_FISHLENS_PARAMS, r)
-
-	fishlens_active = r > 0
-	self:EnablePostProcessEffect(PostProcessorEffects.Distort, distortion_enabled or fishlens_active)
-end
-
-function PostProcessor__index:SetDistortionFishLensAspectRatio(aspect_ratio)
-	self:SetUniformVariable(UniformVariables.DISTORTION_FISHLENS_PARAMS, nil, aspect_ratio)
-end
-
 local bloom_enabled = false
 
 function PostProcessor__index:SetBloomEnabled(enabled)
@@ -102,9 +87,12 @@ function PostProcessor__index:IsBloomEnabled()
     return bloom_enabled
 end
 
+local distortion_enabled = false
+local lunacy_enabled = false
+
 function PostProcessor__index:SetDistortionEnabled(enabled)
     distortion_enabled = enabled
-	self:EnablePostProcessEffect(PostProcessorEffects.Distort, distortion_enabled or fishlens_active)
+    self:EnablePostProcessEffect(PostProcessorEffects.Distort, distortion_enabled)
 
     self:SetZoomBlurEnabled(distortion_enabled and lunacy_enabled)
 end
@@ -232,10 +220,9 @@ end
 function BuildDistortShader()
     UniformVariables.DISTORTION_PARAMS = PostProcessor:AddUniformVariable("DISTORTION_PARAMS", 4)
     UniformVariables.DISTORTION_FISHEYE_PARAMS = PostProcessor:AddUniformVariable("FISHEYE_PARAMS", 2)
-	UniformVariables.DISTORTION_FISHLENS_PARAMS = PostProcessor:AddUniformVariable("FISHLENS_PARAMS", 2)
 
     PostProcessorEffects.Distort = PostProcessor:AddPostProcessEffect("shaders/postprocess_distort.ksh")
-	PostProcessor:SetEffectUniformVariables(PostProcessorEffects.Distort, UniformVariables.DISTORTION_PARAMS, UniformVariables.DISTORTION_FISHEYE_PARAMS, UniformVariables.DISTORTION_FISHLENS_PARAMS)
+    PostProcessor:SetEffectUniformVariables(PostProcessorEffects.Distort, UniformVariables.DISTORTION_PARAMS, UniformVariables.DISTORTION_FISHEYE_PARAMS)
 end
 
 function BuildLunacyShader()

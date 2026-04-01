@@ -314,7 +314,6 @@ local LocoMotor = Class(function(self, inst)
     --self.tempgroundspeedmultiplier = nil
     --self.tempgroundspeedmulttime = nil
     --self.tempgroundtile = nil
-    --self.modifytempgroundspeedmultiplier = nil
     self.isrunning = false
 
     self._externalspeedmultipliers = {}
@@ -637,10 +636,6 @@ end
 
 function LocoMotor:PushTempGroundSpeedMultiplier(mult, tile)
     if self.enablegroundspeedmultiplier then
-        if self.modifytempgroundspeedmultiplier ~= nil then
-            mult = self.modifytempgroundspeedmultiplier(self.inst, mult)
-        end
-
         local t = GetTime()
         if self.tempgroundspeedmultiplier == nil or
             t > self.tempgroundspeedmulttime or
@@ -672,10 +667,6 @@ function LocoMotor:TempGroundTile()
         self.tempgroundspeedmulttime = nil
         self.tempgroundtile = nil
     end
-end
-
-function LocoMotor:SetTempGroundSpeedMultiplierModifier(modifierfn) -- Call for both client and server, make sure results are synced
-    self.modifytempgroundspeedmultiplier = modifierfn
 end
 
 function LocoMotor:StartStrafing()
@@ -1116,23 +1107,17 @@ end
 function LocoMotor:WalkInDirection(direction, should_run)
     --Print(VERBOSITY.DEBUG, "LocoMotor:WalkInDirection ", self.inst.prefab)
     self:SetBufferedAction(nil)
-	self.dest = nil
-	self:ResetPath()
-	self.lastdesttile = nil
-
     if not self.inst.sg or self.inst.sg:HasStateTag("canrotate") then
 		self:SetMoveDir(direction)
     end
 
     self.wantstomoveforward = true
     self.wantstorun = should_run
+    self:ResetPath()
+    self.lastdesttile = nil
 
     if self.directdrive then
-		if should_run then
-			self:RunForward()
-		else
-			self:WalkForward()
-		end
+        self:WalkForward()
     end
 	self.inst:PushEvent("locomote", self.pusheventwithdirection and { dir = direction } or nil)
     self:StartUpdatingInternal()
@@ -1142,7 +1127,24 @@ function LocoMotor:RunInDirection(direction, throttle)
     --Print(VERBOSITY.DEBUG, "LocoMotor:RunInDirection ", self.inst.prefab)
 
     self.throttle = throttle or 1
-	self:WalkInDirection(direction, true)
+
+    self:SetBufferedAction(nil)
+    self.dest = nil
+    self:ResetPath()
+    self.lastdesttile = nil
+
+    if not self.inst.sg or self.inst.sg:HasStateTag("canrotate") then
+		self:SetMoveDir(direction)
+    end
+
+    self.wantstomoveforward = true
+    self.wantstorun = true
+
+    if self.directdrive then
+        self:RunForward()
+    end
+	self.inst:PushEvent("locomote", self.pusheventwithdirection and { dir = direction } or nil)
+    self:StartUpdatingInternal()
 end
 
 function LocoMotor:GetDebugString()
@@ -1628,17 +1630,10 @@ function LocoMotor:OnUpdate(dt, arrive_check_only)
     if (self.ismastersim and not self.inst:IsInLimbo()) or not (self.ismastersim or self.inst:HasTag("INLIMBO")) then
         local is_moving = self.inst.sg ~= nil and self.inst.sg:HasStateTag("moving")
         local is_running = self.inst.sg ~= nil and self.inst.sg:HasStateTag("running")
-		if not is_moving and self.dest == nil and self.inst.sg and self.inst.sg:HasStateTag("overridelocomote") then
-			--Special case for "overridelocomote" states, and direct movement (no dest).
-			--Generally we won't actually go to a "moving" state, even though "locomote"
-			--should already be handled.
-			should_locomote = false
-		else
-			--'not' is being used below as a cast-to-boolean operator
-			should_locomote =
-				(not is_moving ~= not self.wantstomoveforward) or
-				(is_moving and (not is_running ~= not self.wantstorun))
-		end
+        --'not' is being used below as a cast-to-boolean operator
+        should_locomote =
+            (not is_moving ~= not self.wantstomoveforward) or
+            (is_moving and (not is_running ~= not self.wantstorun))
 
         if is_moving or is_running then
             self:StartMoveTimerInternal()

@@ -61,7 +61,6 @@ local Inventory = Class(function(self, inst)
 
 	-- self.noheavylifting = false
 	--self.ignorecombat = false
-    --self.force_no_insulation = nil
 
     inst:ListenForEvent("player_despawn", OnOwnerDespawned)
 
@@ -150,7 +149,7 @@ function Inventory:TransferInventory(receiver)
     end
 end
 
-function Inventory:SwapEquipment(other, equipslot_to_swap, force)
+function Inventory:SwapEquipment(other, equipslot_to_swap)
     if other == nil then
         return false
     end
@@ -162,8 +161,8 @@ function Inventory:SwapEquipment(other, equipslot_to_swap, force)
 
     for _, equipslot in pairs(EQUIPSLOTS) do
         if equipslot_to_swap == nil or equipslot_to_swap == equipslot then
-            local my_equipitem = self:Unequip(equipslot, nil, force)
-            local ot_equipitem = other_inventory:Unequip(equipslot, nil, force)
+            local my_equipitem = self:Unequip(equipslot)
+            local ot_equipitem = other_inventory:Unequip(equipslot)
 
             if my_equipitem ~= nil then
                 if my_equipitem.components.equippable and not my_equipitem.components.equippable:IsRestricted(other) then
@@ -226,26 +225,11 @@ function Inventory:OnSave()
 end
 
 function Inventory:CanTakeItemInSlot(item, slot)
-	if not (item and item.components.inventoryitem and (item.components.inventoryitem.cangoincontainer or self.ignorescangoincontainer)) then
-		return false
-	elseif GetGameModeProperty("non_item_equips") and item.components.equippable then
-		return false
-	elseif slot then
-		if slot < 1 or slot > self.maxslots then
-			return false
-		end
-		local existingitem = self:GetItemInSlot(slot)
-		if existingitem and
-			existingitem.components.inventoryitem.islockedinslot and
-			not (	existingitem.components.stackable and
-					not existingitem.components.stackable:IsFull() and
-					existingitem.components.stackable:CanStackWith(item)
-				)
-		then
-			return false
-		end
-	end
-	return true
+    return item ~= nil
+        and item.components.inventoryitem ~= nil
+        and (item.components.inventoryitem.cangoincontainer or self.ignorescangoincontainer)
+        and (slot == nil or (slot >= 1 and slot <= self.maxslots))
+        and not (GetGameModeProperty("non_item_equips") and item.components.equippable ~= nil)
 end
 
 function Inventory:AcceptsStacks()
@@ -523,7 +507,7 @@ function Inventory:CombineActiveStackWithSlot(slot, stack_mod)
     end
 
     local handitem = self.activeitem
-	if not (handitem and handitem.components.stackable and handitem.components.stackable:CanStackWith(invitem)) then
+    if handitem == nil or handitem.prefab ~= invitem.prefab or handitem.skinname ~= invitem.skinname or handitem.components.stackable == nil then
         return
     end
 
@@ -537,15 +521,12 @@ function Inventory:CombineActiveStackWithSlot(slot, stack_mod)
 end
 
 function Inventory:SelectActiveItemFromSlot(slot)
-	local newitem = self.itemslots[slot]
-	if newitem == nil then
+    if self.itemslots[slot] == nil then
         return
-	elseif newitem.components.inventoryitem and newitem.components.inventoryitem.islockedinslot then
-		assert(BRANCH ~= "dev")
-		return
     end
 
     local olditem = self.activeitem
+    local newitem = self.itemslots[slot]
     self.itemslots[slot] = nil
     self.inst:PushEvent("itemlose", { slot = slot, prev_item = newitem })
 
@@ -712,13 +693,6 @@ end
 function Inventory:DropItem(item, wholestack, randomdir, pos, keepoverstacked)
     if item == nil or item.components.inventoryitem == nil then
         return
-	elseif item.components.inventoryitem.islockedinslot and
-		(	wholestack or
-			not (item.components.stackable and item.components.stackable:IsStack())
-		)
-	then
-		assert(BRANCH ~= "dev")
-		return
     end
 
 	local dropped = item.components.inventoryitem:RemoveFromOwner(wholestack, keepoverstacked) or item
@@ -743,15 +717,7 @@ function Inventory:DropItem(item, wholestack, randomdir, pos, keepoverstacked)
     return dropped
 end
 
-function Inventory:ForceNoInsulated(force) -- electricity, not temperature
-    self.force_no_insulation = force or nil
-end
-
 function Inventory:IsInsulated() -- from electricity, not temperature
-    if self.force_no_insulation then
-        return false
-    end
-
     for k,v in pairs(self.equipslots) do
         if v and v.components.equippable:IsInsulated() then
             return true
@@ -795,16 +761,19 @@ function Inventory:GetNextAvailableSlot(item)
     local prioritize_container = overflow and overflow:ShouldPrioritizeContainer(item)
 
     if item.components.stackable ~= nil then
+        local prefabname = item.prefab
+        local prefabskinname = item.skinname
+
         --check for stacks that aren't full
         for k, v in pairs(self.equipslots) do
-            if v.components.equippable.equipstack and v.components.stackable and not v.components.stackable:IsFull() and v.components.stackable:CanStackWith(item) then
+            if v.prefab == prefabname and v.skinname == prefabskinname and v.components.equippable.equipstack and v.components.stackable and not v.components.stackable:IsFull() then
                 return k, self.equipslots
             end
         end
 
         local inv_slot, inv_pref
         for k, v in pairs(self.itemslots) do
-            if v.components.stackable and not v.components.stackable:IsFull() and v.components.stackable:CanStackWith(item) then
+            if v.prefab == prefabname and v.skinname == prefabskinname and v.components.stackable and not v.components.stackable:IsFull() then
                 if prioritize_container then
                     inv_slot, inv_pref = k, self.itemslots
                     break
@@ -819,7 +788,7 @@ function Inventory:GetNextAvailableSlot(item)
             not item.components.inventoryitem.canonlygoinpocket and
             (not item.components.inventoryitem.canonlygoinpocketorpocketcontainers or overflow.inst.components.inventoryitem and overflow.inst.components.inventoryitem.canonlygoinpocket) then
                 for k, v in pairs(overflow.slots) do
-                    if v.components.stackable and not v.components.stackable:IsFull() and v.components.stackable:CanStackWith(item) then
+                    if v.prefab == prefabname and v.skinname == prefabskinname and v.components.stackable and not v.components.stackable:IsFull() then
                         return k, overflow
                     end
                 end
@@ -861,7 +830,7 @@ function Inventory:CanAcceptCount(item, maxcount)
     for k = 1, self.maxslots do
         local v = self.itemslots[k]
         if v ~= nil then
-            if v.components.stackable ~= nil and v.components.stackable:CanStackWith(item) then
+            if v.prefab == item.prefab and v.skinname == item.skinname and v.components.stackable ~= nil then
                 acceptcount = acceptcount + v.components.stackable:RoomLeft()
                 if acceptcount >= stacksize then
                     return stacksize
@@ -887,7 +856,7 @@ function Inventory:CanAcceptCount(item, maxcount)
             for k = 1, overflow.numslots do
                 local v = overflow.slots[k]
                 if v ~= nil then
-                    if v.components.stackable ~= nil and v.components.stackable:CanStackWith(item) then
+                    if v.prefab == item.prefab and v.skinname == item.skinname and v.components.stackable ~= nil then
                         acceptcount = acceptcount + v.components.stackable:RoomLeft()
                         if acceptcount >= stacksize then
                             return stacksize
@@ -909,7 +878,7 @@ function Inventory:CanAcceptCount(item, maxcount)
     if item.components.stackable ~= nil then
         --check for equip stacks that aren't full
         for k, v in pairs(self.equipslots) do
-            if v.components.equippable.equipstack and v.components.stackable ~= nil and v.components.stackable:CanStackWith(item) then
+            if v.prefab == item.prefab and v.skinname == item.skinname and v.components.equippable.equipstack and v.components.stackable ~= nil then
                 acceptcount = acceptcount + v.components.stackable:RoomLeft()
                 if acceptcount >= stacksize then
                     return stacksize
@@ -982,8 +951,8 @@ function Inventory:GiveItem(inst, slot, src_pos)
                 if inst.prevcontainer:GiveItem(inst, inst.prevslot) then
                     return true
                 end
-            elseif item.components.stackable ~= nil and
-                item.components.stackable:CanStackWith(inst) and
+            elseif item.prefab == inst.prefab and item.skinname == inst.skinname and
+                item.components.stackable ~= nil and
                 inst.prevcontainer:AcceptsStacks() and
                 inst.prevcontainer:CanTakeItemInSlot(inst, inst.prevslot) and
                 item.components.stackable:Put(inst) == nil then
@@ -997,7 +966,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
 
     if slot then
         local olditem = self:GetItemInSlot(slot)
-        can_use_suggested_slot = slot ~= nil and slot <= self.maxslots and ( olditem == nil or (olditem and olditem.components.stackable and olditem.components.stackable:CanStackWith(inst))) and self:CanTakeItemInSlot(inst,slot)
+        can_use_suggested_slot = slot ~= nil and slot <= self.maxslots and ( olditem == nil or (olditem and olditem.components.stackable and olditem.prefab == inst.prefab and olditem.skinname == inst.skinname)) and self:CanTakeItemInSlot(inst,slot)
     end
 
     local overflow = self:GetOverflowContainer()
@@ -1079,7 +1048,8 @@ function Inventory:GiveItem(inst, slot, src_pos)
         if self.activeitem and self.activeitem ~= inst and
             self.activeitem.components.stackable and
             inst.components.stackable and
-            inst.components.stackable:CanStackWith(self.activeitem) and
+            self.activeitem.prefab == inst.prefab and
+            self.activeitem.skinname == inst.skinname and
             not self.activeitem.components.stackable:IsFull()
         then
             local leftovers = self.activeitem.components.stackable:Put(inst, self.inst:GetPosition())
@@ -1100,7 +1070,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
         end
     end
     if shouldwisecrack and not (self.isloading or self.silentfull) and self.maxslots > 0 then
-    self.inst:PushEvent("inventoryfull", { item = inst })
+        self.inst:PushEvent("inventoryfull", { item = inst })
     end
     return returnvalue
 end
@@ -1137,10 +1107,7 @@ function Inventory:Unequip(equipslot, slip, force)
 end
 
 function Inventory:SetActiveItem(item)
-	if item and item.components.inventoryitem.islockedinslot then
-		assert(BRANCH ~= "dev")
-		return
-	elseif item == nil or item.components.inventoryitem.cangoincontainer then
+    if item and item.components.inventoryitem.cangoincontainer or item == nil then
         self.activeitem = item
         self.inst:PushEvent("newactiveitem", {item=item})
 
@@ -1732,28 +1699,12 @@ function Inventory:DropEverything(ondeath, keepequip)
         self:SetActiveItem(nil)
     end
 
-	local internal_containers
-
     for k = 1, self.maxslots do
         local v = self.itemslots[k]
         if v ~= nil and not (ondeath and v.components.inventoryitem.keepondeath) and not v.components.curseditem then
-			if not v.components.inventoryitem.islockedinslot then
-				self:DropItem(v, true, true)
-			elseif v.components.container then
-				if internal_containers then
-					table.insert(internal_containers, v)
-				else
-					internal_containers = { v }
-				end
-			end
+            self:DropItem(v, true, true)
         end
     end
-
-	if internal_containers then
-		for _, v in ipairs(internal_containers) do
-			v.components.container:DropEverything()
-		end
-	end
 
     if not keepequip then
         if self.inst.EmptyBeard ~= nil then
@@ -2035,8 +1986,6 @@ function Inventory:TakeActiveItemFromCountOfSlot(slot, count)
             countedstack.prevslot = slot
             countedstack.prevcontainer = nil
             self:GiveActiveItem(countedstack)
-		elseif item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
-			assert(BRANCH ~= "dev")
         else
             self:RemoveItemBySlot(slot)
             self:GiveActiveItem(item)
@@ -2048,10 +1997,7 @@ function Inventory:TakeActiveItemFromAllOfSlot(slot)
     local item = self:GetItemInSlot(slot)
     if item ~= nil and
         self:GetActiveItem() == nil then
-		if item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
-			assert(BRANCH ~= "dev")
-			return
-		end
+
         self:RemoveItemBySlot(slot)
         self:GiveActiveItem(item)
     end
@@ -2063,8 +2009,8 @@ function Inventory:AddOneOfActiveItemToSlot(slot)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
+        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
-        item.components.stackable:CanStackWith(active_item) and
         self:AcceptsStacks() and
         active_item.components.stackable ~= nil and
         active_item.components.stackable:StackSize() > 1 and
@@ -2080,8 +2026,8 @@ function Inventory:AddAllOfActiveItemToSlot(slot)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
+        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
-        item.components.stackable:CanStackWith(active_item) and
         self:AcceptsStacks() then
 
         local leftovers = item.components.stackable:Put(active_item)
@@ -2095,7 +2041,8 @@ function Inventory:SwapActiveItemWithSlot(slot)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        not (item.components.stackable ~= nil and item.components.stackable:CanStackWith(active_item) and
+        not (item.prefab == active_item.prefab and item.skinname == active_item.skinname and
+            item.components.stackable ~= nil and
             self:AcceptsStacks()) and
         not (active_item.components.stackable ~= nil and
             active_item.components.stackable:StackSize() > 1 and
@@ -2135,13 +2082,6 @@ function Inventory:UseItemFromInvTile(item, actioncode, mod_name)
         ClearClientRequestedAction()
 
 		local act = actions[1]
-        if self.inst.components.playercontroller then
-            local maptarget = self.inst.components.playercontroller:GetMapTarget(act)
-            if maptarget ~= nil then
-                self.inst.components.playercontroller:PullUpMap(maptarget, act.action)
-                return
-            end
-        end
 		if act == nil then
             return
         elseif actioncode == nil or (act.action.code == actioncode and act.action.mod_name == mod_name) then
@@ -2163,11 +2103,6 @@ function Inventory:ControllerUseItemOnItemFromInvTile(item, active_item, actionc
         local act = self.inst.components.playercontroller:GetItemUseAction(active_item, item)
         ClearClientRequestedAction()
 
-        local maptarget = self.inst.components.playercontroller:GetMapTarget(act)
-        if maptarget ~= nil then
-            self.inst.components.playercontroller:PullUpMap(maptarget, act.action)
-            return
-        end
         if act == nil then
             return
         elseif actioncode == nil or (act.action.code == actioncode and act.action.mod_name == mod_name) then
@@ -2200,11 +2135,6 @@ function Inventory:ControllerUseItemOnSelfFromInvTile(item, actioncode, mod_name
         end
         ClearClientRequestedAction()
 
-        local maptarget = self.inst.components.playercontroller:GetMapTarget(act)
-        if maptarget ~= nil then
-            self.inst.components.playercontroller:PullUpMap(maptarget, act.action)
-            return
-        end
         if act == nil then
             return
         elseif actioncode == nil or (act.action.code == actioncode and act.action.mod_name == mod_name) then
@@ -2247,11 +2177,6 @@ function Inventory:ControllerUseItemOnSceneFromInvTile(item, target, actioncode,
         end
         ClearClientRequestedAction()
 
-        local maptarget = self.inst.components.playercontroller:GetMapTarget(act)
-        if maptarget ~= nil then
-            self.inst.components.playercontroller:PullUpMap(maptarget, act.action)
-            return
-        end
 		if act == nil or act.action == ACTIONS.UNEQUIP or act.action == ACTIONS.DROP then
             return
         elseif actioncode == nil then
@@ -2365,11 +2290,6 @@ end
 function Inventory:MoveItemFromAllOfSlot(slot, container)
     local item = self:GetItemInSlot(slot)
     if item ~= nil and container ~= nil then
-		if item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
-			assert(BRANCH ~= "dev")
-			return
-		end
-
         container = container.components.container
         if container ~= nil and container:IsOpenedBy(self.inst) then
 
@@ -2458,8 +2378,6 @@ function Inventory:MoveItemFromCountOfSlot(slot, container, count)
                         self:GiveItem(countedstack, slot)
                         self.ignoresound = false
                     end
-				elseif item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
-					assert(BRANCH ~= "dev")
                 else
                     item = self:RemoveItemBySlot(slot)
                     item.prevcontainer = nil
@@ -2538,14 +2456,6 @@ function Inventory:GetOpenContainerProxyFor(master)
 			return k
 		end
 	end
-end
-
-function Inventory:SetEquippableWalkSpeedMultModifier(modifierfn)
-    self.equippable_walkspeed_mult_modifier = modifierfn
-end
-
-function Inventory:GetEquippableWalkSpeedMultModifier()
-    return self.equippable_walkspeed_mult_modifier
 end
 
 return Inventory

@@ -39,21 +39,7 @@ function InvSlot:OnControl(control, down)
             return true
         end
         if TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
-			local single = TheInput:IsControlPressed(CONTROL_FORCE_STACK)
-			if (	self.tile and
-					self.tile.item and
-					self.tile.item.replica.inventoryitem and
-					self.tile.item.replica.inventoryitem:IsLockedInSlot()
-				) and
-				not (	single and
-						self.tile.item.replica.stackable and
-						self.tile.item.replica.stackable:IsStack()
-					)
-			then
-				self:UseItem()
-			else
-				self:DropItem(single)
-			end
+            self:DropItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
         else
             self:UseItem()
         end
@@ -136,15 +122,8 @@ function InvSlot:Click(stack_mod)
                     if stack_mod then
                         takecount = math.max(math.floor(takecount / 2), 1)
                     end
-					if not (container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot()) or
-						(container_item.replica.stackable and container_item.replica.stackable:StackSize() > takecount)
-					then
-						container:TakeActiveItemFromCountOfSlot(slot_number, takecount)
-						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
-					else
-						-- Block taking entire stack out of a locked slot.
-						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
-					end
+                    container:TakeActiveItemFromCountOfSlot(slot_number, takecount)
+                    TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
                 else
                     -- Block taking anything if this override exists.
                     TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
@@ -155,16 +134,13 @@ function InvSlot:Click(stack_mod)
                 --Take one only
                 container:TakeActiveItemFromHalfOfSlot(slot_number)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
-			elseif container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot() then
-				-- Block taking entire stack out of a locked slot.
-				TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
             else
                 --Take entire stack
                 container:TakeActiveItemFromAllOfSlot(slot_number)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
             end
         elseif container:CanTakeItemInSlot(active_item, slot_number) then
-            if container_item.replica.stackable ~= nil and container_item.replica.stackable:CanStackWith(active_item) and container:AcceptsStacks() then
+            if container_item.prefab == active_item.prefab and container_item:StackableSkinHack(active_item) and container_item.replica.stackable ~= nil and container:AcceptsStacks() then
                 --Add active item to slot stack
                 if stack_mod and
                     active_item.replica.stackable ~= nil and
@@ -241,7 +217,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     if item.replica.equippable ~= nil and container == k.replica.inventory then
                         local equip = container:GetEquippedItem(item.replica.equippable:EquipSlot())
                         if equip ~= nil and equip.prefab == item.prefab and equip.skinname == item.skinname then
-                            if equip.replica.stackable ~= nil and equip.replica.stackable:CanStackWith(item) and not equip.replica.stackable:IsFull() then
+                            if equip.replica.stackable ~= nil and not equip.replica.stackable:IsFull() then
                                 return k
                             elseif not isfull and containerwithsameitem == nil then
                                 containerwithsameitem = k
@@ -250,7 +226,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     end
                     for k1, v1 in pairs(container:GetItems()) do
                         if v1.prefab == item.prefab and v1.skinname == item.skinname then
-                            if v1.replica.stackable ~= nil and v1.replica.stackable:CanStackWith(item) and not v1.replica.stackable:IsFull() then
+                            if v1.replica.stackable ~= nil and not v1.replica.stackable:IsFull() then
                                 if container.lowpriorityselection then
                                     containerwithlowpirority = k
                                 else

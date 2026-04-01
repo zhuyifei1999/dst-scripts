@@ -6,6 +6,7 @@ require "behaviours/attackwall"
 require "behaviours/panic"
 require "behaviours/minperiod"
 require "behaviours/leash"
+require "behaviours/standandattack"
 require "behaviours/leashandavoid"
 
 local WAMDER_DIST = 2

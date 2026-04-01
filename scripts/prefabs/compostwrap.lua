@@ -81,8 +81,8 @@ local function fn()
     inst.AnimState:SetBuild("healing_cream")
     inst.AnimState:PlayAnimation("idle")
 
-    --fertilizer (from fertilizer component) added to pristine state for optimization
-    inst:AddTag("fertilizer")
+    --heal_fertilize (from fertilizer component) added to pristine state for optimization
+    inst:AddTag("heal_fertilize")
 
     inst:AddTag("slowfertilize") -- for player self fertilize healing action
 

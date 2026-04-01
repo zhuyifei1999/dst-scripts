@@ -115,15 +115,7 @@ function Container:SetNumSlots(numslots)
 end
 
 function Container:DropItemBySlot(slot, drop_pos, keepoverstacked)
-	local item = slot and self.slots[slot]
-	if item == nil or item.components.inventoryitem == nil then
-		return
-	elseif item.components.inventoryitem.islockedinslot then
-		assert(BRANCH ~= "dev")
-		return
-	end
-	--local item = self:RemoveItemBySlot(slot, keepoverstacked)
-	item = self:RemoveItem_Internal(item, slot, true, keepoverstacked)
+	local item = self:RemoveItemBySlot(slot, keepoverstacked)
     if item ~= nil then
         drop_pos = drop_pos or self.inst:GetPosition()
 
@@ -177,28 +169,9 @@ function Container:DropEverythingByFilter(filterfn)
 end
 
 function Container:DropEverything(drop_pos, keepoverstacked)
-	local internal_containers
-
     for i = 1, self.numslots do
-		local item = self.slots[i]
-		if item then
-			if not item.components.inventoryitem.islockedinslot then
-				self:DropItemBySlot(i, drop_pos, keepoverstacked)
-			elseif item.components.container then
-				if internal_containers then
-					table.insert(internal_containers, item)
-				else
-					internal_containers = { item }
-				end
-			end
-		end
+		self:DropItemBySlot(i, drop_pos, keepoverstacked)
     end
-
-	if internal_containers then
-		for _, v in ipairs(internal_containers) do
-			v.components.container:DropEverything(drop_pos, keepoverstacked)
-		end
-	end
 end
 
 function Container:DropEverythingUpToMaxStacks(maxstacks, drop_pos)
@@ -242,12 +215,7 @@ end
 
 --V2C: this drops single, so no need to add "keepoverstacked"
 function Container:DropItemAt(itemtodrop, x, y, z)
-	if itemtodrop == nil or itemtodrop.components.inventoryitem == nil then
-		return
-	elseif item.components.inventoryitem.islockedinslot then
-		assert(BRANCH ~= "dev")
-		return
-	elseif Vector3.is_instance(x) then
+	if Vector3.is_instance(x) then
 		x, y, z = x:Get()
 	end
     local item = self:RemoveItem(itemtodrop)
@@ -264,32 +232,15 @@ function Container:DropItemAt(itemtodrop, x, y, z)
 end
 
 function Container:CanTakeItemInSlot(item, slot)
-	if not (item and
-			item.components.inventoryitem and
-			item.components.inventoryitem.cangoincontainer and
-			not item.components.inventoryitem.canonlygoinpocket and
-			(not item.components.inventoryitem.canonlygoinpocketorpocketcontainers or (self.inst.components.inventoryitem and self.inst.components.inventoryitem.canonlygoinpocket)) and
-			not self.readonlycontainer)
-	then
-		return false
-	elseif GetGameModeProperty("non_item_equips") and item.components.equippable then
-		return false
-	elseif slot then
-		if slot < 1 or slot > self.numslots then
-			return false
-		end
-		local existingitem = self:GetItemInSlot(slot)
-		if existingitem and
-			existingitem.components.inventoryitem.islockedinslot and
-			not (	existingitem.components.stackable and
-					not existingitem.components.stackable:IsFull() and
-					existingitem.components.stackable:CanStackWith(item)
-				)
-		then
-			return false
-		end
-	end
-	return self.itemtestfn == nil or self:itemtestfn(item, slot)
+    return item ~= nil
+        and item.components.inventoryitem ~= nil
+        and item.components.inventoryitem.cangoincontainer
+        and not item.components.inventoryitem.canonlygoinpocket
+        and (not item.components.inventoryitem.canonlygoinpocketorpocketcontainers or self.inst.components.inventoryitem and self.inst.components.inventoryitem.canonlygoinpocket)
+        and not self.readonlycontainer
+        and (slot == nil or (slot >= 1 and slot <= self.numslots))
+        and not (GetGameModeProperty("non_item_equips") and item.components.equippable ~= nil)
+        and (self.itemtestfn == nil or self:itemtestfn(item, slot))
 end
 
 function Container:GetSpecificSlotForItem(item)
@@ -380,7 +331,7 @@ function Container:CanAcceptCount(item, maxcount)
         local v = self.slots[k]
 
         if v ~= nil then
-            if v.components.stackable ~= nil and v.components.stackable:CanStackWith(item) then
+            if v.prefab == item.prefab and v.skinname == item.skinname and v.components.stackable ~= nil then
                 acceptcount = acceptcount + v.components.stackable:RoomLeft()
                 if acceptcount >= stacksize then
                     return stacksize
@@ -414,7 +365,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             --need to dump the leftovers back into the original stack)
             if slot ~= nil and slot <= self.numslots then
                 local other_item = self.slots[slot]
-                if other_item ~= nil and item.components.stackable:CanStackWith(other_item) and not other_item.components.stackable:IsFull() then
+                if other_item ~= nil and other_item.prefab == item.prefab and other_item.skinname == item.skinname and not other_item.components.stackable:IsFull() then
                     if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
                         self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = slot })
                     end
@@ -431,7 +382,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             if slot == nil then
                 for k = 1, self.numslots do
                     local other_item = self.slots[k]
-                    if other_item and item.components.stackable:CanStackWith(other_item) and not other_item.components.stackable:IsFull() then
+                    if other_item and other_item.prefab == item.prefab and other_item.skinname == item.skinname and not other_item.components.stackable:IsFull() then
                         if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
                             self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = k })
                         end
@@ -1120,8 +1071,8 @@ function Container:AddOneOfActiveItemToSlot(slot, opener)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
+        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
-        item.components.stackable:CanStackWith(active_item) and
         self:AcceptsStacks() and
         active_item.components.stackable ~= nil and
         active_item.components.stackable:IsStack() and
@@ -1144,8 +1095,8 @@ function Container:AddAllOfActiveItemToSlot(slot, opener)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
+        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
-        item.components.stackable:CanStackWith(active_item) and
         self:AcceptsStacks() then
 
         self.currentuser = opener
@@ -1167,8 +1118,9 @@ function Container:SwapActiveItemWithSlot(slot, opener)
         if item == nil then
             self:PutAllOfActiveItemInSlot(slot, opener)
 		elseif self:CanTakeItemInSlot(active_item, slot)
-			and not (item.components.stackable and
-                    item.components.stackable:CanStackWith(active_item) and
+			and not (item.prefab == active_item.prefab and
+					item.skinname == active_item.skinname and
+					item.components.stackable and
 					self:AcceptsStacks())
 			and not (active_item.components.stackable and
 					active_item.components.stackable:IsStack() and
@@ -1198,7 +1150,7 @@ function Container:SwapOneOfActiveItemWithSlot(slot, opener)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        not (item.components.stackable ~= nil and item.components.stackable:CanStackWith(active_item)) and
+        not (item.prefab == active_item.prefab and item.skinname == active_item.skinname and item.components.stackable ~= nil) and
 		(active_item.components.stackable and active_item.components.stackable:IsStack()) and
 		not (item.components.stackable and item.components.stackable:IsOverStacked())
 	then

@@ -18,7 +18,7 @@ AddLevel(LEVELTYPE.QUAGMIRE, {
     background_node_range = {0,1},
 })
 
--- older deprecated AddLevel up here --
+-- older depreciated AddLevel up here --
 
 AddWorldGenLevel(LEVELTYPE.QUAGMIRE, {
     id = "QUAGMIRE",

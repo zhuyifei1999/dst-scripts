@@ -6,16 +6,16 @@ local SPACER_SCALES_MIDDLE = 11
 local SPACER_SCALES_IN = 11
 local SPACER_SCALES_OUT = 11
 
-local ORIGIN_DIST = 167
+local ORIGIN_DIST = 175
 local ORIGIN_NICE_X, ORIGIN_NICE_Y = -ORIGIN_DIST, SPACER_BOTTOM + SPACER_SCALES_MIDDLE
-local ORIGIN_NAUGHTY_X, ORIGIN_NAUGHTY_Y = 7 + ORIGIN_DIST, SPACER_BOTTOM + SPACER_SCALES_MIDDLE
+local ORIGIN_NAUGHTY_X, ORIGIN_NAUGHTY_Y = ORIGIN_DIST, SPACER_BOTTOM + SPACER_SCALES_MIDDLE
 local ORIGIN_NEUTRAL_X, ORIGIN_NEUTRAL_Y = 0, SPACER_BOTTOM - 10
-local ORIGIN_ALLEGIANCE_X, ORIGIN_ALLEGIANCE_Y = 4, SPACER + SPACER_BOTTOM + LOCK_SPACER * 0.35
-local ORIGIN_SCALES_X, ORIGIN_SCALES_Y = 4, 2 + SPACER * 2 + LOCK_SPACER * 2.35 + TEXT_SPACER + SPACER_BOTTOM
+local ORIGIN_ALLEGIANCE_X, ORIGIN_ALLEGIANCE_Y = 0, SPACER + SPACER_BOTTOM + LOCK_SPACER * 0.35
+local ORIGIN_SCALES_X, ORIGIN_SCALES_Y = 0, SPACER * 2 + LOCK_SPACER * 2.35 + TEXT_SPACER + SPACER_BOTTOM
 
 -- Scales.
 local MIN_GAP = SPACER * 0.5 -- Minimum distance away from the center infographic.
-local HAND_BAR_LENGTH = 176 - MIN_GAP * 2
+local HAND_BAR_LENGTH = 182 - MIN_GAP * 2
 local HAND_BAR_HEIGHT = 20
 local HAND_BAR_ANGLE_RAW = math.atan2(HAND_BAR_HEIGHT, HAND_BAR_LENGTH)
 -- Not using cosine for calculations and will be a skew to force horizontal length requirements.
@@ -64,11 +64,15 @@ local function CloseAndUpdateSoulJars(item, doer)
 end
 
 local function AllowConsumption_wortox_reviver(item, player)
-    item:SetAllowConsumption(true)
+    if item.prefab == "wortox_reviver" then
+        item:SetAllowConsumption(true)
+    end
 end
 
 local function DisallowConsumption_wortox_reviver(item, player)
-    item:SetAllowConsumption(false)
+    if item.prefab == "wortox_reviver" then
+        item:SetAllowConsumption(false)
+    end
 end
 
 local function LinkUnlinked_wortox_reviver(item, player)
@@ -78,9 +82,11 @@ local function LinkUnlinked_wortox_reviver(item, player)
 end
 
 local function Unlink_wortox_reviver(item, player)
-    local linkeditem = item.components.linkeditem
-    if linkeditem then
-        linkeditem:LinkToOwnerUserID(nil)
+    if item.prefab == "wortox_reviver" then
+        local linkeditem = item.components.linkeditem
+        if linkeditem then
+            linkeditem:LinkToOwnerUserID(nil)
+        end
     end
 end
 
@@ -414,7 +420,7 @@ local function BuildSkillsData(SkillTreeFns)
         ------------------------------------------------------------------------------------------------------------------------
         wortox_lifebringer_lock = {
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_NICE_LOCK_DESC,
-            pos = {ORIGIN_NICE_X - SPACER * 1.2, ORIGIN_NICE_Y + SPACER + LOCK_SPACER + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NICE_X - SPACER * 1.25, ORIGIN_NICE_Y + SPACER + LOCK_SPACER + SPACER_SCALES_OUT},
             group = "nice",
             tags = {"lock"},
             root = true,
@@ -434,7 +440,7 @@ local function BuildSkillsData(SkillTreeFns)
         },
         wortox_souldecoy_lock = {
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_NAUGHTY_LOCK_DESC,
-            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.17, ORIGIN_NAUGHTY_Y + SPACER + LOCK_SPACER + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.25, ORIGIN_NAUGHTY_Y + SPACER + LOCK_SPACER + SPACER_SCALES_OUT},
             group = "naughty",
             tags = {"lock"},
             root = true,
@@ -459,7 +465,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_1_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_1_DESC,
             icon = "wortox_lifebringer_1",
-            pos = {ORIGIN_NICE_X - SPACER * 1.2, ORIGIN_NICE_Y + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NICE_X - SPACER * 1.25, ORIGIN_NICE_Y + SPACER_SCALES_OUT},
             group = "nice",
             tags = {"nice", "nice1"},
             root = true,
@@ -471,7 +477,7 @@ local function BuildSkillsData(SkillTreeFns)
             end,
             ondeactivate = function(inst)
                 if TheWorld.components.linkeditemmanager then
-                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wortox_reviver", Unlink_wortox_reviver)
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayer(inst, Unlink_wortox_reviver)
                 end
             end,
         },
@@ -479,7 +485,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_2_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_2_DESC,
             icon = "wortox_lifebringer_2",
-            pos = {ORIGIN_NICE_X - SPACER * 1.2, ORIGIN_NICE_Y + SPACER + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NICE_X - SPACER * 1.25, ORIGIN_NICE_Y + SPACER + SPACER_SCALES_OUT},
             group = "nice",
             tags = {"nice", "nice1"},
         },
@@ -487,7 +493,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_3_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_3_DESC,
             icon = "wortox_lifebringer_3",
-            pos = {ORIGIN_NICE_X - SPACER * 1.2, ORIGIN_NICE_Y + SPACER + LOCK_SPACER * 2 + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NICE_X - SPACER * 1.25, ORIGIN_NICE_Y + SPACER + LOCK_SPACER * 2 + SPACER_SCALES_OUT},
             group = "nice",
             tags = {"nice"},
             locks = {
@@ -495,12 +501,12 @@ local function BuildSkillsData(SkillTreeFns)
             },
             onactivate = function(inst)
                 if TheWorld.components.linkeditemmanager then
-                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wortox_reviver", AllowConsumption_wortox_reviver)
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayer(inst, AllowConsumption_wortox_reviver)
                 end
             end,
             ondeactivate = function(inst)
                 if TheWorld.components.linkeditemmanager then
-                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wortox_reviver", DisallowConsumption_wortox_reviver)
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayer(inst, DisallowConsumption_wortox_reviver)
                 end
             end,
         },
@@ -640,7 +646,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_NABBAG_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_NABBAG_DESC,
             icon = "wortox_nabbag",
-            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.43, ORIGIN_NAUGHTY_Y + SPACER_SCALES_IN},
+            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.5, ORIGIN_NAUGHTY_Y + SPACER_SCALES_IN},
             group = "naughty",
             tags = {"naughty", "naughty1"},
             root = true,
@@ -658,7 +664,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_1_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_1_DESC,
             icon = "wortox_souljar_1",
-            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.43, ORIGIN_NAUGHTY_Y + SPACER + SPACER_SCALES_IN},
+            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.5, ORIGIN_NAUGHTY_Y + SPACER + SPACER_SCALES_IN},
             group = "naughty",
             tags = {"naughty", "naughty1"},
             connects = {
@@ -679,7 +685,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_2_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_2_DESC,
             icon = "wortox_souljar_2",
-            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.9, ORIGIN_NAUGHTY_Y + SPACER * 2 + SPACER_SCALES_IN},
+            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.95, ORIGIN_NAUGHTY_Y + SPACER * 2 + SPACER_SCALES_IN},
             group = "naughty",
             tags = {"naughty", "naughty1"},
             forced_focus = {
@@ -696,7 +702,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_3_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_3_DESC,
             icon = "wortox_souljar_3",
-            pos = {ORIGIN_NAUGHTY_X - SPACER * 1, ORIGIN_NAUGHTY_Y + SPACER * 2 + SPACER_SCALES_IN},
+            pos = {ORIGIN_NAUGHTY_X - SPACER * 1.05, ORIGIN_NAUGHTY_Y + SPACER * 2 + SPACER_SCALES_IN},
             group = "naughty",
             tags = {"naughty", "naughty1"},
             onactivate = UpdateNabBags,
@@ -750,7 +756,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_DESC,
             icon = "wortox_souldecoy_1",
-            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.2, ORIGIN_NAUGHTY_Y + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.25, ORIGIN_NAUGHTY_Y + SPACER_SCALES_OUT},
             group = "naughty",
             tags = {"naughty", "naughty1"},
             root = true,
@@ -762,7 +768,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_DESC,
             icon = "wortox_souldecoy_2",
-            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.2, ORIGIN_NAUGHTY_Y + SPACER + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.25, ORIGIN_NAUGHTY_Y + SPACER + SPACER_SCALES_OUT},
             group = "naughty",
             tags = {"naughty", "naughty1"},
         },
@@ -770,7 +776,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_3_TITLE,
             desc = STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_3_DESC,
             icon = "wortox_souldecoy_3",
-            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.2, ORIGIN_NAUGHTY_Y + SPACER + LOCK_SPACER * 2 + SPACER_SCALES_OUT},
+            pos = {ORIGIN_NAUGHTY_X + SPACER * 1.25, ORIGIN_NAUGHTY_Y + SPACER + LOCK_SPACER * 2 + SPACER_SCALES_OUT},
             group = "naughty",
             tags = {"naughty"},
             locks = {

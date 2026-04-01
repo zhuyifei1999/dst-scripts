@@ -10,7 +10,6 @@ end)
 
 function FocalPoint:Reset(no_snap)
 	self.current_focus = nil
-	--V2C: Technically, this conflicts with player_classified camera settings.
     TheCamera:SetDefault()
 	if not no_snap then
 	    TheCamera:Snap()
@@ -77,8 +76,7 @@ function FocalPoint:PushTempFocus(target, minrange, maxrange, priority)
 	print("PushTempFocus is deprecated")
 end
 
---global
-function FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
+local function UpdateFocus(dt, params, parent, dist_sq)
     local tpos = params.target:GetPosition()
     local ppos = parent:GetPosition()
 
@@ -87,11 +85,6 @@ function FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
 		local range = params.maxrange - params.minrange
         offs = offs * (range ~= 0 and ((params.maxrange - math.sqrt(dist_sq)) / range))
     end
-	return offs
-end
-
-local function UpdateFocus(dt, params, parent, dist_sq)
-	local offs = FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
     offs.y = offs.y + 1.5
     TheCamera:SetOffset(offs)
 end
@@ -125,11 +118,7 @@ function FocalPoint:CameraUpdate(dt)
 		if best_focus ~= nil then
 			if self.current_focus ~= best_focus then
 				if self.current_focus ~= nil then
-					--V2C: -Don't StopFocusSource, very inconsistent with the priority stack behaviour.
-					--     -Was this was added to fix some other bug?
-					--     -Use Reset(true) instead.
-					--self:StopFocusSource(self.current_focus.source, self.current_focus.id)
-					self:Reset(true)
+					self:StopFocusSource(self.current_focus.source, self.current_focus.id)
 				end
 				self.current_focus = best_focus
 				if best_focus.updater ~= nil and best_focus.updater.ActiveFn ~= nil then

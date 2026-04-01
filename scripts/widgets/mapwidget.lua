@@ -1,4 +1,3 @@
-local Screen = require("widgets/screen")
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 
@@ -6,20 +5,11 @@ local Image = require "widgets/image"
 local ZOOM_CLAMP_MIN = 1
 local ZOOM_CLAMP_MAX = 20
 
-local MapWidget = Class(Widget, function(self, owner, mapscreen)
+local MapWidget = Class(Widget, function(self, mapscreen)
     Widget._ctor(self, "MapWidget") -- NOTES(JBK): Do not change this unless you also change MiniMap's "MapWidget"! Modders use a different name for your widget or take into account texture size changes.
+	self.owner = ThePlayer
 
-	if EntityScript.is_instance(owner) then
-		self.owner = owner
-		self.mapscreen = mapscreen
-	else
-		--backward compatibility:
-		-- old constructor was function(self, mapscreen)
-		-- but we were actually INCORRECTLY passing in MapWidget(owner, mapscreen)
-		assert(BRANCH ~= "dev")
-		self.owner = ThePlayer --was this NOT enough of a redflag??? - _-"
-		self.mapscreen = owner
-	end
+    self.mapscreen = mapscreen
 
     self.bg = self:AddChild(Image("images/hud.xml", "map.tex"))
     self.bg:SetVRegPoint(ANCHOR_MIDDLE)
@@ -39,9 +29,9 @@ local MapWidget = Class(Widget, function(self, owner, mapscreen)
     self.img.inst.ImageWidget:SetBlendMode( BLENDMODE.Additive )
 
 	self.lastpos = nil
-	self.dragthreshold = nil
 	self.minimap:ResetOffset()
 	self:StartUpdating()
+
 end)
 
 function MapWidget:WorldPosToMapPos(x,y,z)
@@ -81,36 +71,25 @@ function MapWidget:UpdateTexture()
 	self:SetTextureHandle( handle )
 end
 
-function MapWidget:StartDragThreshold(threshold) --pct of screen size
-	self.dragthreshold = threshold
-	self.lastpos = TheInput:GetScreenPosition()
-end
-
-function MapWidget:CancelDragThreshold()
-	self.dragthreshold = nil
+function MapWidget:UpdateMapscreenDecorations()
+    if self.mapscreen and self.mapscreen.decorationdata then
+        self.mapscreen.decorationdata.dirty = true
+    end
 end
 
 function MapWidget:OnUpdate(dt)
+
 	if not self.shown then return end
 
 	if TheInput:IsControlPressed(CONTROL_PRIMARY) then
 		local pos = TheInput:GetScreenPosition()
-		if self.lastpos and (pos.x ~= self.lastpos.x or pos.y ~= self.lastpos.y) then
-			local dx = pos.x - self.lastpos.x
-			local dy = pos.y - self.lastpos.y
-
-			if self.dragthreshold then
-				local dsq = dx * dx + dy * dy
-				local threshold = self.dragthreshold * math.min(TheSim:GetScreenSize())
-				if dsq < threshold * threshold then
-					return
-				end
-				self:CancelDragThreshold()
-			end
-
+		if self.lastpos then
 			-- NOTES(JBK): The magic constant 9 comes from the scaler in MiniMapRenderer ZOOM_MODIFIER.
 			local scale = 2 / 9
-			self:Offset(scale * dx, scale * dy)
+			local dx = scale * ( pos.x - self.lastpos.x )
+			local dy = scale * ( pos.y - self.lastpos.y )
+			self.minimap:Offset( dx, dy )
+            self:UpdateMapscreenDecorations()
 		end
 
 		self.lastpos = pos
@@ -121,10 +100,9 @@ end
 
 function MapWidget:Offset(dx,dy)
 	self.minimap:Offset(dx,dy)
-	if self.mapscreen and self.mapscreen.OnMinimapMoved then
-		self.mapscreen:OnMinimapMoved()
-	end
+    self:UpdateMapscreenDecorations()
 end
+
 
 function MapWidget:OnShow()
 	self.minimap:ResetOffset()

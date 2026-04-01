@@ -29,13 +29,13 @@ function DataAnalyzer:StopDataRegen()
     end
 end
 
-function DataAnalyzer:GetData(ent_or_prefab)
-    local creature_data, scan_id = GetCreatureScanData(ent_or_prefab)
-    if self.datahistory[scan_id] then
-        return math.floor(self.datahistory[scan_id])
+function DataAnalyzer:GetData(prefab)
+    if self.datahistory[prefab] then
+        return math.floor(self.datahistory[prefab])
     else
+        local creature_data = GetCreatureScanData(prefab)
         if creature_data ~= nil then
-            self.datahistory[scan_id] = creature_data.maxdata
+            self.datahistory[prefab] = creature_data.maxdata
             return creature_data.maxdata
         end
     end
@@ -63,16 +63,18 @@ end
 ---- SAVE/LOAD ----------------------------------------------------------------------
 
 function DataAnalyzer:OnSave()
-    return {
+    local data = {
         datahistory = self.datahistory,
     }
+  
+    return data
 end
 
 function DataAnalyzer:OnLoad(data, newents)
     if data ~= nil then
-        if data.datahistory then
+       if data.datahistory then
             self.datahistory = data.datahistory
-        end
+       end
     end
 end
 

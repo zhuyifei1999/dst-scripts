@@ -284,13 +284,22 @@ local Controls = Class(Widget, function(self, owner)
     self.containerroot_side:Hide()
 
 
+
+    if not is_splitscreen then
+        -- This assumes that splitscreen means console; consoles are forced to use
+        -- the integrated backpack, so the side widget shouldn't cause issues there.
+        if owner:HasTag("upgrademoduleowner") then
+            --self.containerroot_side:SetPosition(-120, 0, 0)
+        end
+    end
+
     self.mousefollow = self:AddChild(Widget("follower"))
     self.mousefollow:FollowMouse(true)
     self.mousefollow:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
     self.hover = self:AddChild(HoverText(self.owner))
     self.hover:SetScaleMode(SCALEMODE_PROPORTIONAL)
-
+	
 	if is_player1 then
 	    self.craftingmenu = self.left_root:AddChild(CraftingMenu(self.owner, true))
 	else
@@ -1129,18 +1138,6 @@ function Controls:BuildCommandWheel(is_splitscreen)
 	else
         self.commandwheel:SetScale(TheFrontEnd:GetHUDScale() * consoleScale)
 	end
-end
-
-function Controls:GetTooltipPos(hoverer)
-    return FunctionOrValue(self.override_tooltip_pos, self, hoverer)
-end
-
-function Controls:OverrideTooltipPos(pos_or_pos_x, pos_y, pos_z)
-    if type(pos_or_pos_x) == "number" then
-        self.override_tooltip_pos = Vector3(pos_or_pos_x, pos_y, pos_z)
-    else
-        self.override_tooltip_pos = pos_or_pos_x
-    end
 end
 
 return Controls

@@ -140,15 +140,12 @@ local function rottenfn()
     inst.AnimState:PlayAnimation("rotten")
 
     inst:AddTag("icebox_valid")
-    inst:AddTag("show_spoiled")
     inst:AddTag("cattoy")
 
     MakeInventoryFloatable(inst, "small", 0.25)
     MakeDeployableFertilizerPristine(inst)
 
     inst:AddTag("fertilizerresearchable")
-    --spoiledfood (from edible component) added to pristine state for optimization
-    inst:AddTag("spoiledfood")
 
     inst.GetFertilizerKey = GetFertilizerKey
 
@@ -184,7 +181,6 @@ local function rottenfn()
     inst:AddComponent("tradable")
 
     inst:AddComponent("edible")
-    inst.components.edible:SetForceSpoiledFood(true)
     inst.components.edible.healthvalue = TUNING.SPOILED_HEALTH
     inst.components.edible.hungervalue = TUNING.SPOILED_HUNGER
 

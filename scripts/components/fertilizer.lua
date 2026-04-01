@@ -8,12 +8,11 @@ local Fertilizer = Class(function(self, inst)
 
     self.nutrients = { 0, 0, 0 }
 
-	-- Recommended to explicitly add tag to prefab pristine state
     self.inst:AddTag("fertilizer")
 end)
 
 function Fertilizer:OnRemoveFromEntity()
-    self.inst:RemoveTag("fertilizer")
+    self.inst:RemoveTag("heal_fertilize")
 end
 
 function Fertilizer:SetHealingAmount(health) -- deprecated

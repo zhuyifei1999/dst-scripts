@@ -130,8 +130,11 @@ function Eater:SetStrongStomach(is_strong)
     if is_strong then
         self.inst:AddTag("strongstomach")
         self.strongstomach = true
-    elseif self.strongstomach then
-        self.inst:RemoveTag("strongstomach")
+    else
+        if self.inst:HasTag("strongstomach") then
+            self.inst:RemoveTag("strongstomach")
+        end
+
         self.strongstomach = false
     end
 end
@@ -140,8 +143,11 @@ function Eater:SetCanEatRawMeat(can_eat)
     if can_eat then
         self.inst:AddTag("eatsrawmeat")
         self.eatsrawmeat = true
-    elseif self.eatsrawmeat then
-        self.inst:RemoveTag("eatsrawmeat")
+    else
+        if self.inst:HasTag("eatsrawmeat") then
+            self.inst:RemoveTag("eatsrawmeat")
+        end
+
         self.eatsrawmeat = false
     end
 end
@@ -150,8 +156,11 @@ function Eater:SetIgnoresSpoilage(ignores)
     if ignores then
         self.inst:AddTag("ignoresspoilage")
         self.ignoresspoilage = true
-    elseif self.ignoresspoilage then
-        self.inst:RemoveTag("ignoresspoilage")
+    else
+        if self.inst:HasTag("ignoresspoilage") then
+            self.inst:RemoveTag("ignoresspoilage")
+        end
+
         self.ignoresspoilage = false
     end
 end
@@ -160,24 +169,13 @@ function Eater:SetRefusesSpoiledFood(refuses)
     if refuses then
         self.inst:AddTag("nospoiledfood")
         self.nospoiledfood = true
-    elseif self.nospoiledfood then
-        self.inst:RemoveTag("nospoiledfood")
+    else
+        if self.inst:HasTag("nospoiledfood") then
+            self.inst:RemoveTag("nospoiledfood")
+        end
+        
         self.nospoiledfood = false
     end
-end
-
-function Eater:SetSpoiledProcessor(processor)
-    if processor then
-        self.inst:AddTag("spoiledprocessor")
-        self.spoiledprocessor = true
-    elseif self.spoiledprocessor then
-        self.inst:RemoveTag("spoiledprocessor")
-        self.spoiledprocessor = false
-    end
-end
-
-function Eater:IsSpoiledProcessor()
-    return self.spoiledprocessor
 end
 
 function Eater:SetOnEatFn(fn)
@@ -186,7 +184,7 @@ end
 
 function Eater:DoFoodEffects(food)
     return not ((self.strongstomach and food:HasTag("monstermeat")) or
-                (self.eatsrawmeat and food:HasTag("rawmeat")) or
+                (self.eatsrawmeat and food:HasTag("rawmeat")) or 
                 (self.inst.components.foodaffinity and self.inst.components.foodaffinity:HasPrefabAffinity(food)))
 end
 

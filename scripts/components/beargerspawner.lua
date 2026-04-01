@@ -249,11 +249,11 @@ end
 --------------------------------------------------------------------------
 
 function self:SetSecondBeargerChance(chance)
-	--deprecated
+	--depreciated
 end
 
 function self:SetFirstBeargerChance(chance)
-	--deprecated
+	--depreciated
 end
 
 function self:OnPostInit()

@@ -348,7 +348,7 @@ local function iconfn()
 
     inst.icon = nil
     inst:DoTaskInTime(0, icon_init)
-	inst.OnRemoveEntity = OnRemoveEntity
+    inst.OnRemoveEntity = inst.OnRemoveEntity
     inst.persists = false
 
     return inst

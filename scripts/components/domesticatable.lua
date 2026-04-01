@@ -5,9 +5,6 @@ local DECAY_TASK_PERIOD = 10
 local OBEDIENCE_DECAY_RATE = -1/(TUNING.TOTAL_DAY_TIME * 2)
 local FEEDBACK_DECAY_RATE = -1/(TUNING.TOTAL_DAY_TIME * 45)
 
-local function ondomesticated(self, domesticated)
-	self.inst:AddOrRemoveTag("domesticated", domesticated)
-end
 
 local Domesticatable = Class(function(self, inst)
     self.inst = inst
@@ -33,16 +30,11 @@ local Domesticatable = Class(function(self, inst)
     self.tendencies = {}
 
     self.decaytask = nil
-end,
-nil,
-{
-	domesticated = ondomesticated,
-})
+end)
 
 function Domesticatable:OnRemoveFromEntity()
     self:CancelTask()
     self.inst:RemoveTag("domesticatable")
-	self.inst:RemoveTag("domesticated")
 end
 
 function Domesticatable:SetDomesticationTrigger(fn)
@@ -197,8 +189,15 @@ function Domesticatable:CheckAndStartTask()
 end
 
 function Domesticatable:SetDomesticated(domesticated)
-	self.domesticated = domesticated or false
+    self.domesticated = domesticated
     self:Validate()
+    if domesticated then
+        self.inst:AddTag("domesticated")
+    else
+        if self.inst:HasTag("domesticated") then
+            self.inst:RemoveTag("domesticated")
+        end
+    end
 end
 
 function Domesticatable:IsDomesticated()

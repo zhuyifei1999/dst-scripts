@@ -50,7 +50,6 @@ AddModReleaseID( "R37_LUNAR_CAGE" )
 AddModReleaseID( "R38_ELECTROCUTE" )
 AddModReleaseID( "R39_WHIRL_VAULT" )
 AddModReleaseID( "R40_PEARLMAS" )
-AddModReleaseID( "R41_ST_WX78" )
 
 -----------------------------------------------------------------------------------------------
 

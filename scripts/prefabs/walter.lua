@@ -1339,6 +1339,12 @@ local prefabs_wobycourier_marker = {
     "wobycourier_marker_close"
 }
 
+local function wobycourier_marker_init(inst)
+    RegisterGlobalMapIcon(inst)
+    local close = SpawnPrefab("wobycourier_marker_close")
+    close.entity:SetParent(inst.entity)
+end
+
 local function wobycourier_marker_fn()
     local inst = CreateEntity()
 
@@ -1358,8 +1364,7 @@ local function wobycourier_marker_fn()
     inst:AddTag("globalmapicon") -- Map action logic.
     inst:AddTag("NOBLOCK")
 
-	RegisterGlobalMapIcon(inst, "wobycourier_marker")
-	SpawnPrefab("wobycourier_marker_close").entity:SetParent(inst.entity)
+    inst:DoTaskInTime(0, wobycourier_marker_init)
 
     return inst
 end

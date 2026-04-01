@@ -23,9 +23,6 @@ return{
             NOTMERM = "Only mademoiselle Wurt can ring this dinner bell.",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
-            NOTAROBOT = "Property of our metal friend.",
---fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -67,7 +64,6 @@ return{
             HASPET = "I already have a little companion.",
 			TICOON = "Non, that's not the one I'm following.",
             BUSY_STATION = "Patience!",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -225,7 +221,6 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "I do not think I'm the one it wants to talk to.",
---fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -360,9 +355,6 @@ return{
             NOTAMERM = "I shouldn't rummage through someone else's cupboard.",
             NOTSOULJARHANDLER = "How do souls taste? I guess I'll never know.",
             RESTRICTED = "This is not for me!",
-            NOTAROBOT = "Property of our metal friend.",
---fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -396,20 +388,7 @@ return{
             NOTMASTERCHEF = "unused_by_warly",
             NOTSOULJARHANDLER = "How do souls taste? I guess I'll never know.",
             RESTRICTED = "This is not for me!",
-            NOTAROBOT = "Property of our metal friend.",
---fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
---fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
-		STARTMAPDELIVER =
-		{
---fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
---fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
---fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
-		},
-        SWAPBODIES_MAP =
-        {
---fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
-        },
         TEACH =
         {
             --Recipes/Teacher
@@ -437,10 +416,6 @@ return{
         UPGRADE =
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
-        },
-        USEEQUIPPEDITEM =
-        {
---fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
         },
         USEITEMON =
         {
@@ -1225,12 +1200,6 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "I suppose they are otherwise engaged at the moment!",
-
-    -- wx specific
---fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
---fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
---fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
---fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6052,36 +6021,6 @@ return{
 
         YOTH_KNIGHTSTICK = "I will be quick as a horse!",
         YOTH_CHAIR_ROCKING_ITEM = "Aw, it looks like fun!", -- The chair itself uses WOOD_CHAIR inspect states.
-
-		-- Meta 6
-
-		WX78_DRONE_SCOUT = "Where will you go next?",
-		WX78_DRONE_DELIVERY = "A flying pantry! Wonderful!",
-		WX78_DRONE_ZAP = "But can it fry an egg?",
-		WX78_DRONE_ZAP_REMOTE =
-		{
-			GENERIC = "It is too fancy for me!",
---fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
-		},
-
-        -- All other characters but Wx-78 share one quote.
-        WX78MODULE_RADAR = "They give our metal friend a little extra zest, non?",
-        WX78MODULE_STACKSIZE = "They give our metal friend a little extra zest, non?",
-        WX78MODULE_DIGESTION = "They give our metal friend a little extra zest, non?",
-        WX78MODULE_SCREECH = "They give our metal friend a little extra zest, non?",
-        WX78MODULE_LIGHT2 = "They give our metal friend a little extra zest, non?",
-
-        WX78_INVENTORYCONTAINER =
-        {
-            HELD = "only_used_by_wx78", -- Held, and working as a container
-            GENERIC = "What did our metal friend leave here?", -- It was dropped, treat it as if its broken down, and is rummagable
-        },
-
-        WX78_FOODBRICK =
-        {
-            WET = "As a chef, I am appalled. However...",
-            GENERIC = "It is missing the secret ingredient. Water!",
-        },
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

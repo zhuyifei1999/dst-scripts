@@ -122,8 +122,9 @@ end
 
 --
 local function DefensiveCanFight(inst)
+
     local target = inst.components.combat.target
-	if target and not inst:auratest(target) then
+    if target ~= nil and not inst.auratest(inst, target) then
         inst.components.combat:GiveUp()
         return false
     end
@@ -141,7 +142,7 @@ local MAX_AGGRESSIVE_FIGHT_DSQ = math.pow(TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE 
 local function AggressiveCanFight(inst)
 
     local target = inst.components.combat.target
-	if target and not inst:auratest(target) then
+    if target ~= nil and not inst.auratest(inst, target) then
         inst.components.combat:GiveUp()
         return false
     end

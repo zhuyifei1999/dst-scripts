@@ -92,11 +92,11 @@ function Beard:GetInsulation()
     return self.bits * TUNING.INSULATION_PER_BEARD_BIT * self.insulation_factor * skill_mod
 end
 
-function Beard:ShouldTryToShave(doer, item)
+function Beard:ShouldTryToShave(who, whithwhat)
     if self.bits == 0 then
         return false, "NOBITS"
     elseif self.canshavetest ~= nil then
-        local pass, reason = self.canshavetest(self.inst, doer)
+        local pass, reason = self.canshavetest(self.inst, who)
         if not pass then
             return false, reason
         end
@@ -104,11 +104,11 @@ function Beard:ShouldTryToShave(doer, item)
     return true
 end
 
-function Beard:Shave(doer, item)
+function Beard:Shave(who, withwhat)
     if self.bits == 0 then
         return false, "NOBITS"
     elseif self.canshavetest ~= nil then
-        local pass, reason = self.canshavetest(self.inst, doer)
+        local pass, reason = self.canshavetest(self.inst, who)
         if not pass then
             return false, reason
         end
@@ -154,8 +154,8 @@ function Beard:Shave(doer, item)
         end
     end
 
-    if doer == self.inst and doer.components.sanity ~= nil then
-        doer.components.sanity:DoDelta(TUNING.SANITY_SMALL)
+    if who == self.inst and who.components.sanity ~= nil then
+        who.components.sanity:DoDelta(TUNING.SANITY_SMALL)
     end
 
     self:UpdateBeardInventory()

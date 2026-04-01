@@ -1321,5 +1321,5 @@ return {
 	GetDefaultForOption            				= GetDefaultForOption,
 	GetCategoryForOption						= GetCategoryForOption,
 	IsCustomizeOption							= IsCustomizeOption,
-	GetGroupForOption              				= GetGroupForOption, --deprecated
+	GetGroupForOption              				= GetGroupForOption, --depreciated
 }

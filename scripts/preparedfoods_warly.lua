@@ -34,7 +34,6 @@ local foods =
 		foodtype = FOODTYPE.GOODIES,
 		health = TUNING.HEALING_SMALL,
 		hunger = TUNING.CALORIES_LARGE,
-        chargevalue = TUNING.WX78_CHARGE_SMALL,
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_SMALL,
 		cooktime = 2,

@@ -809,7 +809,7 @@ return {
     GetDataForLocation = GetDataForLocation,
     ClearModData = ClearModData,
 
-    --Deprecated
+    --Depreciated
     GetLevelList = GetLevelList,
     GetDefaultLevelData = GetDefaultLevelData,
     GetDataForLevelID = GetDataForLevelID,
@@ -817,7 +817,7 @@ return {
     GetNameForLevelID = GetNameForLevelID,
     GetDescForLevelID = GetDescForLevelID,
     GetLocationForLevelID = GetLocationForLevelID,
-    --Deprecated
+    --Depreciated
 
     GetSettingsList = GetSettingsList,
     GetDefaultSettingsData = GetDefaultSettingsData,

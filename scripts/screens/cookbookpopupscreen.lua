@@ -1,4 +1,5 @@
 local Screen = require "widgets/screen"
+local MapWidget = require("widgets/mapwidget")
 local Widget = require "widgets/widget"
 local ImageButton = require "widgets/imagebutton"
 local CookbookWidget = require "widgets/redux/cookbookwidget"

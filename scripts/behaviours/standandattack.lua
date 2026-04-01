@@ -1,9 +1,10 @@
-StandAndAttack = Class(BehaviourNode, function(self, inst, findnewtargetfn, timeout)
+StandAndAttack = Class(BehaviourNode, function(self, inst, findnewtargetfn, timeout, shouldstoplocomotor)
     BehaviourNode._ctor(self, "StandAndAttack")
     self.inst = inst
     self.findnewtargetfn = findnewtargetfn
     self.numattacks = 0
 	self.timeout = timeout
+    self.shouldstoplocomotor = shouldstoplocomotor or nil
 
     -- we need to store this function as a key to use to remove itself later
     self.onattackfn = function(inst, data)
@@ -64,7 +65,9 @@ function StandAndAttack:Visit()
             self.status = SUCCESS
             combat:SetTarget(nil)
         else
-            if self.inst.components.locomotor then
+            -- Some things need to make sure to clear locomotor before we attack.
+            -- Should probably be done by default but this is old code so make it opt in.
+            if self.shouldstoplocomotor and self.inst.components.locomotor then
                 self.inst.components.locomotor:Stop()
             end
             if self.inst.sg:HasStateTag("canrotate") then

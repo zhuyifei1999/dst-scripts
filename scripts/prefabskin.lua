@@ -37,7 +37,7 @@ local function AddSkinSounds(inst)
         inst.skin_wrap_sound = sounds.wrap
         -- Bug Net
         inst.overridebugnetsound = sounds.net
-        -- Glomling [string], reviver [string], staff [string], WX-78 scanner [table]
+        -- Glomling, reviver, staff
         inst.skin_sound = sounds.genericuse -- FIXME(JBK): This variable name on both sides and split the objects out.
         -- Staff
         inst.skin_castsound = sounds.cast

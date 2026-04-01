@@ -36,7 +36,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
     background_node_range = {0,1},
 })
 
--- older deprecated AddLevel up here --
+-- older depreciated AddLevel up here --
 
 AddWorldGenLevel(LEVELTYPE.SURVIVAL, {id="DST_CAVE",
     name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE,

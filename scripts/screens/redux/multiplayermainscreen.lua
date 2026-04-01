@@ -36,7 +36,7 @@ local KitcoonPuppet = require "widgets/kitcoonpuppet"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
-local IS_BETA = BRANCH == "staging" or BRANCH == "dev"
+local IS_BETA = BRANCH == "staging" --or BRANCH == "dev"
 local IS_DEV_BUILD = BRANCH == "dev"
 
 local function PlayBannerSound(inst, self, sound)
@@ -249,14 +249,10 @@ end
 local function MakeRift5Banner(self, banner_root, uianim)
 	_MakeGenericBanner(uianim, "dst_menu_rift5")
 end
+]]
 
 local function MakeRift6Banner(self, banner_root, uianim)
 	_MakeGenericBanner(uianim, "dst_menu_rift6")
-end
-]]
-
-local function MakeMeta6Banner(self, banner_root, uianim)
-    _MakeGenericBanner(uianim, "dst_menu_meta6")
 end
 
 --------------------------------------------------------------------------
@@ -371,7 +367,7 @@ function MakeBanner(self)
 		--
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeMeta6Banner(self, banner_root, uianim)
+		MakeHallowedNightsBanner(self, banner_root, uianim)
     elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTH) then
         MakeYOTHBanner(self, banner_root, uianim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTS) then
@@ -394,7 +390,7 @@ function MakeBanner(self)
 		--*** !!! ***
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeMeta6Banner(self, banner_root, uianim)
+		MakeRift6Banner(self, banner_root, uianim)
 		--MakeWurtWinonaQOLBanner(self, banner_root, uianim)
 		--MakeRiftsMetaQoLBanner(self, banner_root, uianim)
 		--MakeMeta2Banner(self, banner_root, uianim)

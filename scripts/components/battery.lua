@@ -6,43 +6,25 @@ local Battery = Class(function(self, inst)
 
     --self.canbeused = nil
     --self.onused = nil
-	--self.resolvepartialchargemult = nil
 end)
 
 function Battery:OnRemoveFromEntity()
     self.inst:RemoveTag("battery")
 end
 
-function Battery:SetCanBeUsedFn(fn)
-	self.canbeused = fn
-end
-
-function Battery:SetOnUsedFn(fn)
-	self.onused = fn
-end
-
-function Battery:SetResolvePartialChargeMultFn(fn)
-	self.resolvepartialchargemult = fn
-end
-
 ---------------------------------------------------------------------------------
 
---can return a lower mult if battery supports partial charge when not enough power left
-function Battery:ResolvePartialChargeMult(user, mult)
-	return self.resolvepartialchargemult and self.resolvepartialchargemult(self.inst, user, mult) or mult
-end
-
-function Battery:CanBeUsed(user, mult)
+function Battery:CanBeUsed(user)
     if self.canbeused ~= nil then
-		return self.canbeused(self.inst, user, mult) --returns success, reason
+        return self.canbeused(self.inst, user)
     else
         return true
     end
 end
 
-function Battery:OnUsed(user, mult)
+function Battery:OnUsed(user)
     if self.onused ~= nil then
-		self.onused(self.inst, user, mult)
+        self.onused(self.inst, user)
     end
 end
 

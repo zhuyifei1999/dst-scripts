@@ -45,7 +45,7 @@ end
 --------------------------------------------------------------------------
 
 function self:OverrideAttackDensity(density)
-	--deprecated
+	--depreciated
 end
 
 function self:DoSoftSpawn(nest)

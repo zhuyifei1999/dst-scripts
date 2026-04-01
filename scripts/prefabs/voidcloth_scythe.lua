@@ -256,10 +256,42 @@ local NO_TAGS = shallowcopy(NO_TAGS_PVP)
 table.insert(NO_TAGS, "player")
 table.insert(NO_TAGS, "wall")
 
+local function HasFriendlyLeader(target, attacker)
+    local target_leader = target.components.follower and target.components.follower:GetLeader()
+
+    if target_leader ~= nil then
+
+        if target_leader.components.inventoryitem then
+            target_leader = target_leader.components.inventoryitem:GetGrandOwner()
+        end
+
+        local PVP_enabled = TheNet:GetPVPEnabled()
+        return (target_leader ~= nil 
+                and (target_leader:HasTag("player") 
+                and not PVP_enabled)) or
+                (target.components.domesticatable and target.components.domesticatable:IsDomesticated() 
+                and not PVP_enabled) or
+                (target.components.saltlicker and target.components.saltlicker.salted
+                and not PVP_enabled)
+    end
+
+    return false
+end
+
 local function ShadowAoEValidFn(target, attacker)
-	if attacker.components.combat:IsAlly(target) then
-		return false
-	end
+    if target:HasTag("playerghost") then
+        return false
+    end
+
+    if target:HasTag("monster") and not TheNet:GetPVPEnabled() and 
+        ((target.components.follower and target.components.follower:GetLeader() ~= nil and 
+            target.components.follower:GetLeader():HasTag("player")) or target.bedazzled) then
+        return false
+    end
+
+    if HasFriendlyLeader(target, attacker) then
+        return false
+    end
 
     TryToSparkOn(target, attacker)
     return true
