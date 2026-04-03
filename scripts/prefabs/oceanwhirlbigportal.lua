@@ -334,7 +334,6 @@ local function fn()
     wateryprotection.witherprotectiontime = TUNING.OCEANWHIRLPORTAL_PROTECTION_TIME
     wateryprotection.addcoldness = TUNING.OCEANWHIRLPORTAL_ADD_COLDNESS
     wateryprotection.addwetness = TUNING.OCEANWHIRLPORTAL_ADD_WETNESS
-    wateryprotection.applywetnesstoitems = true
 
     local oceanwhirlportalphysics = inst:AddComponent("oceanwhirlportalphysics")
     oceanwhirlportalphysics:SetFocalRadius(TUNING.OCEANWHIRLBIGPORTAL_FOCALRADIUS)

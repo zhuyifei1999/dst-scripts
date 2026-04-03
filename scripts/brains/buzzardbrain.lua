@@ -347,7 +347,7 @@ function BuzzardBrain:OnStart()
             WhileNode(function() return self.inst.shouldGoAway end, "Go Away",
                 DoAction(self.inst, GoHome)),
 
-            StandAndAttack(self.inst, nil, nil, true),
+            StandAndAttack(self.inst),
 
             IfNode(function() return self:IsThreatened() end, "Threat Near",
                 ConditionNode(function() return self:DealWithThreat() end)),

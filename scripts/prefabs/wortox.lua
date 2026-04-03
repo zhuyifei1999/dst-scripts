@@ -1,5 +1,6 @@
 local MakePlayerCharacter = require("prefabs/player_common")
 local wortox_soul_common = require("prefabs/wortox_soul_common")
+local PlayerCommonExtensions = require("prefabs/player_common_extensions")
 
 local assets =
 {
@@ -1537,16 +1538,7 @@ local function wortox_decoy_fn()
 
     inst.AnimState:AddOverrideBuild("player_emote_extra")
     inst.AnimState:AddOverrideBuild("player_actions")
-    -- NOTES(JBK): Keep these in sync with the player. [WSDCSC]
-    inst.AnimState:Hide("ARM_carry")
-    inst.AnimState:Hide("HAT")
-    inst.AnimState:Hide("HAIR_HAT")
-    inst.AnimState:Show("HAIR_NOHAT")
-    inst.AnimState:Show("HAIR")
-    inst.AnimState:Show("HEAD")
-    inst.AnimState:Hide("HEAD_HAT")
-    inst.AnimState:Hide("HEAD_HAT_NOHELM")
-    inst.AnimState:Hide("HEAD_HAT_HELM")
+    PlayerCommonExtensions.SetupBaseSymbolVisibility(inst)
 
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wilson")

@@ -67,9 +67,8 @@ local function OnCameraUpdate_Client(dt)
     end
 end
 -- This is just so players using larger camera mod don't run into issues with emitter limit
-local MAX_CAMERA_DIST = PLAYER_CAMERA_MAX_DIST_CAVES
 local function GetRadiusSqAllow()
-    local radius = math.min(MAX_CAMERA_DIST, TheCamera.maxdist) + 10 --Padding
+    local radius = math.min(PLAYER_CAMERA_MAX_DIST, TheCamera.maxdist) + 10 --Padding
     return radius*radius
 end
 local function OnCameraUpdate_LargeDist_Client(dt) -- Camera moved at least a good chunk, do an update.

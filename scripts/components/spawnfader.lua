@@ -76,6 +76,10 @@ end
 
 function SpawnFader:OnUpdate(dt)
     self.fadeval = math.max(0, self.fadeval - dt)
+	if TheWorld.ismastersim then
+		self._fade:set_local(math.floor(7 * self.fadeval + .5))
+	end
+
     local fadingout = self._fadeout:value()
     local k
     if fadingout then
@@ -99,14 +103,10 @@ function SpawnFader:OnUpdate(dt)
         if fadingout then
             self.inst:PushEvent("spawnfaderout")
         else
+			if TheWorld.ismastersim then
+				self.inst:RemoveTag("NOCLICK")
+			end
             self.inst:PushEvent("spawnfaderin")
-        end
-    end
-
-    if TheWorld.ismastersim then
-        self._fade:set_local(math.floor(7 * self.fadeval + .5))
-        if not self.updating then
-            self.inst:RemoveTag("NOCLICK")
         end
     end
 end

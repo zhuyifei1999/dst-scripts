@@ -10,10 +10,9 @@ local X = -298
 local Y = 288
 
 local width = 255+249-50
-local height = 142+10
 
 local CURVE_BASE_H = 75
-local A_BASE_H = -10 +TILE
+local A_BASE_H = -18 +TILE
 
 local COL1= POS_X_1+math.floor(width/11)
 local COL2= POS_X_1+math.floor(width/11) *2
@@ -65,7 +64,7 @@ local function BuildSkillsData(SkillTreeFns)
             defaultfocus = true,
         },
         wendy_sisturn_2 = {
-            pos = {140,154},-- {COL2-2-8, CURV2+ TILEGAP -10},
+            pos = {144,156},-- {COL2-2-8, CURV2+ TILEGAP -10},
             tags = {"sisturn"},
             onactivate   = function(inst, fromload)
                inst.components.sanityauraadjuster:StartTask()
@@ -79,7 +78,7 @@ local function BuildSkillsData(SkillTreeFns)
         },
 
         wendy_sisturn_3 = {
-            pos = {176,133},-- {COL3-4-10, CURV3+ TILEGAP-3},
+            pos = {185,136},-- {COL3-4-10, CURV3+ TILEGAP-3},
             tags = {"sisturn"},
             onactivate   = function(inst, fromload)
                 if inst.components.ghostlybond and inst.components.ghostlybond.ghost then
@@ -150,7 +149,7 @@ local function BuildSkillsData(SkillTreeFns)
     local avenging_ghost_skills =
     {
         wendy_avenging_ghost = {
-            pos = {-47, CURV5+20-20-3-5 },
+            pos = {-47, CURV5-10 },
             tags = {},
             root = true,
         },
@@ -169,7 +168,7 @@ local function BuildSkillsData(SkillTreeFns)
             },
         },
         wendy_smallghost_2 = {
-            pos =  {-138, 154 },-- {X+390+6,Y-115},
+            pos =  {-137, 154 },-- {X+390+6,Y-115},
             tags = {},
             connects = {
                 "wendy_smallghost_3",
@@ -185,7 +184,7 @@ local function BuildSkillsData(SkillTreeFns)
     local ghostflower_skills =
     {
         wendy_ghostflower_butterfly = {
-            pos = {-168, 73}, --{COL4+10+14,CURV5+TILEGAP},
+            pos = {-168, 71}, --{COL4+10+14,CURV5+TILEGAP},
             tags = {},
             root=true,
             connects = {
@@ -193,14 +192,14 @@ local function BuildSkillsData(SkillTreeFns)
             },
         },
         wendy_ghostflower_hat = {
-            pos = {-132,100},-- {COL4+10+13+TILEGAP,CURV5+TILEGAP+5},
+            pos = {-132,97},-- {COL4+10+13+TILEGAP,CURV5+TILEGAP+5},
             tags = {},
             connects = {
                 "wendy_ghostflower_grave",
             },
         },
         wendy_ghostflower_grave = {
-            pos =  {-96, 118},  --{COL4+10+12+TILEGAP+TILEGAP,CURV5+TILEGAP+ 6},
+            pos =  {-96, 115},  --{COL4+10+12+TILEGAP+TILEGAP,CURV5+TILEGAP+ 6},
             tags = {},
         },
     }
@@ -247,14 +246,14 @@ local function BuildSkillsData(SkillTreeFns)
             root = true,
         },
         wendy_ghostcommand_2 = {
-            pos = {135,100},
+            pos = {138,100},
             tags = {},
             connects = {
                 "wendy_ghostcommand_3",
             },
         },
         wendy_ghostcommand_3 = {
-            pos = {171,73},
+            pos = {177,73},
             tags = {},
         },
     }

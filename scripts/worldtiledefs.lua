@@ -2,7 +2,7 @@ require "constants"
 
 local GROUND_PROPERTIES = {}
 
---depreciated property sets
+--deprecated property sets
 local assets = {}
 function GroundImage(name)
     return "levels/tiles/"..name..".tex"
@@ -201,6 +201,6 @@ return
     creep = {},
     assets = assets,
     minimapassets = {},
-    wall = WALL_PROPERTIES,  --depreciated
-    underground = underground_layers, --depreciated
+    wall = WALL_PROPERTIES,  --deprecated
+    underground = underground_layers, --deprecated
 }

@@ -153,7 +153,12 @@ local assets =
     Asset("ANIM", "anim/winona_inspectacles_fx.zip"),
     Asset("ANIM", "anim/inspectacles.zip"),
     Asset("ANIM", "anim/roseglasseshat_over.zip"),
+	Asset("ANIM", "anim/wx78_drone_zap_overlay.zip"),
     Asset("ANIM", "anim/ui_balatro.zip"),
+
+    Asset("ANIM", "anim/status_wx_chest.zip"),
+    Asset("ANIM", "anim/ui_wx78moduleremover.zip"),
+    Asset("ANIM", "anim/status_meter_wx_shield.zip"),
 
     Asset("ATLAS", "images/command_wheel.xml"),
     Asset("IMAGE", "images/command_wheel.tex"),

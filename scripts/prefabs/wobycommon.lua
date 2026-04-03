@@ -548,7 +548,7 @@ local function NoHoles(pt)
     return not TheWorld.Map:IsPointNearHole(pt)
 end
 local CONTAINER_MUST_TAGS = { "_container" }
-local CONTAINER_CANT_TAGS = { "companion", "portablestorage", "mermonly", "mastercookware", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local CONTAINER_CANT_TAGS = { "wx78_backupbody", "companion", "portablestorage", "mermonly", "mastercookware", "FX", "NOCLICK", "DECOR", "INLIMBO" }
 local ALLOWED_CONTAINER_TYPES = { "chest", "pack" }
 local function WobyCourier_ForceDelivery(_pet, itemcountmax)
     local courierdata = _pet.woby_commands_classified.courierdata

@@ -491,6 +491,9 @@ local assets =
     Asset("ATLAS", "images/skilltree5.xml"),
     Asset("IMAGE", "images/skilltree5.tex"),
 
+    Asset("ATLAS", "images/skilltree6.xml"),
+    Asset("IMAGE", "images/skilltree6.tex"),
+
     Asset("ATLAS", "images/skilltree_icons.xml"),
     Asset("IMAGE", "images/skilltree_icons.tex"),    
 

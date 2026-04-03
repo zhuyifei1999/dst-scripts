@@ -703,7 +703,7 @@ local function ReturnActiveItemToSlot(inst, slot)
         if item == nil then
             local giveitem = SlotItem(inst._activeitem, slot)
             PushItemGet(inst, giveitem, true)
-        elseif item.replica.stackable ~= nil and item.prefab == inst._activeitem.prefab and item:StackableSkinHack(inst._activeitem) then
+        elseif item.replica.stackable ~= nil and item.replica.stackable:CanStackWith(inst._activeitem) then
             local stacksize = item.replica.stackable:StackSize() + inst._activeitem.replica.stackable:StackSize()
             local maxsize = item.replica.stackable:MaxSize()
             PushStackSize(inst, item, math.min(stacksize, maxsize), true)
@@ -779,7 +779,7 @@ end
 local function AddOneOfActiveItemToSlot(inst, slot)
     if not IsBusy(inst) and inst._activeitem ~= nil then
         local item = inst:GetItemInSlot(slot)
-        if item ~= nil and item.prefab == inst._activeitem.prefab and item:StackableSkinHack(inst._activeitem) then
+        if item ~= nil and item.replica.stackable:CanStackWith(inst._activeitem) then
             PushStackSize(inst, item, item.replica.stackable:StackSize() + 1, true)
             PushStackSize(inst, inst._activeitem, nil, nil, inst._activeitem.replica.stackable:StackSize() - 1, true)
             SendRPCToServer(RPC.AddOneOfActiveItemToSlot, slot)
@@ -790,7 +790,7 @@ end
 local function AddAllOfActiveItemToSlot(inst, slot)
     if not IsBusy(inst) and inst._activeitem ~= nil then
         local item = inst:GetItemInSlot(slot)
-        if item ~= nil and item.prefab == inst._activeitem.prefab and item:StackableSkinHack(inst._activeitem) then
+        if item ~= nil and item.replica.stackable:CanStackWith(inst._activeitem) then
             local stacksize = item.replica.stackable:StackSize() + inst._activeitem.replica.stackable:StackSize()
             local maxsize = item.replica.stackable:MaxSize()
             if stacksize <= maxsize then
@@ -851,6 +851,11 @@ local function UseItemFromInvTile(inst, item)
             inst._parent.components.playeractionpicker:GetUseItemActions(item, inst._activeitem, true) or
             inst._parent.components.playeractionpicker:GetInventoryActions(item)
 		local act = actions[1]
+        local maptarget = inst._parent.components.playercontroller:GetMapTarget(act)
+        if maptarget ~= nil then
+            inst._parent.components.playercontroller:PullUpMap(maptarget, act.action)
+            return
+        end
 		if act ~= nil and not TryNonNetworkedAction(inst, act, item) then
 			inst._parent.components.playercontroller:RemoteUseItemFromInvTile(act, item)
         end
@@ -865,6 +870,11 @@ local function ControllerUseItemOnItemFromInvTile(inst, item, active_item)
             inst._parent.sg:HasStateTag("busy")) and
         inst._parent.components.playercontroller ~= nil then
         local act = inst._parent.components.playercontroller:GetItemUseAction(active_item, item)
+        local maptarget = inst._parent.components.playercontroller:GetMapTarget(act)
+        if maptarget ~= nil then
+            inst._parent.components.playercontroller:PullUpMap(maptarget, act.action)
+            return
+        end
         if act ~= nil then
             --V2C: Usability improvement for DST, we don't need to close
             --     the window for actions since it does not pause in DST
@@ -892,6 +902,11 @@ local function ControllerUseItemOnSelfFromInvTile(inst, item)
             act = BufferedAction(inst._parent, nil, ACTIONS.UNEQUIP, item)
         end
 
+        local maptarget = inst._parent.components.playercontroller:GetMapTarget(act)
+        if maptarget ~= nil then
+            inst._parent.components.playercontroller:PullUpMap(maptarget, act.action)
+            return
+        end
 		if act ~= nil and not TryNonNetworkedAction(inst, act, item) then
             inst._parent.components.playercontroller:RemoteControllerUseItemOnSelfFromInvTile(act, item)
         end
@@ -915,6 +930,11 @@ local function ControllerUseItemOnSceneFromInvTile(inst, item)
             act = inst._parent.components.playercontroller:GetItemUseAction(item)
         end
 
+        local maptarget = inst._parent.components.playercontroller:GetMapTarget(act)
+        if maptarget ~= nil then
+            inst._parent.components.playercontroller:PullUpMap(maptarget, act.action)
+            return
+        end
 		if act and act.action ~= ACTIONS.UNEQUIP and act.action ~= ACTIONS.DROP and not TryNonNetworkedAction(inst, act, item) then
             inst._parent.components.playercontroller:DoActionAutoEquip(act)
             inst._parent.components.playercontroller:RemoteControllerUseItemOnSceneFromInvTile(act, item)

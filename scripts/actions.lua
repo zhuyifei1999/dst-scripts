@@ -326,6 +326,7 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.closes_map = data.closes_map -- Should immediately close the minimap on action start.
     self.map_only = data.map_only -- Action only exists from a map.
     self.map_works_on_unexplored = data.map_works_on_unexplored -- Bypass seeable checks.
+    self.map_works_on_impassable = data.map_works_on_impassable -- Allow impassable tiles for selection.
 end)
 
 -- NOTE: High priority is intended to be a shortcut flag for actions that we expect to always dominate if they are available.
@@ -424,6 +425,8 @@ ACTIONS =
     USEITEM = Action({ priority=1, instant=true }),
 	USEITEMON = Action({ distance=2, priority=1, mount_valid=true }),
     STOPUSINGITEM = Action({ priority=1 }),
+	USEEQUIPPEDITEM = Action({ priority=1, mount_valid=true }), --use case similar to USEITEM except not instant
+	STOPUSINGEQUIPPEDITEM = Action({ priority=1, instant=true, mount_valid=true }),
     TAKEITEM = Action(),
     TAKESINGLEITEM = Action(),
     MAKEBALLOON = Action({ mount_valid=true }),
@@ -686,6 +689,19 @@ ACTIONS =
 
     -- Year of the Clockwork Knight
     JOUST = Action({ rmb=true, distance=math.huge, invalid_hold_action = true, silent_generic_fail = true,}),
+
+    -- Meta 6
+    STARTREMOVINGMODULE = Action({ mount_valid = true, invalid_hold_action=true }),
+    REMOVEMODULE = Action({ mount_valid = true, invalid_hold_action=true, instant = true }), -- The action we use when we're already in the UI.
+    STOPREMOVINGMODULE = Action({ mount_valid = true, invalid_hold_action=true }),
+	MAPSCOUT_MAP = Action({ instant = true, mount_valid = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
+	MAPSCOUT_MAP_TOOFAR = Action({ instant = true, mount_valid = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
+	MAPSCOUTSELECT_MAP = Action({ instant = true, mount_valid = true, rmb = true, map_only = true, map_works_on_unexplored = true, map_works_on_impassable = true }),
+	STARTMAPDELIVER = Action({ rmb = true }),
+	MAPDELIVER_MAP = Action({ map_only=true, closes_map=true, }),
+    SWAPBODIES_MAP = Action({ customarrivecheck=ArriveAnywhere, rmb=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
+    TOGGLEWXSCREECH = Action({ priority = 1, mount_valid = true, invalid_hold_action=true }),
+    TOGGLEWXSHIELDING = Action({ priority = 2, invalid_hold_action=true, }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -727,8 +743,15 @@ ACTIONS.APPRAISE.fn = function(act)
 end
 
 ACTIONS.EAT.strfn = function(act)
-    return (act.invobject ~= nil and act.invobject:HasTag("fooddrink")) and "DRINK"
-        or nil
+    if act.invobject ~= nil then
+        return (act.doer ~= nil and
+                (act.doer:HasTag("spoiledprocessor") and act.invobject:HasTag("spoiledfood"))
+                or (act.doer:HasTag("allspoiledprocessor") and act.invobject:HasTag("spoiled"))) and "PROCESS"
+            or act.invobject:HasTag("fooddrink") and "DRINK"
+            or nil
+    end
+
+    return nil
 end
 
 ACTIONS.EAT.fn = function(act)
@@ -956,6 +979,35 @@ ACTIONS.SEW.fn = function(act)
     end
 end
 
+local function CanOpenCharacterSpecificContainer(doer, target)
+    if target:HasTag("mastercookware") and not doer:HasTag("masterchef") then
+        return false, "NOTMASTERCHEF"
+    end
+    if target:HasTag("mermonly") and not doer:HasTag("merm") then
+        return false, "NOTAMERM"
+    end
+    if target:HasTag("souljar") and (doer.components.skilltreeupdater == nil or not doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
+        return false, "NOTSOULJARHANDLER"
+    end
+    if target:HasTag("wx78_backupbody") then
+        if not doer.wx78_classified then
+            return false, "NOTAROBOT"
+        end
+        local linkeditem = target.components.linkeditem
+        if not linkeditem then
+            return false, "NOTMYBACKUP"
+        end
+        local owneruserid = linkeditem:GetOwnerUserID()
+        if owneruserid and owneruserid ~= doer.userid then
+            return false, "NOTMYBACKUP"
+        end
+        if not owneruserid and not target:TryToAttachToOwner(doer) then
+            return false, "TOOMANYBACKUPBODIES"
+        end
+    end
+    return true
+end
+
 ACTIONS.RUMMAGE.fn = function(act)
     local targ = act.target or act.invobject
     if targ == nil then
@@ -986,13 +1038,12 @@ ACTIONS.RUMMAGE.fn = function(act)
             return true
         elseif targ.components.container:IsRestricted(act.doer) then
             return false, "RESTRICTED"
-        elseif targ:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
-            return false, "NOTMASTERCHEF"
-        elseif targ:HasTag("mermonly") and not act.doer:HasTag("merm") then
-            return false, "NOTAMERM"
-        elseif targ:HasTag("souljar") and (act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
-            return false, "NOTSOULJARHANDLER"
-        elseif not targ.components.container:IsOpenedBy(act.doer) and not targ.components.container:CanOpen() then
+        end
+        local success, reason = CanOpenCharacterSpecificContainer(act.doer, targ)
+        if not success then
+            return false, reason
+        end
+        if not targ.components.container:IsOpenedBy(act.doer) and not targ.components.container:CanOpen() then
             return false, "INUSE"
         elseif targ.components.container.canbeopened and (proxy == nil or proxy.components.container_proxy:CanBeOpened()) then
             local owner = targ.components.inventoryitem ~= nil and targ.components.inventoryitem:GetGrandOwner() or nil
@@ -1366,8 +1417,9 @@ ACTIONS.CHANGE_TACKLE.fn = function(act)
 		if cur_item == nil then
 			local item = act.invobject.components.inventoryitem:RemoveFromOwner(equipped.components.container.acceptsstacks, true)
 			equipped.components.container:GiveItem(item, targetslot, nil, false)
-		elseif equipped.components.container.acceptsstacks and act.invobject.prefab == cur_item.prefab and act.invobject.skinname == cur_item.skinname
-			and not (cur_item.components.stackable and cur_item.components.stackable:IsFull())
+		elseif equipped.components.container.acceptsstacks and cur_item.components.stackable ~= nil
+            and cur_item.components.stackable:CanStackWith(act.invobject)
+			and not cur_item.components.stackable:IsFull()
 		then
 			local item = act.invobject.components.inventoryitem:RemoveFromOwner(equipped.components.container.acceptsstacks, true)
 			if not equipped.components.container:GiveItem(act.invobject, targetslot, nil, false) then
@@ -1378,7 +1430,7 @@ ACTIONS.CHANGE_TACKLE.fn = function(act)
 				end
 			end
 			return true
-		elseif (act.invobject.prefab ~= cur_item.prefab and (act.invobject.skinname == nil or act.invobject.skinname ~= cur_item.skinname)) or cur_item.components.perishable then
+        elseif cur_item.components.perishable or not (cur_item.components.stackable and cur_item.components.stackable:CanStackWith(act.invobject)) then
 			local item = act.invobject.components.inventoryitem:RemoveFromOwner(equipped.components.container.acceptsstacks, true)
 			local old_item = equipped.components.container:RemoveItemBySlot(targetslot)
 			if not equipped.components.container:GiveItem(item, targetslot, nil, false) then
@@ -1822,7 +1874,17 @@ ACTIONS.PICK.fn = function(act)
 			if act.target.components.pickable:IsStuck() then
 				return false, "STUCK"
 			end
-            act.target.components.pickable:Pick(act.doer)
+			if act.doer and act.doer.sg and act.doer.sg:HasStateTag("chopping") then
+				--wx spin
+				local success, loot = act.target.components.pickable:Pick(TheWorld)
+				if loot then
+					for i, v in ipairs(loot) do
+						Launch(v, act.doer, 1.5)
+					end
+				end
+			else
+				act.target.components.pickable:Pick(act.doer)
+			end
             return true
         elseif act.target.components.searchable ~= nil then
             return act.target.components.searchable:Search(act.doer)
@@ -2340,6 +2402,10 @@ ACTIONS.CARNIVALGAME_FEED.fn = function(act)
 end
 
 ACTIONS.STORE.fn = function(act)
+	if act.invobject.components.inventoryitem and act.invobject.components.inventoryitem.islockedinslot then
+		return false
+	end
+
     local target = act.target
     --V2C: For dropping items onto the object rather than construction widget
     if target.components.container == nil and target.components.constructionsite ~= nil then
@@ -2381,17 +2447,12 @@ ACTIONS.STORE.fn = function(act)
         if act.doer.components.inventory ~= nil then
             if target.components.container:IsRestricted(act.doer) then
                 return false, "RESTRICTED"
-
-            elseif target:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
-                return false, "NOTMASTERCHEF"
-
-            elseif target:HasTag("mermonly") and not act.doer:HasTag("merm") then
-                return false, "NOTAMERM"
-
-            elseif target:HasTag("souljar") and (act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
-                return false, "NOTSOULJARHANDLER"
-
-            elseif not target.components.container:IsOpenedBy(act.doer) and not target.components.container:CanOpen() then
+            end
+            local success, reason = CanOpenCharacterSpecificContainer(act.doer, target)
+            if not success then
+                return false, reason
+            end
+            if not target.components.container:IsOpenedBy(act.doer) and not target.components.container:CanOpen() then
                 return false, "INUSE"
             end
             if act.doer.finishportalhoptask ~= nil and target:HasTag("souljar") and act.invobject:HasTag("soul") then
@@ -3233,6 +3294,30 @@ ACTIONS.STOPUSINGITEM.fn = function(act)
     end
 end
 
+ACTIONS.USEEQUIPPEDITEM.strfn = function(act)
+	return act.invobject and string.upper(act.invobject.prefab)
+end
+
+ACTIONS.USEEQUIPPEDITEM.fn = function(act)
+	if act.invobject and
+		act.invobject.components.useableequippeditem and
+		act.invobject.components.equippable and
+		act.invobject.components.equippable:IsEquipped() and
+		act.doer.components.inventory and
+		act.doer.components.inventory:IsOpenedBy(act.doer)
+	then
+		return act.invobject.components.useableequippeditem:StartUsingItem(act.doer)
+	end
+end
+
+ACTIONS.STOPUSINGEQUIPPEDITEM.strfn = ACTIONS.USEEQUIPPEDITEM.strfn --same fn, diff str table
+
+ACTIONS.STOPUSINGEQUIPPEDITEM.fn = function(act)
+	if act.invobject and act.invobject.components.useableequippeditem then
+		return act.invobject.components.useableequippeditem:StopUsingItem(act.doer)
+	end
+end
+
 ACTIONS.TAKEITEM.fn = function(act)
     --Use this for taking a specific item as opposed to having an item be generated as it is in Pick/ Harvest
     if act.target ~= nil and act.target.components.shelf ~= nil and act.target.components.shelf.cantakeitem then
@@ -3534,7 +3619,7 @@ end
 ACTIONS.COMBINESTACK.fn = function(act)
     local target = act.target
     local invobj = act.invobject
-    if invobj and target and invobj.prefab == target.prefab and invobj.skinname == target.skinname and target.components.stackable and not target.components.stackable:IsFull() then
+    if invobj and target and target.components.stackable ~= nil and target.components.stackable:CanStackWith(invobj) and not target.components.stackable:IsFull() then
         target.components.stackable:Put(invobj)
         return true
     end
@@ -4409,7 +4494,7 @@ ACTIONS.DISMANTLE.fn = function(act)
             return false, "INUSE"
         end
 
-        if act.target.candismantle and not act.target:candismantle() then
+		if act.target.candismantle and not act.target:candismantle(act.doer) then
             return false
         end
 
@@ -5614,7 +5699,8 @@ ACTIONS.APPLYMODULE.fn = function(act)
 
         if can_upgrade then
             local individual_module = act.invobject.components.inventoryitem:RemoveFromOwner()
-            act.doer.components.upgrademoduleowner:PushModule(individual_module)
+            local module_type = individual_module.components.upgrademodule:GetType()
+            act.doer.components.upgrademoduleowner:PushModule(module_type, individual_module)
             return true
         else
             return false, reason
@@ -5642,7 +5728,7 @@ ACTIONS.REMOVEMODULES.fn = function(act)
 
             local energy_cost = act.doer.components.upgrademoduleowner:PopOneModule()
             if energy_cost ~= 0 then
-                act.doer.components.upgrademoduleowner:AddCharge(-energy_cost)
+                act.doer.components.upgrademoduleowner:DoDeltaCharge(-energy_cost)
             end
 
             return true
@@ -6509,4 +6595,226 @@ ACTIONS.JOUST.fn = function(act)
         end
         return joustuser:CanJoust()
     end
+end
+
+ACTIONS.STARTREMOVINGMODULE.fn = function(act)
+    local target = act.target or act.doer -- back up body or ourselves
+	if target.components.upgrademoduleowner ~= nil then
+		return target.components.upgrademoduleowner:StartInspecting(act.doer)
+	end
+	return false
+end
+
+ACTIONS.REMOVEMODULE.fn = function(act)
+    local doer_inventory = act.doer ~= nil and act.doer.components.inventory or nil
+    local moduleremover = act.invobject
+    if moduleremover ~= nil and doer_inventory ~= nil then
+        if moduleremover ~= doer_inventory:GetActiveItem() then
+            moduleremover.components.inventoryitem:RemoveFromOwner()
+            doer_inventory:GiveActiveItem(moduleremover)
+            return true
+        end
+    end
+
+	return false
+end
+
+ACTIONS.STOPREMOVINGMODULE.fn = function(act)
+    local target = act.target or act.doer
+	if target.components.upgrademoduleowner ~= nil then
+		target.components.upgrademoduleowner:StopInspecting()
+	end
+	return true
+end
+
+ACTIONS.MAPSCOUTSELECT_MAP.maponly_checkvalidpos_fn = function(act)
+	if not (act.doer and act.doer.wx78_classified) then
+		return false
+	elseif not (act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("wx78_scoutdrone_1")) then
+		return false
+	end
+
+	local x, y, z = act:GetActionPoint():Get()
+	local mapent = FindClosestMapIconInRange("wx78_drone_scout", x, y, z, TUNING.SKILLS.WX78.MAPSCOUTSELECT_DETECTION_RADIUS, act.doer)
+	if mapent == nil then
+		return false, "NOTARGET"
+	end
+	--[[x, y, z = mapent.Transform:GetWorldPosition()
+    local validdist = mapent:GetDroneRange(act.doer) + 1 -- Small fudge factor for selection to avoid floating precision inaccuracies.
+    local px, py, pz = act.doer.Transform:GetWorldPosition()
+    if math2d.DistSq(x, z, px, pz) > validdist * validdist then
+        return false, "NOTARGET"
+    end]]
+	return true, nil, x, z, mapent
+end
+
+ACTIONS.MAPSCOUTSELECT_MAP.pre_action_cb = function(act)
+	if act.doer.HUD and act.doer.HUD:IsMapScreenOpen() then
+		local valid, reason, act_posx, act_posz, mapent = ACTIONS.MAPSCOUTSELECT_MAP.maponly_checkvalidpos_fn(act)
+		if valid then
+			local mapscreen = TheFrontEnd:GetActiveScreen()
+			mapscreen:SetNewMapTarget(mapent, ACTIONS.MAPSCOUT_MAP)
+		end
+	end
+end
+
+ACTIONS.MAPSCOUTSELECT_MAP.fn = function(act)
+	return true --do nothing
+end
+
+
+ACTIONS.MAPSCOUT_MAP.maponly_checkvalidpos_fn = function(act)
+	if not (act.doer and act.doer.wx78_classified and act.target) then
+		return false
+	elseif not (act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("wx78_scoutdrone_1")) then
+		return false
+	end
+
+	local x, y, z = act:GetActionPoint():Get()
+    local x1, y1, z1 = act.doer.Transform:GetWorldPosition()
+    local validdist = act.target:GetDroneRange(act.doer)
+    local dx, dz = x - x1, z - z1
+    local dist = math.sqrt(dx * dx + dz * dz)
+    local r = math.min(dist, validdist)
+    if dist > 0 then
+        dx, dz = dx / dist, dz / dist
+    end
+    local ndx, ndz = dx * r + x1, dz * r + z1
+    return true, nil, ndx, ndz, act.target
+end
+
+ACTIONS.MAPSCOUT_MAP.pre_action_cb = function(act)
+	if act.doer.HUD and act.doer.HUD:IsMapScreenOpen() then
+		local mapscreen = TheFrontEnd:GetActiveScreen()
+		mapscreen:SetNewMapTarget(nil, nil)
+	end
+end
+
+ACTIONS.MAPSCOUT_MAP.fn = function(act)
+    local valid, reason, act_posx, act_posz, mapent = ACTIONS.MAPSCOUT_MAP.maponly_checkvalidpos_fn(act)
+    if not valid then
+        return valid, reason
+    end
+
+	local target = mapent
+	if target and target:HasTag("globalmapicon") then
+		target = target._target
+	end
+	if target and target.components.mapdeliverable then
+		target.components.mapdeliverable:Stop()
+        local pt = Vector3(act_posx, 0, act_posz)
+		return target.components.mapdeliverable:SendToPoint(pt, act.doer)
+	end
+	return false
+end
+
+ACTIONS.MAPSCOUT_MAP_TOOFAR.maponly_checkvalidpos_fn = ACTIONS.MAPSCOUT_MAP.maponly_checkvalidpos_fn
+ACTIONS.MAPSCOUT_MAP_TOOFAR.stroverridefn = function(act)
+    return STRINGS.ACTIONS.MAPSCOUT_MAP_TOOFAR
+end
+ACTIONS.MAPSCOUT_MAP_TOOFAR.pre_action_cb = function(act)
+    if act.doer.HUD and act.doer.HUD:IsMapScreenOpen() then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
+    end
+end
+ACTIONS.MAPSCOUT_MAP_TOOFAR.fn = function(act)
+    return true
+end
+
+ACTIONS.STARTMAPDELIVER.fn = function(act)
+	if act.target and act.target.components.mapdeliverable then
+        if not IsFlyingPermittedFromPoint(act.target.Transform:GetWorldPosition()) then
+            return false
+        end
+		return act.target.components.mapdeliverable:StartMapAction(act.doer)
+	end
+end
+
+ACTIONS.MAPDELIVER_MAP.maponly_checkvalidpos_fn = function(act)
+    local mapent = act.target
+    if mapent == nil then
+        return false
+    end
+
+    local fx, fy, fz = mapent.Transform:GetWorldPosition()
+    local tx, ty, tz = act:GetActionPoint():Get()
+    if not IsFlyingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz) then
+        return false
+    end
+
+	return true, nil, tx, tz, mapent
+end
+
+ACTIONS.MAPDELIVER_MAP.fn = function(act)
+    local pt = act:GetActionPoint()
+	if pt and act.target and act.target.components.mapdeliverable then
+        local fx, fy, fz = act.target.Transform:GetWorldPosition()
+        if not IsFlyingPermittedFromPointToPoint(fx, fy, fz, pt.x, pt.y, pt.z) then
+            return false
+        end
+		return act.target.components.mapdeliverable:SendToPoint(pt, act.doer)
+    end
+	return false
+end
+
+ACTIONS.SWAPBODIES_MAP.maponly_checkvalidpos_fn = function(act)
+    if act.doer == nil or not act.doer.wx78_classified then
+        return false
+    end
+    if act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wx78_remotebodyswap") then
+        return false
+    end
+
+    local x, y, z = act:GetActionPoint():Get()
+	local mapent = FindClosestMapIconInRange("wx78_backupbody", x, y, z, TUNING.SKILLS.WX78.REMOTEBODYSWAP_DETECTION_RADIUS, act.doer)
+	if mapent == nil then
+        return false, "NOTARGET"
+    end
+	x, y, z = mapent.Transform:GetWorldPosition()
+    local px, py, pz = act.doer.Transform:GetWorldPosition()
+    if not IsTeleportingPermittedFromPointToPoint(px, py, pz, x, y, z) then
+        return false, "NOTARGET"
+    end
+	return true, nil, x, z, mapent
+end
+
+ACTIONS.SWAPBODIES_MAP.fn = function(act)
+    if not act.doer.wx78_classified then
+        return false
+    end
+
+    local valid, reason, act_posx, act_posz, mapent = ACTIONS.SWAPBODIES_MAP.maponly_checkvalidpos_fn(act)
+    if not valid then
+        return valid, reason
+    end
+
+    if not mapent or not mapent._target or not mapent._target:IsValid() or not mapent._target.components.activatable then
+        return false, "NOTARGET"
+    end
+
+    local success, msg = mapent._target.components.activatable:CanActivate(act.doer)
+    if success == false then
+        return false, msg
+    else
+        success, msg = mapent._target.components.activatable:DoActivate(act.doer)
+        return (success ~= false), msg -- note: for legacy reasons, nil will be true
+    end
+end
+
+ACTIONS.TOGGLEWXSCREECH.strfn = function(act)
+    return (act.doer and act.doer:HasTag("wx_screeching")) and "TURNOFF"
+        or nil
+end
+
+ACTIONS.TOGGLEWXSCREECH.fn = function(act)
+	return true
+end
+
+ACTIONS.TOGGLEWXSHIELDING.strfn = function(act)
+    return (act.doer and act.doer:HasTag("wx_shielding")) and "TURNOFF"
+        or nil
+end
+
+ACTIONS.TOGGLEWXSHIELDING.fn = function(act)
+	return true
 end

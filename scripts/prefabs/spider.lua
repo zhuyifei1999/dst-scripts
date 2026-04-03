@@ -195,38 +195,15 @@ local function OnRefuseItem(inst, item)
     end
 end
 
-local function HasFriendlyLeader(inst, target)
-    local leader = inst.components.follower and inst.components.follower:GetLeader()
-	local target_leader = target.components.follower and target.components.follower.leader -- Getting leader directly special case.
-
-    if leader ~= nil and target_leader ~= nil then
-
-        if target_leader.components.inventoryitem then
-            target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-            -- Don't attack followers if their follow object has no owner
-            if target_leader == nil then
-                return true
-            end
-        end
-
-        local PVP_enabled = TheNet:GetPVPEnabled()
-        return leader == target or (target_leader ~= nil
-                and (target_leader == leader or (target_leader:HasTag("player")
-                and not PVP_enabled))) or
-                (target.components.domesticatable and target.components.domesticatable:IsDomesticated()
-                and not PVP_enabled) or
-                (target.components.saltlicker and target.components.saltlicker.salted
-                and not PVP_enabled)
-
-    elseif target_leader ~= nil and target_leader.components.inventoryitem then
-        -- Don't attack webber's chester
-        target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-        return target_leader ~= nil and target_leader:HasTag("spiderwhisperer")
-    end
-
-    return false
+local function IsSpiderAlly(inst, target)
+	if inst.components.combat:IsAlly(target) then
+		return true
+	elseif target:HasTag("companion") then
+		local target_leader = target.components.follower and target.components.follower:GetLeader()
+		return target_leader ~= nil and target_leader:HasTag("spiderwhisperer")
+	end
+	return false
 end
-
 
 local TARGET_MUST_TAGS = { "_combat", "character" }
 local TARGET_CANT_TAGS = { "spiderwhisperer", "spiderdisguise", "INLIMBO" }
@@ -236,13 +213,9 @@ local function FindTarget(inst, radius)
             inst,
             SpringCombatMod(radius),
             function(guy)
-                local leader = inst.components.follower and inst.components.follower:GetLeader()
-                return (not inst.bedazzled and (not guy:HasTag("monster") or guy:HasTag("player")))
+				return (not inst.bedazzled and (guy.isplayer or not guy:HasTag("monster")))
                     and inst.components.combat:CanTarget(guy)
-                    and not (leader and leader == guy)
-                    and not HasFriendlyLeader(inst, guy)
-                    and not (leader and leader:HasTag("player")
-                        and guy:HasTag("player") and not TheNet:GetPVPEnabled())
+					and not IsSpiderAlly(inst, guy)
             end,
             TARGET_MUST_TAGS,
             TARGET_CANT_TAGS

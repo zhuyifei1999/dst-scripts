@@ -9,10 +9,6 @@ local SelfStacker = Class(function(self, inst)
 
     -- NOTES(JBK): Recommended to explicitly add tag to prefab pristine state.
     self.inst:AddTag("selfstacker")
-
-    self.isvalidpartnerfn = function(item)
-        return item.prefab == self.inst.prefab and item.skinname == self.inst.skinname and item.components.selfstacker:CanSelfStack()
-    end
 end)
 
 function SelfStacker:SetIgnoreMovingFast(ignorespeedcheck)
@@ -39,9 +35,12 @@ end
 
 local SELFSTACKER_MUST_TAGS = { "selfstacker" }
 local SELFSTACKER_CANT_TAGS = { "outofreach"  }
+local function IsValidPartnerFn(item, inst)
+    return inst.components.stackable:CanStackWith(item)
+end
 
 function SelfStacker:FindItemToStackWith()
-	self.stackpartner = FindEntity(self.inst, self.searchradius, self.isvalidpartnerfn, SELFSTACKER_MUST_TAGS, SELFSTACKER_CANT_TAGS)
+	self.stackpartner = FindEntity(self.inst, self.searchradius, IsValidPartnerFn, SELFSTACKER_MUST_TAGS, SELFSTACKER_CANT_TAGS)
 
 	if self.stackpartner then
 		self.stackpartner.components.selfstacker.stackpartner = self.inst

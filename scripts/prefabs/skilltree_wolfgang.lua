@@ -3,13 +3,13 @@
 local GAP = 38
 local BIGGAP = 54
 local CATGAP = 87 --math.abs(-214 - 228)/(#ORDERS)
-local X = -218
+local X = -212
 local Y = 170 --6
 
 local TITLE_Y_OFFSET = 30
 local ORDERS =
 {
-    {"might",           {-218,                  Y+TITLE_Y_OFFSET}},
+    {"might",           {-210,                  Y+TITLE_Y_OFFSET}},
     {"training",        {-70,                   Y+TITLE_Y_OFFSET}},
     {"planardamage",    {90 ,                   Y+TITLE_Y_OFFSET}},
     {"allegiance",      {200,                   Y+TITLE_Y_OFFSET}},

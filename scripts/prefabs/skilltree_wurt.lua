@@ -1,20 +1,20 @@
 local POS_Y_1 =  172
-local POS_Y_2 = POS_Y_1 - 38
-local POS_Y_3 = POS_Y_1 - (38 * 2)
-local POS_Y_4 = POS_Y_1 - (38 * 3)
-local POS_Y_5 = POS_Y_1 - (38 * 4)
+local POS_Y_2 = POS_Y_1 - 39
+local POS_Y_3 = POS_Y_1 - (39 * 2)
+local POS_Y_4 = POS_Y_1 - (39 * 3)
+local POS_Y_5 = POS_Y_1 - (39 * 4)
 
 local TITLE_Y = POS_Y_1 + 30
 
 local TILEGAP = 38
 
-local WETNESS_POS_X = -210.5
+local WETNESS_POS_X = -205
 
-local MOSQUITO_1_X = -46.5
-local MERM_KING_HUNGER_X = MOSQUITO_1_X + 104.5
+local MOSQUITO_1_X = -45
+local MERM_KING_HUNGER_X = MOSQUITO_1_X + 106
 local ITEM_QUESTS_X = (MERM_KING_HUNGER_X+MOSQUITO_1_X) * .5
 local CIV_1_X = ITEM_QUESTS_X - TILEGAP
-local ALLIEGIANCE_1_X = 184.5
+local ALLIEGIANCE_1_X = 183
 
 local AMPHIBIAN_TITLE_X = WETNESS_POS_X + TILEGAP / 2
 local SWAMPMASTER_TITLE_X = (MOSQUITO_1_X + MERM_KING_HUNGER_X) * .5

@@ -1995,38 +1995,6 @@ function PRNG_Uniform:RandInt(min, max)
     local rand = self:Rand()
 	return math.min(max, min + math.floor(rand * (max - min + 1)))
 end
-------------------------------
--- Checks for if teleportations should be blocked for any inst going from points A to B.
-
-function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
-    local map = TheWorld.Map
-
-    if map:IsWagPunkArenaBarrierUp() then
-        if map:IsPointInWagPunkArena(fx, fy, fz) ~= map:IsPointInWagPunkArena(tx, ty, tz) then
-            return false
-        end
-    end
-
-    if map:IsPointInAnyVault(tx, ty, tz) then
-        return false
-    end
-
-    return true
-end
-
-function IsTeleportLinkingPermittedFromPoint(fx, fy, fz)
-    local map = TheWorld.Map
-
-    if map:IsPointInWagPunkArenaAndBarrierIsUp(fx, fy, fz) then
-        return false
-    end
-
-    if map:IsPointInAnyVault(fx, fy, fz) then
-        return false
-    end
-
-    return true
-end
 
 ------------------------------
 

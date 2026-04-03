@@ -87,6 +87,7 @@ local function fn()
 
     --prototyper (from prototyper component) added to pristine state for optimization
     inst:AddTag("prototyper")
+    inst:AddTag("wagpunk_workstation")
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

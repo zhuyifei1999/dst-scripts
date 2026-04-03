@@ -357,33 +357,49 @@ local RPC_HANDLERS =
         end
     end,
 
-	PredictWalking = function(player, x, z, isdirectwalking, isstart, platform, platform_relative, overridemovetime)
-        if not (checknumber(x) and
-                checknumber(z) and
-                checkbool(isdirectwalking) and
-                checkbool(isstart) and
-				optentity(platform) and
-				checkbool(platform_relative) and
-				optnumber(overridemovetime)) then
+	PredictWalking = function(player, x, z, isdirectwalking, isstart, platform, platform_relative, overridemovetime, isstop)
+		if not (	(	(	--these are either all nil
+							x == nil and
+							z == nil and
+							isdirectwalking == nil and
+							platform == nil and
+							platform_relative == nil and
+							(isstart or isstop) -- one of these must be true
+						) or
+						(	--or all validated
+							checknumber(x) and
+							checknumber(z) and
+							checkbool(isdirectwalking) and
+							optentity(platform) and
+							checkbool(platform_relative)
+						)
+					) and
+					(	--common for both cases
+						checkbool(isstart) and
+						optnumber(overridemovetime) and
+						optbool(isstop)
+					)
+				)
+		then
             printinvalid("PredictWalking", player)
             return
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-			printinvalidplatform("PredictWalking", player, nil, x, z, platform, platform_relative)
-			local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x1 then
-				if IsPointInRange(player, x1, z1) then
-					playercontroller:OnRemotePredictWalking(x, z, isdirectwalking, isstart, platform_relative and platform or nil, overridemovetime)
-				else
+			if x then
+				printinvalidplatform("PredictWalking", player, nil, x, z, platform, platform_relative)
+				local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
+				if x1 and not IsPointInRange(player, x1, z1) then
 					print("Remote predict walking out of range")
+					return
 				end
 			end
+			playercontroller:OnRemotePredictWalking(x, z, isdirectwalking, isstart, platform_relative and platform or nil, overridemovetime, isstop)
         end
     end,
 
 	PredictOverrideLocomote = function(player, dir)
-		if not checknumber(dir) then
+		if not optnumber(dir) then
 			printinvalid("PredictOverrideLocomote", player)
 			return
 		end
@@ -1043,17 +1059,32 @@ local RPC_HANDLERS =
 
     -- NOTES(JBK): OnMap RPCs are always world relative.
     DoActionOnMap = function(player, actioncode, x, z, maptarget, mod_name)
-        if not (checknumber(actioncode) and
-                checknumber(x) and
-                checknumber(z) and
-                optentity(maptarget) and
-                optstring(mod_name)) then
+		if not (	(	--these are either all nil
+						actioncode == nil and
+						x == nil and
+						z == nil and
+						checkentity(maptarget) and
+						mod_name == nil
+					) or
+					(	--or all validated
+						checknumber(actioncode) and
+						checknumber(x) and
+						checknumber(z) and
+						optentity(maptarget) and
+						optstring(mod_name)
+					)
+				)
+		then
             printinvalid("DoActionOnMap PARAMS", player)
             return
         end
-		local playercontroller = player.components.playercontroller
-		if playercontroller then
-			playercontroller:OnMapAction(actioncode, Vector3(x, 0, z), maptarget, mod_name)
+		if actioncode then
+			local playercontroller = player.components.playercontroller
+			if playercontroller then
+				playercontroller:OnMapAction(actioncode, Vector3(x, 0, z), maptarget, mod_name)
+			end
+		else
+			maptarget:PushEvent("cancelmaptarget", player)
         end
     end,
 
@@ -1208,6 +1239,47 @@ local RPC_HANDLERS =
 			else
 				print("Predict gallop trip out of range")
 			end
+		end
+	end,
+
+    UnplugModule = function(player, modulebartype, moduleindex)
+        if not (checknumber(modulebartype) and
+				checknumber(moduleindex))
+		then
+			printinvalid("UnplugModule", player)
+			return
+		end
+
+        local upgrademoduleowner = player.components.upgrademoduleowner
+        local skilltreeupdater = player.components.skilltreeupdater
+        if upgrademoduleowner then
+            -- Insure we have the skill.
+            if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")) then
+                moduleindex = upgrademoduleowner:GetNumModules(modulebartype)
+            end
+
+            local module = upgrademoduleowner:GetModule(modulebartype, moduleindex)
+            if module ~= nil then
+                player:PushEventImmediate("unplugmodule", module)
+            else
+                print("No upgrade module found")
+            end
+        end
+    end,
+
+	StopUsingDrone = function(player)
+		if player.StopUsingDrone then
+			player:StopUsingDrone()
+		else
+			printinvalid("StopUsingDrone", player)
+		end
+	end,
+
+	StopInspectingModules = function(player)
+		if player.StopInspectingModules then
+			player:StopInspectingModules()
+		else
+			printinvalid("StopInspectingModules", player)
 		end
 	end,
 

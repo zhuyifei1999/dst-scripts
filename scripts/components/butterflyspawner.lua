@@ -162,19 +162,19 @@ end
 --------------------------------------------------------------------------
 
 function self:SpawnModeNever()
-    --depreciated
+    --deprecated
 end
 
 function self:SpawnModeLight()
-    --depreciated
+    --deprecated
 end
 
 function self:SpawnModeMed()
-    --depreciated
+    --deprecated
 end
 
 function self:SpawnModeHeavy()
-    --depreciated
+    --deprecated
 end
 
 function self.StartTrackingFn(target)

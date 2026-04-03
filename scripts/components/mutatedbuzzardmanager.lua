@@ -182,7 +182,7 @@ end
 
 local function AnyBuzzardInRange(x, y, z)
     for i, buzzard in ipairs(_buzzards) do
-        if buzzard:GetDistanceSqToPoint(x, y, z) <= MUTATEDBUZZARD_CORPSE_RANGE_SQ then
+        if not buzzard:IsInLimbo() and buzzard:GetDistanceSqToPoint(x, y, z) <= MUTATEDBUZZARD_CORPSE_RANGE_SQ then
             return true
         end
     end

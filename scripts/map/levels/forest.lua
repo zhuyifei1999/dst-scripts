@@ -250,7 +250,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 	},
 })
 
--- older depreciated AddLevel up here --
+-- older deprecated AddLevel up here --
 
 local worldgen_survival_together = {id = "SURVIVAL_TOGETHER",
 	name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_TOGETHER,

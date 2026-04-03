@@ -3,6 +3,8 @@ local assets =
     Asset("ANIM", "anim/tillweedsalve.zip"),
 }
 
+-- NOTE: Tillweed salve heals 10 + 20 overtime
+
 local function OnUse(inst, target)
     target:AddDebuff("tillweedsalve_buff", "tillweedsalve_buff")
 end
@@ -38,7 +40,7 @@ local function fn()
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("healer")
-    inst.components.healer:SetHealthAmount(TUNING.HEALING_MEDSMALL)
+    inst.components.healer:SetHealthAmount(10)
 	inst.components.healer:SetOnHealFn(OnUse)
 
     --[[inst:AddComponent("perishable")
@@ -51,10 +53,10 @@ local function fn()
     return inst
 end
 
+local BUFF_DURATION = TUNING.TILLWEEDSALVE_DURATION + FRAMES -- Add 1 frame, since timer lies up perfectly with tick timer, we sometimes only get 27 instead of 28 hp
 local function OnTick(inst, target)
     if target.components.health ~= nil
         and not target.components.health:IsDead()
-		and target.components.sanity ~= nil
         and not target:HasTag("playerghost") then
         target.components.health:DoDelta(TUNING.TILLWEEDSALVE_HEALTH_DELTA, nil, "tillweedsalve")
     else
@@ -79,7 +81,7 @@ end
 
 local function OnExtended(inst, target)
     inst.components.timer:StopTimer("regenover")
-    inst.components.timer:StartTimer("regenover", TUNING.TILLWEEDSALVE_DURATION)
+    inst.components.timer:StartTimer("regenover", BUFF_DURATION)
     inst.task:Cancel()
     inst.task = inst:DoPeriodicTask(TUNING.TILLWEEDSALVE_TICK_RATE, OnTick, nil, target)
 end
@@ -110,7 +112,7 @@ local function buff_fn()
     inst.components.debuff.keepondespawn = true
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("regenover", TUNING.TILLWEEDSALVE_DURATION)
+    inst.components.timer:StartTimer("regenover", BUFF_DURATION)
     inst:ListenForEvent("timerdone", OnTimerDone)
 
     return inst

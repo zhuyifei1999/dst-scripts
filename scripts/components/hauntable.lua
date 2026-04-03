@@ -114,24 +114,52 @@ function Hauntable:DoHaunt(doer)
 	self.inst:PushEvent("haunted")
 end
 
+function Hauntable:SetAnimStateGetterFn(fn)
+    self.animstatefn = fn
+end
+
+function Hauntable:GetAnimState()
+    if self.animstatefn then
+        return self.animstatefn(self.inst)
+    end
+    return self.inst.AnimState
+end
+
 function Hauntable:StartShaderFx()
-    self.inst.AnimState:SetHaunted(true)
+    local AnimState = self:GetAnimState()
+    AnimState:SetHaunted(true)
 end
 
 function Hauntable:StopShaderFX()
     if self.inst:IsValid() then
-        self.inst.AnimState:SetHaunted(false)
+        local AnimState = self:GetAnimState()
+        AnimState:SetHaunted(false)
+    end
+end
+
+function Hauntable:IsHaunted()
+    return self.haunted
+end
+
+function Hauntable:StopHaunt()
+    self.cooldowntimer = 0
+    self.haunted = false
+    if self.onunhaunt then
+        self.onunhaunt(self.inst)
+    end
+    self:StopShaderFX()
+    self:TryStopUpdating()
+end
+
+function Hauntable:TryStopUpdating()
+    if not (self.haunted or self.panic) then
+        self.inst:StopUpdatingComponent(self)
     end
 end
 
 function Hauntable:OnUpdate(dt)
     if self.cooldowntimer <= 0 then
-        self.cooldowntimer = 0
-        self.haunted = false
-        if self.onunhaunt then
-            self.onunhaunt(self.inst)
-        end
-        self:StopShaderFX()
+        self:StopHaunt()
     else
         self.cooldowntimer = self.cooldowntimer - dt
 
@@ -147,9 +175,7 @@ function Hauntable:OnUpdate(dt)
         self.panictimer = self.panictimer - dt
     end
 
-    if not (self.haunted or self.panic) then
-        self.inst:StopUpdatingComponent(self)
-    end
+    self:TryStopUpdating()
 end
 
 function Hauntable:OnRemoveFromEntity()

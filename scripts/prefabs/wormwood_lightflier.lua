@@ -85,6 +85,13 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function OnEntity_Init(inst)
+    -- Called once after the inst is initialized.
+    inst.SoundEmitter:PlaySound("grotto/creatures/light_bug/fly_LP", "loop")
+    inst.OnEntitySleep = nil
+    inst.OnEntityWake = nil
+end
+
 
 local function fn()
     local inst = CreateEntity()
@@ -176,9 +183,10 @@ local function fn()
     follower.keepdeadleader = true
     follower.keepleaderduringminigame = true
 
-    inst.SoundEmitter:PlaySound("grotto/creatures/light_bug/fly_LP", "loop")
-
     inst.EnableBuzz = EnableBuzz
+
+    inst.OnEntitySleep = OnEntity_Init
+    inst.OnEntityWake = OnEntity_Init
 
     local timer = inst:AddComponent("timer")
 	timer:StartTimer("finish_transformed_life", TUNING.WORMWOOD_PET_LIGHTFLIER_LIFETIME)

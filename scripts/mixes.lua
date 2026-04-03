@@ -244,3 +244,18 @@ TheMixer:AddNewMix("supernova", 0, 3,
 })
 
 --------------------------------------------------------------------------
+-- WX-78 screech
+
+TheMixer:AddNewMix("wx_screech", 0.6, 4,
+{
+    [amb] = .1,
+    [cloud] = .1,
+    [music] = 0,
+    [voice] = 0,
+    [movement] = 0,
+    [creature] = 0,
+    [player] = 0,
+    [HUD] = 1,
+    [sfx] = 0,
+    [slurp] = 1,
+})

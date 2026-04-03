@@ -142,8 +142,28 @@ function FollowCamera:SetGains(pan, heading, distance)
     self.distancegain = distance
 end
 
-function FollowCamera:GetGains(pan, heading, distance)
+function FollowCamera:GetGains()
     return self.pangain, self.headinggain, self.distancegain
+end
+
+function FollowCamera:SetPitchRange(min, max)
+	self.mindistpitch, self.maxdistpitch = min, max
+end
+
+function FollowCamera:GetPitchRange()
+	return self.mindistpitch, self.maxdistpitch
+end
+
+function FollowCamera:SetFOV(fov)
+	self.fov = fov
+end
+
+function FollowCamera:GetFOV()
+	return self.fov
+end
+
+function FollowCamera:GetRawMaxDistance()
+    return self.maxdist - self.extramaxdist
 end
 
 function FollowCamera:IsControllable()

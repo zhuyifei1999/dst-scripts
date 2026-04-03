@@ -203,9 +203,21 @@ local function OnLoad(inst, data, ents)
 	end
 end
 
+local FARM_PLANT_TAGS = { "tendable_farmplant" }
+local function song_update(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local nearby_tendable_plants = TheSim:FindEntities(x, y, z, TUNING.PHONOGRAPH_TEND_RANGE, FARM_PLANT_TAGS)
+	for _, tendable_plant in pairs(nearby_tendable_plants) do
+		tendable_plant.components.farmplanttendable:TendTo()
+	end
+end
+
 local function TurnOn(inst)
 	if not inst.SoundEmitter:PlayingSound("loop") then
 		inst.SoundEmitter:PlaySound("dontstarve/music/w_radio", "loop")
+	end
+	if inst._tend_update_task == nil then
+		inst._tend_update_task = inst:DoPeriodicTask(1, song_update, POPULATING and math.random() or nil)
 	end
 end
 
@@ -213,6 +225,10 @@ local function TurnOff(inst)
 	if inst.SoundEmitter:PlayingSound("loop") then
 		inst.SoundEmitter:KillSound("loop")
 		inst.SoundEmitter:PlaySound("dontstarve/music/gramaphone_end")
+	end
+	if inst._tend_update_task then
+		inst._tend_update_task:Cancel()
+		inst._tend_update_task = nil
 	end
 end
 
@@ -243,6 +259,8 @@ local function fn()
 
 	--furnituredecor (from furnituredecor component) added to pristine state for optimization
 	inst:AddTag("furnituredecor")
+
+	inst:AddTag("groundonlymachine")
 
 	MakeInventoryFloatable(inst, "med", 0.45, { 1.25, 1.5, 1.25 })
 

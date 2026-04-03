@@ -249,32 +249,6 @@ end]=]
 local COMBAT_MUSHAVE_TAGS = { "_combat", "_health" }
 local COMBAT_CANTHAVE_TAGS = { "INLIMBO", "companion" }
 local COMBAT_MUSTONEOF_TAGS_AGGRESSIVE = { "monster", "prey", "insect", "hostile", "character", "animal" }
-local function HasFriendlyLeader(inst, target)
-    local leader = inst.components.follower and inst.components.follower:GetLeader()
-    if leader ~= nil then
-        local target_leader = target.components.follower and target.components.follower:GetLeader()
-
-        if target_leader and target_leader.components.inventoryitem then
-            target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-            -- Don't attack followers if their follow object has no owner
-            if target_leader == nil then
-                return true
-            end
-        end
-
-        local PVP_enabled = TheNet:GetPVPEnabled()
-
-        return leader == target or (target_leader ~= nil
-                and (target_leader == leader or (target_leader:HasTag("player")
-                and not PVP_enabled))) or
-                (target.components.domesticatable and target.components.domesticatable:IsDomesticated()
-                and not PVP_enabled) or
-                (target.components.saltlicker and target.components.saltlicker.salted
-                and not PVP_enabled)
-    end
-
-    return false
-end
 local function protectorretargetfn(inst)
 	if inst.sg:HasStateTag("dancing") then
 		return nil
@@ -289,10 +263,11 @@ local function protectorretargetfn(inst)
     local ents = TheSim:FindEntities(spawn.x, spawn.y, spawn.z, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS, COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS_AGGRESSIVE)
     for _, ent in ipairs(ents) do
         --if protectorretargetfn_test(inst, ent) then
-        if ent ~= inst and ent.entity:IsVisible()
-        and inst.components.combat:CanTarget(ent)
-        and ent.components.minigame_participator == nil
-        and not HasFriendlyLeader(inst, ent) then
+		if ent ~= inst and ent.entity:IsVisible() and
+			inst.components.combat:CanTarget(ent) and
+			ent.components.minigame_participator == nil and
+			not inst.components.combat:IsAlly(ent)
+		then
             target = ent
             break
         end

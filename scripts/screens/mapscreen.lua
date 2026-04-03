@@ -78,6 +78,23 @@ function MapScreen:RemoveDecorations()
     self:RemoveRMBDecorations()
 end
 
+function MapScreen:OnMinimapMoved()
+	self.decorationdata.dirty = true
+	self:SetHandleLmbUp(false)
+end
+
+function MapScreen:SetHandleLmbUp(enable)
+	if enable then
+		if not self.handle_LMB_up then
+			self.handle_LMB_up = true
+			self.minimap:StartDragThreshold(0.02) --pct of screen size
+		end
+	elseif self.handle_LMB_up then
+		self.handle_LMB_up = false
+		self.minimap:CancelDragThreshold()
+	end
+end
+
 function MapScreen:OnBecomeInactive()
     MapScreen._base.OnBecomeInactive(self)
 
@@ -133,6 +150,10 @@ function MapScreen:OnDestroy()
 
     self:RemoveDecorations()
 
+	if self.maptarget then
+		self.maptarget:PushEvent("cancelmaptarget", self.owner)
+	end
+
     --V2C: Don't set pause in multiplayer, all it does is change the
     --     audio settings, which we don't want to do now
     --SetPause(false)
@@ -187,12 +208,352 @@ function MapScreen:SetZoom(zoom_target)
     end
 end
 
+function MapScreen:ValidateMapTarget()
+	if self.maptarget then
+		if not self.maptarget:IsValid() then
+			self.maptarget = nil
+			self.forced_actiondef = nil
+		elseif self.maptarget.components.inventoryitem then --server only check; already hidden clients when not accessible
+			local owner = self.maptarget.components.inventoryitem.owner --intentionally NOT grandowner!
+			local container = owner and (owner.components.inventory or owner.components.container)
+			if not (container and container:IsOpenedBy(self.owner)) then
+				self:SetNewMapTarget(nil, nil)
+			end
+		end
+	end
+	return self.maptarget
+end
+
 function MapScreen:UpdateMapActions(x, y, z)
-    local playercontroller = ThePlayer and ThePlayer.components.playercontroller or nil
-    if playercontroller and ThePlayer.components.playeractionpicker then
+	local playercontroller = self.owner and self.owner.components.playercontroller or nil
+	if playercontroller and self.owner.components.playeractionpicker then
+		self:ValidateMapTarget()
         return playercontroller:UpdateActionsToMapActions(Vector3(x, y, z), self.maptarget, self.forced_actiondef)
     end
     return nil, nil
+end
+
+function MapScreen:ProcessStaticDecorations_CharlieResidue(staticdecorations, zoomscale, w, h, charlieresidue)
+    local residuetarget = charlieresidue:GetTarget()
+    local rx, ry, rz = residuetarget.Transform:GetWorldPosition()
+    local context = charlieresidue:GetMapActionContext()
+    if context > CHARLIERESIDUE_MAP_ACTIONS.NONE then
+        if context == CHARLIERESIDUE_MAP_ACTIONS.WORMHOLE then
+            local ents_bin = GlobalMapIconsDB.prefabs["globalmapiconseeable"]
+            if ents_bin then
+                local entdatas = {}
+                for ent, _ in pairs(ents_bin) do
+                    if ent:HasTag("wormholetrackericon") then
+                        table.insert(entdatas, {
+                            ent = ent,
+                            dsq = residuetarget:GetDistanceSqToInst(ent),
+                        })
+                    end
+                end
+                if entdatas[2] then
+                    table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
+                end
+                if entdatas[1] then
+                    local minzoomscale = 0.18
+                    local maxzoomscale = 0.55
+                    local overallzoomscaler = 3.6
+                    local zoomradius = TUNING.SKILLS.WINONA.WORMHOLE_DETECTION_RADIUS
+                    local zoomscale_clamped = math.clamp(zoomscale, minzoomscale or zoomscale, maxzoomscale or zoomscale) * overallzoomscaler
+                    for _, entdata in ipairs(entdatas) do
+                        local ent = entdata.ent
+                        local ex, ey, ez = ent.Transform:GetWorldPosition()
+                        if ex ~= rx and ez ~= rz and self.owner.CanSeePointOnMiniMap and self.owner:CanSeePointOnMiniMap(ex, ey, ez) then
+                            if staticdecorations[ent.GUID .. "_WORMHOLE"] == nil then
+                                local decoration = self.decorationrootstatic:AddChild(UIAnim())
+                                staticdecorations[ent.GUID .. "_WORMHOLE"] = {
+                                    ent = ent,
+                                    decoration = decoration,
+                                    minzoomscale = minzoomscale,
+                                    maxzoomscale = maxzoomscale,
+                                    overallzoomscaler = overallzoomscaler,
+                                    zoomradius = zoomradius,
+                                    animgainfocus = { "proximity_pre", "proximity_loop" },
+                                    animlosefocus = { "proximity_pst", "idle" },
+                                }
+                                local animstate = decoration:GetAnimState()
+                                animstate:SetBank("roseglasses_minimap_indicator")
+                                animstate:SetBuild("roseglasses_minimap_indicator")
+                                animstate:PlayAnimation("idle", true)
+                                local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
+                                decoration:SetPosition(x * w, y * h)
+                                decoration:SetScale(zoomscale_clamped, zoomscale_clamped, 1)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function MapScreen:ProcessStaticDecorations_WobyCourier(staticdecorations, zoomscale, w, h, courierdirector)
+    local entdatas = {}
+    local ents_bin = GlobalMapIconsDB.prefabs["globalmapiconnamed"]
+    if ents_bin then
+        for ent, _ in pairs(ents_bin) do
+            if ent:HasTag("globalmapicon_player") then
+                table.insert(entdatas, {
+                    ent = ent,
+                    dsq = courierdirector:GetDistanceSqToInst(ent),
+                    isplayer = true,
+                })
+            end
+        end
+    end
+    ents_bin = GlobalMapIconsDB.prefabs["wobycourier_marker"]
+    if ents_bin then
+        for ent, _ in pairs(ents_bin) do
+            table.insert(entdatas, {
+                ent = ent,
+                dsq = courierdirector:GetDistanceSqToInst(ent),
+            })
+        end
+    end
+    if entdatas[1] then
+        if entdatas[2] then
+            table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
+        end
+        local rx, ry, rz = courierdirector.Transform:GetWorldPosition()
+        local minzoomscale = 0.18
+        local maxzoomscale = 0.55
+        local overallzoomscaler = 3.6
+        local zoomradius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS
+        local zoomscale_clamped = math.clamp(zoomscale, minzoomscale or zoomscale, maxzoomscale or zoomscale) * overallzoomscaler
+        for _, entdata in ipairs(entdatas) do
+            local ent = entdata.ent
+            if staticdecorations[ent.GUID .. "_COURIER"] == nil then
+                local ex, ey, ez = ent.Transform:GetWorldPosition()
+                local decoration = self.decorationrootstatic:AddChild(UIAnim())
+                self.decorationdata.alwaysdirty = true
+                local decorationdata = {
+                    ent = ent,
+                    decoration = decoration,
+                    minzoomscale = minzoomscale,
+                    maxzoomscale = maxzoomscale,
+                    overallzoomscaler = overallzoomscaler,
+                    zoomradius = zoomradius,
+                    animgainfocus = { "proximity_pre", "proximity_loop" },
+                    animlosefocus = { "proximity_pst", "idle" },
+                    animhidedistsq = entdata.isplayer and WOBYCOURIER_MIN_DIST_TO_PLAYER_SQ or nil,
+                    donotautoaim = entdata.isplayer,
+                }
+                staticdecorations[ent.GUID .. "_COURIER"] = decorationdata
+                local animstate = decoration:GetAnimState()
+                animstate:SetBank("courier_minimap_indicator")
+                animstate:SetBuild("courier_minimap_indicator")
+                animstate:PlayAnimation("idle", true)
+                local shouldhide
+				if self.owner then
+					if not ent.MiniMapEntity:EntityHasRestriction(self.owner.GUID) then
+                        shouldhide = true
+					elseif decorationdata.animhidedistsq and self.owner:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
+                        shouldhide = true
+                    end
+                end
+                if shouldhide then
+                    decoration:Hide()
+                    decorationdata.mapicon_hidden = true
+                end
+                local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
+                decoration:SetPosition(x * w, y * h)
+                decoration:SetScale(zoomscale_clamped, zoomscale_clamped, 1)
+            end
+        end
+    end
+end
+
+function MapScreen:ProcessStaticDecorations_SwapBodies(staticdecorations, zoomscale, w, h, director)
+    local entdatas = {}
+	local ents_bin = GlobalMapIconsDB.prefabs["wx78_backupbody"]
+    if ents_bin then
+        for ent, _ in pairs(ents_bin) do
+            table.insert(entdatas, {
+                ent = ent,
+                dsq = director:GetDistanceSqToInst(ent),
+            })
+        end
+    end
+	if #entdatas > 0 then
+		if #entdatas > 1 then
+            table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
+        end
+        local rx, ry, rz = director.Transform:GetWorldPosition()
+        local minzoomscale = 0.18
+        local maxzoomscale = 0.55
+        local overallzoomscaler = 3.6
+        local zoomradius = TUNING.SKILLS.WX78.REMOTEBODYSWAP_DETECTION_RADIUS
+        local zoomscale_clamped = math.clamp(zoomscale, minzoomscale or zoomscale, maxzoomscale or zoomscale) * overallzoomscaler
+        for _, entdata in ipairs(entdatas) do
+            local ent = entdata.ent
+			local id = ent.GUID.."_BACKUPBODY"
+			if staticdecorations[id] == nil then
+                local ex, ey, ez = ent.Transform:GetWorldPosition()
+                local decoration = self.decorationrootstatic:AddChild(UIAnim())
+                self.decorationdata.alwaysdirty = true
+                local decorationdata = {
+                    ent = ent,
+                    decoration = decoration,
+                    minzoomscale = minzoomscale,
+                    maxzoomscale = maxzoomscale,
+                    overallzoomscaler = overallzoomscaler,
+                    zoomradius = zoomradius,
+                    animgainfocus = { "proximity_pre", "proximity_loop" },
+                    animlosefocus = { "proximity_pst", "idle" },
+                }
+				staticdecorations[id] = decorationdata
+                local animstate = decoration:GetAnimState()
+				animstate:SetBank("wx78_map_marker")
+				animstate:SetBuild("wx78_map_marker")
+                animstate:PlayAnimation("idle", true)
+				local shouldhide = TheWorld.ismastersim and ent.owner ~= self.owner
+                if shouldhide then
+                    decoration:Hide()
+                    decorationdata.mapicon_hidden = true
+                end
+                local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
+                decoration:SetPosition(x * w, y * h)
+                decoration:SetScale(zoomscale_clamped, zoomscale_clamped, 1)
+            end
+        end
+    end
+end
+
+function MapScreen:ProcessStaticDecorations_ScoutSelect(staticdecorations, zoomscale, w, h, director)
+	local entdatas = {}
+	local ents_bin = GlobalMapIconsDB.prefabs["wx78_drone_scout"]
+	if ents_bin then
+		for ent in pairs(ents_bin) do
+			table.insert(entdatas, {
+				ent = ent,
+				dsq = director:GetDistanceSqToInst(ent),
+			})
+		end
+	end
+	if #entdatas > 0 then
+		if #entdatas > 1 then
+			table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
+		end
+		local rx, ry, rz = director.Transform:GetWorldPosition()
+		local minzoomscale = 0.18
+		local maxzoomscale = 0.55
+		local overallzoomscaler = 3.6
+		local zoomradius = TUNING.SKILLS.WX78.MAPSCOUTSELECT_DETECTION_RADIUS
+		local zoomscale_clamped = math.clamp(zoomscale, minzoomscale or zoomscale, maxzoomscale or zoomscale) * overallzoomscaler
+		for _, entdata in ipairs(entdatas) do
+			local ent = entdata.ent
+			local id = ent.GUID.."_DRONE_SCOUT"
+			if staticdecorations[id] == nil then
+				local ex, ey, ez = ent.Transform:GetWorldPosition()
+				local decoration = self.decorationrootstatic:AddChild(UIAnim())
+				self.decorationdata.alwaysdirty = true
+				local decorationdata = {
+					ent = ent,
+					decoration = decoration,
+					minzoomscale = minzoomscale,
+					maxzoomscale = maxzoomscale,
+					overallzoomscaler = overallzoomscaler,
+					zoomradius = zoomradius,
+					animgainfocus = { "proximity_pre", "proximity_loop" },
+					animlosefocus = { "proximity_pst", "idle" },
+				}
+				staticdecorations[id] = decorationdata
+				local animstate = decoration:GetAnimState()
+				animstate:SetBank("wx78_map_marker")
+				animstate:SetBuild("wx78_map_marker")
+				animstate:PlayAnimation("idle", true)
+				local shouldhide = TheWorld.ismastersim and ent.owner ~= self.owner
+				if shouldhide then
+					decoration:Hide()
+					decorationdata.mapicon_hidden = true
+				end
+				local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
+				decoration:SetPosition(x * w, y * h)
+				decoration:SetScale(zoomscale_clamped, zoomscale_clamped, 1)
+			end
+		end
+	end
+end
+
+function MapScreen:ProcessStaticDecorations_Internal(staticdecorations, zoomscale, w, h)
+	if self:ValidateMapTarget() then -- From local client map.
+        if self.maptarget.prefab == "charlieresidue" then
+            local charlieresidue = self.maptarget
+            if charlieresidue and charlieresidue:IsValid() then
+                self:ProcessStaticDecorations_CharlieResidue(staticdecorations, zoomscale, w, h, charlieresidue)
+            end
+        elseif self.maptarget.prefab == "wobysmall" or self.maptarget.prefab == "wobybig" then
+            local courierdirector = self.owner
+            if courierdirector and courierdirector:IsValid() then
+                self:ProcessStaticDecorations_WobyCourier(staticdecorations, zoomscale, w, h, courierdirector)
+            end
+        end
+	elseif self.inherentmapactions then
+        local director = self.owner
+        if director and director:IsValid() then
+			for k in pairs(self.inherentmapactions) do
+				if k == ACTIONS.MAPSCOUTSELECT_MAP then
+					self:ProcessStaticDecorations_ScoutSelect(staticdecorations, zoomscale, w, h, director)
+				elseif k == ACTIONS.SWAPBODIES_MAP then
+					self:ProcessStaticDecorations_SwapBodies(staticdecorations, zoomscale, w, h, director)
+				end
+			end
+        end
+    end
+end
+
+function MapScreen:SetNewMapTarget(maptarget, forced_actiondef)
+	if self.maptarget then
+		self.maptarget:PushEvent("cancelmaptarget", self.owner)
+	end
+	self.maptarget = maptarget
+	self.forced_actiondef = forced_actiondef
+	if maptarget then
+		maptarget:PushEvent("mapselected")
+	end
+	self:SetInherentMapActions(nil)
+end
+
+function MapScreen:SetInherentMapActions(mapactions)
+	if mapactions and next(mapactions) == nil then
+		mapactions = nil
+	end
+
+	--check if anythign changed
+	local dirty = false
+	if (mapactions == nil) ~= (self.inherentmapactions == nil) then
+		dirty = true
+	elseif mapactions then
+		local dirty
+		for k in pairs(mapactions) do
+			if self.inherentmapactions[k] then
+				self.inherentmapactions[k] = nil --WARNING: changed self.inherentmapactions here!
+			else
+				dirty = true
+				break
+			end
+		end
+		dirty = dirty or next(self.inherentmapactions) ~= nil
+	end
+
+	--NOTE: self.inherentmapactions may have been modified during the dirty
+	--      check, so set it to the new mapactions regardless of the result
+	self.inherentmapactions = mapactions
+	if dirty then
+		self:ClearStaticDecorations()
+	end
+	self:ProcessStaticDecorations()
+end
+
+function MapScreen:ClearStaticDecorations()
+	if next(self.decorationdata.staticdecorations) then
+		self:RemoveStaticDecorations()
+		self.decorationdata.staticdecorations = {}
+	end
 end
 
 function MapScreen:ProcessStaticDecorations()
@@ -200,146 +561,7 @@ function MapScreen:ProcessStaticDecorations()
     local zoomscale = 0.75 / self.minimap:GetZoom()
     local w, h = TheSim:GetScreenSize()
     w, h = w * 0.5, h * 0.5
-
-    local charlieresidue, courierdirector
-    if self.maptarget then -- From local client map.
-        if self.maptarget.prefab == "charlieresidue" then
-            charlieresidue = self.maptarget
-        elseif self.maptarget.prefab == "wobysmall" or self.maptarget.prefab == "wobybig" then
-            courierdirector = self.owner
-        end
-    end
-    if charlieresidue and charlieresidue:IsValid() then
-        local residuetarget = charlieresidue:GetTarget()
-        local rx, ry, rz = residuetarget.Transform:GetWorldPosition()
-        local context = charlieresidue:GetMapActionContext()
-        if context > CHARLIERESIDUE_MAP_ACTIONS.NONE then
-            if context == CHARLIERESIDUE_MAP_ACTIONS.WORMHOLE then
-                local ents_bin = GlobalMapIconsDB.prefabs["globalmapiconseeable"]
-                if ents_bin then
-                    local entdatas = {}
-                    for ent, _ in pairs(ents_bin) do
-                        if ent:HasTag("wormholetrackericon") then
-                            table.insert(entdatas, {
-                                ent = ent,
-                                dsq = residuetarget:GetDistanceSqToInst(ent),
-                            })
-                        end
-                    end
-                    if entdatas[2] then
-                        table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
-                    end
-                    if entdatas[1] then
-                        local minzoomscale = 0.18
-                        local maxzoomscale = 0.55
-                        local overallzoomscaler = 3.6
-                        local zoomradius = TUNING.SKILLS.WINONA.WORMHOLE_DETECTION_RADIUS
-                        local zoomscale_clamped = math.clamp(zoomscale, minzoomscale or zoomscale, maxzoomscale or zoomscale) * overallzoomscaler
-                        for _, entdata in ipairs(entdatas) do
-                            local ent = entdata.ent
-                            local ex, ey, ez = ent.Transform:GetWorldPosition()
-                            if ex ~= rx and ez ~= rz and self.owner.CanSeePointOnMiniMap and self.owner:CanSeePointOnMiniMap(ex, ey, ez) then
-                                if staticdecorations[ent.GUID .. "_WORMHOLE"] == nil then
-                                    local decoration = self.decorationrootstatic:AddChild(UIAnim())
-                                    staticdecorations[ent.GUID .. "_WORMHOLE"] = {
-                                        ent = ent,
-                                        decoration = decoration,
-                                        minzoomscale = minzoomscale,
-                                        maxzoomscale = maxzoomscale,
-                                        overallzoomscaler = overallzoomscaler,
-                                        zoomradius = zoomradius,
-                                        animgainfocus = { "proximity_pre", "proximity_loop" },
-                                        animlosefocus = { "proximity_pst", "idle" },
-                                    }
-                                    local animstate = decoration:GetAnimState()
-                                    animstate:SetBank("roseglasses_minimap_indicator")
-                                    animstate:SetBuild("roseglasses_minimap_indicator")
-                                    animstate:PlayAnimation("idle", true)
-                                    local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
-                                    decoration:SetPosition(x * w, y * h)
-                                    decoration:SetScale(zoomscale_clamped, zoomscale_clamped, 1)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif courierdirector and courierdirector:IsValid() then
-        local entdatas = {}
-        local ents_bin = GlobalMapIconsDB.prefabs["globalmapiconnamed"]
-        if ents_bin then
-            for ent, _ in pairs(ents_bin) do
-                if ent:HasTag("globalmapicon_player") then
-                    table.insert(entdatas, {
-                        ent = ent,
-                        dsq = courierdirector:GetDistanceSqToInst(ent),
-                        isplayer = true,
-                    })
-                end
-            end
-        end
-        ents_bin = GlobalMapIconsDB.prefabs["wobycourier_marker"]
-        if ents_bin then
-            for ent, _ in pairs(ents_bin) do
-                table.insert(entdatas, {
-                    ent = ent,
-                    dsq = courierdirector:GetDistanceSqToInst(ent),
-                })
-            end
-        end
-        if entdatas[1] then
-            if entdatas[2] then
-                table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
-            end
-            local rx, ry, rz = courierdirector.Transform:GetWorldPosition()
-            local minzoomscale = 0.18
-            local maxzoomscale = 0.55
-            local overallzoomscaler = 3.6
-            local zoomradius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS
-            local zoomscale_clamped = math.clamp(zoomscale, minzoomscale or zoomscale, maxzoomscale or zoomscale) * overallzoomscaler
-            for _, entdata in ipairs(entdatas) do
-                local ent = entdata.ent
-                if staticdecorations[ent.GUID .. "_COURIER"] == nil then
-                    local ex, ey, ez = ent.Transform:GetWorldPosition()
-                    local decoration = self.decorationrootstatic:AddChild(UIAnim())
-                    self.decorationdata.alwaysdirty = true
-                    local decorationdata = {
-                        ent = ent,
-                        decoration = decoration,
-                        minzoomscale = minzoomscale,
-                        maxzoomscale = maxzoomscale,
-                        overallzoomscaler = overallzoomscaler,
-                        zoomradius = zoomradius,
-                        animgainfocus = { "proximity_pre", "proximity_loop" },
-                        animlosefocus = { "proximity_pst", "idle" },
-                        animhidedistsq = entdata.isplayer and WOBYCOURIER_MIN_DIST_TO_PLAYER_SQ or nil,
-                        donotautoaim = entdata.isplayer,
-                    }
-                    staticdecorations[ent.GUID .. "_COURIER"] = decorationdata
-                    local animstate = decoration:GetAnimState()
-                    animstate:SetBank("courier_minimap_indicator")
-                    animstate:SetBuild("courier_minimap_indicator")
-                    animstate:PlayAnimation("idle", true)
-                    local shouldhide
-                    if ThePlayer then
-                        if not ent.MiniMapEntity:EntityHasRestriction(ThePlayer.GUID) then
-                            shouldhide = true
-                        elseif decorationdata.animhidedistsq and ThePlayer:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
-                            shouldhide = true
-                        end
-                    end
-                    if shouldhide then
-                        decoration:Hide()
-                        decorationdata.mapicon_hidden = true
-                    end
-                    local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
-                    decoration:SetPosition(x * w, y * h)
-                    decoration:SetScale(zoomscale_clamped, zoomscale_clamped, 1)
-                end
-            end
-        end
-    end
+    self:ProcessStaticDecorations_Internal(staticdecorations, zoomscale, w, h)
 end
 
 function MapScreen:UpdateStaticDecorations()
@@ -352,10 +574,17 @@ function MapScreen:UpdateStaticDecorations()
         local ent = decorationdata.ent
         local decoration = decorationdata.decoration
         local shouldhide = not ent:IsValid()
-        if not shouldhide and ThePlayer then
-            if not ent.MiniMapEntity:EntityHasRestriction(ThePlayer.GUID) then
-                shouldhide = true
-            elseif decorationdata.animhidedistsq and ThePlayer:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
+		if not shouldhide and self.owner then
+			if ent.MiniMapEntity then
+				if not ent.MiniMapEntity:EntityHasRestriction(self.owner.GUID) then
+					shouldhide = true
+				end
+			elseif TheWorld.ismastersim then --globaltrackedicons
+				if ent.owner ~= self.owner then
+					shouldhide = true
+				end
+			end
+			if not shouldhide and decorationdata.animhidedistsq and self.owner:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
                 shouldhide = true
             end
         end
@@ -381,11 +610,123 @@ function MapScreen:UpdateStaticDecorations()
     end
 end
 
+function MapScreen:ProcessLMBDecorations_MAPSCOUT_MAP(lmb, fresh)
+    local decor1, decor2, decor3, decor4
+    local R, G, B = 239 / 255, 166 / 255, 32 / 255
+    if fresh then
+        local image = "wx78_drone_scout.png"
+        local atlas = GetMinimapAtlas(image)
+        decor1 = self.decorationrootlmb:AddChild(Image(atlas, image))
+        decor2 = self.decorationrootlmb:AddChild(Image("images/ui.xml", "white.tex"))
+        decor3 = self.decorationrootlmb:AddChild(Image(atlas, image))
+        decor4 = self.decorationrootlmb:AddChild(Image("images/ui.xml", "white.tex"))
+        decor4:SetTint(R * 0.7, G * 0.7, B * 0.7, 0.5)
+        decor4:SetHRegPoint(ANCHOR_LEFT)
+        decor3:SetTint(.75, .25, .25, 1)
+        decor2:SetTint(R * 0.9, G * 0.9, B * 0.9, 0.5) -- For antialiasing we fake it with a second bar with lower alpha and brightness.
+        decor2:SetHRegPoint(ANCHOR_LEFT)
+        decor2.centerbar = decor2:AddChild(Image("images/ui.xml", "white.tex"))
+        decor2.centerbar:SetHRegPoint(ANCHOR_LEFT)
+        decor2.centerbar:SetTint(R, G, B, 1)
+        self.decorationdata.lmbents[1] = decor1
+        self.decorationdata.lmbents[2] = decor2
+        self.decorationdata.lmbents[3] = decor3
+        self.decorationdata.lmbents[4] = decor4
+    else
+        decor1 = self.decorationdata.lmbents[1]
+        decor2 = self.decorationdata.lmbents[2]
+        decor3 = self.decorationdata.lmbents[3]
+        decor4 = self.decorationdata.lmbents[4]
+    end
+    local lmb_pos = lmb:GetActionPoint()
+    local px, py, pz = 0, 0, 0
+    if self.owner then
+        px, py, pz = self.owner.Transform:GetWorldPosition()
+    end
+
+    local tx, ty, tz = lmb.target.Transform:GetWorldPosition()
+    local validdist = lmb.target:GetDroneRange(self.owner)
+    local dx, dz = lmb_pos.x - px, lmb_pos.z - pz
+    local dist = math.sqrt(dx * dx + dz * dz)
+    local zoomscale = 0.75 / self.minimap:GetZoom()
+    local w, h = TheSim:GetScreenSize()
+    w, h = w * 0.5, h * 0.5
+
+    local r = math.min(dist, validdist)
+    if dist > 0 then
+        dx, dz = dx / dist, dz / dist
+    end
+    if dist > validdist then
+        decor1:SetTint(1, 1, 1, 0.5)
+        decor2.centerbar:SetTint(R, G, B, 0.3)
+        decor3:Show()
+        decor4:Show()
+        if self.forced_actiondef == ACTIONS.MAPSCOUT_MAP then
+            self.forced_actiondef = ACTIONS.MAPSCOUT_MAP_TOOFAR
+        end
+    else
+        decor1:SetTint(1, 1, 1, 1)
+        decor2.centerbar:SetTint(R, G, B, 1)
+        decor3:Hide()
+        decor4:Hide()
+        if self.forced_actiondef == ACTIONS.MAPSCOUT_MAP_TOOFAR then
+            self.forced_actiondef = ACTIONS.MAPSCOUT_MAP
+        end
+    end
+    local ndx, ndz = dx * r + px, dz * r + pz
+    local x, y = self.minimap:WorldPosToMapPos(ndx, ndz, 0)
+    decor1:SetPosition(x * w, y * h)
+    decor1:SetScale(zoomscale, zoomscale, 1)
+    x, y = self.minimap:WorldPosToMapPos(tx, tz, 0)
+    decor2:SetPosition(x * w, y * h)
+    local cameraheading = TheCamera and (TheCamera:GetHeading() + 90) or 0
+    local dtz, dtx = lmb_pos.z - tz, lmb_pos.x - tx
+    local barlength = math.sqrt(dtx * dtx + dtz * dtz) * 6 * zoomscale
+    decor2:SetRotation(cameraheading - math.atan2(dtz, dtx) * RADIANS)
+    decor2:SetSize(barlength, 2.5)
+    decor2.centerbar:SetSize(barlength, 1)
+    x, y = self.minimap:WorldPosToMapPos(lmb_pos.x, lmb_pos.z, 0)
+    decor3:SetPosition(x * w, y * h)
+    decor3:SetScale(zoomscale, zoomscale, 1)
+    --x, y = self.minimap:WorldPosToMapPos(lmb_pos.x, lmb_pos.z, 0) -- Same x, y from above.
+    dtz, dtx = ndz - lmb_pos.z, ndx - lmb_pos.x
+    barlength = math.sqrt(dtx * dtx + dtz * dtz) * 6 * zoomscale
+    decor4:SetPosition(x * w, y * h)
+    decor4:SetRotation(cameraheading - math.atan2(dtz, dtx) * RADIANS)
+    decor4:SetSize(barlength, 2)
+end
+
+function MapScreen:ProcessLMBDecorations_MAPDELIVER_MAP(lmb, fresh)
+    local decor1
+    if fresh then
+        local image = lmb.target and lmb.target.prefab == "wx78_drone_delivery" and "wx78_drone_delivery.png" or "wx78_drone_delivery_small.png"
+        local atlas = GetMinimapAtlas(image)
+        decor1 = self.decorationrootlmb:AddChild(Image(atlas, image))
+        self.decorationdata.lmbents[1] = decor1
+    else
+        decor1 = self.decorationdata.lmbents[1]
+    end
+    local lmb_pos = lmb:GetActionPoint()
+
+    local zoomscale = 0.75 / self.minimap:GetZoom()
+    local w, h = TheSim:GetScreenSize()
+    w, h = w * 0.5, h * 0.5
+
+    local x, y = self.minimap:WorldPosToMapPos(lmb_pos.x, lmb_pos.z, 0)
+    decor1:SetPosition(x * w, y * h)
+    decor1:SetScale(zoomscale, zoomscale, 1)
+end
+
 function MapScreen:ProcessLMBDecorations(lmb, fresh)
     if fresh then
         self.decorationdata.lmbents = {}
     end
-    -- Nothing yet!
+
+    if lmb.action == ACTIONS.MAPSCOUT_MAP or lmb.action == ACTIONS.MAPSCOUT_MAP_TOOFAR then
+        self:ProcessLMBDecorations_MAPSCOUT_MAP(lmb, fresh)
+    elseif lmb.action == ACTIONS.MAPDELIVER_MAP then
+        self:ProcessLMBDecorations_MAPDELIVER_MAP(lmb, fresh)
+    end
 end
 
 function MapScreen:ProcessRMBDecorations_BLINK_MAP(rmb, fresh)
@@ -549,7 +890,7 @@ end
 function MapScreen:ProcessRMBDecorations_JUMPIN_MAP(rmb, fresh)
     local rmb_pos = rmb:GetActionPoint()
     local charlieresidue = nil
-    if self.maptarget then -- From local client map.
+	if self:ValidateMapTarget() then -- From local client map.
         if self.maptarget.prefab == "charlieresidue" then
             charlieresidue = self.maptarget
         end
@@ -586,7 +927,7 @@ end
 function MapScreen:ProcessRMBDecorations_DIRECTCOURIER_MAP(rmb, fresh)
     local rmb_pos = rmb:GetActionPoint()
     local courierdirector
-    if self.maptarget then -- From local client map.
+	if self:ValidateMapTarget() then -- From local client map.
         if self.maptarget.prefab == "wobysmall" or self.maptarget.prefab == "wobybig" then
             courierdirector = self.owner
         end
@@ -641,6 +982,86 @@ function MapScreen:ProcessRMBDecorations_DIRECTCOURIER_MAP(rmb, fresh)
     end
 end
 
+function MapScreen:ProcessRMBDecorations_SWAPBODIES_MAP(rmb, fresh)
+    local rmb_pos = rmb:GetActionPoint()
+    local entdatas = {}
+	local ents_bin = GlobalMapIconsDB.prefabs["wx78_backupbody"]
+    if ents_bin then
+        for ent, _ in pairs(ents_bin) do
+            table.insert(entdatas, {
+                ent = ent,
+                dsq = ent:GetDistanceSqToPoint(rmb_pos.x, rmb_pos.y, rmb_pos.z),
+            })
+        end
+    end
+	if #entdatas > 0 then
+		if #entdatas > 1 then
+            table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
+        end
+        local maxdsq = TUNING.SKILLS.WX78.REMOTEBODYSWAP_DETECTION_RADIUS
+        maxdsq = maxdsq * maxdsq
+        for _, entdata in ipairs(entdatas) do
+            local dsq = entdata.dsq
+            if dsq < maxdsq then
+                local ent = entdata.ent
+				local id = ent.GUID.."_BACKUPBODY"
+				local decorationdata = self.decorationdata.staticdecorations[id]
+                if decorationdata and not decorationdata.mapicon_hidden then
+                    local decoration = decorationdata.decoration
+                    if not decorationdata.mapfocus then
+                        decoration:GetAnimState():PlayAnimation(decorationdata.animgainfocus[1], true)
+                        for i = 2, #decorationdata.animgainfocus do
+                            decoration:GetAnimState():PushAnimation(decorationdata.animgainfocus[i])
+                        end
+                    end
+                    decorationdata.mapfocus = TheSim:GetStep() --screens use wallupdate and don't pause like simtick
+                    break
+                end
+            end
+        end
+    end
+end
+
+function MapScreen:ProcessRMBDecorations_MAPSCOUTSELECT_MAP(rmb, fresh)
+	local rmb_pos = rmb:GetActionPoint()
+	local entdatas = {}
+	local ents_bin = GlobalMapIconsDB.prefabs["wx78_drone_scout"]
+	if ents_bin then
+		for ent in pairs(ents_bin) do
+			table.insert(entdatas, {
+				ent = ent,
+				dsq = ent:GetDistanceSqToPoint(rmb_pos),
+			})
+		end
+	end
+	if #entdatas > 0 then
+		if #entdatas > 1 then
+			table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
+		end
+		local maxdsq = TUNING.SKILLS.WX78.MAPSCOUTSELECT_DETECTION_RADIUS
+		maxdsq = maxdsq * maxdsq
+		for _, entdata in ipairs(entdatas) do
+			local dsq = entdata.dsq
+			if dsq < maxdsq then
+				local ent = entdata.ent
+				local id = ent.GUID.."_DRONE_SCOUT"
+				local decorationdata = self.decorationdata.staticdecorations[id]
+				if decorationdata and not decorationdata.mapicon_hidden then
+					local decoration = decorationdata.decoration
+					if not decorationdata.mapfocus then
+						decoration:GetAnimState():PlayAnimation(decorationdata.animgainfocus[1], true)
+						for i = 2, #decorationdata.animgainfocus do
+							decoration:GetAnimState():PushAnimation(decorationdata.animgainfocus[i])
+						end
+					end
+					decorationdata.mapfocus = TheSim:GetStep() --screens use wallupdate and don't pause like simtick
+					break
+				end
+			end
+		end
+	end
+end
+
 function MapScreen:ProcessRMBDecorations(rmb, fresh)
     if fresh then
         self.decorationdata.rmbents = {}
@@ -653,6 +1074,10 @@ function MapScreen:ProcessRMBDecorations(rmb, fresh)
         self:ProcessRMBDecorations_JUMPIN_MAP(rmb, fresh)
     elseif rmb.action == ACTIONS.DIRECTCOURIER_MAP then
         self:ProcessRMBDecorations_DIRECTCOURIER_MAP(rmb, fresh)
+    elseif rmb.action == ACTIONS.SWAPBODIES_MAP then
+        self:ProcessRMBDecorations_SWAPBODIES_MAP(rmb, fresh)
+	elseif rmb.action == ACTIONS.MAPSCOUTSELECT_MAP then
+		self:ProcessRMBDecorations_MAPSCOUTSELECT_MAP(rmb, fresh)
     end
 end
 
@@ -671,7 +1096,7 @@ function MapScreen:UpdateMapActionsDecorations(x, y, z, LMBaction, RMBaction)
             self:RemoveLMBDecorations()
             dd.lmb = lmb
         end
-        if lmb and lmb.map_action then
+        if lmb and (lmb.map_action or lmb.map_only) then
             self:ProcessLMBDecorations(LMBaction, lmbfresh)
         end
         local rmbfresh = dd.rmb ~= rmb
@@ -679,7 +1104,7 @@ function MapScreen:UpdateMapActionsDecorations(x, y, z, LMBaction, RMBaction)
             self:RemoveRMBDecorations()
             dd.rmb = rmb
         end
-        if rmb and rmb.map_action then
+        if rmb and (rmb.map_action or rmb.map_only) then
             self:ProcessRMBDecorations(RMBaction, rmbfresh)
         end
         self:UpdateStaticDecorations()
@@ -787,6 +1212,12 @@ end
 function MapScreen:OnControl(control, down)
     if MapScreen._base.OnControl(self, control, down) then return true end
 
+	local handle_LMB_up
+	if not down and control == CONTROL_ACCEPT--[[CONTROL_PRIMARY]] then
+		handle_LMB_up = self.handle_LMB_up
+		self:SetHandleLmbUp(false)
+	end
+
     if down and self._hack_ignore_held_controls then
         self._hack_ignore_ups_for[control] = true
         return true
@@ -801,11 +1232,13 @@ function MapScreen:OnControl(control, down)
         return true
     end
 
-    if not (down and self.shown) then
+	if not self.shown then
+		return false
+	elseif not (down or (control == CONTROL_ACCEPT--[[CONTROL_PRIMARY]] and handle_LMB_up and TheFrontEnd.tracking_mouse)) then
         return false
     end
 
-	local playercontroller = ThePlayer and ThePlayer.components.playercontroller or nil
+	local playercontroller = self.owner and self.owner.components.playercontroller or nil
 
 	if playercontroller and control == CONTROL_ROTATE_LEFT then
 		playercontroller:RotLeft()
@@ -819,30 +1252,51 @@ function MapScreen:OnControl(control, down)
         local x, y, z = self:GetWorldPositionAtCursor()
         local aax, aay, aaz = self:AutoAimToStaticDecorations(x, y, z)
         local LMBaction, RMBaction = self:UpdateMapActions(aax, aay, aaz)
-        if LMBaction and (control == CONTROL_PRIMARY or control == CONTROL_CONTROLLER_ACTION) then
+		if LMBaction and down and control == CONTROL_ACCEPT--[[CONTROL_PRIMARY]] and TheFrontEnd.tracking_mouse then
+			self:SetHandleLmbUp(true)
+		elseif LMBaction and (control == CONTROL_ACCEPT--[[CONTROL_PRIMARY]] or control == CONTROL_CONTROLLER_ACTION) then
             if not self.quitting then
                 SetAutopaused(false)
                 self.quitting = true
             end
-			playercontroller:OnMapAction(LMBaction.action.code, Vector3(aax, aay, aaz), self.maptarget, LMBaction.action.mod_name)
+			local target = self.maptarget
             if LMBaction.action.closes_map then
-                self.maptarget = nil
+				if target then
+					target:PushEvent("cancelmaptarget", self.owner)
+					self.maptarget = nil
+				end
                 TheFrontEnd:PopScreen()
                 playercontroller._hack_ignore_held_controls = 0.1
                 playercontroller._hack_ignore_ups_for = {}
             end
+			playercontroller:OnMapAction(LMBaction.action.code, Vector3(aax, aay, aaz), target, LMBaction.action.mod_name)
         elseif RMBaction and (control == CONTROL_SECONDARY or control == CONTROL_CONTROLLER_ATTACK) then
             if not self.quitting then
                 SetAutopaused(false)
                 self.quitting = true
             end
-			playercontroller:OnMapAction(RMBaction.action.code, Vector3(aax, aay, aaz), self.maptarget, RMBaction.action.mod_name)
+			local target = self.maptarget
             if RMBaction.action.closes_map then
-                self.maptarget = nil
+				if target then
+					target:PushEvent("cancelmaptarget", self.owner)
+					self.maptarget = nil
+				end
                 TheFrontEnd:PopScreen()
                 playercontroller._hack_ignore_held_controls = 0.1
                 playercontroller._hack_ignore_ups_for = {}
             end
+			playercontroller:OnMapAction(RMBaction.action.code, Vector3(aax, aay, aaz), target, RMBaction.action.mod_name)
+		elseif LMBaction and (control == CONTROL_SECONDARY or control == CONTROL_CANCEL) and self.maptarget then
+			--Cancel map selected
+			if control == CONTROL_CANCEL then
+				if self._hack_ignore_ups_for then
+					self._hack_ignore_ups_for[control] = true
+				else
+					self._hack_ignore_ups_for = { [control] = true }
+				end
+			end
+			self:SetHandleLmbUp(false)
+			self:SetNewMapTarget(nil, nil)
         end
     else
         return false
@@ -858,10 +1312,21 @@ function MapScreen:GetHelpText()
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ROTATE_RIGHT) .. " " .. STRINGS.UI.HELP.ROTATE_RIGHT)
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP_ZOOM_IN) .. " " .. STRINGS.UI.HELP.ZOOM_IN)
     table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP_ZOOM_OUT) .. " " .. STRINGS.UI.HELP.ZOOM_OUT)
-    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
-	local playercontroller = ThePlayer and ThePlayer.components.playercontroller or nil
-	if playercontroller and playercontroller.RMBaction then
-		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ATTACK) .. " " .. playercontroller.RMBaction:GetActionString())
+
+	local playercontroller = self.owner and self.owner.components.playercontroller or nil
+	if playercontroller and playercontroller.LMBaction and self.maptarget then
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.CANCEL)
+	else
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+	end
+
+	if playercontroller then
+		if playercontroller.LMBaction then
+			table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ACTION) .. " " .. playercontroller.LMBaction:GetActionString())
+		end
+		if playercontroller.RMBaction then
+			table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ATTACK) .. " " .. playercontroller.RMBaction:GetActionString())
+		end
     end
 
     return table.concat(t, "  ")

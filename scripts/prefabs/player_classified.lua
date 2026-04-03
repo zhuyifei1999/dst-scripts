@@ -24,6 +24,16 @@ local function PushPausePredictionFrames(inst, frames)
     SetDirty(inst.pausepredictionframes, frames)
 end
 
+local function OnForceHealthPulse(parent, data)
+    if data.up then
+        --Force dirty, we just want to trigger an event on the client
+        SetDirty(parent.player_classified.ishealthpulseup, true)
+    elseif data.down then
+        --Force dirty, we just want to trigger an event on the client
+        SetDirty(parent.player_classified.ishealthpulsedown, true)
+    end
+end
+
 local function OnHealthDelta(parent, data)
     if data.overtime then
         --V2C: Don't clear: it's redundant as player_classified shouldn't
@@ -255,18 +265,30 @@ local function OnHealthDirty(inst)
     if inst._parent ~= nil then
         local oldpercent = inst._oldhealthpercent
         local percent = inst.currenthealth:value() / inst.maxhealth:value()
-        local data =
-        {
-            oldpercent = oldpercent,
-            newpercent = percent,
-            overtime =
-                not (inst.ishealthpulseup:value() and percent > oldpercent) and
-                not (inst.ishealthpulsedown:value() and percent < oldpercent),
-        }
-        inst._oldhealthpercent = percent
-        inst.ishealthpulseup:set_local(false)
-        inst.ishealthpulsedown:set_local(false)
-        inst._parent:PushEvent("healthdelta", data)
+        if oldpercent == percent then
+            local data =
+            {
+                oldpercent = oldpercent,
+                newpercent = percent,
+            }
+            inst._parent:PushEvent("healthdelta", data) -- still must pass healthdelta to update max value in case they changed
+            inst._parent:PushEvent("forcehealthpulse", { up = inst.ishealthpulseup:value(), down = inst.ishealthpulsedown:value() })
+            inst.ishealthpulseup:set_local(false)
+            inst.ishealthpulsedown:set_local(false)
+        else
+            local data =
+            {
+                oldpercent = oldpercent,
+                newpercent = percent,
+                overtime =
+                    not (inst.ishealthpulseup:value() and percent > oldpercent) and
+                    not (inst.ishealthpulsedown:value() and percent < oldpercent),
+            }
+            inst._oldhealthpercent = percent
+            inst.ishealthpulseup:set_local(false)
+            inst.ishealthpulsedown:set_local(false)
+            inst._parent:PushEvent("healthdelta", data)
+        end
     else
         inst._oldhealthpercent = 1
         inst.ishealthpulseup:set_local(false)
@@ -447,46 +469,6 @@ local function OnMightinessDirty(inst)
         inst._oldmightinesspercent = percent
 
         inst._parent:PushEvent("mightinessdelta", data)
-    end
-end
-
--- WX78 Upgrade Module UI functions ------------------------------------------
-
-fns.OnEnergyLevelDirty = function(inst)
-    if inst._parent ~= nil then
-        local energylevel = inst.currentenergylevel:value()
-        local data =
-        {
-            old_level = inst._oldcurrentenergylevel,
-            new_level = energylevel,
-        }
-
-        inst._oldcurrentenergylevel = energylevel
-
-        inst._parent:PushEvent("energylevelupdate", data)
-    end
-end
-
-fns.OnUIRobotSparks = function(inst)
-    if inst._parent ~= nil then
-        inst._parent:PushEvent("do_robot_spark")
-    end
-end
-
-fns.OnUpgradeModulesListDirty = function(inst)
-    if inst._parent ~= nil then
-        local module1 = inst.upgrademodules[1]:value()
-        local module2 = inst.upgrademodules[2]:value()
-        local module3 = inst.upgrademodules[3]:value()
-        local module4 = inst.upgrademodules[4]:value()
-        local module5 = inst.upgrademodules[5]:value()
-        local module6 = inst.upgrademodules[6]:value()
-
-        if module1 == 0 and module2 == 0 and module3 == 0 and module4 == 0 and module5 == 0 and module6 == 0 then
-            inst._parent:PushEvent("upgrademoduleowner_popallmodules")
-        else
-            inst._parent:PushEvent("upgrademodulesdirty", {module1, module2, module3, module4, module5, module6})
-        end
     end
 end
 
@@ -868,21 +850,33 @@ local function OnPlayerHUDDirty(inst)
     end
 end
 
+local CAMERA_ZOOM_DIST = 18
+local CAMERA_ZOOM_DISTANCE_GAIN = 3
+local CAMERA_AERIAL_ZOOM_DIST = 0
+
 local function OnPlayerCameraDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         if inst.iscamerazoomed:value() then
             if inst._prevcameradistance == nil then
                 inst._prevcameradistance = TheCamera.distance
-                inst._prevcameradistancegain = TheCamera.distancegain
-                if inst._prevcameradistance > 18 then
-                    TheCamera:SetDistance(18)
-                    TheCamera.distancegain = 3
+				local pan_gain, heading_gain, distance_gain = TheCamera:GetGains()
+				inst._prevcameradistancegain = distance_gain
+				if inst._prevcamerafov then
+					--aerial
+					TheCamera:SetDistance(CAMERA_AERIAL_ZOOM_DIST)
+					TheCamera:Snap()
+					TheCamera:SetGains(pan_gain, heading_gain, CAMERA_ZOOM_DISTANCE_GAIN)
+					TheCamera:SetControllable(false)
+				elseif inst._prevcameradistance > CAMERA_ZOOM_DIST then
+					TheCamera:SetDistance(CAMERA_ZOOM_DIST)
+					TheCamera:SetGains(pan_gain, heading_gain, CAMERA_ZOOM_DISTANCE_GAIN)
                     TheCamera:SetControllable(false)
                 end
             end
         elseif inst._prevcameradistance ~= nil then
             TheCamera:SetDistance(inst.cameradistance:value() > 0 and inst.cameradistance:value() or inst._prevcameradistance)
-            TheCamera.distancegain = inst._prevcameradistancegain
+			local pan_gain, heading_gain, distance_gain = TheCamera:GetGains()
+			TheCamera:SetGains(pan_gain, heading_gain, inst._prevcameradistancegain)
             inst._prevcameradistance = nil
             inst._prevcameradistancegain = nil
             TheCamera:SetControllable(true)
@@ -892,6 +886,37 @@ local function OnPlayerCameraDirty(inst)
             TheCamera:SetDefault()
         end
     end
+end
+
+local function OnPlayerAerialCameraDirty(inst)
+	if inst._parent and inst._parent.HUD then
+		if inst.isaerialcamera:value() then
+			if inst._prevcamerafov == nil then
+				inst._prevcamerafov = TheCamera:GetFOV()
+				inst._prevcameramindistpitch, inst._prevcameramaxdistpitch = TheCamera:GetPitchRange()
+				TheCamera:SetFOV(130)
+				TheCamera:SetPitchRange(80, 80)
+				if inst._prevcameradistance then
+					--zoomed
+					TheCamera:SetDistance(CAMERA_AERIAL_ZOOM_DIST)
+					TheCamera:Snap()
+					local pan_gain, heading_gain, distance_gain = TheCamera:GetGains()
+					TheCamera:SetGains(pan_gain, heading_gain, CAMERA_ZOOM_DISTANCE_GAIN)
+					TheCamera:SetControllable(false)
+				end
+			end
+		elseif inst._prevcamerafov then
+			TheCamera:SetFOV(inst._prevcamerafov)
+			TheCamera:SetPitchRange(inst._prevcameramindistpitch, inst._prevcameramaxdistpitch)
+			inst._prevcamerafov = nil
+			inst._prevcameramindistpitch = nil
+			inst._prevcameramaxdistpitch = nil
+			if inst._prevcameradistance then
+				--zoomed
+				TheCamera:SetDistance(CAMERA_ZOOM_DIST)
+			end
+		end
+	end
 end
 
 local function DoMaximizeCameraDistance(inst)
@@ -906,7 +931,8 @@ function fns.OnPlayerCameraExtraDistDirty(inst, init)
     local cameraextramaxdist = inst.cameraextramaxdist:value()
 
     if cameraextramaxdist then
-        TheCamera:SetExtraMaxDistance(cameraextramaxdist)
+        local capped_extra_distance = PLAYER_CAMERA_MAX_DIST - TheCamera:GetRawMaxDistance()
+        TheCamera:SetExtraMaxDistance(math.min(capped_extra_distance, cameraextramaxdist))
 
         if init and cameraextramaxdist > 0 then
             inst:DoTaskInTime(0, DoMaximizeCameraDistance)
@@ -1128,6 +1154,7 @@ end
 --------------------------------------------------------------------------
 
 local function RegisterNetListeners_mastersim(inst)
+    inst:ListenForEvent("forcehealthpulse", OnForceHealthPulse, inst._parent)
     inst:ListenForEvent("healthdelta", OnHealthDelta, inst._parent)
     inst:ListenForEvent("hungerdelta", OnHungerDelta, inst._parent)
     inst:ListenForEvent("sanitydelta", OnSanityDelta, inst._parent)
@@ -1165,9 +1192,6 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("inspirationsong2dirty", function(_inst) fns.OnInspirationSongsDirty(_inst, 2) end)
     inst:ListenForEvent("inspirationsong3dirty", function(_inst) fns.OnInspirationSongsDirty(_inst, 3) end)
     inst:ListenForEvent("mightinessdirty", OnMightinessDirty)
-    inst:ListenForEvent("upgrademoduleenergyupdate", fns.OnEnergyLevelDirty)
-    inst:ListenForEvent("upgrademoduleslistdirty", fns.OnUpgradeModulesListDirty)
-    inst:ListenForEvent("uirobotsparksevent", fns.OnUIRobotSparks)
     inst:ListenForEvent("freesoulhopsdirty", fns.OnFreeSoulhopsDirty)
     inst:ListenForEvent("temperaturedirty", OnTemperatureDirty)
     inst:ListenForEvent("moisturedirty", OnMoistureDirty)
@@ -1211,6 +1235,7 @@ local function RegisterNetListeners_common(inst)
     inst:ListenForEvent("yotbskindirty", fns.OnYotbSkinDirty)
     inst:ListenForEvent("ismounthurtdirty", OnMountHurtDirty)
     inst:ListenForEvent("playercameradirty", OnPlayerCameraDirty)
+	inst:ListenForEvent("playeraerialcameradirty", OnPlayerAerialCameraDirty)
     inst:ListenForEvent("playercameraextradistdirty", fns.OnPlayerCameraExtraDistDirty)
     inst:ListenForEvent("playercamerasnap", OnPlayerCameraSnap)
     inst:ListenForEvent("playerminimapcenter", OnPlayerMinimapCenter)
@@ -1290,6 +1315,7 @@ function fns.OnInitialDirtyStates(inst)
 	OnIsCraftingEnabledDirty(inst)
     OnPlayerHUDDirty(inst)
     OnPlayerCameraDirty(inst)
+	OnPlayerAerialCameraDirty(inst)
     fns.OnPlayerCameraExtraDistDirty(inst, true)
 end
 
@@ -1378,22 +1404,6 @@ local function fn()
     inst.currentmightiness = net_byte(inst.GUID, "mightiness.current", "mightinessdirty")
     inst.mightinessratescale = net_tinybyte(inst.GUID, "mightiness.ratescale")
 
-    -- Upgrade Module Owner
-    inst.uirobotsparksevent = net_event(inst.GUID, "uirobotsparksevent")
-
-    inst._oldcurrentenergylevel = 0
-    inst.currentenergylevel = net_smallbyte(inst.GUID, "upgrademodules.currentenergylevel", "upgrademoduleenergyupdate")
-
-    inst.upgrademodules =
-    {
-        net_smallbyte(inst.GUID, "upgrademodules.mods1", "upgrademoduleslistdirty"),
-        net_smallbyte(inst.GUID, "upgrademodules.mods2", "upgrademoduleslistdirty"),
-        net_smallbyte(inst.GUID, "upgrademodules.mods3", "upgrademoduleslistdirty"),
-        net_smallbyte(inst.GUID, "upgrademodules.mods4", "upgrademoduleslistdirty"),
-        net_smallbyte(inst.GUID, "upgrademodules.mods5", "upgrademoduleslistdirty"),
-        net_smallbyte(inst.GUID, "upgrademodules.mods6", "upgrademoduleslistdirty"),
-    }
-
     -- Wortox Soulhop free counter
     inst.freesoulhops = net_tinybyte(inst.GUID, "freesoulhops", "freesoulhopsdirty")
     inst.freesoulhops:set(0)
@@ -1469,6 +1479,7 @@ local function fn()
     inst.camerashaketime = net_byte(inst.GUID, "playercamera.shaketime")
     inst.camerashakespeed = net_byte(inst.GUID, "playercamera.shakespeed")
     inst.camerashakescale = net_byte(inst.GUID, "playercamera.shakescale")
+	inst.isaerialcamera = net_bool(inst.GUID, "playercamera.isaerialcamera", "playeraerialcameradirty")
 
     --Player minimap variables
     inst.minimapcenter = net_bool(inst.GUID, "playerminimap.center", "playerminimapcenter")
@@ -1579,6 +1590,7 @@ local function fn()
     inst.actionmeter = net_byte(inst.GUID, "sg.actionmeter", "actionmeterdirty")
     inst.actionmetertime = net_byte(inst.GUID, "sg.actionmetertime", "actionmeterdirty")
     inst.currentstate = net_hash(inst.GUID, "sg.currentstate")
+	inst.isoverrideattack = net_bool(inst.GUID, "sg.isoverrideattack")
 
     --Locomotor variables
     inst.runspeed = net_float(inst.GUID, "locomotor.runspeed")

@@ -1,9 +1,9 @@
 local assets =
 {
     Asset("ANIM", "anim/wx_scanner.zip"),
+    Asset("ANIM", "anim/wx_scanner_ring_fx.zip"),
     Asset("INV_IMAGE", "wx78_scanner_item_on"),
     Asset("MINIMAP_IMAGE", "wx78_scanner_item"),
-    Asset("ANIM", "anim/winona_catapult_placement.zip"),
 }
 
 local item_prefabs =
@@ -20,14 +20,40 @@ local scanner_prefabs =
 
 local GetCreatureScanData = require("wx78_moduledefs").GetCreatureScanDataDefinition
 
-
 local brain = require "brains/wx78_scannerbrain"
+
+local RING_FX =
+{
+    NONE = 0,
+    SCANNING = 1,
+    FAILED = 2,
+    SUCCESS = 3,
+}
+
+local function GetScannerScanDistance(inst)
+    return TUNING.WX78_SCANNER_SCANDIST + (inst._radarboosters:value() * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_SCANDIST)
+end
+
+local function GetScannerPlayerProximityDistance(inst)
+    return TUNING.WX78_SCANNER_PLAYER_PROX + (inst._radarboosters:value() * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_PLAYER_PROX)
+end
 
 ---------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------
 -- Scanner Ring Non-networked FX
 
-local function CreateRingFX()
+local CIRCLE_RADIUS_SCALE = 3201.5 / 150 / 2 -- Source art size / anim_scale / 2 (halved to get radius).
+local function RingFX_UpdateRadius(inst, scanner)
+    local dist = TUNING.WX78_SCANNER_PLAYER_PROX
+    if scanner ~= nil and scanner:IsValid() then
+        dist = scanner:GetScannerPlayerProximityDistance()
+    end
+
+    local scale = dist / CIRCLE_RADIUS_SCALE
+    inst.AnimState:SetScale(scale, scale)
+end
+
+local function CreateRingFX(scanner)
     local inst = CreateEntity()
 
     --[[Non-networked entity]]
@@ -41,9 +67,9 @@ local function CreateRingFX()
     inst:AddTag("DECOR")
     inst:AddTag("NOCLICK")
 
-    inst.AnimState:SetBank("winona_catapult_placement")
-    inst.AnimState:SetBuild("winona_catapult_placement")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetBank("wx_scanner_ring_fx")
+    inst.AnimState:SetBuild("wx_scanner_ring_fx")
+    inst.AnimState:PlayAnimation("scan_loop", true)
 
     inst.AnimState:Hide("inner")
 
@@ -52,8 +78,8 @@ local function CreateRingFX()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(1)
 
-    local scale = TUNING.WX78_SCANNER_PLAYER_PROX/8.5
-    inst.Transform:SetScale(scale,scale,scale)
+    inst.UpdateRadius = RingFX_UpdateRadius
+    inst:UpdateRadius(scanner)
 
     inst:AddComponent("fader")
 
@@ -64,8 +90,16 @@ end
 ---------------------------------------------------------------------------------------------------
 -- The proximity scanning template is used by both the inventoryitem and prop version of the scanner.
 
-local SCAN_CAN = {"animal", "character", "largecreature", "monster", "smallcreature"}
+local SCAN_CAN = {"animal", "character", "largecreature", "monster", "smallcreature", "firefly", "cage", "trap", "wagstaff_machine", "junk_pile_big", "wagpunk_workstation"}
 local SCAN_CANT = {"DECOR", "FX", "INLIMBO", "NOCLICK"}
+local function GetCreatureRecipeScan(inst, owner, scandata)
+    if scandata.recipename then
+        return FunctionOrValue(scandata.recipename, owner)
+    else
+        return "wx78module_"..scandata.module
+    end
+end
+
 local function proximityscan(inst, dt)
     local owner = inst:OwnerFn()
     if owner and owner.components.upgrademoduleowner ~= nil and
@@ -78,20 +112,26 @@ local function proximityscan(inst, dt)
 
         local ents = TheSim:FindEntities(x,y,z, SCAN_DIST, nil, SCAN_CANT, SCAN_CAN)
         local new_target = nil
-        for i, ent in ipairs(ents) do
-            local ent_scandata = GetCreatureScanData(ent.prefab)
-            if ent_scandata ~= nil and owner_has_builder
-                    and not owner.components.builder:KnowsRecipe("wx78module_"..ent_scandata.module) then
-                new_target = ent
+        if owner_has_builder then
+            for i, ent in ipairs(ents) do
+                local ent_scandata = GetCreatureScanData(ent)
+                if ent_scandata ~= nil then
+                    local recipename = GetCreatureRecipeScan(inst, owner, ent_scandata)
+                    if recipename ~= nil and not owner.components.builder:KnowsRecipe(recipename) then
+                        new_target = ent
+                    end
+                end
             end
         end
 
         if new_target ~= nil then
             local distsq = inst:GetDistanceSqToInst(new_target)
             local nextpingtime = TUNING.WX78_SCANNER_DISTANCES[#TUNING.WX78_SCANNER_DISTANCES].pingtime
-            for k, v in ipairs(TUNING.WX78_SCANNER_DISTANCES) do
+			local sfxproximity = #TUNING.WX78_SCANNER_DISTANCES + 1
+			for i, v in ipairs(TUNING.WX78_SCANNER_DISTANCES) do
                 if v.maxdist*v.maxdist >= distsq then
                     nextpingtime = v.pingtime
+					sfxproximity = i
                     break
                 end
             end
@@ -101,6 +141,12 @@ local function proximityscan(inst, dt)
                 or GetTime()
 
             if (inst._ping_time_current - inst._ping_time_last) > nextpingtime then
+				--[[sfxproximity =
+					(sfxproximity == 1 and 0.8) or
+					(sfxproximity == 2 and 0.5) or
+					0.2
+
+				inst.SoundEmitter:PlaySoundWithParams("WX_rework/scanner/ping", { proximity = sfxproximity })]]
                 inst.SoundEmitter:PlaySound("WX_rework/scanner/ping")
                 inst:LoopFn(new_target)
 
@@ -126,10 +172,32 @@ local function CanDeploy(inst, pt, mouseover, deployer, rot)
     return (deployer.components.upgrademoduleowner ~= nil and inst.components.deployable:IsDeployable(deployer))
 end
 
+local function UpdateScannerRadarBoosters(inst)
+    local owner = inst:OwnerFn()
+    if owner ~= nil and owner.GetModuleTypeCount ~= nil
+        and owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
+        inst._radarboosters:set(owner:GetModuleTypeCount("radar"))
+    else
+        inst._radarboosters:set(0)
+    end
+    if inst.prox_range ~= nil then
+        inst.prox_range:UpdateRadius(inst)
+    end
+end
+
 local function OnChangedLeader(inst, new_leader, old_leader)
+    if old_leader ~= nil then
+        inst:RemoveEventCallback("rangecircuitupdate", inst._oncircuitrefresh, old_leader)
+    end
+
     if not inst._donescanning and new_leader == nil and old_leader ~= nil then
         inst:StopAllScanning("fail")
-        inst.sg:GoToState("turn_off", {changetoitem=true})
+        inst:PushEvent("turn_off", { changetoitem=true })
+    end
+
+    if new_leader ~= nil then
+        inst:ListenForEvent("rangecircuitupdate", inst._oncircuitrefresh, new_leader)
+        UpdateScannerRadarBoosters(inst)
     end
 end
 
@@ -142,7 +210,7 @@ local function OnScannerDeployed(inst, pt, deployer)
 
         scanner.components.follower:SetLeader(deployer)
 
-        scanner.sg:GoToState("turn_on")
+        scanner:PushEventImmediate("deployed")
 
         inst:Remove()
     end
@@ -151,7 +219,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 local function item_owner_fn(inst)
-    return (inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner) or nil
+    return (inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetGrandOwner()) or nil
 end
 
 local function image_on(inst)
@@ -174,6 +242,21 @@ local function item_loop_fn(inst, target)
             owner.components.talker:Say(GetString(owner,"ANNOUNCE_WX_SCANNER_NEW_FOUND"))
             owner.components.timer:StartTimer("ANNOUNCE_WX_SCANNER_NEW_FOUND", 15)
 
+			--[[local distsq = owner:GetDistanceSqToInst(target)
+			local sfxproximity = #TUNING.WX78_SCANNER_DISTANCES + 1
+			for i, v in ipairs(TUNING.WX78_SCANNER_DISTANCES) do
+				if v.maxdist * v.maxdist >= distsq then
+					sfxproximity = i
+					break
+				end
+			end
+
+			sfxproximity =
+				(sfxproximity == 1 and 0.8) or
+				(sfxproximity == 2 and 0.5) or
+				0.2
+
+			owner.SoundEmitter:PlaySoundWithParams("WX_rework/scanner/ping", { proximity = sfxproximity })]]
             owner.SoundEmitter:PlaySound("WX_rework/scanner/ping")
         end
     end
@@ -191,7 +274,7 @@ local function itemfn()
 
     MakeInventoryPhysics(inst)
 
-    inst.Transform:SetTwoFaced()
+    inst.Transform:SetFourFaced()
 
     inst.MiniMapEntity:SetIcon("wx78_scanner_item.png")
 
@@ -296,7 +379,8 @@ end
 local function can_scan_target(inst)
     local target = inst.components.entitytracker:GetEntity("scantarget")
     local pos = target:GetPosition()
-    local DSQ = TUNING.WX78_SCANNER_SCANDIST * TUNING.WX78_SCANNER_SCANDIST
+    local scandist = inst:GetScannerScanDistance()
+    local DSQ = scandist * scandist
 
     if inst:GetDistanceSqToPoint(pos) < DSQ then
         -- WX is prevented from scanning things that have the "noattack" tag, unless they also have the "canwxscan" tag.
@@ -317,11 +401,14 @@ local function OnUpdateScanCheck(inst, dt)
     local target = inst.components.entitytracker:GetEntity("scantarget")
     if target ~= nil then
         local owner = inst.components.follower and inst.components.follower:GetLeader()
-        if owner == nil or not target:IsValid() or target:HasTag("INLIMBO") or
+        local ent_scandata = GetCreatureScanData(target)
+        local recipename = ent_scandata ~= nil and GetCreatureRecipeScan(inst, owner, ent_scandata)
+        if owner == nil or not target:IsValid() or target:HasAnyTag("INLIMBO", "NOCLICK") or
                 (target.components.health ~= nil and target.components.health:IsDead()) or
-                (   owner.components.dataanalyzer:GetData(target.prefab) <= 0 and
-                    (   GetCreatureScanData(target.prefab) == nil or
-                        owner.components.builder:KnowsRecipe("wx78module_"..GetCreatureScanData(target.prefab).module)
+                (   owner.components.dataanalyzer:GetData(target) <= 0 and
+                    (   ent_scandata == nil or
+                        recipename == nil or
+                        owner.components.builder:KnowsRecipe(recipename)
                     )
                 ) then
             inst:StopScanFX()
@@ -350,12 +437,12 @@ end
 
 local function OnTargetFound(inst, scan_target)
     if scan_target ~= nil then
-        inst.SoundEmitter:PlaySound("WX_rework/scanner/locked_on")
+        inst.SoundEmitter:PlaySound(inst.skin_sound and inst.skin_sound.locked_on or "WX_rework/scanner/locked_on")
 
         inst.AnimState:Hide("bottom_light")
         inst.components.updatelooper:RemoveOnUpdateFn(proximityscan)
 
-        inst._showringfx:set(1)
+        inst._showringfx:set(RING_FX.SCANNING)
 
         inst.components.entitytracker:TrackEntity("scantarget", scan_target)
         inst:ListenForEvent("onremove", inst._OnScanTargetRemoved, scan_target)
@@ -397,16 +484,21 @@ local function TryFindTarget(inst)
     for i=#potential_scans,1,-1 do
         local thing = potential_scans[i]
         local keep = false
-        local thing_scandata = GetCreatureScanData(thing.prefab)
+        local thing_scandata = GetCreatureScanData(thing)
         if thing_scandata ~= nil then
-            if owner.components.dataanalyzer:GetData(thing.prefab) > 0 then
+            if owner.components.dataanalyzer:GetData(thing) > 0 then
                 keep = true
             else
                 thing_but_no_data = true
             end
 
-            if owner_has_builder and
-                    not owner.components.builder:KnowsRecipe("wx78module_"..thing_scandata.module) then
+            local recipename = GetCreatureRecipeScan(inst, owner, thing_scandata)
+            if not recipename then
+                keep = false
+            end
+
+            if owner_has_builder and recipename ~= nil and
+                    not owner.components.builder:KnowsRecipe(recipename) then
                 if blueprintable_things == nil then
                     blueprintable_things = {}
                 end
@@ -462,24 +554,26 @@ end
 
 local function OnSuccessfulScan(inst)
     inst._donescanning = true
+    inst.components.activatable.inactive = false
 
+    local owner = inst.components.follower and inst.components.follower:GetLeader()
     local target = inst.components.entitytracker:GetEntity("scantarget")
     if target ~= nil then
-        local target_scandata = GetCreatureScanData(target.prefab)
+        local target_scandata, scan_id = GetCreatureScanData(target)
         if target_scandata ~= nil then
-            inst._module_recipe_to_teach = "wx78module_"..target_scandata.module
+            inst._module_recipe_to_teach = GetCreatureRecipeScan(inst, owner, target_scandata)
         end
-        inst._scanned_prefab = target.prefab
+        inst._scanned_id = scan_id
 
         inst:RemoveEventCallback("onremove", inst._OnScanTargetRemoved, target)
         inst.components.entitytracker:ForgetEntity("scantarget")
     end
-    
+
     inst:StopAllScanning("succeed")
 end
 
 local function OnReturnedAfterSuccessfulScan(inst)
-    inst.sg:GoToState("scan_success")
+    inst:PushEventImmediate("scan_success")
 end
 
 local function StopAllScanning(inst, status)
@@ -496,13 +590,10 @@ local function StopAllScanning(inst, status)
 
     inst.components.timer:StopTimer(TOP_LIGHT_FLASH_TIMERNAME)
 
-    if status == "fail" then
-        inst._showringfx:set(2)
-    elseif status == "succeed" then
-        inst._showringfx:set(3)
-    else
-        inst._showringfx:set(0)
-    end
+    local ringfx_type = (status == "fail" and RING_FX.FAILED) or
+        (status == "succeed" and RING_FX.SUCCESS) or
+        RING_FX.NONE
+    inst._showringfx:set(ringfx_type)
 
     inst.AnimState:Hide("top_light")
     inst.AnimState:Hide("bottom_light")
@@ -516,79 +607,49 @@ end
 local function OnShowRingFXDirty(inst)
     local show_ring_fx_value = inst._showringfx:value()
 
-    if show_ring_fx_value == 0 then
+    if show_ring_fx_value == RING_FX.NONE then
         if inst.prox_range ~= nil and inst.prox_range:IsValid() then
             inst.prox_range:Remove()
         end
         inst.prox_range = nil
-    elseif show_ring_fx_value == 1 then
+    elseif show_ring_fx_value == RING_FX.SCANNING then
         if inst.prox_range == nil then
-            inst.prox_range = CreateRingFX()
+            inst.prox_range = CreateRingFX(inst)
+            inst.prox_range.AnimState:PlayAnimation("scan_pre")
+            inst.prox_range.AnimState:PushAnimation("scan_loop", true)
         end
         inst:AddChild(inst.prox_range)
-
-        inst.prox_range.AnimState:SetAddColour(0, 0.5, 0.2, 0)
-    elseif show_ring_fx_value == 2 then
-        local fail_prox_range = CreateRingFX()
+    elseif show_ring_fx_value == RING_FX.FAILED then
+        local fail_prox_range = CreateRingFX(inst)
+        fail_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fail_prox_range.AnimState:PlayAnimation("scan_fail")
+        fail_prox_range:ListenForEvent("animover", fail_prox_range.Remove)
 
         if inst.prox_range ~= nil and inst.prox_range:IsValid() then
             fail_prox_range.Transform:SetRotation(inst.prox_range.Transform:GetRotation())
-
             inst.prox_range:Remove()
-            inst.prox_range = nil
         end
 
-        fail_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-        fail_prox_range.components.fader:Fade(1, 0, 1,
-            function(alphaval, fx)
-                fx.AnimState:SetMultColour(1, 1, 1, alphaval)
-                fx.AnimState:SetAddColour(0.5*alphaval, 0.1*alphaval, 0.1*alphaval, 0)
-            end,
-            function(fx, alphaval)
-                fx:Remove()
-            end
-        )
-
+        inst.prox_range = nil
         inst._showringfx:set_local(0)
-    elseif show_ring_fx_value == 3 then
-        local matched_rotation = 0
-        
-        -- Since we're going to make multiple rings here,
-        -- just kill our stored one and make 3 new ones. They're frame delayed anyway.
-        if inst.prox_range ~= nil and inst.prox_range:IsValid() then
-            matched_rotation = inst.prox_range.Transform:GetRotation()
+    elseif show_ring_fx_value == RING_FX.SUCCESS then
+        local success_prox_range = CreateRingFX(inst)
+        success_prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        success_prox_range.AnimState:PlayAnimation("scan_success")
+        success_prox_range:ListenForEvent("animover", success_prox_range.Remove)
 
+        if inst.prox_range ~= nil and inst.prox_range:IsValid() then
+            success_prox_range.Transform:SetRotation(inst.prox_range.Transform:GetRotation())
             inst.prox_range:Remove()
         end
         inst.prox_range = nil
-
-        for i=0,2 do
-            inst:DoTaskInTime(i*0.15,function()
-                local prox_range = CreateRingFX()
-                prox_range.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                prox_range.Transform:SetRotation(matched_rotation)
-                prox_range.AnimState:SetAddColour(0, 0.5, 0.2, 0)
-
-                prox_range.components.fader:Fade(1 - (i*0.4), 0, 1,
-                    function(alphaval, fx)
-                        fx.AnimState:SetMultColour(1, 1, 1, alphaval)
-                        fx.AnimState:SetAddColour(0, 0.5*alphaval, 0.2*alphaval, 0)
-                    end,
-                    function(fx, alphaval)
-                        fx:Remove()
-                    end
-                )
-                prox_range.components.fader:Fade(1, 1.3, 1,
-                    function(scaleval, fx)
-                        local scale = (TUNING.WX78_SCANNER_PLAYER_PROX/8.5) * scaleval
-                        fx.Transform:SetScale(scale, scale, scale)
-                    end
-                )
-            end)
-        end
-
         inst._showringfx:set_local(0)
+    end
+end
+
+local function OnRadarBoostersDirty(inst)
+    if inst.prox_range ~= nil then
+        inst.prox_range:UpdateRadius(inst)
     end
 end
 
@@ -604,34 +665,31 @@ local function on_scanner_timer_done(inst, data)
 end
 
 local function CanDoerActivate(inst, doer)
-    return inst.components.follower == nil or inst.components.follower:GetLeader() == nil
-        or inst.components.follower:GetLeader() == doer
+    local leader = inst.components.follower ~= nil and inst.components.follower:GetLeader()
+    return (doer == nil) or (leader == nil) or (leader == doer)
 end
 
-local function OnActivateFn(inst)
+local function OnActivateFn(inst, doer)
     if inst._donescanning then
         -- If we got stuck after finishing a scan, and the player turned us off,
         -- go ahead and act like we succeeded as expected. Our data should be set up,
         -- just stuck because of a quirk of how buffered actions are handled.
+        --      NOTE: this bug of jimmy getting stuck shouldn't happen anymore.
         inst:OnReturnedAfterSuccessfulScan()
     else
         inst:StopAllScanning()
-        inst.sg:GoToState("turn_off",{changetoitem = true})
+        inst:PushEventImmediate("turn_off", { changetoitem = true, hit = not doer.isplayer })
     end
 end
 
 local function GetStatus(inst)
-    if inst.components.entitytracker:GetEntity("scantarget") then
-        return "HUNTING"
-    elseif inst.components.entitytracker:GetEntity("currentscanlock") then
-        return "SCANNING"
-    else
-        return nil
-    end
+    return inst.components.entitytracker:GetEntity("scantarget") and "HUNTING"
+        or inst.components.entitytracker:GetEntity("currentscanlock") and "SCANNING"
+        or nil
 end
 
 local function IsInRangeOfPlayer(inst)
-    local DISTANCE = TUNING.WX78_SCANNER_PLAYER_PROX
+    local DISTANCE = inst:GetScannerPlayerProximityDistance()
 
     if inst.components.follower == nil or inst.components.follower:GetLeader() == nil or
             inst:GetDistanceSqToInst(inst.components.follower:GetLeader()) < DISTANCE*DISTANCE then
@@ -645,23 +703,31 @@ local function IsInRangeOfPlayer(inst)
     end
 end
 
+local FALL_DELAY = 22 * FRAMES
+local function SetScanDataLanded(scandata)
+    scandata.components.inventoryitem:SetLanded(true, true)
+end
+
 local function SpawnData(inst)
     local owner = inst.components.follower and inst.components.follower:GetLeader()
     if owner and owner.components.dataanalyzer then
-        local amount = owner.components.dataanalyzer:SpendData(inst._scanned_prefab)
+        local amount = owner.components.dataanalyzer:SpendData(inst._scanned_id)
 
         if amount > 0 then
-            local data = SpawnPrefab("scandata")
-            data.AnimState:PlayAnimation("fall")
-            data.AnimState:PushAnimation("idle")
+            local scandata = SpawnPrefab("scandata")
+            scandata.AnimState:PlayAnimation("fall")
+            scandata.AnimState:PushAnimation("idle")
+
+            scandata.components.inventoryitem:SetLanded(false, false)
+            scandata:DoTaskInTime(FALL_DELAY, SetScanDataLanded)
 
             local drop_pos = inst:GetPosition() + Vector3(math.random(), 0, math.random())
-            data.Transform:SetPosition(drop_pos:Get())
+            scandata.Transform:SetPosition(drop_pos:Get())
 
-            data.components.stackable:SetStackSize(amount)
+            scandata.components.stackable:SetStackSize(amount)
         end
     end
-    inst._scanned_prefab = nil
+    inst._scanned_id = nil
 end
 
 local function DoTurnOff(inst)
@@ -673,6 +739,25 @@ local function DoTurnOff(inst)
         inst._turned_off = true
 
         inst:SetBrain(nil)
+    end
+end
+
+local function ComplainAboutCat(wx)
+    if wx.components.talker ~= nil then
+        wx.components.talker:Say(GetString(wx, "ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT"))
+    end
+end
+
+local DELAY_COMPLAIN_CAT = 0.3
+local DELAY_COMPLAIN_CAT_VAR = 0.2
+local function OnPlayedFromCat(inst, doer, isairborne)
+    if inst.components.activatable:CanActivate() then -- Don't pass doer to bypass restriction of only wx deactivating
+        inst.components.activatable:DoActivate(doer)
+
+        local wx = inst:OwnerFn()
+        if wx then
+            wx:DoTaskInTime(DELAY_COMPLAIN_CAT + math.random() * DELAY_COMPLAIN_CAT_VAR, ComplainAboutCat)
+        end
     end
 end
 
@@ -688,15 +773,15 @@ local function on_scanner_save(inst, data)
         data.turned_off = inst._turned_off
     end
 
-    if inst._scanned_prefab then
-        data.scanned_prefab = inst._scanned_prefab
+    if inst._scanned_id then
+        data.scanned_id = inst._scanned_id
     end
 end
 
 local function on_scanner_load(inst, data)
     if data ~= nil then
         inst._module_recipe_to_teach = data.schematic
-        inst._scanned_prefab = data.scanned_prefab
+        inst._scanned_id = data.scanned_id or data.scanned_prefab
 
         if data.turned_off then
             local turnoff_data = {}
@@ -705,7 +790,7 @@ local function on_scanner_load(inst, data)
             else
                 turnoff_data.changetoitem = true
             end
-            inst.sg:GoToState("turn_off", turnoff_data)
+            inst:PushEventImmediate("turn_off", turnoff_data)
         end
     end
 end
@@ -719,11 +804,28 @@ end
 -------------------------------------------------------------------------------------------------------------------
 
 local function start_looping_sound(inst)
-    inst.SoundEmitter:PlaySound("WX_rework/scanner/movement_lp", "movement_lp")
+    if not inst.SoundEmitter:PlayingSound("movement_lp") then
+        inst.SoundEmitter:PlaySound("WX_rework/scanner/movement_lp", "movement_lp")
+    end
 end
 
 local function stop_looping_sound(inst)
     inst.SoundEmitter:KillSound("movement_lp")
+end
+
+local function OnRemove(inst)
+    stop_looping_sound(inst)
+    inst:StopScanFX()
+end
+
+-------------------------------------------------------------------------------------------------------------------
+
+local function OnEntityWake(inst)
+    start_looping_sound(inst)
+end
+
+local function OnEntitySleep(inst)
+    stop_looping_sound(inst)
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -750,6 +852,7 @@ local function scannerfn()
     inst:AddTag("companion")
     inst:AddTag("NOBLOCK")
     inst:AddTag("scarytoprey")
+    inst:AddTag("cattoyairborne")
 
     inst.AnimState:SetBank("scanner")
     inst.AnimState:SetBuild("wx_scanner")
@@ -760,11 +863,17 @@ local function scannerfn()
 
     inst.GetActivateVerb = GetActivateVerb
 
-    inst._showringfx = net_tinybyte(inst.GUID, "showringfx", "OnShowRingFXDirty")
+    inst._showringfx = net_tinybyte(inst.GUID, "showringfx", "showringfxdirty")
+    inst._radarboosters = net_float(inst.GUID, "radarboosters", "radarboostersdirty")
     if not TheNet:IsDedicated() then
-        inst:ListenForEvent("OnShowRingFXDirty", OnShowRingFXDirty)
+        inst:ListenForEvent("showringfxdirty", OnShowRingFXDirty)
+        inst:ListenForEvent("radarboostersdirty", OnRadarBoostersDirty)
     end
     inst._showringfx:set_local(0)
+    inst._radarboosters:set_local(0)
+
+    inst.GetScannerScanDistance = GetScannerScanDistance
+    inst.GetScannerPlayerProximityDistance = GetScannerPlayerProximityDistance
 
     MakeInventoryFloatable(inst, nil, 0.15, ITEM_FLOATER_SCALE)
 
@@ -802,17 +911,23 @@ local function scannerfn()
     inst.components.activatable.forcerightclickaction = true
     inst.components.activatable.forcenopickupaction = true
 
+    inst:AddComponent("cattoy")
+    inst.components.cattoy:SetOnPlay(OnPlayedFromCat)
+    inst.components.cattoy:SetBypassLastAirTime(true)
+
     -------------------------------------------------------------------
     inst:AddComponent("updatelooper")
 
     -------------------------------------------------------------------
     inst:ListenForEvent("timerdone", on_scanner_timer_done)
-    inst:ListenForEvent("onremove", stop_looping_sound)
+    inst:ListenForEvent("onremove", OnRemove)
 
     -------------------------------------------------------------------
     inst.startloopingsound = start_looping_sound
     inst.stoploopingsound = stop_looping_sound
-    inst:startloopingsound()
+
+    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep
 
     -------------------------------------------------------------------
     inst.StartScanFX = StartScanFX
@@ -837,6 +952,10 @@ local function scannerfn()
     inst._OnScanTargetRemoved = function(t)
         OnScanFailed(inst)
     end
+
+	inst._oncircuitrefresh = function(owner)
+		UpdateScannerRadarBoosters(inst)
+	end
 
     -------------------------------------------------------------------
     inst:SetStateGraph("SGwx78_scanner")
@@ -877,8 +996,7 @@ local function on_harvested(inst, picker, produce)
 
         local scanner_item = SpawnPrefab("wx78_scanner_item", inst.linked_skinname, inst.skin_id)
         if scanner_item ~= nil then
-            picker.components.inventory:GiveItem(scanner_item)
-
+            picker.components.inventory:GiveItem(scanner_item, nil, inst:GetPosition())
             inst:Remove()
         end
     end
@@ -887,14 +1005,21 @@ end
 local function can_harvest(inst, doer)
     if doer == nil or doer.components.upgrademoduleowner == nil then
         return false, "DOER_ISNT_MODULE_OWNER"
-    else
-        return true, nil
     end
+
+    -- TODO make this a bit more modular
+    if doer.components.skilltreeupdater and not doer.components.skilltreeupdater:IsActivated("wx78_zapdrone_1")
+        and inst._module_recipe == "wx78_drone_zap_remote" then
+        return false, "DOER_DOESNT_HAVE_SKILL"
+    end
+
+    return true, nil
 end
 
 local function SetUpFromScanner(inst, scanner)
     inst.Transform:SetPosition(scanner.Transform:GetWorldPosition())
     inst.Transform:SetRotation(scanner.Transform:GetRotation())
+    inst.AnimState:MakeFacingDirty() --not needed for clients
     inst._module_recipe = scanner._module_recipe_to_teach
 end
 
@@ -936,6 +1061,7 @@ local function on_succeeded_timeout(inst)
     local scanner_item = SpawnPrefab("wx78_scanner_item", inst.linked_skinname, inst.skin_id)
     scanner_item.Transform:SetPosition(inst.Transform:GetWorldPosition())
     scanner_item.Transform:SetRotation(inst.Transform:GetRotation())
+    scanner_item.AnimState:MakeFacingDirty() --not needed for clients
 
     inst:Remove()
 end
@@ -960,7 +1086,7 @@ local function scannersucceededfn()
 
     MakeInventoryPhysics(inst)
 
-    inst.Transform:SetTwoFaced()
+    inst.Transform:SetFourFaced()
 
     inst.MiniMapEntity:SetIcon("wx78_scanner_item.png")
 
@@ -1023,7 +1149,7 @@ end
 
 local function goAway(inst)
     inst.AnimState:PlayAnimation("scan_fx_pst")
-    inst:ListenForEvent("animover", function() inst:Remove() end)
+    inst:ListenForEvent("animover", inst.Remove)
 end
 
 local function scanfx_fn()
@@ -1051,8 +1177,13 @@ local function scanfx_fn()
     return inst
 end
 
+local function placer_postinit_fn(inst)
+    inst.AnimState:Hide("top_light")
+    inst.AnimState:Hide("bottom_light")
+end
+
 return Prefab("wx78_scanner_item", itemfn, assets, item_prefabs),
-    MakePlacer("wx78_scanner_item_placer", "scanner", "wx_scanner", "turn_off_idle"),
+    MakePlacer("wx78_scanner_item_placer", "scanner", "wx_scanner", "turn_off_idle", nil, nil, nil, nil, nil, nil, placer_postinit_fn),
     Prefab("wx78_scanner", scannerfn, assets, scanner_prefabs),
     Prefab("wx78_scanner_succeeded", scannersucceededfn, assets),
     Prefab("wx78_scanner_fx", scanfx_fn, assets)

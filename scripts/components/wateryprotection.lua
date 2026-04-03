@@ -5,7 +5,6 @@ local WateryProtection = Class(function(self, inst)
     self.temperaturereduction = 0
     self.addcoldness = 0
     self.addwetness = 0
-    self.applywetnesstoitems = false
     self.extinguish = true
     self.extinguishheatpercent = 0
 	--self.protection_dist = nil
@@ -40,7 +39,7 @@ function WateryProtection:ApplyProtectionToEntity(ent, noextinguish)
         if ent.components.moisture ~= nil then
             local waterproofness = ent.components.moisture:GetWaterproofness()
             ent.components.moisture:DoDelta(self.addwetness * (1 - waterproofness))
-        elseif self.applywetnesstoitems and ent.components.inventoryitem ~= nil then
+        elseif ent.components.inventoryitem ~= nil then
             ent.components.inventoryitem:AddMoisture(self.addwetness)
         end
     end

@@ -19,22 +19,20 @@ local function fn()
 
     MakeInventoryFloatable(inst, nil, 0.1)
 
+    inst.pickupsound = "paper"
+
     inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    ------------------------------------------------------------------
+    inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
 
-    ------------------------------------------------------------------
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-    ------------------------------------------------------------------
-    inst:AddComponent("inspectable")
-
-    ------------------------------------------------------------------
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
     MakeHauntableLaunchAndIgnite(inst)

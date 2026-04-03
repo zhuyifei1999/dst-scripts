@@ -24,8 +24,9 @@ function InvSlot:OnControl(control, down)
         if TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
             self:Inspect()
         elseif TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
-            if self:CanTradeItem() then
-                self:TradeItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+			local stack_mod = TheInput:IsControlPressed(CONTROL_FORCE_STACK)
+			if self:CanTradeItem(stack_mod) then
+				self:TradeItem(stack_mod)
             else
                 return false
             end
@@ -39,7 +40,21 @@ function InvSlot:OnControl(control, down)
             return true
         end
         if TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
-            self:DropItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+			local single = TheInput:IsControlPressed(CONTROL_FORCE_STACK)
+			if (	self.tile and
+					self.tile.item and
+					self.tile.item.replica.inventoryitem and
+					self.tile.item.replica.inventoryitem:IsLockedInSlot()
+				) and
+				not (	single and
+						self.tile.item.replica.stackable and
+						self.tile.item.replica.stackable:IsStack()
+					)
+			then
+				self:UseItem()
+			else
+				self:DropItem(single)
+			end
         else
             self:UseItem()
         end
@@ -55,7 +70,7 @@ function InvSlot:OnControl(control, down)
             TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
             return true
         end
-        if self:CanTradeItem() then
+		if self:CanTradeItem(false) then
             self:TradeItem(false)
         else
             return false
@@ -65,7 +80,7 @@ function InvSlot:OnControl(control, down)
             TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
             return true
         end
-        if self:CanTradeItem() then
+		if self:CanTradeItem(true) then
             self:TradeItem(true)
         else
             return false
@@ -84,7 +99,7 @@ end
 
 function InvSlot:Click(stack_mod)
     local slot_number = self.num
-    local character = ThePlayer
+	local character = self.owner
     local inventory = character and character.replica.inventory or nil
     local active_item = inventory and inventory:GetActiveItem() or nil
     local container = self.container
@@ -122,8 +137,15 @@ function InvSlot:Click(stack_mod)
                     if stack_mod then
                         takecount = math.max(math.floor(takecount / 2), 1)
                     end
-                    container:TakeActiveItemFromCountOfSlot(slot_number, takecount)
-                    TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+					if not (container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot()) or
+						(container_item.replica.stackable and container_item.replica.stackable:StackSize() > takecount)
+					then
+						container:TakeActiveItemFromCountOfSlot(slot_number, takecount)
+						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+					else
+						-- Block taking entire stack out of a locked slot.
+						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
+					end
                 else
                     -- Block taking anything if this override exists.
                     TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
@@ -134,13 +156,16 @@ function InvSlot:Click(stack_mod)
                 --Take one only
                 container:TakeActiveItemFromHalfOfSlot(slot_number)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+			elseif container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot() then
+				-- Block taking entire stack out of a locked slot.
+				TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
             else
                 --Take entire stack
                 container:TakeActiveItemFromAllOfSlot(slot_number)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
             end
         elseif container:CanTakeItemInSlot(active_item, slot_number) then
-            if container_item.prefab == active_item.prefab and container_item:StackableSkinHack(active_item) and container_item.replica.stackable ~= nil and container:AcceptsStacks() then
+            if container_item.replica.stackable ~= nil and container_item.replica.stackable:CanStackWith(active_item) and container:AcceptsStacks() then
                 --Add active item to slot stack
                 if stack_mod and
                     active_item.replica.stackable ~= nil and
@@ -217,7 +242,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     if item.replica.equippable ~= nil and container == k.replica.inventory then
                         local equip = container:GetEquippedItem(item.replica.equippable:EquipSlot())
                         if equip ~= nil and equip.prefab == item.prefab and equip.skinname == item.skinname then
-                            if equip.replica.stackable ~= nil and not equip.replica.stackable:IsFull() then
+                            if equip.replica.stackable ~= nil and equip.replica.stackable:CanStackWith(item) and not equip.replica.stackable:IsFull() then
                                 return k
                             elseif not isfull and containerwithsameitem == nil then
                                 containerwithsameitem = k
@@ -226,7 +251,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     end
                     for k1, v1 in pairs(container:GetItems()) do
                         if v1.prefab == item.prefab and v1.skinname == item.skinname then
-                            if v1.replica.stackable ~= nil and not v1.replica.stackable:IsFull() then
+                            if v1.replica.stackable ~= nil and v1.replica.stackable:CanStackWith(item) and not v1.replica.stackable:IsFull() then
                                 if container.lowpriorityselection then
                                     containerwithlowpirority = k
                                 else
@@ -247,15 +272,27 @@ local function FindBestContainer(self, item, containers, exclude_containers)
     return containerwithsameitem or containerwithemptyslot or containerwithnonstackableslot or containerwithlowpirority
 end
 
-function InvSlot:CanTradeItem()
+function InvSlot:CanTradeItem(stack_mod)
     local item = self.container and (self.container.IsReadOnlyContainer == nil or not self.container:IsReadOnlyContainer()) and self.container:GetItemInSlot(self.num) or nil
-    return not (item ~= nil and item.replica.inventoryitem ~= nil and item.replica.inventoryitem:CanOnlyGoInPocket()) -- Do not handle CanOnlyGoInPocketOrPocketContainers let TradeItem do this.
+	local inventoryitem = item and item.replica.inventoryitem
+	if inventoryitem == nil or inventoryitem:CanOnlyGoInPocket() then
+		return false -- Do not handle CanOnlyGoInPocketOrPocketContainers let TradeItem do this.
+	elseif inventoryitem:IsLockedInSlot() then
+		if not stack_mod then
+			return false
+		end
+		local stackable = item.replica.stackable
+		if not (stackable and stackable:IsStack()) then
+			return false
+		end
+	end
+	return true
 end
 
 --moves items between open containers
 function InvSlot:TradeItem(stack_mod)
     local slot_number = self.num
-    local character = ThePlayer
+	local character = self.owner
     local inventory = character and character.replica.inventory or nil
     local container = self.container
     local container_item = container and (container.IsReadOnlyContainer == nil or not container:IsReadOnlyContainer()) and container:GetItemInSlot(slot_number) or nil
@@ -320,8 +357,15 @@ function InvSlot:TradeItem(stack_mod)
                     if stack_mod then
                         takecount = math.max(math.floor(takecount / 2), 1)
                     end
-                    container:MoveItemFromCountOfSlot(slot_number, dest_inst, takecount)
-                    TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+					if container_item.replica.inventoryitem and
+						container_item.replica.inventoryitem:IsLockedInSlot() and
+						(container_item.replica.stackable and container_item.replica.stackable:StackSize() or 1) <= takecount
+					then
+						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
+					else
+						container:MoveItemFromCountOfSlot(slot_number, dest_inst, takecount)
+						TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+					end
                 else
                     -- Block taking anything if this override exists.
                     TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
@@ -331,6 +375,8 @@ function InvSlot:TradeItem(stack_mod)
                 container_item.replica.stackable:IsStack() then
                 container:MoveItemFromHalfOfSlot(slot_number, dest_inst)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
+			elseif container_item.replica.inventoryitem and container_item.replica.inventoryitem:IsLockedInSlot() then
+				TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
             else
                 container:MoveItemFromAllOfSlot(slot_number, dest_inst)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
@@ -349,7 +395,7 @@ end
 
 function InvSlot:UseItem()
     if self.tile ~= nil and self.tile.item ~= nil then
-        local inventory = ThePlayer ~= nil and ThePlayer.replica.inventory or nil
+		local inventory = self.owner and self.owner.replica.inventory
         if inventory ~= nil then
             inventory:UseItemFromInvTile(self.tile.item)
         end
@@ -358,7 +404,7 @@ end
 
 function InvSlot:Inspect()
     if self.tile ~= nil and self.tile.item ~= nil then
-        local inventory = ThePlayer ~= nil and ThePlayer.replica.inventory or nil
+		local inventory = self.owner and self.owner.replica.inventory
         if inventory ~= nil then
             inventory:InspectItemFromInvTile(self.tile.item)
         end

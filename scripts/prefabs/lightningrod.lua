@@ -97,16 +97,38 @@ end
 
 ------------------------------------------------------------------------------
 
-local function CanBeUsedAsBattery(inst, user)
-    if inst.charged then
-        return true
-    else
-        return false, "NOT_ENOUGH_CHARGE"
-    end
+--V2C: functionally, lightningrod holds 1 charge that decays over 3 days. NOT 3 separate charges.
+local function CalcActualCharge(inst)
+	return inst.chargeleft and inst.chargeleft - (math.ceil(inst.chargeleft) - 1)
 end
 
-local function UseAsBattery(inst, user)
-    discharge(inst)
+local function CanBeUsedAsBattery(inst, user, mult)
+	if mult then
+		local actual_charge = CalcActualCharge(inst)
+		if actual_charge and actual_charge >= mult then
+			return true
+		end
+	elseif inst.charged then
+        return true
+    end
+	return false, "NOT_ENOUGH_CHARGE"
+end
+
+local function UseAsBattery(inst, user, mult)
+	if mult then
+		local actual_charge = CalcActualCharge(inst)
+		if actual_charge and actual_charge > mult then
+			dozap(inst)
+			inst.chargeleft = inst.chargeleft - mult
+			return
+		end
+	end
+	discharge(inst)
+end
+
+local function ResolvePartialChargeMult(inst, user, mult)
+	local actual_charge = CalcActualCharge(inst)
+	return actual_charge and math.min(mult, actual_charge) or mult
 end
 
 ------------------------------------------------------------------------------
@@ -167,8 +189,9 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("battery")
-    inst.components.battery.canbeused = CanBeUsedAsBattery
-    inst.components.battery.onused = UseAsBattery
+	inst.components.battery:SetCanBeUsedFn(CanBeUsedAsBattery)
+	inst.components.battery:SetOnUsedFn(UseAsBattery)
+	inst.components.battery:SetResolvePartialChargeMultFn(ResolvePartialChargeMult)
 
     MakeSnowCovered(inst)
     SetLunarHailBuildupAmountSmall(inst)

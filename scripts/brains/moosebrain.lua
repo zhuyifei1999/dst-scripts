@@ -1,4 +1,3 @@
-require "behaviours/standandattack"
 require "behaviours/faceentity"
 require "behaviours/chaseandattack"
 require "behaviours/leash"

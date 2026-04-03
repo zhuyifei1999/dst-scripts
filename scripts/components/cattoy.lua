@@ -4,10 +4,19 @@
 local CatToy = Class(function(self, inst)
     self.inst = inst
     self.onplay_fn = nil
+    self.bypass_last_air_time = nil
 end)
 
 function CatToy:SetOnPlay(fn)
     self.onplay_fn = fn
+end
+
+function CatToy:SetBypassLastAirTime(boolval)
+    self.bypass_last_air_time = boolval or nil
+end
+
+function CatToy:ShouldBypassLastAirTime()
+    return self.bypass_last_air_time
 end
 
 function CatToy:Play(doer, is_airborne)

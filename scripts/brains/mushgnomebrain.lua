@@ -26,21 +26,12 @@ local THREAT_PARAMS =
     },
 }
 
-local function false_func(inst)
-    return false
-end
-
 function MushGnomeBrain:OnStart()
     local root =
         PriorityNode(
         {
-            WhileNode(function() return self.inst.components.combat:HasTarget() and
-                    not self.inst.components.combat:InCooldown() end, "Spray Spores",
-                PriorityNode({
-                    StandStill(self.inst, nil, false_func),    -- This is a dirty way to stop the locomotor before attacking...
-                    StandAndAttack(self.inst, nil, 7)
-                }, 1.0)
-            ),
+            WhileNode(function() return self.inst.components.combat:HasTarget() and not self.inst.components.combat:InCooldown() end, "Spray Spores",
+                StandAndAttack(self.inst, nil, 7)),
 			BrainCommon.PanicTrigger(self.inst),
             BrainCommon.ElectricFencePanicTrigger(self.inst),
             RunAway(self.inst, THREAT_PARAMS, 5, 10),

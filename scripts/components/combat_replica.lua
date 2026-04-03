@@ -328,12 +328,14 @@ function Combat:CanBeAlly(guy)
         return true -- It's me.
     end
 
-    local myleader = self.inst.replica.follower and self.inst.replica.follower:GetLeader()
+	local follower = self.inst.replica.follower
+	local myleader = follower and follower:GetLeader()
     if myleader and guy == myleader then
         return true -- It's my leader.
     end
 
-    local theirleader = guy.replica.follower and guy.replica.follower:GetLeader()
+	local guy_follower = guy.replica.follower
+	local theirleader = guy_follower and guy_follower:GetLeader()
     if self.inst == theirleader then
         return true -- It's my follower.
     end
@@ -342,15 +344,31 @@ function Combat:CanBeAlly(guy)
         return true -- Same leader we should be friends.
     end
 
-    --I'm a player and it's a companion (or following another player in non PVP)
-    return self.inst.isplayer and
-            (   guy:HasTag("companion") or
-                (   theirleader ~= nil and
-                    not TheNet:GetPVPEnabled() and
-                    theirleader.isplayer
-                )
-			)
-            or false
+	-- Are we player aligned?
+	if self.inst.isplayer or
+		self.inst.bedazzled or
+		(myleader and (myleader.isplayer or myleader.replica.inventoryitem)) or
+		self.inst:HasAnyTag("domesticated", "saltlicker_salted")
+	then
+		if guy.bedazzled or
+			guy:HasTag("companion") or
+			(theirleader and theirleader.replica.inventoryitem)
+		then
+			return true -- Consider it aligned to all players.
+		end
+
+		if not TheNet:GetPVPEnabled() then
+			if guy.isplayer or (theirleader and theirleader.isplayer) then
+				return true -- They're aligned to another player.
+			end
+
+			if guy:HasAnyTag("domesticated", "saltlicker_salted") then
+				return true -- No current leader, but still considered aligned to players.
+			end
+		end
+	end
+
+	return false
 end
 
 function Combat:IsAlly(guy)
@@ -361,7 +379,10 @@ function Combat:IsAlly(guy)
 	return guy_combat == nil or guy_combat:GetTarget() ~= self.inst
 end
 
+--V2C: *deprecated* use similar functions IsAlly/CanBeAlly instead
 function Combat:TargetHasFriendlyLeader(target)
+	assert(BRANCH ~= "dev", "Deprecated! Use IsAlly/CanBeAlly.")
+
     local leader = self.inst.replica.follower ~= nil and self.inst.replica.follower:GetLeader()
     if leader ~= nil then
         local target_leader = target.replica.follower ~= nil and target.replica.follower:GetLeader() or nil
@@ -383,7 +404,6 @@ function Combat:TargetHasFriendlyLeader(target)
 
     return false
 end
-
 
 function Combat:CanBeAttacked(attacker)
 	if self.inst:HasAnyTag("playerghost", "flight") or

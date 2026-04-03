@@ -69,6 +69,22 @@ function Stackable:IsOverStacked()
 	return self.stacksize > (self.originalmaxsize or self.maxsize)
 end
 
+function Stackable:CanStackWith(item)
+    if self.inst.prefab ~= item.prefab then
+        return false
+    end
+
+    if self.inst.skinname ~= item.skinname then
+        return false
+    end
+
+    if self.inst.stackable_CanStackWithFn and not self.inst.stackable_CanStackWithFn(self.inst, item) then
+        return false
+    end
+
+    return true
+end
+
 function Stackable:OnSave()
     if self.stacksize ~= 1 then
         return {stack = self.stacksize}
@@ -142,7 +158,7 @@ end
 function Stackable:Put(item, source_pos)
     assert(item ~= self, "cant stack on self" )
     local ret
-    if item.prefab == self.inst.prefab and item.skinname == self.inst.skinname then
+    if self:CanStackWith(item) then
 
         local num_to_add = item.components.stackable.stacksize
         local newtotal = self.stacksize + num_to_add

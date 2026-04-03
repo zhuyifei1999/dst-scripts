@@ -146,7 +146,6 @@ function ShardTransactionSteps:HandleTransactionFinalization(shardpayload)
         end
 
         shardpayload.data.item_record, shardpayload.data.migrationdata = nil, nil
-        -- FIXME(JBK): rifts6 if the portal is the ocean exit make it a bundle to stuff this prefab into like a broken elastispaced chest.
         if portal and portal.components.itemstore then
             portal.components.itemstore:AddItemRecordAndMigrationData(item_record, migrationdata)
         else

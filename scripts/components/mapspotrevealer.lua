@@ -57,7 +57,7 @@ function MapSpotRevealer:RevealMap(doer)
 		end
 
 		doer:DoStaticTaskInTime(4*FRAMES, function()
-			doer.player_classified.MapExplorer:RevealArea(x, y, z, true, true)
+			doer.player_classified.MapExplorer:RevealArea(x, y, z)
 		end)
 	else
 		return false, "NO_MAP"

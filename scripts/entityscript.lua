@@ -279,10 +279,10 @@ function EntityScript:GetSaveRecord()
 
             record.puid = platform.components.walkableplatform:GetUID()
 
-            record.rx = rx and math.floor(rx*1000)/1000 or 0
-            record.rz = rz and math.floor(rz*1000)/1000 or 0
+			record.rx = rx and math.floor(rx * 1000 + 0.5) * 0.001 or 0
+			record.rz = rz and math.floor(rz * 1000 + 0.5) * 0.001 or 0
 			if ry and ry ~= 0 then
-				ry = math.floor(ry*1000)/1000
+				ry = math.floor(ry * 1000 + 0.5) * 0.001
 				record.ry = ry ~= 0 and ry or nil
             end
         end
@@ -297,11 +297,11 @@ function EntityScript:GetSaveRecord()
 		x, y, z = 0, 0, 0
 	end
 
-    record.x = x and math.floor(x*1000)/1000 or 0
-    record.z = z and math.floor(z*1000)/1000 or 0
+	record.x = x and math.floor(x * 1000 + 0.5) * 0.001 or 0
+	record.z = z and math.floor(z * 1000 + 0.5) * 0.001 or 0
     --y is often 0 in our game, so be selective.
 	if y and y ~= 0 then
-		y = math.floor(y*1000)/1000
+		y = math.floor(y * 1000 + 0.5) * 0.001
 		record.y = y ~= 0 and y or nil
     end
 
@@ -324,6 +324,7 @@ function EntityScript:Show()
     self.entity:Show(false)
 end
 
+-- NOTES(Omar): Deprecated, we do not use this function (still use the hack though!)
 function EntityScript:StackableSkinHack(target)
     -- NOTES(JBK): This is a replacement function for old comments that were the following line.
     -- (this does not work on clients, so we're going to use the AnimState hack instead)

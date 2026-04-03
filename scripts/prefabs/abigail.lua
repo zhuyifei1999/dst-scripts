@@ -124,49 +124,12 @@ local COMBAT_MUSTONEOF_TAGS_DEFENSIVE = { "monster", "prey" }
 
 local COMBAT_TARGET_DSQ = TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE * TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE
 
-local function HasFriendlyLeader(inst, target, PVP_enabled)
-    local leader = inst.components.follower and inst.components.follower:GetLeader()
-    if not leader then
-        return false
-    end
-
-    local target_leader = target.components.follower and target.components.follower:GetLeader()
-
-    if target_leader and target_leader.components.inventoryitem then
-        target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-        -- Don't attack followers if their follow object has no owner
-        if not target_leader then
-            return true
-        end
-    end
-
-    if PVP_enabled == nil then
-        PVP_enabled = TheNet:GetPVPEnabled()
-    end
-
-    return leader == target
-        or (
-            target_leader ~= nil
-            and (
-                target_leader == leader or (not PVP_enabled and target_leader.isplayer)
-            )
-        ) or (
-            not PVP_enabled
-            and target.components.domesticatable ~= nil
-            and target.components.domesticatable:IsDomesticated()
-        ) or (
-            not PVP_enabled
-            and target.components.saltlicker ~= nil
-            and target.components.saltlicker.salted
-        )
-end
-
 local function CommonRetarget(inst, v)
     return v ~= inst and v ~= inst._playerlink and v.entity:IsVisible()
             and v:GetDistanceSqToInst(inst._playerlink) < COMBAT_TARGET_DSQ
             and inst.components.combat:CanTarget(v)
             and v.components.minigame_participator == nil
-            and not HasFriendlyLeader(inst, v)
+			and not inst.components.combat:IsAlly(v)
             and not inst.components.timer:TimerExists("block_retargets")
 end
 
@@ -271,7 +234,8 @@ local function OnRemoved(inst)
     inst:BecomeDefensive()
 end
 
-local function auratest(inst, target, can_initiate)
+--called from stategraph also, with can_initiate param
+local function _auratest(inst, target, can_initiate)
     if target == inst._playerlink then
         return false
     end
@@ -280,15 +244,7 @@ local function auratest(inst, target, can_initiate)
 		return false
 	end
 
-    if (target:HasTag("player") and not TheNet:GetPVPEnabled()) or target:HasTag("ghost") or target:HasTag("noauradamage") then
-        return false
-    end
-
-    local leader = inst.components.follower and inst.components.follower:GetLeader()
-    if leader ~= nil
-        and (leader == target
-            or (target.components.follower ~= nil and
-                target.components.follower:GetLeader() == leader)) then
+	if (target.isplayer and not TheNet:GetPVPEnabled()) or target:HasAnyTag("ghost", "noauradamage") then
         return false
     end
 
@@ -296,26 +252,32 @@ local function auratest(inst, target, can_initiate)
         return false
     end
 
-    if inst.components.combat.target == target then
-        return true
-    end
+	if inst.components.combat:IsAlly(target) then
+		return false
+	end
 
-    if target.components.combat.target ~= nil
-        and (target.components.combat.target == inst or
-            target.components.combat.target == leader) then
-        return true
-    end
+	if inst.components.combat:TargetIs(target) then
+		return true
+	end
 
-    local ismonster = target:HasTag("monster")
-    if ismonster and not TheNet:GetPVPEnabled() and
-       ((target.components.follower and target.components.follower:GetLeader() ~= nil and
-         target.components.follower:GetLeader():HasTag("player")) or target.bedazzled) then
-        return false
-    end
+	if target.components.combat then
+		if target.components.combat:TargetIs(inst) then
+			return true
+		end
+		local leader = inst.components.follower and inst.components.follower:GetLeader()
+		if target.components.combat:TargetIs(leader) then
+			return true
+		end
+	end
 
-    return not target:HasTag("companion") and
-        (can_initiate or ismonster or target:HasTag("prey"))
+	return can_initiate or target:HasAnyTag("monster", "prey")
 end
+
+--used for aura AND combat keeptarget
+local function auratest(inst, target)
+	return _auratest(inst, target, false)
+end
+
 
 local function UpdateDamage(inst)
     local buff = inst:GetDebuff("elixir_buff")
@@ -529,6 +491,13 @@ local function apply_panic_fx(target, fx_prefab)
 	return fx
 end
 
+local function DelayedGhostScare(target)
+    if target.components.sleeper then
+        target.components.sleeper:WakeUp()
+    end
+    apply_panic_fx(target, "battlesong_instant_panic_fx")
+end
+
 local SCARE_RADIUS = 10
 local SCARE_MUST_HAVE_TAGS = {"_combat", "_health"}
 local SCARE_CANT_HAVE_TAGS = { "balloon", "butterfly", "companion", "epic", "groundspike", "INLIMBO", "smashable", "structure", "wall"}
@@ -538,20 +507,17 @@ local function DoGhostScare(inst)
         return
     end
 
-    local PVP_enabled = TheNet:GetPVPEnabled()
-    local doer = inst._playerlink
-
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local targets_near_me = TheSim:FindEntities(x, y, z, SCARE_RADIUS, SCARE_MUST_HAVE_TAGS, SCARE_CANT_HAVE_TAGS)
 	for _, target in ipairs(targets_near_me) do
-		if inst.components.combat:CanTarget(target)
-				and not HasFriendlyLeader(doer, target, PVP_enabled)
-				and (not target:HasTag("prey") or target:HasTag("hostile")) then
-
-			if target.components.hauntable and target.components.hauntable.panicable then
-                target.components.hauntable:Panic(7)
-				target:DoTaskInTime(0.25 * math.random(), apply_panic_fx, "battlesong_instant_panic_fx")
-			end
+		if target.components.hauntable and
+			target.components.hauntable.panicable and
+			inst.components.combat:CanTarget(target) and
+			not inst.components.combat:IsAlly(target) and
+			(not target:HasTag("prey") or target:HasTag("hostile"))
+		then
+			target.components.hauntable:Panic(7)
+			target:DoTaskInTime(0.25 * math.random(), DelayedGhostScare)
 		end
 	end
 end
@@ -886,7 +852,7 @@ local function fn()
     end
 
     --
-    inst.auratest = auratest
+	inst.auratest = _auratest
     inst.BecomeDefensive = BecomeDefensive
     inst.BecomeAggressive = BecomeAggressive
     inst.IsWithinDefensiveRange = IsWithinDefensiveRange

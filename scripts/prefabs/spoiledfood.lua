@@ -98,6 +98,8 @@ local function fn(common_init, mastersim_init, nutrients, kind)
 
     --selfstacker (from selfstacker component) added to pristine state for optimization
     inst:AddTag("selfstacker")
+    --spoiledfood (from edible component) added to pristine state for optimization
+    inst:AddTag("spoiledfood")
 
     inst.entity:SetPristine()
 
@@ -129,6 +131,7 @@ local function fn(common_init, mastersim_init, nutrients, kind)
     MakeSmallPropagator(inst)
 
     inst:AddComponent("edible")
+    inst.components.edible:SetForceSpoiledFood(true)
     inst.components.edible.healthvalue = TUNING.SPOILED_HEALTH
     inst.components.edible.hungervalue = TUNING.SPOILED_HUNGER
 

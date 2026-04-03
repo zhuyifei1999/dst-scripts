@@ -392,7 +392,7 @@ local function SanityCheckWorldGenOverride(wgo)
         end
     end
 
-    --depreciated values(don't warn in the log files)
+    --deprecated values(don't warn in the log files)
     optionlookup.disease_delay = true
 
     if wgo.overrides ~= nil then

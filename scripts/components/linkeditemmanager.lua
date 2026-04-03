@@ -32,6 +32,17 @@ local LinkedItemManager = Class(function(self, inst)
     end
 end)
 
+function LinkedItemManager:ForEachLinkedItemForPlayerOfPrefab(player, prefab, callback, ...)
+    local items = shallowcopy(self.linkeditems[player.userid])
+    if items then
+        for item, _ in pairs(items) do
+            if item.prefab == prefab then
+                callback(item, player, ...)
+            end
+        end
+    end
+end
+
 function LinkedItemManager:ForEachLinkedItemForPlayer(player, callback, ...)
     local items = shallowcopy(self.linkeditems[player.userid])
     if items then

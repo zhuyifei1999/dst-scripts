@@ -47,8 +47,9 @@ function ContainerWidget:Open(container, doer)
         widget.bganim_visualfn(self.bganim, container, doer)
     end
 
-    if widget.pos ~= nil then
-        self:SetPosition(widget.pos)
+	local pos = widget.posfn and widget.posfn(container, doer) or widget.pos
+	if pos then
+		self:SetPosition(pos)
     end
     if widget.buttoninfo ~= nil then
         if doer ~= nil and doer.components.playeractionpicker ~= nil then
@@ -112,9 +113,9 @@ function ContainerWidget:Open(container, doer)
     if self.bgimage.texture then
         self.bgimage:Show()
     else
-        self.bganim:GetAnimState():PlayAnimation("open")
+		self.bganim:GetAnimState():PlayAnimation(widget.animfn and widget.animfn(container, doer, "open") or "open")
 		if widget.animloop then
-			self.bganim:GetAnimState():PushAnimation("open_loop")
+			self.bganim:GetAnimState():PushAnimation(widget.animfn and widget.animfn(container, doer, "open_loop") or "open_loop")
 		end
     end
 
@@ -130,7 +131,8 @@ function ContainerWidget:Open(container, doer)
     local constructionsite = doer.components.constructionbuilderuidata ~= nil and doer.components.constructionbuilderuidata:GetContainer() == container and doer.components.constructionbuilderuidata:GetConstructionSite() or nil
     local constructionmats = constructionsite ~= nil and constructionsite:GetIngredients() or nil
 
-    for i, v in ipairs(widget.slotpos or {}) do
+	local slotpos = widget.slotposfn and widget.slotposfn(container, doer) or widget.slotpos
+	for i, v in ipairs(slotpos or {}) do
         local bgoverride = widget.slotbg ~= nil and widget.slotbg[i] or nil
         local slot = InvSlot(i,
             bgoverride ~= nil and bgoverride.atlas or "images/hud.xml",
@@ -138,30 +140,44 @@ function ContainerWidget:Open(container, doer)
             self.owner,
             container.replica.container
         )
-		if widget.slotscale then
-			local newscale = slot.base_scale * widget.slotscale
-			if widget.slothighlightscale == nil then
+		local slotscale = widget.slotscalefn and widget.slotscalefn(container, doer) or widget.slotscale
+		local slothighlightscale = widget.slothighlightscalefn and widget.slothighlightscalefn(container, doer) or widget.slothighlightscale
+		if slotscale then
+			local newscale = slot.base_scale * slotscale
+			if slothighlightscale == nil then
 				slot.highlight_scale = newscale + slot.highlight_scale - slot.base_scale
 			end
 			slot.base_scale = newscale
 			slot:SetScale(newscale)
 		end
-		if widget.slothighlightscale then
-			slot.highlight_scale = widget.slothighlightscale
+		if slothighlightscale then
+			slot.highlight_scale = slothighlightscale
 		end
         self.inv[i] = self:AddChild(slot)
 
         slot:SetPosition(v)
 
         if not container.replica.container:IsSideWidget() then
-            if widget.top_align_tip ~= nil then
-                slot.top_align_tip = widget.top_align_tip
-
-            elseif widget.bottom_align_tip ~= nil then
-                slot.bottom_align_tip = widget.bottom_align_tip
-            else
-                slot.side_align_tip = (widget.side_align_tip or 0) - v.x
-            end
+			local align_tip = widget.top_align_tip_fn and widget.top_align_tip_fn(container, doer)
+			if align_tip then
+				slot.top_align_tip = align_tip
+			else
+				align_tip = widget.bottom_align_tip_fn and widget.bottom_align_tip_fn(container, doer)
+				if align_tip then
+					slot.bottom_align_tip = align_tip
+				else
+					align_tip = widget.side_align_tip_fn and widget.side_align_tip_fn(container, doer)
+					if align_tip then
+						slot.side_align_tip = align_tip - v.x
+					elseif widget.top_align_tip then
+						slot.top_align_tip = widget.top_align_tip
+					elseif widget.bottom_align_tip then
+						slot.bottom_align_tip = widget.bottom_align_tip
+					else
+						slot.side_align_tip = (widget.side_align_tip or 0) - v.x
+					end
+				end
+			end
         end
 
         if constructionmats ~= nil then
@@ -172,6 +188,17 @@ function ContainerWidget:Open(container, doer)
     self.container = container
 
     self:Refresh()
+end
+
+function ContainerWidget:RefreshPosition()
+	local container = self.container and self.container.replica.container
+	local widget = container and container:GetWidget()
+	if widget and widget.posfn then --only need to refresh if it's there's a .posfn
+		local pos = widget.posfn(self.container, self.owner) or widget.pos
+		if pos then
+			self:SetPosition(pos)
+		end
+	end
 end
 
 local READONLYCONTAINER_BRIGHTNESS_SCALE = 0.6
@@ -298,14 +325,16 @@ function ContainerWidget:Close()
             v:Kill()
         end
 
-        self.container = nil
-        self.inv = {}
         if self.bgimage.texture then
             self.bgimage:Hide()
         else
-            self.bganim:GetAnimState():PlayAnimation("close")
+			local container = self.container and self.container.replica.container
+			local widget = container and container:GetWidget()
+			self.bganim:GetAnimState():PlayAnimation(widget and widget.animfn and widget.animfn(self.container, self.owner, "close") or "close")
         end
 
+		self.container = nil
+		self.inv = {}
         self.isopen = false
 
         self.inst:DoSimTaskInTime(.3, function() self.should_close_widget = true end)

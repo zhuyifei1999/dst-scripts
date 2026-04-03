@@ -26,6 +26,10 @@ local function oncanonlygoinpocketorpocketcontainers(self, canonlygoinpocketorpo
     self.inst.replica.inventoryitem:SetCanOnlyGoInPocketOrPocketContainers(canonlygoinpocketorpocketcontainers)
 end
 
+local function onislockedinslot(self, islockedinslot)
+	self.inst.replica.inventoryitem:SetIsLockedInSlot(islockedinslot)
+end
+
 local function onisacidsizzling(self, isacidsizzling)
     self.inst.replica.inventoryitem:SetIsAcidSizzling(isacidsizzling)
 end
@@ -63,6 +67,7 @@ local InventoryItem = Class(function(self, inst)
     self.cangoincontainer = true
     self.canonlygoinpocket = false -- Only pocket mutually exclusive from canonlygoinpocketorpocketcontainers.
     self.canonlygoinpocketorpocketcontainers = false -- Only pocket AND containers that are also only pocket mutually exclusive from canonlygoinpocket.
+	self.islockedinslot = false
     self.keepondeath = false
     self.atlasname = nil
     self.imagename = nil
@@ -93,6 +98,7 @@ nil,
     cangoincontainer = oncangoincontainer,
     canonlygoinpocket = oncanonlygoinpocket,
     canonlygoinpocketorpocketcontainers = oncanonlygoinpocketorpocketcontainers,
+	islockedinslot = onislockedinslot,
     isacidsizzling = onisacidsizzling,
     grabbableoverridetag = ongrabbableoverridetag,
 })

@@ -16,6 +16,11 @@ local UIAnim           = require "widgets/uianim"
 local function OnSetPlayerMode(inst, self)
     self.modetask = nil
 
+    if self.onforcehealthpulse == nil then
+        self.onforcehealthpulse = function(owner, data) self:ForceHealthPulse(data) end
+        self.inst:ListenForEvent("forcehealthpulse", self.onforcehealthpulse, self.owner)
+    end
+
     if self.onhealthdelta == nil then
         self.onhealthdelta = function(owner, data) self:HealthDelta(data) end
         self.inst:ListenForEvent("healthdelta", self.onhealthdelta, self.owner)
@@ -131,10 +136,25 @@ local function OnSetPlayerMode(inst, self)
 		self.inst:ListenForEvent("show_pet_hunger", self.onshowpethunger, self.owner)
 		self.onshowpethunger(self.owner, self.owner.pet_hunger_classified ~= nil)
 	end
+
+    if self.heart.wxshieldanim ~= nil and self.onwxshielddelta == nil then
+        self.onwxshielddelta = function(owner, data) self:SetWxShieldPercent(data.newpercent, data.oldpercent, data.maxshield, data.penetrationthreshold) end
+        self.onwxcanshieldcharge = function(owner, canshieldcharge) self:SetWxCanShieldCharge(canshieldcharge) end
+        self.inst:ListenForEvent("wxshielddelta", self.onwxshielddelta, self.owner)
+        self.inst:ListenForEvent("wx_canshieldcharge", self.onwxcanshieldcharge, self.owner)
+        local maxshield = self.owner:GetMaxShield()
+        self:SetWxShieldPercent(self.owner:GetCurrentShield() / maxshield, 0, maxshield, self.owner:GetShieldPenetrationThreshold())
+        self:SetWxCanShieldCharge(self.owner:GetCanShieldCharge())
+    end
 end
 
 local function OnSetGhostMode(inst, self)
     self.modetask = nil
+
+    if self.onforcehealthpulse ~= nil then
+        self.inst:RemoveEventCallback("forcehealthpulse", self.onforcehealthpulse, self.owner)
+        self.onforcehealthpulse = nil
+    end
 
     if self.onhealthdelta ~= nil then
         self.inst:RemoveEventCallback("healthdelta", self.onhealthdelta, self.owner)
@@ -219,6 +239,13 @@ local function OnSetGhostMode(inst, self)
 		self.onshowpethunger = nil
 		self.pethungerbadge:Hide()
 	end
+
+    if self.onwxshielddelta ~= nil then
+        self.inst:RemoveEventCallback("wxshielddelta", self.onwxshielddelta, self.owner)
+        self.inst:RemoveEventCallback("wx_canshieldcharge", self.onwxcanshieldcharge, self.owner)
+        self.onwxshielddelta = nil
+        self.onwxcanshieldcharge = nil
+    end
 end
 
 local function UpdateRezButton_Enable(inst, self, proxy_is_gravestone)
@@ -394,19 +421,15 @@ local StatusDisplays = Class(Widget, function(self, owner)
     if owner:HasTag("strongman") then
         self:AddMightiness()
     end
-
-    if owner:HasTag("upgrademoduleowner") then
-        -- Not adding the display here, but we need to move some stuff around in single player.
-        if not is_splitscreen then
-            self.moisturemeter:SetPosition(self.column1, -120, 0)
-        end
-    end
 end)
 
 function StatusDisplays:ShowStatusNumbers()
     self.brain.num:Show()
     self.stomach.num:Show()
     self.heart.num:Show()
+    if self.heart.wxshieldanimnum and self.heart.wxshieldanimflicker.shown then
+        self.heart.wxshieldanimnum:Show()
+    end
     self.moisturemeter.num:Show()
     if self.boatmeter.boat then
         self.boatmeter.num:Show()
@@ -423,6 +446,9 @@ function StatusDisplays:HideStatusNumbers()
     self.brain.num:Hide()
     self.stomach.num:Hide()
     self.heart.num:Hide()
+    if self.heart.wxshieldanimnum then
+        self.heart.wxshieldanimnum:Hide()
+    end
     self.moisturemeter.num:Hide()
     self.boatmeter.num:Hide()
 	if self.pethealthbadge then
@@ -635,6 +661,20 @@ function StatusDisplays:HealthDelta(data)
             self.heart:PulseGreen()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
         elseif data.newpercent < data.oldpercent then
+            self.heart:PulseRed()
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
+        end
+    end
+end
+
+function StatusDisplays:ForceHealthPulse(data)
+    if self.heart ~= nil and self.heart.ForceHealthPulse ~= nil then
+        self.heart:ForceHealthPulse(data)
+    else
+        if data.up then
+            self.heart:PulseGreen()
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
+        elseif data.down then
             self.heart:PulseRed()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
         end
@@ -903,6 +943,18 @@ function StatusDisplays:MightinessDelta(data)
     elseif newpercent < oldpercent and (self.previous_pulse == nil or (self.previous_pulse - oldpercent >= 0.009)) then
         self.mightybadge:PulseRed()
         self.previous_pulse = newpercent
+    end
+end
+
+function StatusDisplays:SetWxShieldPercent(newpercent, oldpercent, maxshield, penetrationthreshold)
+    if self.heart ~= nil then
+        self.heart:SetWxShieldPercent(newpercent, oldpercent, maxshield, penetrationthreshold)
+    end
+end
+
+function StatusDisplays:SetWxCanShieldCharge(canshieldcharge)
+    if self.heart ~= nil then
+        self.heart:SetWxCanShieldCharge(canshieldcharge)
     end
 end
 
