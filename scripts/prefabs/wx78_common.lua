@@ -359,4 +359,7 @@ return {
 	AddHeatSteamFx_Common = AddHeatSteamFx_Common,
     Initialize_Common = Initialize_Common,
     Initialize_Master = Initialize_Master,
+
+    -- Exposed for Mods.
+    WX78_UPGRADE_MODULE_ACTIONS = WX78_UPGRADE_MODULE_ACTIONS,
 }

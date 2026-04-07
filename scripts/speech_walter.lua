@@ -2883,7 +2883,11 @@ return{
         ROCKS = "Maybe I could make a fire pit.",
         ROOK = "I wonder how it works?",
         ROPE = "An essential part of any adventuring kit.",
-        ROTTENEGG = "That's definitely gone off.",
+        ROTTENEGG =
+        {
+            GENERIC = "That's definitely gone off.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "It was a royal pain to get.",
         JELLYBEAN = "Jellybeans are for little kids...",
         SADDLE_BASIC = "Guess you need a saddle to ride some animals.",
@@ -2985,7 +2989,11 @@ return{
 			GENERIC = "Look at the colouring on that one!",
 			SLEEPING = "I should probably leave them alone...",
 		},
-		SPOILED_FOOD = "I probably shouldn't eat this...",
+        SPOILED_FOOD =
+        {
+            GENERIC = "I probably shouldn't eat this...",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Maybe it wants to roast marshmallows too?",
@@ -4147,7 +4155,11 @@ return{
         FISHMEAT_COOKED = "Catching your own fish and eating it, real survivor stuff!",
         FISHMEAT_SMALL = "Maybe I could use it as bait for a bigger fish.",
         FISHMEAT_SMALL_COOKED = "It smells good!",
-		SPOILED_FISH = "Ugh, rotten fish!",
+		SPOILED_FISH =
+        {
+            GENERIC = "Ugh, rotten fish!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "That'll keep our fish fresh!",
         POCKET_SCALE = "Do you think there's a badge for catching the biggest fish?",

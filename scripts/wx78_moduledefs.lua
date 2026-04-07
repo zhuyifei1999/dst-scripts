@@ -1428,17 +1428,41 @@ AddCreatureScanDataDefinition("catcoon", "digestion", 2)
 
 ---------------------------------------------------------------
 
+local function spin_overriderange(wx, override)
+	wx.components.combat:SetRange(override or TUNING.DEFAULT_ATTACK_RANGE, wx.components.combat.hitrange)
+end
+
+local function spin_checktool(wx, data)
+	if data == nil or data.eslot == EQUIPSLOTS.HANDS then
+		local tool = wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		spin_overriderange(wx, tool and tool.components.tool and tool.components.tool:CanDoAction(ACTIONS.CHOP) and TUNING.WX78_SPIN_START_RANGE or nil)
+	end
+end
+
 local function spin_activate(inst, wx, isloading)
 	wx._spin_modules = (wx._spin_modules or 0) + 1
-	if wx._spin_modules > 1 and wx.components.efficientuser == nil then
+	if wx.components.efficientuser == nil then
 		wx:AddComponent("efficientuser")
+	end
+	if wx.components.aoediminishingreturns == nil then
+		wx:AddComponent("aoediminishingreturns")
+	end
+	if wx._spin_modules == 1 then
+		wx:ListenForEvent("equip", spin_checktool)
+		wx:ListenForEvent("unequip", spin_checktool)
+		spin_checktool(wx, nil)
 	end
 end
 
 local function spin_deactivate(inst, wx)
 	wx._spin_modules = (wx._spin_modules or 1) - 1
-	if wx._spin_modules <= 1 then
+	if wx._spin_modules <= 0 then
+		wx._spin_modules = nil
 		wx:RemoveComponent("efficientuser")
+		wx:RemoveComponent("aoediminishingreturns")
+		wx:RemoveEventCallback("equip", spin_checktool)
+		wx:RemoveEventCallback("unequip", spin_checktool)
+		spin_overriderange(wx, nil)
 	end
 end
 
@@ -1500,6 +1524,11 @@ local module_netid_lookup = {}
 --      deactivatefn -  The function that runs whenever the module is deactivated [signature (module instance, owner instance)]
 --      extra_prefabs - Additional prefabs to be imported alongside the module, such as fx prefabs
 --
+-- For mods!:
+--      overridebank        - Override bank for the chip in-world
+--      overridebuild       - Override build for the chip in-world
+--      overrideminiuibuild - Override build for the ui mini chip on the status
+--      overrideuibuild     - Override build for the ui chip when inspecting our chips.
 --      returns a net id for the module, to send for UI purposes; also adds that net id (as module_netid) to the passed definition.
 local function AddNewModuleDefinition(module_definition)
     assert(module_netid < 64, "To support additional WX modules, player_classified.upgrademodulebars must be updated")

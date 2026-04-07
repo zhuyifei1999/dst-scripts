@@ -24,6 +24,9 @@ local function MakeModule(data)
         end
     end
 
+
+    local CHIP_BANK = data.overridebank or "chips"
+    local CHIP_BUILD = data.overridebuild or "wx_chips"
     local FLOATER_SCALE = (data.slots == 1 and 0.75) or 1.0
     local function fn()
         local inst = CreateEntity()
@@ -34,8 +37,8 @@ local function MakeModule(data)
 
         MakeInventoryPhysics(inst)
 
-        inst.AnimState:SetBank("chips")
-        inst.AnimState:SetBuild("wx_chips")
+        inst.AnimState:SetBank(CHIP_BANK)
+        inst.AnimState:SetBuild(CHIP_BUILD)
         inst.AnimState:PlayAnimation(data.name)
         inst.scrapbook_anim = data.name
 

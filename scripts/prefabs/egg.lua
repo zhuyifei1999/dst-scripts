@@ -126,6 +126,11 @@ local function fertilizerresearchfn(inst)
     return inst:GetFertilizerKey()
 end
 
+local function GetStatus(inst, viewer)
+    return (viewer.components.eater ~= nil and viewer.components.eater:IsSpoiledProcessor()) and "CAN_PROCESS"
+        or nil
+end
+
 local function rottenfn()
     local inst = CreateEntity()
 
@@ -168,6 +173,8 @@ local function rottenfn()
     inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.rottenegg.nutrients)
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
+
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("stackable")

@@ -2141,6 +2141,10 @@ params.wx78_backupbody = {
     type = "chest",
 }
 
+function params.wx78_backupbody.itemtestfn(container, item, slot)
+    return not item:HasTag("irreplaceable")
+end
+
 for y = 2, 0, -1 do
     for x = 0, 4, 1 do
         table.insert(params.wx78_backupbody.widget.slotpos, Vector3(80 * x - 80 * 2, 80 * y - 80 * 2 - 42.5, 0))

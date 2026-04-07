@@ -327,9 +327,11 @@ function UpgradeModulesDisplay:OnModuleAdded(bartype, moduledefinition_index)
     new_chip:GetAnimState():PlayAnimation("minichip_plug")
     new_chip:GetAnimState():PushAnimation("minichip_idle")
 
-    new_chip:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx", modname.."_chip")
-    new_chip.cooldown:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx", modname.."_chip")
+    local overridebuild = module_def.overrideminiuibuild or "status_wx"
+    new_chip:GetAnimState():OverrideSymbol("movespeed2_chip", overridebuild, modname.."_chip")
+    new_chip.cooldown:GetAnimState():OverrideSymbol("movespeed2_chip", overridebuild, modname.."_chip")
     new_chip.modulename = modname
+    new_chip.overridebuild = overridebuild
 
     new_chip._used_modslots = modslots
 
@@ -364,8 +366,9 @@ function UpgradeModulesDisplay:PopModuleAtIndex(bartype, startindex)
             if chip.chip_pos then
                 lastchip._used_modslots = chip._used_modslots
                 lastchip.modulename = chip.modulename
+                lastchip.overridebuild = chip.overridebuild
                 lastchip:GetAnimState():PlayAnimation("minichip_idle")
-                lastchip:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx", lastchip.modulename.."_chip")
+                lastchip:GetAnimState():OverrideSymbol("movespeed2_chip", lastchip.overridebuild, lastchip.modulename.."_chip")
 
                 chip.chip_pos = nil
                 local slot_distance_from_bottom = slotsinuse + (chip._used_modslots - 1) * 0.5

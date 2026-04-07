@@ -2851,7 +2851,11 @@ return {
         ROCKS = "We could make stuff with these.",
         ROOK = "Storm the castle!",
         ROPE = "Some short lengths of rope.",
-        ROTTENEGG = "Ew! It stinks!",
+        ROTTENEGG =
+        {
+            GENERIC = "Ew! It stinks!",
+            CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "It infuses the eater with the power of science!",
         JELLYBEAN = "One part jelly, one part bean.",
         SADDLE_BASIC = "That'll allow the mounting of some smelly animal.",
@@ -2953,7 +2957,11 @@ return {
 			GENERIC = "Looks even meaner than usual.",
 			SLEEPING = "I should keep my distance.",
 		},
-		SPOILED_FOOD = "It's a furry ball of rotten food.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "It's a furry ball of rotten food.",
+            CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Just keep your hand to yourself, alright?",
@@ -4115,7 +4123,11 @@ return {
         FISHMEAT_COOKED = "Grilled to perfection.",
         FISHMEAT_SMALL = "A small bit of fish.",
         FISHMEAT_SMALL_COOKED = "A small bit of cooked fish.",
-		SPOILED_FISH = "I'm not terribly curious about the smell.",
+		SPOILED_FISH =
+        {
+            GENERIC = "I'm not terribly curious about the smell.",
+            CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "They're stuffed in there like sardines!",
         POCKET_SCALE = "A scaled-down weighing device.",

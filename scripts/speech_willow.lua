@@ -2848,7 +2848,11 @@ return{
         ROCKS = "What's the point of collecting these again?",
         ROOK = "It's a castle!",
         ROPE = "What should we tie up??!",
-        ROTTENEGG = "Ew! Why? Oh Why?!",
+        ROTTENEGG =
+        {
+            GENERIC = "Ew! Why? Oh Why?!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "It's so sweet!",
         JELLYBEAN = "Nothing better than a handful of jellybeans.",
         SADDLE_BASIC = "It's so uncomfortable.",
@@ -2950,7 +2954,11 @@ return{
 			GENERIC = "Maybe I could kill it... with FIRE.",
 			SLEEPING = "Maybe I should just leave that one alone.",
 		},
-		SPOILED_FOOD = "At least it's still flammable.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "At least it's still flammable.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Gross! I told you we shoulda burned it!",
@@ -4112,7 +4120,11 @@ return{
         FISHMEAT_COOKED = "Less slippery now that it's found fire.",
         FISHMEAT_SMALL = "I like sushi, but I prefer it flame-broiled.",
         FISHMEAT_SMALL_COOKED = "Fish and fire go well together.",
-		SPOILED_FISH = "Gross.",
+		SPOILED_FISH =
+        {
+            GENERIC = "Gross.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Did we just... put a hole in the boat?",
         POCKET_SCALE = "Hey, now I can weigh my fish... not that I care.",

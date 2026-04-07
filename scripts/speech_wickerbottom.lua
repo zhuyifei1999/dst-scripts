@@ -2841,7 +2841,11 @@ return{
         ROCKS = "A handful of assorted rocks.",
         ROOK = "A clockwork castle.",
         ROPE = "A short length of strong hemp rope.",
-        ROTTENEGG = "How unappetizing.",
+        ROTTENEGG =
+        {
+            GENERIC = "How unappetizing.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "In the wild this might have produced more queens.",
         JELLYBEAN = "Sweets, emulsified with beeswax.",
         SADDLE_BASIC = "A crude device for equestrianism.",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "It appears to be of the warrior caste.",
 			SLEEPING = "A well deserved rest, no doubt.",
 		},
-		SPOILED_FOOD = "It is heavy with bacteria.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "It is heavy with bacteria.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "That was an underhanded trick!",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "Beautifully grilled.",
         FISHMEAT_SMALL = "Fish flesh.",
         FISHMEAT_SMALL_COOKED = "A small bit of nourishment.",
-		SPOILED_FISH = "That fish matter is becoming a biohazard.",
+		SPOILED_FISH =
+        {
+            GENERIC = "That fish matter is becoming a biohazard.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "A clever contraption to keep seafood fresh.",
         POCKET_SCALE = "I'm always prepared to weigh in.",

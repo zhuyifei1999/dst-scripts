@@ -2842,7 +2842,11 @@ return{
         ROCKS = "Could make a decent little inukshuk with these.",
         ROOK = "Hmm... does the rook move in a straight line? I forget.",
         ROPE = "Good for holding stuff to other stuff.",
-        ROTTENEGG = "One less bird. Good.",
+        ROTTENEGG =
+        {
+            GENERIC = "One less bird. Good.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "I'm majestic enough as is.",
         JELLYBEAN = "You can barely taste the bean!",
         SADDLE_BASIC = "Yep, that'll get us there.",
@@ -2944,7 +2948,11 @@ return{
 			GENERIC = "They come in yellow now?",
 			SLEEPING = "You're snoozin' fer a bruisin'.",
 		},
-		SPOILED_FOOD = "Aw, it's Diefenbakered.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Aw, it's Diefenbakered.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "I really wish I hadn't seen that.",
@@ -4106,7 +4114,11 @@ return{
         FISHMEAT_COOKED = "I wish I had some chips.",
         FISHMEAT_SMALL = "I hope I don't attract bears.",
         FISHMEAT_SMALL_COOKED = "Looks good to me.",
-		SPOILED_FISH = "I think it's time to throw this out.",
+		SPOILED_FISH =
+        {
+            GENERIC = "I think it's time to throw this out.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Reminds me of the old salmon fisheries.",
         POCKET_SCALE = "I'm gonna reel in a whopper, no doubt aboot it.",

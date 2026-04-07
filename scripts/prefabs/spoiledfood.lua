@@ -65,6 +65,11 @@ local function fertilizerresearchfn(inst)
     return inst:GetFertilizerKey()
 end
 
+local function GetStatus(inst, viewer)
+    return (viewer.components.eater ~= nil and viewer.components.eater:IsSpoiledProcessor()) and "CAN_PROCESS"
+        or nil
+end
+
 local function fn(common_init, mastersim_init, nutrients, kind)
     local inst = CreateEntity()
 
@@ -116,6 +121,8 @@ local function fn(common_init, mastersim_init, nutrients, kind)
     inst:AddComponent("smotherer")
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
+
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

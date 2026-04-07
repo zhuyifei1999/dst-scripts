@@ -2841,7 +2841,11 @@ return{
         ROCKS = "A handful of stones, absolutely thrilling!",
         ROOK = "I'm not convinced that's proper clockwork.",
         ROPE = "I'm sure I'll find some use for it sooner or later.",
-        ROTTENEGG = "It must've been the last one out.",
+        ROTTENEGG =
+        {
+            GENERIC = "It must've been the last one out.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Victory is sweet.",
         JELLYBEAN = "I like to keep a bit of candy in my pocket at all times.",
         SADDLE_BASIC = "I've got a saddle, now I just need an animal to ride...",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "Oh botheration, I hate the stripy ones.",
 			SLEEPING = "At least it's not causing any trouble.",
 		},
-		SPOILED_FOOD = "Food that once was.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Food that once was.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "You'll never catch me! I've outsmarted you and your ilk at every turn!",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "It's been thoroughly cooked.",
         FISHMEAT_SMALL = "Not much more than a quick fishy snack.",
         FISHMEAT_SMALL_COOKED = "I don't know why I took the time to cook something so small.",
-		SPOILED_FISH = "Oooh that's rotten!",
+		SPOILED_FISH =
+        {
+            GENERIC = "Oooh that's rotten!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "I suppose the best way to keep fish fresh is to keep them alive.",
         POCKET_SCALE = "In my opinion, everything should have a pocket-sized version.",

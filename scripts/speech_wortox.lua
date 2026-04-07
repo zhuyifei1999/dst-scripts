@@ -2861,7 +2861,11 @@ return{
         ROCKS = "Maybe they're boulders and I just grew really big.",
         ROOK = "A scary rook! I sure am shook!",
         ROPE = "I hope it's not for binding imps.",
-        ROTTENEGG = "A powerful stink. How fun!",
+        ROTTENEGG =
+        {
+            GENERIC = "A powerful stink. How fun!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "No thank you.",
         JELLYBEAN = "I do not want those in my bellybean!",
         SADDLE_BASIC = "Hyuyu, carry me!",
@@ -2963,7 +2967,11 @@ return{
 			GENERIC = "I'd be okay eating his soul, I think.",
 			SLEEPING = "Sweetest dreams now.",
 		},
-		SPOILED_FOOD = "Oh jeez, oh yuck, a pile of muck.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Oh jeez, oh yuck, a pile of muck.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Well hello there little friend.",
@@ -4125,7 +4133,11 @@ return{
         FISHMEAT_COOKED = "I do not wish to eat this fish.",
         FISHMEAT_SMALL = "Looks like the soul's already left this one.",
         FISHMEAT_SMALL_COOKED = "I do not wish to eat this fish.",
-		SPOILED_FISH = "It's spoiled rotten!",
+		SPOILED_FISH =
+        {
+            GENERIC = "It's spoiled rotten!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Fill it to the brim with bream!",
         POCKET_SCALE = "Allow me to quickly weigh in, hyuyu!",

@@ -369,9 +369,10 @@ function Container:CanAcceptCount(item, maxcount)
 
 	local stacksize = item.components.stackable and item.components.stackable:StackSize() or 1
 	if item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
-		stacksize = stacksize - 1
+		stacksize = math.max(maxcount or math.huge, stacksize - 1)
+	else
+		stacksize = maxcount or stacksize
 	end
-	stacksize = math.min(maxcount or math.huge, stacksize)
     if stacksize <= 0 then
         return 0
     end

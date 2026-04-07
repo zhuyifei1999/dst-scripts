@@ -2841,7 +2841,11 @@ return{
         ROCKS = "Buncha rocks, florp.",
         ROOK = "Look mean...",
         ROPE = "For tying, florpt.",
-        ROTTENEGG = "Has good stink to it.",
+        ROTTENEGG =
+        {
+            GENERIC = "Has good stink to it.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Mmmmmmmm!",
         JELLYBEAN = "A good bean.",
         SADDLE_BASIC = "Hee-hee, has little horns on it!",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "Spiderfolk warrior...",
 			SLEEPING = "It dreaming of spider things.",
 		},
-		SPOILED_FOOD = "Maybe it still good?",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Maybe it still good?",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Leeme alone, flort!!",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "Won't eat it!",
         FISHMEAT_SMALL = "Was so little...",
         FISHMEAT_SMALL_COOKED = "Glurgh... who do such thing!",
-		SPOILED_FISH = "Someone not take care of fish pet!",
+		SPOILED_FISH =
+        {
+            GENERIC = "Someone not take care of fish pet!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "This where scale-less keep fish pets, florp?",
         POCKET_SCALE = "Is funny measure thing.",

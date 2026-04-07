@@ -610,6 +610,9 @@ local function TryToSpawnBackupBody(inst)
         local body = SpawnPrefab("wx78_backupbody")
         body._hide_body_skinfx = true
         body.components.upgrademoduleowner:SetChargeLevel(0)
+        if inst.components.upgrademoduleowner then
+            inst.components.upgrademoduleowner:SetChargeLevel(0)
+        end
         body.Transform:SetPosition(x, y, z)
         if not body.components.activatable:CanActivate(inst) then
             body:Remove()

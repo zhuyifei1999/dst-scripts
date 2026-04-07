@@ -3872,8 +3872,15 @@ function PlayerController:DoClientBusyOverrideLocomote()
 		self.classified.busyremoteoverridelocomote:value()
 	then
 		local dir = GetWorldControllerVector()
+		local tick = GetTick()
 		if dir then
+			self._last_busy_override_locomote_tick = tick
 			self:RemotePredictOverrideLocomote(math.atan2(-dir.z, dir.x) * RADIANS)
+		else
+			if self._last_busy_override_locomote_tick == tick - 1 then
+				self:RemotePredictOverrideLocomote(nil, false)
+			end
+			self._last_busy_override_locomote_tick = nil
 		end
 	end
 end

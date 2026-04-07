@@ -2847,7 +2847,11 @@ return{
         ROCKS = "A bunch of rocks.",
         ROOK = "No way that was made in a factory.",
         ROPE = "An essential building material.",
-        ROTTENEGG = "Yeesh, get a whiff of that. No wait, don't!",
+        ROTTENEGG =
+        {
+            GENERIC = "Yeesh, get a whiff of that. No wait, don't!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "A big bee boogie.",
         JELLYBEAN = "I would eat them all in one sitting.",
         SADDLE_BASIC = "How'd I get saddled with this? Ha!",
@@ -2949,7 +2953,11 @@ return{
 			GENERIC = "You'll look better on the underside of my workboot.",
 			SLEEPING = "Lazy spider.",
 		},
-		SPOILED_FOOD = "Wouldn't touch that with a ten foot pole.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Wouldn't touch that with a ten foot pole.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Shoo!",
@@ -4111,7 +4119,11 @@ return{
         FISHMEAT_COOKED = "Nothing fancy, just how I like it.",
         FISHMEAT_SMALL = "You sure that's fish? Looks pretty shrimpy to me.",
         FISHMEAT_SMALL_COOKED = "I won't turn down a bite!",
-		SPOILED_FISH = "Such a shame to let good food go to waste.",
+		SPOILED_FISH =
+        {
+            GENERIC = "Such a shame to let good food go to waste.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Now there's a nice practical way to store fish!",
         POCKET_SCALE = "What a handy doo-hickey!",

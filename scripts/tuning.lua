@@ -6582,7 +6582,7 @@ function Tune(overrides)
         WX78_MAXHUNGER1_BOOST = 40,
 
         WX78_MAXHUNGER_BOOST = 100,
-        WX78_MAXHUNGER_SLOWPERCENT = 0.90,
+        WX78_MAXHUNGER_SLOWPERCENT = 0.80,
 
         WX78_MOVESPEED_CHIPBOOSTS = {0.00, 0.25, 0.40, 0.50}, -- Set so that speed circuits give diminishing returns.
 
@@ -6595,7 +6595,7 @@ function Tune(overrides)
         WX78_PERISH_COLDRATE = 0.75,
         WX78_PERISH_HOTRATE = 1.25,
 
-        WX78_TASERDAMAGE = 10, -- This damage chains to nearby targets and stuns.
+        WX78_TASERDAMAGE = 20, -- This causes a chain stun to nearby targets when the primary target is damaged.
 
         WX78_LIGHT_BASERADIUS = 3.5, -- Deprecated.
         WX78_LIGHT_EXTRARADIUS = 1.5, -- Deprecated.
@@ -7447,14 +7447,14 @@ function Tune(overrides)
                 -- wx78_circuitry_lesschargeloss
                 SAVE_CHARGE_ON_UNPLUG = 1,
                 -- wx78_circuitry_alphabuffs_1
-                MAXHUNGER_SLOWPERCENT_ALPHABUFF = 0.85,
+                MAXHUNGER_SLOWPERCENT_ALPHABUFF = 0.75,
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF = 0.95,
                 MAXSANITY1_SANITY_MOD_ALPHABUFF = 0.8,
                 MAXSANITY_SANITY_MOD_ALPHABUFF = 0.5,
                 -- wx78_circuitry_alphabuffs_2
                 MAXHEALTH_ARMOR_ALPHABUFF_2 = 0.025,
                 MAXHEALTH2_ARMOR_MULT = 2,
-                MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.80,
+                MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.70,
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
                 MAXSANITY1_DAPPERNESS_MULT = 0.10,
                 MAXSANITY_DAPPERNESS_MULT = 0.25,
@@ -7476,7 +7476,7 @@ function Tune(overrides)
                 TASER_BUILDUP_GAIN_RATE = 5,
                 TASER_BUILDUP_DRAIN_RATE_BASE = -6,
                 TASER_BUILDUP_DRAIN_BUFFER_TIME = 4,
-                TASER_BUILDUP_DAMAGE = 75,
+                TASER_BUILDUP_DAMAGE = 50, -- Remember that electric damage and wetness mult apply to this.
                 TASER_BUILDUP_RADIUS = 2,
                 TASER_EFFECT_BASE_TIME = 14,
                 TASER_EFFECT_VAR_TIME = 2,
@@ -7488,7 +7488,6 @@ function Tune(overrides)
                 TASER_BUILDUP_RADIUS_PER_MODULE = 1,
                 -- wx78_circuitry_gammabuffs_1
                 -- wx78_circuitry_gammabuffs_2
-                SHIELDING_ARMOR_PLANAR_DEF = 10,
                 -- wx78_extrabody_1
                 BACKUPBODY_WORK_REQUIRED = 3,
                 -- wx78_extrabody_2
@@ -9324,7 +9323,7 @@ function Tune(overrides)
         WX78_RADAR_EXTRA_VIEW_DIST = 5,
 
         WX78_SCREECH_RANGE = 12,
-        WX78_SCREECH_PANIC_TIME = 5,
+        WX78_SCREECH_PANIC_TIME = 8,
         WX78_SCREECH_TIME = 2,
         WX78_SCREECH_TIME_VAR = FRAMES * 10,
         WX78_SCREECH_COOLDOWN = seg_time,
@@ -9332,12 +9331,16 @@ function Tune(overrides)
         WX78_DIGESTION_SPOILED_NEEDED = 5, -- number needed to produce the brick.
 
         WX78_SHIELDING_ARMOR = 0.2, -- 80%
-        WX78_SHIELDING_COOLDOWN = seg_time * 4,
-        WX78_SHIELDING_TOTAL_DAMAGE = 75, -- we can take 75 damage before getting knocked out the state.
+        WX78_SHIELDING_COOLDOWN = seg_time * 2,
+        WX78_SHIELDING_TOTAL_DAMAGE = 100, -- we can take 100 damage before getting knocked out the state.
         WX78_SHIELDING_MIN_TIME_COOLDOWN = 5, -- Minimum number of time we can be in the state before going off cooldown.
         -- WX78_SHIELDING_COOLDOWN = 30,
 
 		WX78_SPIN_TOOL_EFFICIENCY = 0.5,
+		WX78_SPIN_RUNSPEED_MULT = 0.6, --mult of current runspeed (including any speed boosts)
+		WX78_SPIN_RADIUS = 2.1,
+		WX78_SPIN_START_RANGE = 4,
+		WX78_SPIN_TIME_TO_DIZZY = 8,
 
         WX78_FOODBRICK_FERTILIZE = day_time*0.75,
         WX78_FOODBRICK_SOILCYCLES = 8,

@@ -2841,7 +2841,11 @@ return{
         ROCKS = "None of these look like they would skip well.",
         ROOK = "Who made these things!?",
         ROPE = "We could tie stuff up with this.",
-        ROTTENEGG = "Ew!",
+        ROTTENEGG =
+        {
+            GENERIC = "Ew!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "It's goopy.",
         JELLYBEAN = "Will they grow into candy beanstalks?",
         SADDLE_BASIC = "We ride!",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "He will protect us!",
 			SLEEPING = "They're so cute when they sleep.",
 		},
-		SPOILED_FOOD = "Blech!",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Blech!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Definitely not a spider!",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "Mmm, delicious!",
         FISHMEAT_SMALL = "It's a little fishy.",
         FISHMEAT_SMALL_COOKED = "Boney.",
-		SPOILED_FISH = "It's no good to anyone now.",
+		SPOILED_FISH =
+        {
+            GENERIC = "It's no good to anyone now.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "It's like an aquarium! Except we eat the fish...",
         POCKET_SCALE = "Wonder how heavy our fish is!",

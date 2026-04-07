@@ -700,8 +700,8 @@ ACTIONS =
 	STARTMAPDELIVER = Action({ rmb = true }),
 	MAPDELIVER_MAP = Action({ map_only=true, closes_map=true, }),
     SWAPBODIES_MAP = Action({ customarrivecheck=ArriveAnywhere, rmb=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
-    TOGGLEWXSCREECH = Action({ priority = 1, mount_valid = true, invalid_hold_action=true }),
-    TOGGLEWXSHIELDING = Action({ priority = 2, invalid_hold_action=true, }),
+    TOGGLEWXSCREECH = Action({ priority = 0, invalid_hold_action=true }),
+    TOGGLEWXSHIELDING = Action({ priority = 1, invalid_hold_action=true, }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -1874,17 +1874,7 @@ ACTIONS.PICK.fn = function(act)
 			if act.target.components.pickable:IsStuck() then
 				return false, "STUCK"
 			end
-			if act.doer and act.doer.sg and act.doer.sg:HasStateTag("chopping") then
-				--wx spin
-				local success, loot = act.target.components.pickable:Pick(TheWorld)
-				if loot then
-					for i, v in ipairs(loot) do
-						Launch(v, act.doer, 1.5)
-					end
-				end
-			else
-				act.target.components.pickable:Pick(act.doer)
-			end
+            act.target.components.pickable:Pick(act.doer)
             return true
         elseif act.target.components.searchable ~= nil then
             return act.target.components.searchable:Search(act.doer)

@@ -2842,7 +2842,11 @@ return{
         ROCKS = "Is rock. What you not get?",
         ROOK = "This one jumps the queen!",
         ROPE = "Strong! Like me!",
-        ROTTENEGG = "Stinky!",
+        ROTTENEGG =
+        {
+            GENERIC = "Stinky!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Sticky power goo!",
         JELLYBEAN = "Little tiny taste beans.",
         SADDLE_BASIC = "Just need creature mighty enough to hold me!",
@@ -2944,7 +2948,11 @@ return{
 			GENERIC = "This one extra scary.",
 			SLEEPING = "I think not smart to poke it.",
 		},
-		SPOILED_FOOD = "Is ball of yuck!",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Is ball of yuck!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "GAH! Table is creepy walking fist!",
@@ -4106,7 +4114,11 @@ return{
         FISHMEAT_COOKED = "Meat from water still make Wolfgang strong.",
         FISHMEAT_SMALL = "Fish lump for eating.",
         FISHMEAT_SMALL_COOKED = "Looks better now.",
-		SPOILED_FISH = "Is good no more.",
+		SPOILED_FISH =
+        {
+            GENERIC = "Is good no more.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Is new home for fish. For now.",
         POCKET_SCALE = "Tiny scale fit in palm of Wolfgang's hand!",

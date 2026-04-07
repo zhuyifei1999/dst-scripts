@@ -5,6 +5,12 @@ local EfficientUser = Class(function(self, inst)
     self.actions = {}
 end)
 
+function EfficientUser:OnRemoveFromEntity()
+	for _, v in pairs(self.actions) do
+		v:Reset()
+	end
+end
+
 function EfficientUser:GetMultiplier(action)
     return self.actions[action] and self.actions[action]:Get() or 1
 end

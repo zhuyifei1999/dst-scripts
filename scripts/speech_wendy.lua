@@ -2845,7 +2845,11 @@ return{
         ROCKS = "Some small rocks.",
         ROOK = "A Rook? Or is it a Castle?",
         ROPE = "That would be the easy way out of this place.",
-        ROTTENEGG = "The way of all things.",
+        ROTTENEGG =
+        {
+            GENERIC = "The way of all things.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "We stole it out of the mouths of baby bees.",
         JELLYBEAN = "Beans that shall never know life.",
         SADDLE_BASIC = "As if it wasn't already burdened by the yoke of life...",
@@ -2947,7 +2951,11 @@ return{
 			GENERIC = "A warrior of the night!",
 			SLEEPING = "I must beware.",
 		},
-		SPOILED_FOOD = "Everything turns to waste, eventually.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Everything turns to waste, eventually.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "A creature of shadow that seeks the light... how sad...",
@@ -4109,7 +4117,11 @@ return{
         FISHMEAT_COOKED = "A proper grilling puts a stop to the flopping.",
         FISHMEAT_SMALL = "There are other fish in the sea. Bigger ones, hopefully.",
         FISHMEAT_SMALL_COOKED = "It will... tide... me over for now.",
-		SPOILED_FISH = "Farewell, chum.",
+		SPOILED_FISH =
+        {
+            GENERIC = "Farewell, chum.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "It feels a bit cruel to trap them within sight of freedom.",
         POCKET_SCALE = "What is the weight of my actions?",

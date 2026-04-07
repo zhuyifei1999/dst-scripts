@@ -2841,7 +2841,11 @@ return{
         ROCKS = "Some pretty normal rocks.",
         ROOK = "Chaaaarge!",
         ROPE = "Strong enough to bind the sails of my longship.",
-        ROTTENEGG = "Ruined for eating, but primed for battle.",
+        ROTTENEGG =
+        {
+            GENERIC = "Ruined for eating, but primed for battle.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "To absorb the felled queen's power!",
         JELLYBEAN = "The yield of an industrious candy farmer.",
         SADDLE_BASIC = "Now to find a faithful steed.",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "The champion of the spiders. To battle!",
 			SLEEPING = "It is cowardly to attack a sleeping enemy.",
 		},
-		SPOILED_FOOD = "Age has only made this food gross, not wise.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Age has only made this food gross, not wise.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Keep thy hand from out mine fires!",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "Joy!",
         FISHMEAT_SMALL = "This sea meat will serve me well.",
         FISHMEAT_SMALL_COOKED = "This meat will swim in my belly!",
-		SPOILED_FISH = "You smell of your failure.",
+		SPOILED_FISH =
+        {
+            GENERIC = "You smell of your failure.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Meat is best when it's fresh!",
         POCKET_SCALE = "How did I fare with my catch?",

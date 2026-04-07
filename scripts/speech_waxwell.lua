@@ -2841,7 +2841,11 @@ return{
         ROCKS = "Hmmm. Now what do I do with them?",
         ROOK = "A castle for my home.",
         ROPE = "You'd think this would have more uses.",
-        ROTTENEGG = "Disgusting. Why keep this around?",
+        ROTTENEGG =
+        {
+            GENERIC = "Disgusting. Why keep this around?",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Unsettlingly wobbly.",
         JELLYBEAN = "I think there's seventeen in there.",
         SADDLE_BASIC = "But that means I'd have to touch the smelly thing.",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "It's a specialized form.",
 			SLEEPING = "I don't want to wake that one.",
 		},
-		SPOILED_FOOD = "That used to be food until I wasted it.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "That used to be food until I wasted it.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Hmph. Impressive sleight of hand.",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "Bland... but acceptable.",
         FISHMEAT_SMALL = "I'm reduced to scavenging scraps.",
         FISHMEAT_SMALL_COOKED = "That was barely an appetizer.",
-		SPOILED_FISH = "How vile.",
+		SPOILED_FISH =
+        {
+            GENERIC = "How vile.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Ugh, the smell... the things I do for a decent meal.",
         POCKET_SCALE = "I keep it next to my pocket watch and my pocket comb.",

@@ -4,6 +4,8 @@ local PlayerCommonExtensions = require("prefabs/player_common_extensions")
 
 local TIMEOUT = 2
 
+local WX_SPIN_PICKABLE_TAGS = { "plant", "lichen", "oceanvine", "kelp" }
+
 local function GetIceStaffProjectileSound(inst, equip)
     if equip.icestaff_coldness then
         if equip.icestaff_coldness > 2 then
@@ -248,6 +250,8 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
 				return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
+			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				return not (inst.sg:HasStateTag("prespin") or inst:HasTag("prespin")) and "wx_spin_start" or nil
             end
 			return not (inst.sg:HasStateTag("prechop") or inst:HasTag("prechop")) and "chop_start" or nil
         end),
@@ -387,14 +391,18 @@ local actionhandlers =
 			if rider and rider:IsRiding() then
 				return inst:HasTag("woodiequickpicker") and "dowoodiefastpick" or "dolongaction"
 			elseif action.target:HasTag("pickable") then
-				--[[if inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				if inst.GetModuleTypeCount and
+					inst:GetModuleTypeCount("spin") > 0 and
+					not action.target:HasAnyTag("quickpick", "quickrummage") and
+					action.target:HasAnyTag(WX_SPIN_PICKABLE_TAGS)
+				then
 					--wx skill
 					local inventory = inst.replica.inventory
 					local tool = inventory and inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 					if tool and tool:HasTag("CHOP_tool") then
-						return not (inst.sg:HasStateTag("prechop") or inst:HasTag("prechop")) and "chop_start" or nil
+						return not (inst.sg:HasStateTag("prespin") or inst:HasTag("prespin")) and "wx_spin_start" or nil
 					end
-				end]]
+				end
 				return (action.target:HasAnyTag("jostlepick", "jostlerummage") and "dojostleaction")
 					or (action.target:HasAnyTag("quickpick", "quickrummage") and "doshortaction")
 					or (inst:HasTag("fastpicker") and "doshortaction")
@@ -641,9 +649,10 @@ local actionhandlers =
 					return "slingshot_shoot"
 				elseif inst.GetModuleTypeCount and
 					weapon:HasTag("CHOP_tool") and
-					inst:GetModuleTypeCount("spin") > 0
+					inst:GetModuleTypeCount("spin") > 0 and
+					action.target --air chop on controllers should not start spin
 				then
-					return not (inst.sg:HasStateTag("prechop") or inst:HasTag("prechop")) and "chop_start" or nil
+					return not (inst.sg:HasStateTag("prespin") or inst:HasTag("prespin")) and "wx_spin_start" or nil
 				end
 				return (weapon:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
 					or (weapon:HasTag("thrown") and "throw")
@@ -8220,6 +8229,38 @@ local states =
 			--V2C: NOTE this is intentionally backwards!
 			--     pst succeeds when server state no longer matches!
 			if not inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.sg:GoToState("idle")
+		end,
+	},
+
+	State{
+		name = "wx_spin_start",
+		tags = { "prespin", "working" },
+		server_states = { "wx_spin_start", "wx_spin" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			if not inst.sg:ServerStateMatches() then
+				inst.AnimState:PlayAnimation("chop_pre")
+				inst.AnimState:PushAnimation("chop_lag", false)
+			end
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
 				if inst.entity:FlattenMovementPrediction() then
 					inst.sg:GoToState("idle", "noanim")
 				end

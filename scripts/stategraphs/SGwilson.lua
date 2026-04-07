@@ -13,6 +13,10 @@ local FLOWERS_CANT_TAGS = {"INLIMBO"}
 
 local GALLOP_HIT_CANT_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
 
+local WX_SPIN_PICKABLE_TAGS = { "plant", "lichen", "oceanvine", "kelp" }
+local WX_SPIN_CANT_TAGS = { "INLIMBO", "NOCLICK", "FX", "decor", "intense", "wall", "companion", "flight", "invisible", "notarget", "noattack" }
+local WX_SPIN_ONEOF_TAGS = ConcatArrays({ "CHOP_workable", "_combat", --[["pickable",]] }, WX_SPIN_PICKABLE_TAGS)
+
 local WORTOX_SHADOW_MULT = 0.6
 local WORTOX_LUNAR_OFFSET = 0.1
 
@@ -925,6 +929,12 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
                 return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				return not inst.sg:HasStateTag("prespin")
+					and (inst.sg:HasStateTag("spinning") and
+						"wx_spin" or
+						"wx_spin_start")
+					or nil
             end
             return not inst.sg:HasStateTag("prechop")
                 and (inst.sg:HasStateTag("chopping") and
@@ -1100,17 +1110,21 @@ local actionhandlers =
 			elseif inst.components.rider and inst.components.rider:IsRiding() then
 				return inst:HasTag("woodiequickpicker") and "dowoodiefastpick" or "dolongaction"
 			elseif action.target.components.pickable then
-				--[[if inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				if inst.GetModuleTypeCount and
+					inst:GetModuleTypeCount("spin") > 0 and
+					not action.target.components.pickable.quickpick and
+					action.target:HasAnyTag(WX_SPIN_PICKABLE_TAGS)
+				then
 					--wx skill
 					local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 					if tool and tool.components.tool and tool.components.tool:CanDoAction(ACTIONS.CHOP) then
-						return not inst.sg:HasStateTag("prechop")
-							and (inst.sg:HasStateTag("chopping") and
-								"chop" or
-								"chop_start")
+						return not inst.sg:HasStateTag("prespin")
+							and (inst.sg:HasStateTag("spinning") and
+								"wx_spin" or
+								"wx_spin_start")
 							or nil
 					end
-				end]]
+				end
 				return (action.target.components.pickable.jostlepick and "dojostleaction")
 					or (action.target.components.pickable.quickpick and "doshortaction")
 					or (inst:HasTag("fastpicker") and "doshortaction")
@@ -1380,12 +1394,13 @@ local actionhandlers =
 				elseif inst.GetModuleTypeCount and
 					weapon.components.tool and
 					weapon.components.tool:CanDoAction(ACTIONS.CHOP) and
-					inst:GetModuleTypeCount("spin") > 0
+					inst:GetModuleTypeCount("spin") > 0 and
+					action.target --air chop on controllers should not start spin
 				then
-					return not inst.sg:HasStateTag("prechop")
-						and (inst.sg:HasStateTag("chopping") and
-							"chop" or
-							"chop_start")
+					return not inst.sg:HasStateTag("prespin")
+						and (inst.sg:HasStateTag("spinning") and
+							"wx_spin" or
+							"wx_spin_start")
 						or nil
 				end
 				return (weapon:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
@@ -1877,6 +1892,9 @@ local events =
 					inst.sg.statemem.iswxshielding = true
 					inst.sg:GoToState("wx_shield_hit")
 				end
+			elseif inst.sg:HasStateTag("nostunlock") then
+				inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+				DoHurtSound(inst)
             else
                 local t = GetTime()
                 local stunlock =
@@ -2035,10 +2053,10 @@ local events =
 			end
 		elseif inst.components.inventory:IsHeavyLifting()
             and not inst.components.rider:IsRiding() then
-            if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
+            if inst.sg:HasAnyStateTag("idle", "moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
-        elseif (inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("channeling")) and not inst:HasTag("wereplayer") then
+        elseif inst.sg:HasAnyStateTag("idle", "channeling") and not inst:HasTag("wereplayer") then
             inst.sg:GoToState(
                 (data.item ~= nil and data.item.projectileowner ~= nil and "catch_equip") or
                 (data.eslot == EQUIPSLOTS.HANDS and "item_out") or
@@ -2060,10 +2078,10 @@ local events =
             end
         elseif inst.components.inventory:IsHeavyLifting()
             and not inst.components.rider:IsRiding() then
-            if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
+            if inst.sg:HasAnyStateTag("idle", "moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
-        elseif inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("channeling") then
+        elseif inst.sg:HasAnyStateTag("idle", "channeling") then
             inst.sg:GoToState(GetUnequipState(inst, data))
         end
     end),
@@ -4895,14 +4913,6 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation(inst:HasTag("woodcutter") and "woodie_chop_pre" or "chop_pre")
-			--V2C: HACK so the first loop doesn't skip a frame
-			if inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
-				if inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") then
-					inst.AnimState:PushAnimation("wx_spin_attack_loop")
-				else
-					inst.AnimState:PushAnimation("wx_spin_attack_loop_slow")
-				end
-			end
 			inst:AddTag("prechop")
         end,
 
@@ -4910,10 +4920,7 @@ local states =
         {
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() or
-					inst.AnimState:IsCurrentAnimation("wx_spin_attack_loop") or
-					inst.AnimState:IsCurrentAnimation("wx_spin_attack_loop_slow")
-				then
+                if inst.AnimState:AnimDone() then
 					inst.sg.statemem.chopping = true
                     inst.sg:GoToState("chop")
                 end
@@ -4933,24 +4940,8 @@ local states =
 
         onenter = function(inst)
             inst.sg.statemem.action = inst:GetBufferedAction()
-			if inst:HasTag("woodcutter") then
-				inst.sg.statemem.iswoodcutter = true
-				inst.AnimState:PlayAnimation("woodie_chop_loop")
-			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
-				inst.sg.statemem.isspinchop = true
-				if inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") then
-					inst.sg.statemem.isspinfast = true
-					if not inst.AnimState:IsCurrentAnimation("wx_spin_attack_loop") or inst.AnimState:GetCurrentAnimationFrame() ~= 0 then
-						inst.AnimState:PlayAnimation("wx_spin_attack_loop", true)
-					end
-				elseif not inst.AnimState:IsCurrentAnimation("wx_spin_attack_loop_slow") or inst.AnimState:GetCurrentAnimationFrame() ~= 0 then
-					inst.AnimState:PlayAnimation("wx_spin_attack_loop_slow", true)
-				end
-				inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
-			else
-				inst.sg.statemem.isnormal = true
-				inst.AnimState:PlayAnimation("chop_loop")
-			end
+            inst.sg.statemem.iswoodcutter = inst:HasTag("woodcutter")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.iswoodcutter and "woodie_chop_loop" or "chop_loop")
 			inst:AddTag("prechop")
         end,
 
@@ -5003,20 +4994,20 @@ local states =
             --Normal chop
 
             TimeEvent(2 * FRAMES, function(inst)
-				if inst.sg.statemem.isnormal then
+                if not inst.sg.statemem.iswoodcutter then
                     inst:PerformBufferedAction()
                 end
             end),
 
             TimeEvent(9 * FRAMES, function(inst)
-				if inst.sg.statemem.isnormal then
+                if not inst.sg.statemem.iswoodcutter then
                     inst.sg:RemoveStateTag("prechop")
 					inst:RemoveTag("prechop")
                 end
             end),
 
             TimeEvent(14 * FRAMES, function(inst)
-				if inst.sg.statemem.isnormal and
+                if not inst.sg.statemem.iswoodcutter and
                     inst.components.playercontroller ~= nil and
                     inst.components.playercontroller:IsAnyOfControlsPressed(
                         CONTROL_PRIMARY,
@@ -5037,122 +5028,10 @@ local states =
             end),
 
             TimeEvent(16 * FRAMES, function(inst)
-				if inst.sg.statemem.isnormal then
+                if not inst.sg.statemem.iswoodcutter then
                     inst.sg:RemoveStateTag("chopping")
                 end
             end),
-
-			----------------------------------------------
-			--Spin chop
-
-			FrameEvent(1, function(inst)
-				if inst.sg.statemem.isspinchop then
-					if inst.components.efficientuser and
-						inst.GetModuleTypeCount and
-						inst:GetModuleTypeCount("spin") > 1 and
-						inst.sg.statemem.action
-					then
-						local action = inst.sg.statemem.action.action
-						inst.components.efficientuser:AddMultiplier(action, TUNING.WX78_SPIN_TOOL_EFFICIENCY, inst)
-						inst:PerformBufferedAction()
-						inst.components.efficientuser:RemoveMultiplier(action, inst)
-					else
-						inst:PerformBufferedAction()
-					end
-				end
-			end),
-
-			--fast
-			FrameEvent(10, function(inst)
-				if inst.sg.statemem.isspinfast then
-					inst.sg:RemoveStateTag("prechop")
-					inst:RemoveTag("prechop")
-					local target = inst.sg.statemem.action and inst.sg.statemem.action:IsValid() and inst.sg.statemem.action.target or nil
-					if inst.components.playercontroller and target and CanEntitySeeTarget(inst, target) then
-						if inst.components.playercontroller:IsAnyOfControlsPressed(
-								CONTROL_PRIMARY,
-								CONTROL_ACTION,
-								CONTROL_CONTROLLER_ACTION) and
-							target.components.workable and
-							target.components.workable:CanBeWorked() and
-							target:IsActionValid(inst.sg.statemem.action.action)
-						then
-							--No fast-forward when repeat initiated on server
-							inst.sg.statemem.action.options.no_predict_fastforward = true
-							inst:ClearBufferedAction()
-							inst:PushBufferedAction(inst.sg.statemem.action)
-							return
-						elseif inst.components.playercontroller:IsAnyOfControlsPressed(
-								CONTROL_PRIMARY,
-								CONTROL_ATTACK,
-								CONTROL_CONTROLLER_ATTACK) and
-							inst.components.combat:CanTarget(target) and
-							inst:GetDistanceSqToInst(target) <= inst.components.combat:CalcAttackRangeSq(target)
-						then
-							--No fast-forward when repeat initiated on server
-							inst.sg.statemem.action.options.no_predict_fastforward = true
-							inst:ClearBufferedAction()
-							inst:PushBufferedAction(inst.sg.statemem.action)
-							return
-						end
-					end
-					inst.AnimState:PlayAnimation("wx_spin_attack_pst")
-					inst.sg:GoToState("idle", true)
-				end
-			end),
-			FrameEvent(10.1, function(inst)
-				if inst.sg.statemem.isspinfast then
-					--might reach here if action failed?
-					inst.AnimState:PlayAnimation("wx_spin_attack_pst")
-					inst.sg:GoToState("idle", true)
-				end
-			end),
-
-			--slow
-			FrameEvent(12, function(inst)
-				if inst.sg.statemem.isspinchop and not inst.sg.statemem.isspinfast then
-					inst.sg:RemoveStateTag("prechop")
-					inst:RemoveTag("prechop")
-					local target = inst.sg.statemem.action and inst.sg.statemem.action:IsValid() and inst.sg.statemem.action.target or nil
-					if inst.components.playercontroller and target and CanEntitySeeTarget(inst, target) then
-						if inst.components.playercontroller:IsAnyOfControlsPressed(
-								CONTROL_PRIMARY,
-								CONTROL_ACTION,
-								CONTROL_CONTROLLER_ACTION) and
-							target.components.workable and
-							target.components.workable:CanBeWorked() and
-							target:IsActionValid(inst.sg.statemem.action.action)
-						then
-							--No fast-forward when repeat initiated on server
-							inst.sg.statemem.action.options.no_predict_fastforward = true
-							inst:ClearBufferedAction()
-							inst:PushBufferedAction(inst.sg.statemem.action)
-							return
-						elseif inst.components.playercontroller:IsAnyOfControlsPressed(
-								CONTROL_PRIMARY,
-								CONTROL_ATTACK,
-								CONTROL_CONTROLLER_ATTACK) and
-							inst.components.combat:CanTarget(target) and
-							inst:GetDistanceSqToInst(target) <= inst.components.combat:CalcAttackRangeSq(target)
-						then
-							--No fast-forward when repeat initiated on server
-							inst.sg.statemem.action.options.no_predict_fastforward = true
-							inst:ClearBufferedAction()
-							inst:PushBufferedAction(inst.sg.statemem.action)
-							return
-						end
-					end
-					inst.AnimState:PlayAnimation("wx_spin_attack_pst")
-					inst.sg:GoToState("idle", true)
-				end
-			end),
-			FrameEvent(12.1, function(inst)
-				if inst.sg.statemem.isspinchop and not inst.sg.statemem.isspinfast then
-					--might reach here if action failed?
-					inst.AnimState:PlayAnimation("wx_spin_attack_pst")
-					inst.sg:GoToState("idle", true)
-				end
-			end),
         },
 
         events =
@@ -5160,10 +5039,8 @@ local states =
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					if not inst.sg.statemem.isspinchop then
-						--We don't have a chop_pst animation
-						inst.sg:GoToState("idle")
-					end
+                    --We don't have a chop_pst animation
+                    inst.sg:GoToState("idle")
                 end
             end),
         },
@@ -14938,7 +14815,7 @@ local states =
 					inst:PushEventImmediate("knockback", {
 						knocker = attacker,
 						starthigh = data and data.starthigh or nil,
-						radius = data ~= nil and data.radius or physradius + 1,
+						radius = data and data.radius or attacker:GetPhysicsRadius(0) + 1,
 						strengthmult = data ~= nil and data.strengthmult or nil,
 					})
 				else
@@ -28271,7 +28148,7 @@ local states =
 
 	State{
 		name = "wx_shield_on",
-		tags = { "busy", "wxshielding" },
+		tags = { "busy", "wxshielding", },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -28300,7 +28177,7 @@ local states =
 
     State{
         name = "wx_shield_idle",
-		tags = { "idle", "wxshielding" },
+		tags = { "idle", "wxshielding", },
 
 		onenter = function(inst, pushanim)
             inst.components.locomotor:Stop()
@@ -28337,7 +28214,7 @@ local states =
 
     State{
         name = "wx_shield_hit",
-		tags = { "busy", "pausepredict", "wxshielding", "wxshieldhit" },
+		tags = { "busy", "pausepredict", "wxshielding", "wxshieldhit", },
 
         onenter = function(inst)
             inst.sg.mem.wx78shieldhit = true
@@ -28378,6 +28255,379 @@ local states =
 			inst:PerformBufferedAction() --does nothing
 			inst.sg:GoToState("idle", true)
         end,
+	},
+
+	State{
+		name = "wx_spin_start",
+		tags = { "prespin", "working" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("chop_pre")
+
+			--V2C: HACK so the first loop doesn't skip a frame
+			inst.AnimState:PushAnimation(
+				inst.components.skilltreeupdater and
+				inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") and
+				"wx_spin_attack_loop" or
+				"wx_spin_attack_loop_slow")
+
+			inst:AddTag("prespin")
+
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+		end,
+
+		ontimeout = function(inst)
+			inst.sg.statemem.spinning = true
+			inst.sg:GoToState("wx_spin")
+		end,
+
+		events =
+		{
+			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.spinning then
+				inst:RemoveTag("prespin")
+			end
+		end,
+	},
+
+	State{
+		name = "wx_spin",
+		tags = { "busy", "prespin", "spinning", "working", "nopredict", "overridelocomote" },
+
+		onenter = function(inst, data)
+			local anim =
+				inst.components.skilltreeupdater and
+				inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") and
+				"wx_spin_attack_loop" or
+				"wx_spin_attack_loop_slow"
+
+			if not inst.AnimState:IsCurrentAnimation(anim) or inst.AnimState:GetCurrentAnimationFrame() ~= 0 then
+				inst.AnimState:PlayAnimation(anim, true)
+			end
+			inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
+			inst:AddTag("prespin")
+
+			inst.sg.statemem.recoilstate = "attack_recoil"
+
+			local buffaction = inst:GetBufferedAction()
+			inst.sg.statemem.target = buffaction and buffaction.action == ACTIONS.ATTACK and buffaction.target or nil
+			inst.sg.statemem.spinfast = inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") or nil
+
+			if data then
+				inst.sg.statemem.remotedir = data.remotedir
+				inst.sg.statemem.vx = data.vx
+				inst.sg.statemem.vz = data.vz
+				inst.sg.statemem.theta = data.theta
+				inst.sg.statemem.costheta = data.costheta
+				inst.sg.statemem.sintheta = data.sintheta
+				inst.sg.statemem.numhits = data.numhits
+				inst.sg.statemem.target = inst.sg.statemem.target or data.target
+			elseif inst.sg.statemem.target then
+				inst.sg.statemem.quickstart = true
+			end
+
+			if inst.sg:InNewState() and inst.sg.mem.wx_spin_buildup then
+				local elapsed = GetTime() - inst.sg.mem.wx_spin_last
+				inst.sg.mem.wx_spin_buildup = math.max(0, inst.sg.mem.wx_spin_buildup - elapsed * elapsed * 0.5)
+			end
+
+			inst:ClearBufferedAction()
+			inst.player_classified.busyremoteoverridelocomote:set(true)
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+		end,
+
+		timeline =
+		{
+			FrameEvent(1, function(inst)
+				local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+				if not (tool and tool.components.tool and tool.components.tool:CanDoAction(ACTIONS.CHOP)) then
+					inst.AnimState:PlayAnimation("wx_spin_attack_pst")
+					inst.sg:GoToState("idle", true)
+					return
+				end
+
+				local chop_efficiency = inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 1 and TUNING.WX78_SPIN_TOOL_EFFICIENCY or 1
+				local attack_efficiency = chop_efficiency
+				local moveangle = inst.sg.statemem.vx and math.atan2(-inst.sg.statemem.vz, inst.sg.statemem.vx)
+				local minangle = math.huge
+
+				inst.components.combat.ignorehitrange = true
+
+				local x, y, z = inst.Transform:GetWorldPosition()
+				for _, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.WX78_SPIN_RADIUS + 3, nil, WX_SPIN_CANT_TAGS, WX_SPIN_ONEOF_TAGS)) do
+					if v ~= inst and v:IsValid() and v.entity:IsVisible() then
+						local x1, y1, z1 = v.Transform:GetWorldPosition()
+						local dx = x1 - x
+						local dz = z1 - z
+						local range = TUNING.WX78_SPIN_RADIUS + v:GetPhysicsRadius(0)
+						if dx * dx + dz * dz < range * range then
+							local hit
+							if v.components.workable and
+								v.components.workable:GetWorkAction() == ACTIONS.CHOP and
+								v.components.workable:CanBeWorked()
+							then
+								if inst.components.efficientuser then
+									inst.components.efficientuser:AddMultiplier(ACTIONS.CHOP, chop_efficiency, inst)
+								end
+								if BufferedAction(inst, v, ACTIONS.CHOP, tool):Do() then
+									chop_efficiency = chop_efficiency * 0.5
+									hit = true
+								end
+							end
+
+							if not hit and
+								v.components.combat and
+								inst.components.combat:CanTarget(v) and
+								not inst.components.combat:IsAlly(v)
+							then
+								if inst.components.efficientuser then
+									inst.components.efficientuser:AddMultiplier(ACTIONS.ATTACK, attack_efficiency, inst)
+								end
+								if inst.components.aoediminishingreturns then
+									inst.components.aoediminishingreturns.mult:SetModifier(inst, attack_efficiency, "wx_spin")
+								end
+								inst.components.combat:DoAttack(v)
+								attack_efficiency = attack_efficiency * 0.5
+								hit = true
+							end
+
+							if not hit and
+								v.components.pickable and
+								v.components.pickable.caninteractwith and
+								v.components.pickable:CanBePicked() and
+								not v.components.pickable:IsStuck()
+							then
+								if v.components.pickable.picksound then
+									inst.SoundEmitter:PlaySound(v.components.pickable.picksound)
+								end
+								local success, loot = v.components.pickable:Pick(TheWorld)
+								if loot then
+									for _, v in ipairs(loot) do
+										Launch(v, inst, 1.5)
+									end
+								end
+							end
+
+							if inst.sg.currentstate.name ~= "wx_spin" then
+								break
+							elseif hit and moveangle then
+								minangle = dx == 0 and dz == 0 and 0 or math.min(minangle, DiffAngleRad(math.atan2(-dz, dx), moveangle))
+							end
+						end
+					end
+				end
+
+				inst.components.combat.ignorehitrange = false
+
+				if inst.components.efficientuser then
+					inst.components.efficientuser:RemoveMultiplier(ACTIONS.CHOP, inst)
+					inst.components.efficientuser:RemoveMultiplier(ACTIONS.ATTACK, inst)
+				end
+
+				if inst.components.aoediminishingreturns then
+					inst.components.aoediminishingreturns.mult:RemoveModifier(inst, "wx_spin")
+				end
+
+				if inst.sg.currentstate.name ~= "wx_spin" then
+					return
+				elseif minangle < math.pi and inst.sg.statemem.vx then
+					minangle = minangle / math.pi
+					minangle = minangle * minangle
+					inst.sg.statemem.vx = inst.sg.statemem.vx * minangle
+					inst.sg.statemem.vz = inst.sg.statemem.vz * minangle
+				end
+			end),
+		},
+
+		onupdate = function(inst, dt)
+			if not inst.components.playercontroller:IsAnyOfControlsPressed(
+					CONTROL_ACTION,
+					CONTROL_CONTROLLER_ACTION,
+					CONTROL_ATTACK,
+					CONTROL_CONTROLLER_ATTACK,
+					CONTROL_PRIMARY
+				)
+			then
+				inst.AnimState:PlayAnimation("wx_spin_attack_pst")
+				inst.sg:GoToState("idle", true)
+				return
+			end
+
+			inst.sg.mem.wx_spin_buildup = (inst.sg.mem.wx_spin_buildup or 0) + dt
+
+			if inst.sg.mem.wx_spin_buildup > TUNING.WX78_SPIN_TIME_TO_DIZZY then
+				inst.sg:GoToState("wx_spin_dizzy")
+				return
+			end
+
+			inst.sg.mem.wx_spin_last = GetTime()
+
+			local maxspeed = inst.components.locomotor:GetRunSpeed() * TUNING.WX78_SPIN_RUNSPEED_MULT
+			local accel = maxspeed / 15
+
+			local dir = GetLocalAnalogDir(inst)
+			local theta = inst.sg.statemem.remotedir and inst.sg.statemem.remotedir * DEGREES
+			if dir or theta then
+				inst.sg.statemem.target = nil
+				inst.sg.statemem.quickstart = nil
+			else
+				local target = inst.sg.statemem.target
+				if target then
+					if target:IsValid() then
+						local x, y, z = inst.Transform:GetWorldPosition()
+						local x1, y1, z1 = target.Transform:GetWorldPosition()
+						local dx = x1 - x
+						local dz = z1 - z
+						local dsq = dx * dx + dz * dz
+						if dsq >= 64 then --stop tracking target further than 8 dist
+							inst.sg.statemem.target = nil
+							inst.sg.statemem.quickstart = nil
+						elseif dsq >= 4 then --stop moving closer than 2 dist
+							theta = math.atan2(-dz, dx)
+						end
+					else
+						inst.sg.statemem.target = nil
+						inst.sg.statemem.quickstart = nil
+					end
+				end
+			end
+
+			if dir or theta then
+				local vx = inst.sg.statemem.vx
+				local vz = inst.sg.statemem.vz
+				if vx then
+					--decay perpendicular velocity fastest
+					--decay reverse velocity medium
+					--decay same direction velocity the least
+					theta = theta or math.atan2(-dir.z, dir.x)
+					local diff = DiffAngleRad(theta, math.atan2(-vz, vx))
+					local k = Remap(math.sin(diff) + diff / TWOPI, 0, 1.5, 1, 0.9)
+					vx = vx * k
+					vz = vz * k
+				else
+					vx, vz = 0, 0
+				end
+				if inst.sg.statemem.quickstart then
+					accel = maxspeed / 2
+				end
+				if dir then
+					vx = vx + dir.x * accel
+					vz = vz + dir.z * accel
+				else
+					vx = vx + math.cos(theta) * accel
+					vz = vz - math.sin(theta) * accel
+				end
+				local speed = math.sqrt(vx * vx + vz * vz)
+				if speed > maxspeed then
+					speed = maxspeed / speed
+					inst.sg.statemem.vx = vx * speed
+					inst.sg.statemem.vz = vz * speed
+				else
+					inst.sg.statemem.vx = vx
+					inst.sg.statemem.vz = vz
+				end
+			elseif inst.sg.statemem.vx then
+				local speed = math.sqrt(inst.sg.statemem.vx * inst.sg.statemem.vx + inst.sg.statemem.vz * inst.sg.statemem.vz)
+				if speed > accel then
+					speed = 1 - accel / speed
+					inst.sg.statemem.vx = inst.sg.statemem.vx * speed
+					inst.sg.statemem.vz = inst.sg.statemem.vz * speed
+				else
+					inst.sg.statemem.vx = nil
+					inst.sg.statemem.vz = nil
+					inst.Physics:Stop()
+					inst.Physics:SetMotorVel(0, 0, 0)
+				end
+			end
+
+			inst.sg.statemem.quickstart = nil
+
+			if inst.sg.statemem.vx then
+				--convert to local space
+				theta = inst.Transform:GetRotation() * DEGREES
+				if inst.sg.statemem.theta ~= theta then
+					inst.sg.statemem.theta = theta
+					inst.sg.statemem.costheta = math.cos(theta)
+					inst.sg.statemem.sintheta = math.sin(theta)
+				end
+				local vx = inst.sg.statemem.costheta * inst.sg.statemem.vx - inst.sg.statemem.sintheta * inst.sg.statemem.vz
+				local vz = inst.sg.statemem.sintheta * inst.sg.statemem.vx + inst.sg.statemem.costheta * inst.sg.statemem.vz
+				local speedmult = inst.components.locomotor:GetSpeedMultiplier()
+				inst.Physics:SetMotorVel(vx * speedmult, 0, vz * speedmult)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst.sg.statemem.spinning = true
+			inst.sg:GoToState("wx_spin", {
+				remotedir = inst.sg.statemem.remotedir,
+				vx = inst.sg.statemem.vx,
+				vz = inst.sg.statemem.vz,
+				theta = inst.sg.statemem.theta,
+				costheta = inst.sg.statemem.costheta,
+				sintheta = inst.sg.statemem.sintheta,
+				numhits = inst.sg.statemem.numhits,
+				target = inst.sg.statemem.target,
+			})
+		end,
+
+		events =
+		{
+			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+			EventHandler("locomote", function(inst, data)
+				if data and data.remoteoverridelocomote then
+					inst.sg.statemem.remotedir = data.dir
+				end
+				return true
+			end),
+			EventHandler("attacked", function(inst, data)
+				local t = GetTime()
+				local elapsed = t - (inst.sg.statemem.lasthit or 0)
+				if elapsed > 0 then
+					inst.sg.statemem.lasthit = t
+					inst.sg.statemem.numhits = math.max(0, (inst.sg.statemem.numhits or 0) - math.floor(elapsed / 2)) + 1
+				end
+				if inst.sg.statemem.numhits < 3 then
+					inst.sg:AddStateTag("nostunlock")
+				else
+					inst.sg:RemoveStateTag("nostunlock")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.spinning then
+				inst:RemoveTag("prespin")
+				if inst.sg.statemem.vx then
+					inst.Physics:Stop()
+					inst.Physics:SetMotorVel(0, 0, 0)
+				end
+				inst.player_classified.busyremoteoverridelocomote:set(false)
+			end
+		end,
+	},
+
+	State{
+		name = "wx_spin_dizzy",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("wx_dizzy_loop")
+			inst.AnimState:PushAnimation("wx_dizzy_loop", false)
+			inst.AnimState:PushAnimation("wx_dizzy_pst", false)
+
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() * 2)
+		end,
+
+		ontimeout = function(inst)
+			inst.sg:GoToState("idle", true)
+		end,
 	},
 }
 

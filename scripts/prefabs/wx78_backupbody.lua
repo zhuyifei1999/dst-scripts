@@ -161,14 +161,13 @@ local function OnActivateFn(inst, doer)
     local x, y, z = inst.Transform:GetWorldPosition()
     local x2, y2, z2 = doer.Transform:GetWorldPosition()
 
-    inst.wx78_backupbody_inventory.components.inventory:SwapEquipment(doer, nil, true)
-
 	local stacksize_circuit_containers = {}
-
     if doer.components.inventory then
         doer.components.inventory.ignoresound = true
         doer.components.inventory.silentfull = true
         doer.components.inventory:ReturnActiveItem()
+        doer.components.inventory:DropEverythingWithTag("irreplaceable") -- Drop irreplaceables before moving them into the backup.
+        inst.wx78_backupbody_inventory.components.inventory:SwapEquipment(doer, nil, true)
         local maxslotstouse = math.min(inst.components.container.numslots, doer.components.inventory.maxslots)
         local itemsfromcontainer = {}
         for slot = 1, inst.components.container.numslots do

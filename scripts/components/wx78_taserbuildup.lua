@@ -146,7 +146,9 @@ function Wx78_TaserBuildup:DoShockExplosion()
     self.fx:Explode(self:GetBlastDamage() * perc, self:GetBlastRadius() * perc)
 
     -- Small workaround, we should bypass insulated stuff because we're just that overloaded.
-    self.inst.components.inventory:ForceNoInsulated(true)
+    if self.inst.sg and not self.inst.sg:HasAnyStateTag("wxshielding", "spinning") then
+        self.inst.components.inventory:ForceNoInsulated(true)
+    end
     self.inst:PushEventImmediate("electrocute")
     self.inst.components.inventory:ForceNoInsulated(nil)
 

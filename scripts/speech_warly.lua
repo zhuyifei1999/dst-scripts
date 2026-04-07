@@ -2841,7 +2841,11 @@ return{
         ROCKS = "Bite-sized boulders.",
         ROOK = "What a rude contraption.",
         ROPE = "A bit too thick to tie up a roast.",
-        ROTTENEGG = "Pee-eew!",
+        ROTTENEGG =
+        {
+            GENERIC = "Pee-eew!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "I feel inspired to try my hand at confections!",
         JELLYBEAN = "A little something sweet to brighten the day.",
         SADDLE_BASIC = "Let's see if I can ride on this.",
@@ -2943,7 +2947,11 @@ return{
 			GENERIC = "Does this mean you are even more warlike than the others?",
 			SLEEPING = "It is having a flashback to the spider war...",
 		},
-		SPOILED_FOOD = "It is a sin to waste food...",
+        SPOILED_FOOD =
+        {
+            GENERIC = "It is a sin to waste food...",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "I've got to hand it to you, I was startled!",
@@ -4105,7 +4113,11 @@ return{
         FISHMEAT_COOKED = "Could use a squeeze of lemon...",
         FISHMEAT_SMALL = "I will honor this ingredient.",
         FISHMEAT_SMALL_COOKED = "Could use fresh herbs and butter...",
-		SPOILED_FISH = "Such a shame...",
+		SPOILED_FISH =
+        {
+            GENERIC = "Such a shame...",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Is the fish fresh or canned? I feel rather conflicted.",
         POCKET_SCALE = "A simple way to weigh!",

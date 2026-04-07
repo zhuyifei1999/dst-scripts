@@ -2845,7 +2845,11 @@ return{
         ROCKS = "Rocks",
         ROOK = "Rock machine",
         ROPE = "Friends made string!",
-        ROTTENEGG = "Smells good!",
+        ROTTENEGG =
+        {
+            GENERIC = "Smells good!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Bloopy belly stuff",
         JELLYBEAN = "Mmmmm!",
         SADDLE_BASIC = "Shaggy Buddy Sitting Thing",
@@ -2947,7 +2951,11 @@ return{
 			GENERIC = "Angry Leggy Bug",
 			SLEEPING = "Sleepytime",
 		},
-		SPOILED_FOOD = "Not good for belly",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Not good for belly",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Ohh! Table friend!",
@@ -4109,7 +4117,11 @@ return{
         FISHMEAT_COOKED = "Watch for bones",
         FISHMEAT_SMALL = "Wee Glub Glub",
         FISHMEAT_SMALL_COOKED = "Cute little belly stuff",
-		SPOILED_FISH = "Smells good. Mmmmm...",
+		SPOILED_FISH =
+        {
+            GENERIC = "Smells good. Mmmmm...",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Glub Glubs go in there",
         POCKET_SCALE = "Weigh thing",

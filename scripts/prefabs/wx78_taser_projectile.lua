@@ -89,6 +89,10 @@ local function OnUpdate(inst, dt)
                     inst.owner = nil
                 end
 
+				local damage_mult = IsEntityElectricImmune(v) and 1
+                    or TUNING.ELECTRIC_DAMAGE_MULT + TUNING.ELECTRIC_WET_DAMAGE_MULT * v:GetWetMultiplier()
+				local damage = inst.damage * damage_mult
+
 				if inst.owner ~= nil then
 					if inst.owner.components.combat ~= nil and
 						inst.owner.components.combat:CanTarget(v) and
@@ -97,7 +101,7 @@ local function OnUpdate(inst, dt)
                         inst.targets[v] = true
 						local attacker = v.components.follower and v.components.follower:GetLeader() == nil and inst
 							or inst.owner
-						v.components.combat:GetAttacked(attacker, inst.damage, nil, "electric", inst.spdmg)
+						v.components.combat:GetAttacked(attacker, damage, nil, "electric", inst.spdmg)
 						v:PushEventImmediate("electrocute", { attacker = attacker, stimuli = "electric", noresist = true })
                     end
 				elseif v.components.combat:CanBeAttacked() then
@@ -113,7 +117,7 @@ local function OnUpdate(inst, dt)
 					end
 					if not isally then
 						inst.targets[v] = true
-						v.components.combat:GetAttacked(inst, inst.damage, nil, "electric", inst.spdmg)
+						v.components.combat:GetAttacked(inst, damage, nil, "electric", inst.spdmg)
 						v:PushEventImmediate("electrocute", { stimuli = "electric", noresist = true })
 					end
 				end

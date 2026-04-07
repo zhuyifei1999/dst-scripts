@@ -536,10 +536,12 @@ function UpgradeModulesDisplay_Inspecting:OnModuleAdded(bartype, moduledefinitio
         self:PushChipAnimation(new_chip, "chip_idle")
     end
 
-    new_chip:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx_chest", modname.."_chip")
-    new_chip.glow:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx_chest", modname.."_chip")
-    new_chip.symbol:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx_chest", modname.."_chip")
+    local overridebuild = module_def.overrideuibuild or "status_wx_chest"
+    new_chip:GetAnimState():OverrideSymbol("movespeed2_chip", overridebuild, modname.."_chip")
+    new_chip.glow:GetAnimState():OverrideSymbol("movespeed2_chip", overridebuild, modname.."_chip")
+    new_chip.symbol:GetAnimState():OverrideSymbol("movespeed2_chip", overridebuild, modname.."_chip")
     new_chip.modulename = modname
+    new_chip.overridebuild = overridebuild
 
     new_chip.chip_index = chip_index
     new_chip._used_modslots = modslots
@@ -606,12 +608,13 @@ function UpgradeModulesDisplay_Inspecting:PopModuleAtIndex(bartype, startindex)
                     chip._used_modslots = nextchip._used_modslots
                     chip._net_id = nextchip._net_id
                     chip.modulename = nextchip.modulename
+                    chip.overridebuild = nextchip.overridebuild
                     chip.chip_index = chip.old_chip_index or chip.chip_index
                     chip._power_hidden = true
 
-                    chip:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx_chest", chip.modulename.."_chip")
-                    chip.glow:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx_chest", chip.modulename.."_chip")
-                    chip.symbol:GetAnimState():OverrideSymbol("movespeed2_chip", "status_wx_chest", chip.modulename.."_chip")
+                    chip:GetAnimState():OverrideSymbol("movespeed2_chip", chip.overridebuild, chip.modulename.."_chip")
+                    chip.glow:GetAnimState():OverrideSymbol("movespeed2_chip", chip.overridebuild, chip.modulename.."_chip")
+                    chip.symbol:GetAnimState():OverrideSymbol("movespeed2_chip", chip.overridebuild, chip.modulename.."_chip")
 
                     local pos = nextchip:GetPosition()
                     self:SetChipPosition(chip, pos.x, pos.y)
