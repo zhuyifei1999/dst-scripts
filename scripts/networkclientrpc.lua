@@ -59,23 +59,45 @@ end
 local RPC_HANDLERS =
 {
     LeftClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name, platform, platform_relative, spellbook, spell_id)
-        if not (checknumber(action) and
-                checknumber(x) and
-                checknumber(z) and
-                optentity(target) and
-                optbool(isreleased) and
-                optnumber(controlmods) and
-                optbool(noforce) and
-                optstring(mod_name) and
-				optentity(platform) and
-				checkbool(platform_relative) and
-				optentity(spellbook) and
-				optuint(spell_id)) then
+		if not (	(	--these are either all nil
+						action == nil and
+						x == nil and
+						z == nil and
+						target == nil and
+						isreleased == nil and
+						controlmods == nil and
+						noforce == nil and
+						mod_name == nil and
+						platform == nil and
+						platform_relative == nil and
+						spellbook == nil and
+						spell_id == nil
+					) or
+					(	--or all validated
+						checknumber(action) and
+						checknumber(x) and
+						checknumber(z) and
+						optentity(target) and
+						optbool(isreleased) and
+						optnumber(controlmods) and
+						optbool(noforce) and
+						optstring(mod_name) and
+						optentity(platform) and
+						checkbool(platform_relative) and
+						optentity(spellbook) and
+						optuint(spell_id)
+					)
+				)
+		then
             printinvalid("LeftClick", player)
             return
         end
 		local playercontroller = player.components.playercontroller
 		if playercontroller ~= nil then
+			if action == nil then
+				playercontroller:OnRemoteLeftClick()
+				return
+			end
 			printinvalidplatform("LeftClick", player, action, x, z, platform, platform_relative)
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
@@ -89,22 +111,43 @@ local RPC_HANDLERS =
     end,
 
     RightClick = function(player, action, x, z, target, rotation, isreleased, controlmods, noforce, mod_name, platform, platform_relative)
-        if not (checknumber(action) and
-                checknumber(x) and
-                checknumber(z) and
-                optentity(target) and
-                optnumber(rotation) and
-                optbool(isreleased) and
-                optnumber(controlmods) and
-                optbool(noforce) and
-                optstring(mod_name) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+		if not (	(	--these are either all nil
+						action == nil and
+						x == nil and
+						z == nil and
+						target == nil and
+						rotation == nil and
+						isreleased == nil and
+						controlmods == nil and
+						noforce == nil and
+						mod_name == nil and
+						platform == nil and
+						platform_relative == nil
+					) or
+					(	--or all validated
+						checknumber(action) and
+						checknumber(x) and
+						checknumber(z) and
+						optentity(target) and
+						optnumber(rotation) and
+						optbool(isreleased) and
+						optnumber(controlmods) and
+						optbool(noforce) and
+						optstring(mod_name) and
+						optentity(platform) and
+						checkbool(platform_relative)
+					)
+				)
+		then
             printinvalid("RightClick", player)
             return
         end
 		local playercontroller = player.components.playercontroller
 		if playercontroller ~= nil then
+			if action == nil then
+				playercontroller:OnRemoteRightClick()
+				return
+			end
 			printinvalidplatform("RightClick", player, action, x, z, platform, platform_relative)
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
@@ -178,11 +221,22 @@ local RPC_HANDLERS =
 	end,
 
     ControllerActionButton = function(player, action, target, isreleased, noforce, mod_name)
-        if not (checknumber(action) and
-                checkentity(target) and
-                optbool(isreleased) and
-                optbool(noforce) and
-                optstring(mod_name)) then
+		if not (	(	--these are either all nil
+						action == nil and
+						target == nil and
+						isreleased == nil and
+						noforce == nil and
+						mod_name == nil
+					) or
+					(	--or all validated
+						checknumber(action) and
+						checkentity(target) and
+						optbool(isreleased) and
+						optbool(noforce) and
+						optstring(mod_name)
+					)
+				)
+		then
             printinvalid("ControllerActionButton", player)
             return
         end
@@ -247,11 +301,22 @@ local RPC_HANDLERS =
     end,
 
     ControllerAltActionButton = function(player, action, target, isreleased, noforce, mod_name)
-        if not (checknumber(action) and
-                checkentity(target) and
-                optbool(isreleased) and
-                optbool(noforce) and
-                optstring(mod_name)) then
+		if not (	(	--these are either all nil
+						action == nil and
+						target == nil and
+						isreleased == nil and
+						noforce == nil and
+						mod_name == nil
+					) or
+					(	--or all validated
+						checknumber(action) and
+						checkentity(target) and
+						optbool(isreleased) and
+						optbool(noforce) and
+						optstring(mod_name)
+					)
+				)
+		then
             printinvalid("ControllerAltActionButton", player)
             return
         end
@@ -1242,29 +1307,48 @@ local RPC_HANDLERS =
 		end
 	end,
 
-    UnplugModule = function(player, modulebartype, moduleindex)
-        if not (checknumber(modulebartype) and
-				checknumber(moduleindex))
+	UnplugModule = function(player, modulebartype_or_socketposition, moduleindex)
+		if not (checknumber(modulebartype_or_socketposition) and
+				optnumber(moduleindex))
 		then
 			printinvalid("UnplugModule", player)
 			return
 		end
 
-        local upgrademoduleowner = player.components.upgrademoduleowner
         local skilltreeupdater = player.components.skilltreeupdater
-        if upgrademoduleowner then
-            -- Insure we have the skill.
-            if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")) then
-                moduleindex = upgrademoduleowner:GetNumModules(modulebartype)
-            end
-
-            local module = upgrademoduleowner:GetModule(modulebartype, moduleindex)
-            if module ~= nil then
-                player:PushEventImmediate("unplugmodule", module)
-            else
-                print("No upgrade module found")
-            end
-        end
+		if moduleindex then
+			local upgrademoduleowner = player.components.upgrademoduleowner
+			if upgrademoduleowner then
+				-- Ensure we have the skill.
+				if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")) then
+					local nummodules = upgrademoduleowner:GetNumModules(modulebartype_or_socketposition)
+					if moduleindex ~= nummodules then
+						print(string.format("Cannot unplug module %i of %i", moduleindex, nummodules))
+						return
+					end
+				end
+				local _module = upgrademoduleowner:GetModule(modulebartype_or_socketposition, moduleindex)
+				if _module then
+					player:PushEventImmediate("unplugmodule", _module)
+				else
+					print(string.format("Module %i not found", moduleindex))
+				end
+			end
+		else
+			local socketholder = player.components.socketholder
+			if socketholder then
+				--Ensure we have the skill.
+				if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_allegiance_shadow")) then
+					print("Shadow socket inaccessible")
+					return
+				end
+				if socketholder:IsSocketNameForPosition("socket_shadow", modulebartype_or_socketposition) then
+					socketholder:TryToUnsocket(modulebartype_or_socketposition)
+				else
+					print("Shadow socket [%i] not found", modulebartype_or_socketposition)
+				end
+			end
+		end
     end,
 
 	StopUsingDrone = function(player)

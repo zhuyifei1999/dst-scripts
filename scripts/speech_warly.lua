@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "That is not mine.",
 
 			CANNOT_FIX_DRONE = "It is not salvageable.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "It is most appalling.",
             GENERIC = "Adding water will not make it less horrible.",
         },
+
+        WX78_POSSESSEDBODY = "Oh non, this is too much!",
+
+        WX78_GESTALTTRAPPER = "I don't even want to know.",
+
+        SHADOW_HEART_VEIN = "Not even suitable for a pasta dish.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

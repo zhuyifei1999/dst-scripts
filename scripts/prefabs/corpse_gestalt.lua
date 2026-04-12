@@ -81,6 +81,8 @@ local function fn()
     inst:AddTag("NOBLOCK")
     inst:AddTag("soulless") -- no wortox souls
     inst:AddTag("lunar_aligned")
+	--gestaltcapturable (from gestaltcapturable component) added to pristine state for optimization
+	inst:AddTag("gestaltcapturable")
 
     inst.Transform:SetFourFaced()
 
@@ -90,6 +92,7 @@ local function fn()
     inst.AnimState:SetMultColour(1,1,1,0.6)
 	inst.AnimState:SetLightOverride(0.1)
     inst.AnimState:UsePointFiltering(true)
+    inst.AnimState:SetRayTestOnBB(true)
 
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
@@ -110,6 +113,11 @@ local function fn()
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = true, allowocean = true }
+
+	inst:AddComponent("gestaltcapturable")
+	inst.components.gestaltcapturable:SetLevel(2)
+    inst.components.gestaltcapturable:SetIsPlanar(true)
+	inst.components.gestaltcapturable:SetOnCapturedFn(inst.Remove)
 
     inst.Spawn = Spawn
     inst.SetTarget = SetTarget

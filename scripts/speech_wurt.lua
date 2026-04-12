@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "Florp! Why can't I has?",
 
 			CANNOT_FIX_DRONE = "Can't fix? Fine, florpt.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "Made inside Ironfolk? Florp!",
             GENERIC = "So hard!",
         },
+
+        WX78_POSSESSEDBODY = "Florp! Who inside Ironfolk?!",
+
+        WX78_GESTALTTRAPPER = "Weird Ironfolk stuff.",
+
+        SHADOW_HEART_VEIN = "Want what sad string holds.",
     },
 
     DESCRIBE_GENERIC = "What that?",

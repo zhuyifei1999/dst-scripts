@@ -757,7 +757,7 @@ Recipe2("wx78module_heat",					{Ingredient("scandata", 4), Ingredient("redgem", 
 Recipe2("wx78module_cold",					{Ingredient("scandata", 4), Ingredient("bluegem", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_taser",					{Ingredient("scandata", 5), Ingredient("goatmilk", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_nightvision",			{Ingredient("scandata", 4), Ingredient("mole", 1), Ingredient("wx78module_light", 1)},						TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78module_light",					{Ingredient("scandata", 3), Ingredient("lightbulb", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_light",					{Ingredient("scandata", 2), Ingredient("lightbulb", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_radar",					{Ingredient("scandata", 2), Ingredient("compass", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_light2",				{Ingredient("scandata", 6), Ingredient("fireflies", 1), Ingredient("wx78module_light", 1)},					TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_stacksize",				{Ingredient("scandata", 8), Ingredient("moonglass_charged", 1)},											TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
@@ -775,6 +775,7 @@ Recipe2("wx78_drone_scout",					{Ingredient("transistor", 1), Ingredient("compas
 Recipe2("wx78_drone_delivery_item",			{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", builder_skill="wx78_deliverydrone_2"})
 Recipe2("wx78_drone_delivery_small_item",	{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", description="wx78_drone_delivery_item", builder_skill="wx78_deliverydrone_1", no_builder_skill="wx78_deliverydrone_2"})
 Recipe2("wx78_drone_zap_remote",			{Ingredient("scandata", 10), Ingredient("transistor", 1), Ingredient("wagpunk_bits", 8)},					TECH.NONE,	{nameoverride="wx78_drone_zap", builder_skill="wx78_zapdrone_1"})
+Recipe2("wx78_gestalttrapper",				{Ingredient("scandata", 12), Ingredient("wagpunk_bits", 2)},												TECH.NONE,	{builder_skill="wx78_allegiance_lunar"})
 
 ------------------------------- CRAFTING STATIONS -------------------------------
 

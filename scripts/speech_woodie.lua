@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "She's not mine.",
 
 			CANNOT_FIX_DRONE = "It's beyond repair.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6098,6 +6100,12 @@ return{
             WET = "Looks good?",
             GENERIC = "I'd break my teeth on that!",
         },
+
+        WX78_POSSESSEDBODY = "Who are you?!",
+
+        WX78_GESTALTTRAPPER = "What is that robot up to now?",
+
+        SHADOW_HEART_VEIN = "I don't trust that it won't grab anything nearby.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

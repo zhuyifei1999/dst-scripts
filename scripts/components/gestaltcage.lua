@@ -17,6 +17,7 @@ function GestaltCage:Capture(target, doer)
 	end
 
 	local level = target.components.gestaltcapturable:GetLevel()
+	local isplanar = target.components.gestaltcapturable:GetIsPlanar()
 	target.components.gestaltcapturable:OnCaptured(self.inst, doer)
 
 	local root = self.inst.components.inventoryitem and self.inst.components.inventoryitem:GetGrandOwner() or self.inst
@@ -28,6 +29,9 @@ function GestaltCage:Capture(target, doer)
 	local cage = SpawnPrefab("gestalt_cage_filled" .. level)
 	cage.Transform:SetPosition(x, 0, z)
 	cage.Transform:SetRotation(rot)
+	if cage.SetIsPlanar then
+		cage:SetIsPlanar(isplanar)
+	end
 	cage:StartCapture()
 
 	return true

@@ -1,6 +1,8 @@
 require("stategraphs/commonstates")
 local easing = require("easing")
 local PlayerCommonExtensions = require("prefabs/player_common_extensions")
+local SGWX78Common = require("stategraphs/SGwx78_common")
+local WX78Common = require("prefabs/wx78_common")
 
 local ATTACK_PROP_MUST_TAGS = { "_combat" }
 local ATTACK_PROP_CANT_TAGS = { "flying", "shadow", "ghost", "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" }
@@ -12,10 +14,6 @@ local FLOWERS_MUST_TAGS = {"flower"}
 local FLOWERS_CANT_TAGS = {"INLIMBO"}
 
 local GALLOP_HIT_CANT_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-
-local WX_SPIN_PICKABLE_TAGS = { "plant", "lichen", "oceanvine", "kelp" }
-local WX_SPIN_CANT_TAGS = { "INLIMBO", "NOCLICK", "FX", "decor", "intense", "wall", "companion", "flight", "invisible", "notarget", "noattack" }
-local WX_SPIN_ONEOF_TAGS = ConcatArrays({ "CHOP_workable", "_combat", --[["pickable",]] }, WX_SPIN_PICKABLE_TAGS)
 
 local WORTOX_SHADOW_MULT = 0.6
 local WORTOX_LUNAR_OFFSET = 0.1
@@ -221,6 +219,16 @@ end
 local function DoEatSound(inst, overrideexisting)
     if inst.sg.statemem.doeatingsfx and (overrideexisting or not inst.SoundEmitter:PlayingSound("eating")) then
         inst.SoundEmitter:PlaySound(inst.sg.statemem.isdrink and "dontstarve/wilson/sip" or "dontstarve/wilson/eat", "eating")
+    end
+end
+
+local function DropAllItemsForDeath(inst)
+    inst.components.inventory:DropEverything(true)
+    if inst.components.socketholder then
+        local items = inst.components.socketholder:UnsocketEverything()
+        for _, item in ipairs(items) do
+            Launch2(item, inst, 1, 1, 0.2, 0, 4)
+        end
     end
 end
 
@@ -837,90 +845,6 @@ local function HandleModuleRemoverAssets(inst, moduleremover)
     end
 end
 
-local function GetWX78ScreechRange(inst)
-    local num_modules = inst._screech_modules or 1
-    return num_modules * TUNING.WX78_SCREECH_RANGE -- + (num_rangeboosters * TUNING.WX78_SCREECH_RANGEBOOSTER_RANGE)
-end
-local WX_SCARE_MUST_TAGS = { "_combat", "_health" }
-local WX_SCARE_CANT_TAGS = { "INLIMBO", "epic" }
-local function DelayedWX78ScreechWake(v)
-    if v.components.sleeper then
-        v.components.sleeper:WakeUp()
-    end
-end
-local function DoWX78Screech(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local range = GetWX78ScreechRange(inst)
-    local ents = TheSim:FindEntities(x, y, z, range, WX_SCARE_MUST_TAGS, WX_SCARE_CANT_TAGS)
-    for i, v in ipairs(ents) do
-        if v ~= inst and
-            v.components.hauntable and
-            v.components.hauntable.panicable and
-            inst.components.combat:CanTarget(v) and
-            not inst.components.combat:IsAlly(v)
-        then
-            if v.components.sleeper then
-                v:DoTaskInTime(math.random(), DelayedWX78ScreechWake)
-            end
-            v.components.hauntable:Panic(TUNING.WX78_SCREECH_PANIC_TIME)
-        end
-    end
-end
-
-local WX_SHIELDING_KEY = "wx_shielding"
-local function UpdateWX78ShieldingDefense(inst)
-    inst.components.combat.externaldamagetakenmultipliers:SetModifier(inst, TUNING.WX78_SHIELDING_ARMOR, WX_SHIELDING_KEY)
-end
-
-local function WX78ShieldOnAttacked(inst, data)
-	local damage = data and data.damage or TUNING.WX78_SHIELDING_TOTAL_DAMAGE * 0.5 -- Fallback in case of mods.
-
-	inst.sg.mem.wx78shieldingdamage = inst.sg.mem.wx78shieldingdamage + damage
-	if inst.sg.mem.wx78shieldingdamage >= TUNING.WX78_SHIELDING_TOTAL_DAMAGE then
-		inst.sg.mem.wx78shieldingdamage = 0
-        inst.sg:GoToState("wx_shield_pst")
-	end
-end
-
-local function ApplyWX78ShieldingDefense(inst)
-	if not inst.sg.mem.wx78shieldingtime then
-		inst.sg.mem.wx78shieldingtime = GetTime()
-        local mass = inst.Physics:GetMass()
-        if mass > 0 then
-            inst.sg.mem.wxshieldingrestoremass = mass
-            inst.Physics:SetMass(99999)
-        end
-
-        -- This event listener isn't really necessacary anymore. But left just in case.
-		inst:ListenForEvent("refreshwxshielddefense", UpdateWX78ShieldingDefense)
-		UpdateWX78ShieldingDefense(inst)
-
-        inst.sg.mem.wx78shieldingdamage = 0
-        inst:ListenForEvent("attacked", WX78ShieldOnAttacked)
-	end
-end
-
-local function ClearWX78ShieldingDefense(inst)
-	if inst.sg.mem.wx78shieldingtime then
-        local dt = GetTime() - inst.sg.mem.wx78shieldingtime
-		inst:RemoveEventCallback("refreshwxshielddefense", UpdateWX78ShieldingDefense)
-		inst.components.combat.externaldamagetakenmultipliers:RemoveModifier(inst, WX_SHIELDING_KEY)
-        inst:RemoveEventCallback("attacked", WX78ShieldOnAttacked)
-
-        if inst.components.wx78_abilitycooldowns
-            and (dt >= TUNING.WX78_SHIELDING_MIN_TIME_COOLDOWN or inst.sg.mem.wx78shieldhit) then
-            inst.components.wx78_abilitycooldowns:RestartAbilityCooldown("wxshielding", TUNING.WX78_SHIELDING_COOLDOWN)
-        end
-
-        if inst.sg.statemem.wxshieldingrestoremass ~= nil then
-            inst.Physics:SetMass(inst.sg.statemem.wxshieldingrestoremass)
-		end
-        inst.sg.mem.wx78shieldingdamage = nil
-        inst.sg.mem.wx78shieldingtime = nil
-        inst.sg.mem.wx78shieldhit = nil
-	end
-end
-
 --------------------------------------------------------------------------
 
 local actionhandlers =
@@ -946,6 +870,12 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
                 return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				return not inst.sg:HasStateTag("prespin")
+					and (inst.sg:HasStateTag("spinning") and
+						"wx_spin" or
+						"wx_spin_start")
+					or nil
             end
             return not inst.sg:HasStateTag("premine")
                 and (inst.sg:HasStateTag("mining") and
@@ -957,6 +887,12 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
                 return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				return not inst.sg:HasStateTag("prespin")
+					and (inst.sg:HasStateTag("spinning") and
+						"wx_spin" or
+						"wx_spin_start")
+					or nil
             end
             return not inst.sg:HasStateTag("premine")
                 and (inst.sg:HasStateTag("mining") and
@@ -968,6 +904,12 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
                 return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
+				return not inst.sg:HasStateTag("prespin")
+					and (inst.sg:HasStateTag("spinning") and
+						"wx_spin" or
+						"wx_spin_start")
+					or nil
             end
             return not inst.sg:HasStateTag("prehammer")
                 and (inst.sg:HasStateTag("hammering") and
@@ -1113,11 +1055,11 @@ local actionhandlers =
 				if inst.GetModuleTypeCount and
 					inst:GetModuleTypeCount("spin") > 0 and
 					not action.target.components.pickable.quickpick and
-					action.target:HasAnyTag(WX_SPIN_PICKABLE_TAGS)
+					action.target:HasAnyTag(SGWX78Common.WX_SPIN_PICKABLE_TAGS)
 				then
 					--wx skill
-					local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-					if tool and tool.components.tool and tool.components.tool:CanDoAction(ACTIONS.CHOP) then
+					local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+					if WX78Common.CanSpinUsingItem(item) then
 						return not inst.sg:HasStateTag("prespin")
 							and (inst.sg:HasStateTag("spinning") and
 								"wx_spin" or
@@ -1392,9 +1334,8 @@ local actionhandlers =
 					inst.sg.mem.localchainattack = true
 					return "slingshot_shoot"
 				elseif inst.GetModuleTypeCount and
-					weapon.components.tool and
-					weapon.components.tool:CanDoAction(ACTIONS.CHOP) and
 					inst:GetModuleTypeCount("spin") > 0 and
+					WX78Common.CanSpinUsingItem(weapon) and
 					action.target --air chop on controllers should not start spin
 				then
 					return not inst.sg:HasStateTag("prespin")
@@ -1613,8 +1554,20 @@ local actionhandlers =
 		end),
 
     ActionHandler(ACTIONS.USEITEMON, function(inst, action)
-		return (action.invobject == nil and "dolongaction")
-			or (action.invobject:HasTag("bell") and "use_beef_bell")
+		if action.invobject == nil then
+			return "dolongaction"
+		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == "socket_shadow" then
+			local target = action.target or (action.invobject:HasTag("useabletargateditem_canselftarget") and action.doer or nil)
+			if target == action.doer and target.components.socketholder then
+				if inst:HasTag("inspectingupgrademodules") then
+					inst.sg.statemem.stopremovingmodule = true
+					inst.sg.statemem.stoppluggingmodule = true
+					return "plug_module"
+				end
+				return "start_plugging_module"
+			end
+		end
+		return (action.invobject:HasTag("bell") and "use_beef_bell")
 			or (action.invobject:HasTag("slingshotmodkit") and "openslingshotmods")
 			or (action.invobject.prefab == "gears" and "give") --befriend chess
 			or "dolongaction"
@@ -3660,7 +3613,7 @@ local states =
                         if HUMAN_MEAT_ENABLED then
                             inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
                         end
-                        inst.components.inventory:DropEverything(true)
+                        DropAllItemsForDeath(inst)
                         inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
                     else
                         inst.AnimState:PlayAnimation("wx_chassis_poweroff")
@@ -3672,13 +3625,13 @@ local states =
 				elseif inst.components.revivablecorpse ~= nil then
                     inst.AnimState:PlayAnimation("death2")
                 elseif data and data.corpsing and not inst:HasTag("wereplayer") then
-                    inst.components.inventory:DropEverything(true)
+                    DropAllItemsForDeath(inst)
                     inst.AnimState:PlayAnimation("death2")
                 else
 					if HUMAN_MEAT_ENABLED then
 						inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
 					end
-                    inst.components.inventory:DropEverything(true)
+                    DropAllItemsForDeath(inst)
                     inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
                 end
 
@@ -3799,7 +3752,7 @@ local states =
                                 if HUMAN_MEAT_ENABLED then
                                     inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
                                 end
-                                inst.components.inventory:DropEverything(true)
+                                DropAllItemsForDeath(inst)
                                 inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
                             else
                                 inst.AnimState:PlayAnimation("wx_chassis_poweroff")
@@ -3815,7 +3768,7 @@ local states =
 							if HUMAN_MEAT_ENABLED then
 								inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
 							end
-                            inst.components.inventory:DropEverything(true)
+                            DropAllItemsForDeath(inst)
                             inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
                         end
 
@@ -3888,7 +3841,7 @@ local states =
             end
 
 
-            inst.components.inventory:DropEverything(true)
+            DropAllItemsForDeath(inst)
             --Don't process other queued events if we died this frame
             inst.sg:ClearBufferedEvents()
 
@@ -27081,19 +27034,28 @@ local states =
 		name = "start_plugging_module",
 		tags = { "doing", "busy" },
 
-		onenter = function(inst, data)
+		onenter = function(inst)
 			inst.components.locomotor:Stop()
+			inst.components.locomotor:Clear()
 			inst.AnimState:PlayAnimation("wx_upgrade_pre")
+			inst:ShowActions(false)
 		end,
 
 		events =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.not_interrupted = true
 					inst.sg:GoToState("plug_module")
 				end
 			end),
 		},
+
+		onexit = function(inst)
+			if not inst.not_interrupted then
+				inst:ShowActions(true)
+			end
+		end,
 	},
 
     State{
@@ -27101,6 +27063,9 @@ local states =
 		tags = { "doing", "overridelocomote" },
 
 		onenter = function(inst, data)
+			inst.components.locomotor:Stop()
+			inst.components.locomotor:Clear()
+
             local transition
             if data ~= nil then
                 if data.transition then
@@ -27118,14 +27083,9 @@ local states =
             else
                 inst.AnimState:PlayAnimation("wx_upgrade_loop", true)
             end
-		end,
 
-        timeline =
-        {
-            FrameEvent(10, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-        },
+			inst:ShowActions(false)
+		end,
 
 		events =
 		{
@@ -27137,8 +27097,8 @@ local states =
 				inst.sg.statemem.stoppluggingmodule = true
 				inst.sg:GoToState("stop_plugging_module", data)
             end),
-			EventHandler("locomote", function(inst)
-				if inst.sg:HasStateTag("overridelocomote") then
+			EventHandler("locomote", function(inst, data)
+				if data and data.dir and inst.sg:HasStateTag("overridelocomote") then
 					local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
 					inst.sg.statemem.talktask = nil
 					inst.sg.statemem.stoppluggingmodule = true
@@ -27147,12 +27107,17 @@ local states =
 				end
 			end),
             EventHandler("newactiveitem", function(inst, data)
-                if data and data.item and data.item:HasActionComponent("upgrademoduleremover") then
-                    local statedata = { transition = true, moduleremover = data.item }
-				    inst.sg.statemem.stoppluggingmodule = true
-				    inst.sg:GoToState("removing_module", statedata)
+				if data and data.item and data.item.components.upgrademoduleremover then
+					inst.sg.statemem.stoppluggingmodule = true
+					inst.sg:GoToState("removing_module", { transition = true, moduleremover = data.item })
                 end
             end),
+			EventHandler("controller_removing_module", function(inst, item)
+				if item and item.components.upgrademoduleremover then
+					inst.sg.statemem.stoppluggingmodule = true
+					inst.sg:GoToState("removing_module", { transition = true, moduleremover = item })
+				end
+			end),
 		},
 
 		onexit = function(inst)
@@ -27161,6 +27126,7 @@ local states =
                 if inst.components.upgrademoduleowner ~= nil then
                     inst.components.upgrademoduleowner:StopInspecting()
                 end
+				inst:ShowActions(true)
 			end
             CancelTalk_Override(inst)
 		end,
@@ -27171,10 +27137,12 @@ local states =
         tags = { "doing", "busy" },
 
         onenter = function(inst, data)
+			inst.components.locomotor:Stop()
             if inst.components.upgrademoduleowner ~= nil then
                 inst.components.upgrademoduleowner:StartInspecting(inst)
             end
             inst.AnimState:PlayAnimation("wx_upgrade_use")
+			inst:ShowActions(false)
         end,
 
         timeline =
@@ -27192,12 +27160,16 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					local activeitem = inst.components.inventory:GetActiveItem()
 					inst.sg.statemem.stoppluggingmodule = true
-					if activeitem and activeitem.components.upgrademoduleremover then
-						inst.sg:GoToState("removing_module", { transition = true, moduleremover = activeitem })
-					else
+					if inst.components.playercontroller and inst.components.playercontroller.isclientcontrollerattached then
 						inst.sg:GoToState("plugging_module")
+					else
+						local activeitem = inst.components.inventory:GetActiveItem()
+						if activeitem and activeitem.components.upgrademoduleremover then
+							inst.sg:GoToState("removing_module", { transition = true, moduleremover = activeitem })
+						else
+							inst.sg:GoToState("plugging_module")
+						end
 					end
                 end
             end)
@@ -27209,65 +27181,51 @@ local states =
                 if inst.components.upgrademoduleowner ~= nil then
                     inst.components.upgrademoduleowner:StopInspecting()
                 end
+				inst:ShowActions(true)
 			end
 		end,
     },
 
 	State{
 		name = "stop_plugging_module",
-		tags = { "idle", "overridelocomote" },
+		tags = { "busy" },
 
 		onenter = function(inst, data)
 			-- 'nonaction' means we got here via another path rather than ACTIONS.STOPREMOVINGMODULE:
 			-- - We must manually stop upgrademoduleowner
-			-- - Any buffered actions would be our NEXT action after we play some pst anim
 			local nonaction
 			if data ~= nil then
 				nonaction = data.nonaction
 				inst.sg.statemem.talktask = data.talktask
 			end
 
-			if inst.components.upgrademoduleowner ~= nil then
-                if nonaction then
-					inst.components.upgrademoduleowner:StopInspecting()
-				end
-			end
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("wx_upgrade_pst")
 
 			if not nonaction then
-				if not inst:PerformBufferedAction() then
-					inst.sg:GoToState("idle")
-					return
-				end
+				inst:PerformBufferedAction()
+			elseif inst.components.upgrademoduleowner then
+				inst.components.upgrademoduleowner:StopInspecting()
 			end
 
-			inst.AnimState:PlayAnimation("wx_upgrade_pst")
+			inst.components.locomotor:Clear()
+			inst:ClearBufferedAction()
 		end,
 
 		timeline =
 		{
-			FrameEvent(1, function(inst)
-				inst.sg:AddStateTag("canrotate")
-			end),
 			FrameEvent(2, function(inst)
-				inst.sg:RemoveStateTag("overridelocomote")
+				inst.components.locomotor:Stop()
+				inst.components.locomotor:Clear()
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle", true)
 			end),
 		},
 
 		events =
 		{
-			EventHandler("ontalk", function(inst)
-				if inst.sg:HasStateTag("overridelocomote") then
-					OnTalk_Override(inst)
-					return true
-				end
-				CancelTalk_Override(inst, true)
-			end),
+			EventHandler("ontalk", OnTalk_Override),
 			EventHandler("donetalking", OnDoneTalking_Override),
-			EventHandler("locomote", function(inst)
-				--don't handle locomotion states yet
-				--we still allows buffering them, since we are not "busy"
-				return inst.sg:HasStateTag("overridelocomote")
-			end),
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg:GoToState("idle")
@@ -27275,7 +27233,10 @@ local states =
 			end),
 		},
 
-		onexit = CancelTalk_Override,
+		onexit = function(inst)
+			CancelTalk_Override(inst)
+			inst:ShowActions(true)
+		end,
 	},
 
   	State{
@@ -27284,22 +27245,33 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
+			inst.components.locomotor:Clear()
 
 			local buffaction = inst:GetBufferedAction()
 			local moduleremover = buffaction ~= nil and buffaction.invobject or nil
             HandleModuleRemoverAssets(inst, moduleremover)
 
 			inst.AnimState:PlayAnimation("useitem_pre")
+
+			inst:PushEvent("ms_closepopups")
+			inst:ShowActions(false)
 		end,
 
 		events =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.not_interrupted = true
 					inst.sg:GoToState("removing_module")
 				end
 			end),
 		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.not_interrupted then
+				inst:ShowActions(true)
+			end
+		end,
 	},
 
     State{
@@ -27307,6 +27279,9 @@ local states =
 		tags = { "doing", "overridelocomote" },
 
 		onenter = function(inst, data)
+			inst.components.locomotor:Stop()
+			inst.components.locomotor:Clear()
+
             local continuing
             local transition
             if data ~= nil then
@@ -27335,7 +27310,9 @@ local states =
             elseif continuing then
                 inst.AnimState:PlayAnimation("wx_downgrade_loop", true)
             elseif inst:PerformBufferedAction() then
-                if inst.components.inventory:GetActiveItem() ~= moduleremover then
+				if inst.components.playercontroller and inst.components.playercontroller.isclientcontrollerattached then
+					--don't set activeitem for  controllers
+				elseif inst.components.inventory:GetActiveItem() ~= moduleremover then
                     moduleremover.components.inventoryitem:RemoveFromOwner()
                     inst.components.inventory:GiveActiveItem(moduleremover)
                 end
@@ -27348,6 +27325,8 @@ local states =
 				inst.AnimState:PlayAnimation("useitem_pst")
 				inst.sg:RemoveStateTag("overridelocomote")
             end
+
+			inst:ShowActions(false)
 		end,
 
         timeline =
@@ -27365,6 +27344,11 @@ local states =
                 inst.sg.statemem.dontreturnmoduleremover = true
                 inst.sg:GoToState("unplug_module", data)
             end),
+			EventHandler("socketholder_unsocket", function(inst, socketposition)
+				inst.sg.statemem.stopremovingmodule = true
+				inst.sg.statemem.dontreturnmoduleremover = true
+				inst.sg:GoToState("unplug_module", { socket = socketposition, moduleremover = inst.sg.statemem.moduleremover })
+			end),
 			EventHandler("ontalk", OnTalk_Override),
 			EventHandler("donetalking", OnDoneTalking_Override),
             EventHandler("stopinspectingmodule", function(inst)
@@ -27374,22 +27358,27 @@ local states =
 				inst.sg.statemem.dontreturnmoduleremover = true
 				inst.sg:GoToState("stop_removing_module", data)
             end),
-			EventHandler("locomote", function(inst)
-				if inst.sg:HasStateTag("overridelocomote") and inst.AnimState:IsCurrentAnimation("wx_downgrade_loop") then
-					local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
-					inst.sg.statemem.talktask = nil
-					inst.sg.statemem.stopremovingmodule = true
-					inst.sg:GoToState("stop_removing_module", data)
+			EventHandler("locomote", function(inst, data)
+				if inst.sg:HasStateTag("overridelocomote") then
+					if data and data.dir and not inst.sg:HasStateTag("busy") and inst.AnimState:IsCurrentAnimation("wx_downgrade_loop") then
+						local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
+						inst.sg.statemem.talktask = nil
+						inst.sg.statemem.stopremovingmodule = true
+						inst.sg:GoToState("stop_removing_module", data)
+					end
 					return true
 				end
 			end),
             EventHandler("newactiveitem", function(inst, data)
-                if data and (data.item == nil or not data.item:HasActionComponent("upgrademoduleremover")) then
-                    local statedata = { transition = true }
-				    inst.sg.statemem.stopremovingmodule = true
-				    inst.sg:GoToState("plugging_module", statedata)
+				if not (data and data.item and data.item.components.upgrademoduleremover) then
+					inst.sg.statemem.stopremovingmodule = true
+					inst.sg:GoToState("plugging_module", { transition = true })
                 end
             end),
+			EventHandler("controller_plugging_module", function(inst)
+				inst.sg.statemem.stopremovingmodule = true
+				inst.sg:GoToState("plugging_module", { transition = true })
+			end),
 			EventHandler("animqueueover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg:GoToState("idle")
@@ -27403,6 +27392,7 @@ local states =
                 if inst.components.upgrademoduleowner ~= nil then
                     inst.components.upgrademoduleowner:StopInspecting()
                 end
+				inst:ShowActions(true)
 			end
 			if inst.sg.statemem.stoppluggingmodule then
 				--plugging module (can happen on controllers even with moduleremover active)
@@ -27416,14 +27406,17 @@ local states =
 
     State{
         name = "unplug_module",
-        tags = { "doing", "overridelocomote", "busy" },
+		tags = { "doing", "busy" },
 
         onenter = function(inst, data)
+			inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("wx_downgrade_use")
 			if data then
+				inst.sg.statemem.unsocketposition = data.socket
 				inst.sg.statemem.moduletoremove = data.module
 				inst.sg.statemem.moduleremover = data.moduleremover
 			end
+			inst:ShowActions(false)
         end,
 
         timeline =
@@ -27437,6 +27430,15 @@ local states =
                         inst.components.upgrademoduleowner:FindAndPopModule(inst.sg.statemem.moduletoremove)
                     end
                 end
+				if inst.sg.statemem.unsocketposition and
+					inst.components.socketholder and
+					inst.components.socketholder:IsSocketNameForPosition("socket_shadow", inst.sg.statemem.unsocketposition)
+				then
+					local item = inst.components.socketholder:UnsocketPosition(inst.sg.statemem.unsocketposition)
+					if item then
+						inst.components.inventory:GiveItem(item, nil, inst:GetPosition())
+					end
+				end
             end),
         },
 
@@ -27445,14 +27447,27 @@ local states =
             EventHandler("unplugmodule", function(inst, module)
                 inst.sg.statemem.unpluganothermoduledata = { module = module, moduleremover = inst.sg.statemem.moduleremover }
             end),
+			EventHandler("socketholder_unsocket", function(inst, socketposition)
+				inst.sg.statemem.unpluganothermoduledata = { socket = socketposition, moduleremover = inst.sg.statemem.moduleremover }
+			end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
+					inst.sg.statemem.stopremovingmodule = true
+
 					if inst.sg.statemem.unpluganothermoduledata then
-                        inst.sg.statemem.stopremovingmodule = true
                         inst.sg:GoToState("unplug_module", inst.sg.statemem.unpluganothermoduledata)
+					elseif inst.components.playercontroller and inst.components.playercontroller.isclientcontrollerattached then
+						local item = inst.sg.statemem.moduleremover
+						if item and item:IsValid() and
+							item.components.inventoryitem and
+							item.components.inventoryitem:GetGrandOwner() == inst
+						then
+							inst.sg:GoToState("removing_module", { moduleremover = item })
+						else
+							inst.sg:GoToState("plugging_module", { transition = true })
+						end
                     else
 						local activeitem = inst.components.inventory:GetActiveItem()
-                        inst.sg.statemem.stopremovingmodule = true
 						if activeitem and activeitem.components.upgrademoduleremover then
 							inst.sg:GoToState("removing_module", { moduleremover = activeitem })
 						else
@@ -27470,66 +27485,52 @@ local states =
                     inst.components.upgrademoduleowner:StopInspecting()
                 end
                 inst.components.inventory:ReturnActiveActionItem(inst.sg.statemem.moduleremover, true)
+				inst:ShowActions(true)
 			end
 		end,
     },
 
 	State{
 		name = "stop_removing_module",
-		tags = { "idle", "overridelocomote" },
+		tags = { "busy" },
 
 		onenter = function(inst, data)
 			-- 'nonaction' means we got here via another path rather than ACTIONS.STOPREMOVINGMODULE:
 			-- - We must manually stop upgrademoduleowner
-			-- - Any buffered actions would be our NEXT action after we play some pst anim
 			local nonaction
 			if data ~= nil then
 				nonaction = data.nonaction
 				inst.sg.statemem.talktask = data.talktask
 			end
 
-			if inst.components.upgrademoduleowner ~= nil then
-                if nonaction then
-					inst.components.upgrademoduleowner:StopInspecting()
-				end
-			end
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("wx_downgrade_pst")
+			inst.AnimState:PushAnimation("useitem_pst", false)
 
 			if not nonaction then
-				if not inst:PerformBufferedAction() then
-					inst.sg:GoToState("idle")
-					return
-				end
+				inst:PerformBufferedAction()
+			elseif inst.components.upgrademoduleowner then
+				inst.components.upgrademoduleowner:StopInspecting()
 			end
 
-			inst.AnimState:PlayAnimation("wx_downgrade_pst")
-            inst.AnimState:PushAnimation("useitem_pst", false)
+			inst.components.locomotor:Clear()
+			inst:ClearBufferedAction()
 		end,
 
 		timeline =
 		{
-			FrameEvent(10, function(inst)
-				inst.sg:AddStateTag("canrotate")
-			end),
 			FrameEvent(11, function(inst)
-				inst.sg:RemoveStateTag("overridelocomote")
+				inst.components.locomotor:Stop()
+				inst.components.locomotor:Clear()
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle", true)
 			end),
 		},
 
 		events =
 		{
-			EventHandler("ontalk", function(inst)
-				if inst.sg:HasStateTag("overridelocomote") then
-					OnTalk_Override(inst)
-					return true
-				end
-				CancelTalk_Override(inst, true)
-			end),
+			EventHandler("ontalk", OnTalk_Override),
 			EventHandler("donetalking", OnDoneTalking_Override),
-			EventHandler("locomote", function(inst)
-				--don't handle locomotion states yet
-				--we still allows buffering them, since we are not "busy"
-				return inst.sg:HasStateTag("overridelocomote")
-			end),
 			EventHandler("animqueueover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg:GoToState("idle")
@@ -27537,7 +27538,10 @@ local states =
 			end),
 		},
 
-		onexit = CancelTalk_Override,
+		onexit = function(inst)
+			CancelTalk_Override(inst)
+			inst:ShowActions(true)
+		end,
 	},
 
 	State{
@@ -27638,7 +27642,17 @@ local states =
 
 		onenter = function(inst, moved)
 			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("wx_chassis_idle")
+            if WX78Common.HasHeartVeins(inst) then
+                inst.AnimState:Show("shad_veins")
+            else
+                inst.AnimState:Hide("shad_veins")
+            end
+            if WX78Common.HasTrapper(inst) then
+                inst.AnimState:Show("trapper")
+            else
+                inst.AnimState:Hide("trapper")
+            end
+            inst.AnimState:PlayAnimation("wx_chassis_idle")
 			if not inst.sg.mem.wx_chassis_build then
 				inst.sg.mem.wx_chassis_build = true
 				inst.AnimState:AddOverrideBuild("wx_chassis")
@@ -27977,658 +27991,6 @@ local states =
 			end),
 		},
 	},
-
-    State{
-        name = "wx_bake",
-        tags = { "busy", },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("wx_bake")
-        end,
-
-        timeline =
-        {
-            --#SFX
-            FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_lvl1_ding", nil, 0.2) end),
-            FrameEvent(41, function(inst) inst.SoundEmitter:PlaySound("WX_rework/module_tray/open") end),
-            FrameEvent(47, function(inst) inst.SoundEmitter:PlaySound("moonstorm/characters/wagstaff/thumper/steam", nil, 0.4) end),
-            FrameEvent(68, function(inst) inst.SoundEmitter:PlaySound("WX_rework/module_tray/close") end),
-
-            FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/egg/egg_hot_steam_LP", "wx_baking") end),
-            FrameEvent(32, function(inst) inst.SoundEmitter:KillSound("wx_baking") end),
-
-            --
-            FrameEvent(46, function(inst)
-                local x, y, z = inst.Transform:GetWorldPosition()
-                local rot = (inst.Transform:GetRotation() + math.random(-20, 20)) * DEGREES
-                local speed = 2 + math.random()
-                local brick = SpawnPrefab("wx78_foodbrick")
-                y = y + ( inst.components.rider:IsRiding() and 2.5 or .25)
-                brick.Transform:SetPosition(x, y, z)
-                brick.Physics:SetVel(math.cos(rot) * speed, speed * 3, -math.sin(rot) * speed)
-            end),
-            FrameEvent(70, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end)
-        },
-
-        events =
-        {
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("idle")
-				end
-			end),
-        },
-
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("wx_baking")
-        end,
-    },
-
-    State{
-        name = "wx_screech_pre",
-        tags = { "doing", "busy" },
-
-        onenter = function(inst)
-            local timeout = not (inst.components.skilltreeupdater
-                and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_1"))
-                and (TUNING.WX78_SCREECH_TIME + math.random() * TUNING.WX78_SCREECH_TIME_VAR)
-                or nil
-            inst.sg.statemem.timeout = timeout
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("wx_screech_pre")
-            inst.AnimState:PushAnimation("wx_screech_pre2", false)
-            inst:PerformBufferedAction()
-            inst:AddTag("wx_screeching")
-        end,
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.screeching = true
-                    inst.sg:GoToState("wx_screech_loop", inst.sg.statemem.timeout)
-                end
-            end)
-        },
-
-        onexit = function(inst)
-            if not inst.sg.statemem.screeching then
-                inst:RemoveTag("wx_screeching")
-            end
-        end,
-    },
-
-    State{
-        name = "wx_screech_loop",
-		tags = { "doing" },
-
-        onenter = function(inst, timeout)
-            inst:AddTag("wx_screeching")
-            inst.sg.statemem.timeout = timeout or nil
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("wx_screech_loop", true)
-            inst.SoundEmitter:PlaySound("WX_rework/screech/loop", "wx_screech")
-            -- TheMixer:PushMix("wx_screech") -- TODO
-            inst.sg.statemem.scarecd = FRAMES * 2
-
-            if timeout ~= nil then
-                inst.sg:SetTimeout(timeout)
-            end
-        end,
-
-        onupdate = function(inst, dt)
-            inst.sg.statemem.scarecd = inst.sg.statemem.scarecd - dt
-            if inst.sg.statemem.scarecd <= 0 then
-                DoWX78Screech(inst)
-                inst.sg.statemem.scarecd = 15 * FRAMES + math.random()
-				inst.sg.statemem.shouldcooldown = true
-            end
-        end,
-
-        ontimeout = function(inst)
-			inst.sg:GoToState("wx_screech_pst", true)
-        end,
-
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("wx_screech")
-            inst:RemoveTag("wx_screeching")
-            -- TheMixer:PopMix("wx_screech") -- TODO 
-
-			if inst.sg.statemem.shouldcooldown and inst.components.wx78_abilitycooldowns then
-				inst.components.wx78_abilitycooldowns:RestartAbilityCooldown("wxscreech", TUNING.WX78_SCREECH_COOLDOWN)
-			end
-        end,
-    },
-
-    State{
-        name = "wx_screech_pst",
-
-		onenter = function(inst, nonaction)
-			inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("wx_screech_pst")
-
-			if not nonaction then
-				inst:PerformBufferedAction() --does nothing
-			end
-			inst.sg:GoToState("idle", true)
-        end,
-    },
-
-    State{
-        name = "wx_shield_pre",
-		tags = { "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("wx_defense_on_pre")
-            inst:AddTag("wx_shielding")
-
-			inst:PerformBufferedAction() --does nothing
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.iswxshielding = true
-					inst.sg:GoToState("wx_shield_on")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if not inst.sg.statemem.iswxshielding then
-                inst:RemoveTag("wx_shielding")
-            end
-        end,
-    },
-
-	State{
-		name = "wx_shield_on",
-		tags = { "busy", "wxshielding", },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("wx_defense_on")
-
-			inst:AddTag("wx_shielding")
-			ApplyWX78ShieldingDefense(inst)
-		end,
-
-		timeline =
-		{
-			FrameEvent(2, PlayFootstep),
-			FrameEvent(4, function(inst)
-				inst.sg.statemem.iswxshielding = true
-				inst.sg:GoToState("wx_shield_idle", true)
-			end),
-		},
-
-		onexit = function(inst)
-			if not inst.sg.statemem.iswxshielding then
-				ClearWX78ShieldingDefense(inst)
-				inst:RemoveTag("wx_shielding")
-			end
-		end,
-	},
-
-    State{
-        name = "wx_shield_idle",
-		tags = { "idle", "wxshielding", },
-
-		onenter = function(inst, pushanim)
-            inst.components.locomotor:Stop()
-			if pushanim then
-				inst.AnimState:PushAnimation("wx_defense_idle", true)
-			else
-				inst.AnimState:PlayAnimation("wx_defense_idle", true)
-			end
-
-            inst:AddTag("wx_shielding")
-            ApplyWX78ShieldingDefense(inst)
-        end,
-
-        events =
-        {
-            EventHandler("ontalk", function(inst)
-                inst.AnimState:PlayAnimation("wx_defense_dial", true)
-				return OnTalk_Override(inst)
-            end),
-			EventHandler("donetalking", function(inst)
-                inst.AnimState:PlayAnimation("wx_defense_idle", true)
-                return OnDoneTalking_Override(inst)
-            end),
-        },
-
-        onexit = function(inst)
-            CancelTalk_Override(inst)
-            if not inst.sg.statemem.iswxshielding then
-                ClearWX78ShieldingDefense(inst)
-                inst:RemoveTag("wx_shielding")
-            end
-        end,
-    },
-
-    State{
-        name = "wx_shield_hit",
-		tags = { "busy", "pausepredict", "wxshielding", "wxshieldhit", },
-
-        onenter = function(inst)
-            inst.sg.mem.wx78shieldhit = true
-			inst.components.locomotor:Stop()
-			inst:ClearBufferedAction()
-
-			inst.AnimState:PlayAnimation("wx_defense_hit")
-
-			inst:AddTag("wx_shielding")
-			ApplyWX78ShieldingDefense(inst)
-
-			if inst.components.playercontroller then
-				inst.components.playercontroller:RemotePausePrediction(4)
-			end
-			inst.sg:SetTimeout(4 * FRAMES)
-        end,
-
-		ontimeout = function(inst)
-			inst.sg.statemem.iswxshielding = true
-			inst.sg:GoToState("wx_shield_idle", true)
-		end,
-
-        onexit = function(inst)
-            if not inst.sg.statemem.iswxshielding then
-                ClearWX78ShieldingDefense(inst)
-                inst:RemoveTag("wx_shielding")
-            end
-        end,
-    },
-
-    State{
-        name = "wx_shield_pst",
-
-        onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("wx_defense_off")
-
-			inst:PerformBufferedAction() --does nothing
-			inst.sg:GoToState("idle", true)
-        end,
-	},
-
-	State{
-		name = "wx_spin_start",
-		tags = { "prespin", "working" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("chop_pre")
-
-			--V2C: HACK so the first loop doesn't skip a frame
-			inst.AnimState:PushAnimation(
-				inst.components.skilltreeupdater and
-				inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") and
-				"wx_spin_attack_loop" or
-				"wx_spin_attack_loop_slow")
-
-			inst:AddTag("prespin")
-
-			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-		end,
-
-		ontimeout = function(inst)
-			inst.sg.statemem.spinning = true
-			inst.sg:GoToState("wx_spin")
-		end,
-
-		events =
-		{
-			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-		},
-
-		onexit = function(inst)
-			if not inst.sg.statemem.spinning then
-				inst:RemoveTag("prespin")
-			end
-		end,
-	},
-
-	State{
-		name = "wx_spin",
-		tags = { "busy", "prespin", "spinning", "working", "nopredict", "overridelocomote" },
-
-		onenter = function(inst, data)
-			local anim =
-				inst.components.skilltreeupdater and
-				inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") and
-				"wx_spin_attack_loop" or
-				"wx_spin_attack_loop_slow"
-
-			if not inst.AnimState:IsCurrentAnimation(anim) or inst.AnimState:GetCurrentAnimationFrame() ~= 0 then
-				inst.AnimState:PlayAnimation(anim, true)
-			end
-			inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
-			inst:AddTag("prespin")
-
-			inst.sg.statemem.recoilstate = "attack_recoil"
-
-			local buffaction = inst:GetBufferedAction()
-			inst.sg.statemem.target = buffaction and buffaction.action == ACTIONS.ATTACK and buffaction.target or nil
-			inst.sg.statemem.spinfast = inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") or nil
-
-			if data then
-				inst.sg.statemem.remotedir = data.remotedir
-				inst.sg.statemem.vx = data.vx
-				inst.sg.statemem.vz = data.vz
-				inst.sg.statemem.theta = data.theta
-				inst.sg.statemem.costheta = data.costheta
-				inst.sg.statemem.sintheta = data.sintheta
-				inst.sg.statemem.numhits = data.numhits
-				inst.sg.statemem.target = inst.sg.statemem.target or data.target
-			elseif inst.sg.statemem.target then
-				inst.sg.statemem.quickstart = true
-			end
-
-			if inst.sg:InNewState() and inst.sg.mem.wx_spin_buildup then
-				local elapsed = GetTime() - inst.sg.mem.wx_spin_last
-				inst.sg.mem.wx_spin_buildup = math.max(0, inst.sg.mem.wx_spin_buildup - elapsed * elapsed * 0.5)
-			end
-
-			inst:ClearBufferedAction()
-			inst.player_classified.busyremoteoverridelocomote:set(true)
-			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-		end,
-
-		timeline =
-		{
-			FrameEvent(1, function(inst)
-				local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-				if not (tool and tool.components.tool and tool.components.tool:CanDoAction(ACTIONS.CHOP)) then
-					inst.AnimState:PlayAnimation("wx_spin_attack_pst")
-					inst.sg:GoToState("idle", true)
-					return
-				end
-
-				local chop_efficiency = inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 1 and TUNING.WX78_SPIN_TOOL_EFFICIENCY or 1
-				local attack_efficiency = chop_efficiency
-				local moveangle = inst.sg.statemem.vx and math.atan2(-inst.sg.statemem.vz, inst.sg.statemem.vx)
-				local minangle = math.huge
-
-				inst.components.combat.ignorehitrange = true
-
-				local x, y, z = inst.Transform:GetWorldPosition()
-				for _, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.WX78_SPIN_RADIUS + 3, nil, WX_SPIN_CANT_TAGS, WX_SPIN_ONEOF_TAGS)) do
-					if v ~= inst and v:IsValid() and v.entity:IsVisible() then
-						local x1, y1, z1 = v.Transform:GetWorldPosition()
-						local dx = x1 - x
-						local dz = z1 - z
-						local range = TUNING.WX78_SPIN_RADIUS + v:GetPhysicsRadius(0)
-						if dx * dx + dz * dz < range * range then
-							local hit
-							if v.components.workable and
-								v.components.workable:GetWorkAction() == ACTIONS.CHOP and
-								v.components.workable:CanBeWorked()
-							then
-								if inst.components.efficientuser then
-									inst.components.efficientuser:AddMultiplier(ACTIONS.CHOP, chop_efficiency, inst)
-								end
-								if BufferedAction(inst, v, ACTIONS.CHOP, tool):Do() then
-									chop_efficiency = chop_efficiency * 0.5
-									hit = true
-								end
-							end
-
-							if not hit and
-								v.components.combat and
-								inst.components.combat:CanTarget(v) and
-								not inst.components.combat:IsAlly(v)
-							then
-								if inst.components.efficientuser then
-									inst.components.efficientuser:AddMultiplier(ACTIONS.ATTACK, attack_efficiency, inst)
-								end
-								if inst.components.aoediminishingreturns then
-									inst.components.aoediminishingreturns.mult:SetModifier(inst, attack_efficiency, "wx_spin")
-								end
-								inst.components.combat:DoAttack(v)
-								attack_efficiency = attack_efficiency * 0.5
-								hit = true
-							end
-
-							if not hit and
-								v.components.pickable and
-								v.components.pickable.caninteractwith and
-								v.components.pickable:CanBePicked() and
-								not v.components.pickable:IsStuck()
-							then
-								if v.components.pickable.picksound then
-									inst.SoundEmitter:PlaySound(v.components.pickable.picksound)
-								end
-								local success, loot = v.components.pickable:Pick(TheWorld)
-								if loot then
-									for _, v in ipairs(loot) do
-										Launch(v, inst, 1.5)
-									end
-								end
-							end
-
-							if inst.sg.currentstate.name ~= "wx_spin" then
-								break
-							elseif hit and moveangle then
-								minangle = dx == 0 and dz == 0 and 0 or math.min(minangle, DiffAngleRad(math.atan2(-dz, dx), moveangle))
-							end
-						end
-					end
-				end
-
-				inst.components.combat.ignorehitrange = false
-
-				if inst.components.efficientuser then
-					inst.components.efficientuser:RemoveMultiplier(ACTIONS.CHOP, inst)
-					inst.components.efficientuser:RemoveMultiplier(ACTIONS.ATTACK, inst)
-				end
-
-				if inst.components.aoediminishingreturns then
-					inst.components.aoediminishingreturns.mult:RemoveModifier(inst, "wx_spin")
-				end
-
-				if inst.sg.currentstate.name ~= "wx_spin" then
-					return
-				elseif minangle < math.pi and inst.sg.statemem.vx then
-					minangle = minangle / math.pi
-					minangle = minangle * minangle
-					inst.sg.statemem.vx = inst.sg.statemem.vx * minangle
-					inst.sg.statemem.vz = inst.sg.statemem.vz * minangle
-				end
-			end),
-		},
-
-		onupdate = function(inst, dt)
-			if not inst.components.playercontroller:IsAnyOfControlsPressed(
-					CONTROL_ACTION,
-					CONTROL_CONTROLLER_ACTION,
-					CONTROL_ATTACK,
-					CONTROL_CONTROLLER_ATTACK,
-					CONTROL_PRIMARY
-				)
-			then
-				inst.AnimState:PlayAnimation("wx_spin_attack_pst")
-				inst.sg:GoToState("idle", true)
-				return
-			end
-
-			inst.sg.mem.wx_spin_buildup = (inst.sg.mem.wx_spin_buildup or 0) + dt
-
-			if inst.sg.mem.wx_spin_buildup > TUNING.WX78_SPIN_TIME_TO_DIZZY then
-				inst.sg:GoToState("wx_spin_dizzy")
-				return
-			end
-
-			inst.sg.mem.wx_spin_last = GetTime()
-
-			local maxspeed = inst.components.locomotor:GetRunSpeed() * TUNING.WX78_SPIN_RUNSPEED_MULT
-			local accel = maxspeed / 15
-
-			local dir = GetLocalAnalogDir(inst)
-			local theta = inst.sg.statemem.remotedir and inst.sg.statemem.remotedir * DEGREES
-			if dir or theta then
-				inst.sg.statemem.target = nil
-				inst.sg.statemem.quickstart = nil
-			else
-				local target = inst.sg.statemem.target
-				if target then
-					if target:IsValid() then
-						local x, y, z = inst.Transform:GetWorldPosition()
-						local x1, y1, z1 = target.Transform:GetWorldPosition()
-						local dx = x1 - x
-						local dz = z1 - z
-						local dsq = dx * dx + dz * dz
-						if dsq >= 64 then --stop tracking target further than 8 dist
-							inst.sg.statemem.target = nil
-							inst.sg.statemem.quickstart = nil
-						elseif dsq >= 4 then --stop moving closer than 2 dist
-							theta = math.atan2(-dz, dx)
-						end
-					else
-						inst.sg.statemem.target = nil
-						inst.sg.statemem.quickstart = nil
-					end
-				end
-			end
-
-			if dir or theta then
-				local vx = inst.sg.statemem.vx
-				local vz = inst.sg.statemem.vz
-				if vx then
-					--decay perpendicular velocity fastest
-					--decay reverse velocity medium
-					--decay same direction velocity the least
-					theta = theta or math.atan2(-dir.z, dir.x)
-					local diff = DiffAngleRad(theta, math.atan2(-vz, vx))
-					local k = Remap(math.sin(diff) + diff / TWOPI, 0, 1.5, 1, 0.9)
-					vx = vx * k
-					vz = vz * k
-				else
-					vx, vz = 0, 0
-				end
-				if inst.sg.statemem.quickstart then
-					accel = maxspeed / 2
-				end
-				if dir then
-					vx = vx + dir.x * accel
-					vz = vz + dir.z * accel
-				else
-					vx = vx + math.cos(theta) * accel
-					vz = vz - math.sin(theta) * accel
-				end
-				local speed = math.sqrt(vx * vx + vz * vz)
-				if speed > maxspeed then
-					speed = maxspeed / speed
-					inst.sg.statemem.vx = vx * speed
-					inst.sg.statemem.vz = vz * speed
-				else
-					inst.sg.statemem.vx = vx
-					inst.sg.statemem.vz = vz
-				end
-			elseif inst.sg.statemem.vx then
-				local speed = math.sqrt(inst.sg.statemem.vx * inst.sg.statemem.vx + inst.sg.statemem.vz * inst.sg.statemem.vz)
-				if speed > accel then
-					speed = 1 - accel / speed
-					inst.sg.statemem.vx = inst.sg.statemem.vx * speed
-					inst.sg.statemem.vz = inst.sg.statemem.vz * speed
-				else
-					inst.sg.statemem.vx = nil
-					inst.sg.statemem.vz = nil
-					inst.Physics:Stop()
-					inst.Physics:SetMotorVel(0, 0, 0)
-				end
-			end
-
-			inst.sg.statemem.quickstart = nil
-
-			if inst.sg.statemem.vx then
-				--convert to local space
-				theta = inst.Transform:GetRotation() * DEGREES
-				if inst.sg.statemem.theta ~= theta then
-					inst.sg.statemem.theta = theta
-					inst.sg.statemem.costheta = math.cos(theta)
-					inst.sg.statemem.sintheta = math.sin(theta)
-				end
-				local vx = inst.sg.statemem.costheta * inst.sg.statemem.vx - inst.sg.statemem.sintheta * inst.sg.statemem.vz
-				local vz = inst.sg.statemem.sintheta * inst.sg.statemem.vx + inst.sg.statemem.costheta * inst.sg.statemem.vz
-				local speedmult = inst.components.locomotor:GetSpeedMultiplier()
-				inst.Physics:SetMotorVel(vx * speedmult, 0, vz * speedmult)
-			end
-		end,
-
-		ontimeout = function(inst)
-			inst.sg.statemem.spinning = true
-			inst.sg:GoToState("wx_spin", {
-				remotedir = inst.sg.statemem.remotedir,
-				vx = inst.sg.statemem.vx,
-				vz = inst.sg.statemem.vz,
-				theta = inst.sg.statemem.theta,
-				costheta = inst.sg.statemem.costheta,
-				sintheta = inst.sg.statemem.sintheta,
-				numhits = inst.sg.statemem.numhits,
-				target = inst.sg.statemem.target,
-			})
-		end,
-
-		events =
-		{
-			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("locomote", function(inst, data)
-				if data and data.remoteoverridelocomote then
-					inst.sg.statemem.remotedir = data.dir
-				end
-				return true
-			end),
-			EventHandler("attacked", function(inst, data)
-				local t = GetTime()
-				local elapsed = t - (inst.sg.statemem.lasthit or 0)
-				if elapsed > 0 then
-					inst.sg.statemem.lasthit = t
-					inst.sg.statemem.numhits = math.max(0, (inst.sg.statemem.numhits or 0) - math.floor(elapsed / 2)) + 1
-				end
-				if inst.sg.statemem.numhits < 3 then
-					inst.sg:AddStateTag("nostunlock")
-				else
-					inst.sg:RemoveStateTag("nostunlock")
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			if not inst.sg.statemem.spinning then
-				inst:RemoveTag("prespin")
-				if inst.sg.statemem.vx then
-					inst.Physics:Stop()
-					inst.Physics:SetMotorVel(0, 0, 0)
-				end
-				inst.player_classified.busyremoteoverridelocomote:set(false)
-			end
-		end,
-	},
-
-	State{
-		name = "wx_spin_dizzy",
-		tags = { "busy" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("wx_dizzy_loop")
-			inst.AnimState:PushAnimation("wx_dizzy_loop", false)
-			inst.AnimState:PushAnimation("wx_dizzy_pst", false)
-
-			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() * 2)
-		end,
-
-		ontimeout = function(inst)
-			inst.sg:GoToState("idle", true)
-		end,
-	},
 }
 
 local hop_timelines =
@@ -28710,6 +28072,29 @@ CommonStates.AddHopStates(states, true, hop_anims, hop_timelines, hop_land_sound
 
 local GymStates = require("stategraphs/SGwilson_gymstates")
 GymStates.AddGymStates(states, actionhandlers, events)
+
+SGWX78Common.AddWX78SpinStates(states)
+SGWX78Common.AddWX78ShieldStates(states,
+{ -- events
+    idle =
+    {
+        EventHandler("ontalk", function(inst)
+            inst.AnimState:PlayAnimation("wx_defense_dial", true)
+            return OnTalk_Override(inst)
+        end),
+		EventHandler("donetalking", function(inst)
+            inst.AnimState:PlayAnimation("wx_defense_idle", true)
+            return OnDoneTalking_Override(inst)
+        end),
+    }
+},
+{ -- fns
+    idle_onexit = function(inst)
+        CancelTalk_Override(inst)
+    end
+})
+SGWX78Common.AddWX78ScreechStates(states)
+SGWX78Common.AddWX78BakeState(states)
 
 if TheNet:GetServerGameMode() == "quagmire" then
     event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, StopTalkSound, ToggleOnPhysics, ToggleOffPhysics)

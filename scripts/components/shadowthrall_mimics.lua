@@ -64,7 +64,7 @@ local function do_spawn(mimic_target)
     local fx = SpawnPrefab("shadow_puff")
     fx.Transform:SetPosition(mx, 0, mz)
 
-    return true
+    return true, mimic
 end
 
 local function spawn_mimic_for(mimic_target)

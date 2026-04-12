@@ -1,3 +1,5 @@
+local WX78Common = require("prefabs/wx78_common")
+
 local module_definitions = {}
 local scandata_definitions = {}
 local scandata_special_definitions = {}
@@ -311,13 +313,15 @@ AddCreatureScanDataDefinition("ruinsnightmare", "maxsanity", 8)
 
 local BASE_SLOW_MULTIPLIER = 0.6 -- this is the base slow multiplier of the player
 local function movespeed_updaterunspeed(wx)
+    local mult = 1 + TUNING.WX78_MOVESPEED_CHIPBOOSTS[wx._movespeed_chips + 1]
     if wx.components.playerspeedmult then
-        local mult = 1 + TUNING.WX78_MOVESPEED_CHIPBOOSTS[wx._movespeed_chips + 1]
         --V2C: playerspeedmult does not stack with mount speed
         wx.components.playerspeedmult:SetSpeedMult("wx_movespeed_chip", mult)
+    elseif wx.components.locomotor then -- for possessed body
+        wx.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * mult
     end
 
-    if wx.components.locomotor then
+    if wx.components.locomotor and wx.ModifySpeedMultiplier then
         wx.components.locomotor:SetSlowMultiplier(wx:ModifySpeedMultiplier(BASE_SLOW_MULTIPLIER))
     end
 end
@@ -1434,8 +1438,8 @@ end
 
 local function spin_checktool(wx, data)
 	if data == nil or data.eslot == EQUIPSLOTS.HANDS then
-		local tool = wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		spin_overriderange(wx, tool and tool.components.tool and tool.components.tool:CanDoAction(ACTIONS.CHOP) and TUNING.WX78_SPIN_START_RANGE or nil)
+		local item = wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		spin_overriderange(wx, WX78Common.CanSpinUsingItem(item) and TUNING.WX78_SPIN_START_RANGE or nil)
 	end
 end
 

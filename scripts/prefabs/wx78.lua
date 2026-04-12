@@ -29,13 +29,13 @@ local prefabs = JoinArrays({
     "cracklehitfx",
     "gears",
     "sparks",
-    "wx78_big_spark",
     "wx78_moduleremover",
     "wx78_scanner_item",
     -- Meta 6
     "wx78_abilitycooldown",
     "wx78_backupbody",
-    "wx78_classified",
+    "wx78_possessedbody",
+    "wx78_possessed_shadow_hitfx",
 }, WX78Common.DEPENDENCIES.prefabs)
 
 local WX78ModuleDefinitionFile = require("wx78_moduledefs")
@@ -567,6 +567,18 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function CustomCombatDamage(inst, target)
+	local debuff = target:GetDebuff("wx78_shadow_heart_debuff")
+    if not debuff then
+        return 1
+    end
+    local fx = SpawnPrefab("wx78_possessed_shadow_hitfx") -- FIXME(JBK): WX: This would be best as a net_event on the buff inst with the buff being networked.
+    fx.entity:SetParent(target.entity)
+    return TUNING.SKILLS.WX78.SHADOWHEART_DAMAGEMULT
+end
+
+----------------------------------------------------------------------------------------
+
 local function OnDroneStartTracking(inst, drone)
     if inst.wx78_classified then
         inst.wx78_classified.numdronescouts:set(inst.wx78_classified.numdronescouts:value() + 1)
@@ -728,6 +740,7 @@ local function common_postinit(inst)
     inst:AddComponent("wx78_abilitycooldowns")
 
 	WX78Common.AddHeatSteamFx_Common(inst)
+	WX78Common.AddDizzyFx_Common(inst)
 
     inst.GetMinimumAcceptableMoisture = COMMON_GetMinimumAcceptableMoisture
     inst.GetShieldPenetrationThreshold = COMMON_GetShieldPenetrationThreshold
@@ -850,6 +863,8 @@ local function master_postinit(inst)
         event_server_data("lavaarena", "prefabs/wx78").master_postinit(inst)
     elseif TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "prefabs/wx78").master_postinit(inst)
+    else
+        inst.components.combat.customdamagemultfn = CustomCombatDamage
     end
 end
 

@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "Someone's rubbish.",
 
 			CANNOT_FIX_DRONE = "There's no fixing it.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "Of all the things I've eaten here, this takes the cake.",
             GENERIC = "Not that I'd want to, but it's too dry to eat.",
         },
+
+        WX78_POSSESSEDBODY = "Stay back, you abomination!",
+
+        WX78_GESTALTTRAPPER = "I hope that's not what I think it is.",
+
+        SHADOW_HEART_VEIN = "The malice grows with each beat.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

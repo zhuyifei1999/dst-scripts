@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "Not mine",
 
 			CANNOT_FIX_DRONE = "Bye robot friend",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6101,6 +6103,12 @@ return{
             WET = "Food from robot friend!",
             GENERIC = "Too hard!",
         },
+
+        WX78_POSSESSEDBODY = "Not robot friend?",
+
+        WX78_GESTALTTRAPPER = "Make more robot friend",
+
+        SHADOW_HEART_VEIN = "Cold friend gift?",
     },
 
     DESCRIBE_GENERIC = "Friend?",

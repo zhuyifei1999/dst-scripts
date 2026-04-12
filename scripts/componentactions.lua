@@ -1156,10 +1156,12 @@ local COMPONENT_ACTIONS =
                                         if TheNet:GetPVPEnabled() or
                                             (target:HasTag("strongstomach") and inst:HasTag("monstermeat")) or
                                             (inst:HasTag("spoiled") and target:HasTag("ignoresspoilage") and not
-                                                (inst:HasTag("badfood") or inst:HasTag("unsafefood"))) or not -- ignoresspoilage still checks for unsage foods
-                                            (inst:HasTag("badfood") or inst:HasTag("unsafefood") or inst:HasTag("spoiled")) then
+                                                inst:HasAnyTag("badfood", "unsafefood")) or not -- ignoresspoilage still checks for unsage foods
+                                            inst:HasAnyTag("badfood", "unsafefood", "spoiled") then
                                             table.insert(actions, ACTIONS.FEEDPLAYER)
                                         end
+                                    elseif target:HasTag("possessedbody") then -- No limitations, you're in full control of what you feed to them.
+                                        table.insert(actions, ACTIONS.FEEDPLAYER)
                                     elseif (target:HasTag("small_livestock") or ishandfed)
                                         and target.replica.inventoryitem ~= nil
                                         and target.replica.inventoryitem:IsHeld() then
@@ -1180,10 +1182,12 @@ local COMPONENT_ACTIONS =
                                 if TheNet:GetPVPEnabled() or
                                     (target:HasTag("strongstomach") and inst:HasTag("monstermeat")) or
                                     (inst:HasTag("spoiled") and target:HasTag("ignoresspoilage") and not
-                                        (inst:HasTag("badfood") or inst:HasTag("unsafefood"))) or not -- ignoresspoilage still checks for unsage foods
-                                    (inst:HasTag("badfood") or inst:HasTag("unsafefood") or inst:HasTag("spoiled")) then
+                                        inst:HasAnyTag("badfood", "unsafefood")) or not -- ignoresspoilage still checks for unsage foods
+                                    inst:HasAnyTag("badfood", "unsafefood", "spoiled") then
                                     table.insert(actions, ACTIONS.FEEDPLAYER)
                                 end
+                            elseif target:HasTag("possessedbody") then -- No limitations, you're in full control of what you feed to them.
+                                table.insert(actions, ACTIONS.FEEDPLAYER)
                             elseif (target:HasTag("small_livestock") or ishandfed)
                                 and target.replica.inventoryitem ~= nil
                                 and target.replica.inventoryitem:IsHeld() then
@@ -2972,9 +2976,23 @@ local COMPONENT_ACTIONS =
         end,
 
         useabletargeteditem = function(inst, doer, actions, right)
-            if inst:HasTag("useabletargeteditem_inventorydisable")
-                    and inst:HasTag("inuse_targeted") then
+            if inst:HasTag("useabletargeteditem_inventorydisable") and inst:HasTag("inuse_targeted") then
                 table.insert(actions, ACTIONS.STOPUSINGITEM)
+            elseif inst:HasTag("useabletargateditem_canselftarget") then
+                local target = doer
+                if target and not inst:HasTag("inuse_targeted") and
+                    (	(inst.UseableTargetedItem_ValidTarget and inst:UseableTargetedItem_ValidTarget(target, doer)) or
+                        (target.prefab and inst:HasTag(target.prefab.."_targeter"))
+                    )
+                then
+                    if not inst:HasTag("useabletargeteditem_mounted") then
+                        local rider = doer.replica.rider
+                        if rider and rider:IsRiding() then
+                            return --this item isn't allowed to be used while mounted
+                        end
+                    end
+                    table.insert(actions, ACTIONS.USEITEMON)
+                end
             end
         end,
 

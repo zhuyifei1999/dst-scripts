@@ -16,7 +16,7 @@ nil,
     canbehitched = onhitchable,
 })
 
-function onnewtarget(inst)
+local function onnewtarget(inst)
 	inst.components.hitchable:Unhitch()
 end
 

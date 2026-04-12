@@ -5851,7 +5851,7 @@ function Tune(overrides)
 
         TREEGROWTH_NUTRIENTS            = {  8, 32,  8 },
 
-        WX78_FOODBRICK_NUTRIENTS        = {  0, 24,  0 },
+        WX78_FOODBRICK_NUTRIENTS        = {  0, 32,  0 },
 
 		WORMWOOD_MANURE_HEAL_VALUES = { 2, 3, 8, 12 },
 
@@ -7458,7 +7458,7 @@ function Tune(overrides)
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
                 MAXSANITY1_DAPPERNESS_MULT = 0.10,
                 MAXSANITY_DAPPERNESS_MULT = 0.25,
-                BEE_SHIELD_REGEN_PER_SECOND = 0.07,
+                BEE_SHIELD_REGEN_PER_SECOND = 0.25,
                 BEE_SHIELDPERCENT = 0.2, -- how much shield dependant on max health.
 
                 -- wx78_circuitry_betabuffs_1
@@ -7515,6 +7515,47 @@ function Tune(overrides)
                 -- wx78_zapdrone_2
 				ZAPDRONE_USE_PER_ATTACK_2 = 1,
 				ZAPDRONE_RANGE_2 = 30,
+
+                -- wx78_allegiance_lunar
+                ALLEGIANCE_LUNAR_RESIST = 0.9,
+                ALLEGIANCE_VS_SHADOW_BONUS = 1.1,
+                POSSESSEDBODY_TARGET_DIST = 10,
+
+                POSSESSEDBODY_LUNAR_RESIST = 0.9,
+                POSSESSEDBODY_VS_SHADOW_BONUS = 1.1,
+                POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.5,
+                POSSESSEDBODY_DAMAGE_MULT = 0.5,
+                POSSESSEDBODY_PLANAR_DAMAGE_MULT = 0.5,
+                POSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.25,
+
+                PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.25,
+                PLANARPOSSESSEDBODY_DAMAGE_MULT = 0.5,
+                PLANARPOSSESSEDBODY_PLANAR_DAMAGE_MULT = 1,
+                PLANARPOSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.5,
+
+                -- wx78_allegiance_shadow
+                ALLEGIANCE_SHADOW_RESIST = 0.9,
+                ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
+                -- SOCKETQUALITY.LOW
+                HARVEST_PASSIVE_TICK_PERIOD = 1,
+                HARVEST_RADIUS = 6,
+                HARVEST_TRAVEL_SPEED = 4,
+                HARVEST_MAX_TENDRILS = 3,
+                -- SOCKETQUALITY.MEDIUM
+                SHADOWHEART_PASSIVE_TICK_PERIOD = 0.5,
+                SHADOWHEART_DEBUFF_RADIUS = 4,
+                SHADOWHEART_DEBUFF_TIME = 30,
+                SHADOWHEART_DAMAGEMULT = 1.25,
+                SHADOWHEART_WORK_NEEDED = 2,
+                SHADOWHEART_SPAWN_PERIOD = seg_time * 4,
+                SHADOWHEART_SPAWN_VARIANCE = seg_time,
+                SHADOWHEART_SPAWN_DENSITY_RANGE = 5, -- Should be <= HARVEST_RADIUS above.
+                SHADOWHEART_SPAWN_DENSITY_MAX = 4,
+                -- SOCKETQUALITY.HIGH
+                MIMICHEART_SPAWN_PERIOD = seg_time * 6,
+                MIMICHEART_SPAWN_VARIANCE = seg_time * 2,
+                MIMICHEART_SPAWN_DENSITY_RANGE = 8,
+                MIMICHEART_SPAWN_DENSITY_MAX = 2,
             }
         },
 
@@ -9326,21 +9367,26 @@ function Tune(overrides)
         WX78_SCREECH_PANIC_TIME = 8,
         WX78_SCREECH_TIME = 2,
         WX78_SCREECH_TIME_VAR = FRAMES * 10,
-        WX78_SCREECH_COOLDOWN = seg_time,
+        WX78_SCREECH_COOLDOWN = 20,
 
         WX78_DIGESTION_SPOILED_NEEDED = 5, -- number needed to produce the brick.
 
         WX78_SHIELDING_ARMOR = 0.2, -- 80%
-        WX78_SHIELDING_COOLDOWN = seg_time * 2,
+        WX78_SHIELDING_COOLDOWN = 20,
         WX78_SHIELDING_TOTAL_DAMAGE = 100, -- we can take 100 damage before getting knocked out the state.
         WX78_SHIELDING_MIN_TIME_COOLDOWN = 5, -- Minimum number of time we can be in the state before going off cooldown.
         -- WX78_SHIELDING_COOLDOWN = 30,
 
-		WX78_SPIN_TOOL_EFFICIENCY = 0.5,
+		WX78_SPIN_AOE_DIMINISHING = 0.5,
+		WX78_SPIN_EFFICIENCY_DECAY = 0.5,
+		WX78_SPIN_EFFICIENCY_DECAY_2 = 0, --0 mult means only 1 target costs usage per swing
+		WX78_SPIN_PICK_EFFICIENCY = 0.2, --base mult for picking
 		WX78_SPIN_RUNSPEED_MULT = 0.6, --mult of current runspeed (including any speed boosts)
 		WX78_SPIN_RADIUS = 2.1,
-		WX78_SPIN_START_RANGE = 4,
+		WX78_SPIN_START_RANGE = 3, --for attacks, start wind-up a bit early
 		WX78_SPIN_TIME_TO_DIZZY = 8,
+		WX78_SPIN_TIME_TO_DIZZY_2 = 12,
+		WX78_SPIN_DIZZY_RECOVER_TIME = 4,
 
         WX78_FOODBRICK_FERTILIZE = day_time*0.75,
         WX78_FOODBRICK_SOILCYCLES = 8,

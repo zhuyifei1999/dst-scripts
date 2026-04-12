@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "It does not belong to me.",
 
 			CANNOT_FIX_DRONE = "It is simply irreparable.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "The automaton has reconstituted spoiled food matter into a compact edible brick.",
             GENERIC = "The nutrient brick is inedible in its desicated form.",
         },
+
+        WX78_POSSESSEDBODY = "It's a straightforward instance of spectral machina possession, nothing more.",
+
+        WX78_GESTALTTRAPPER = "It's been reconfigured to permit direct transfer of the entity into the chassis.",
+
+        SHADOW_HEART_VEIN = "This magic is growing too strong.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

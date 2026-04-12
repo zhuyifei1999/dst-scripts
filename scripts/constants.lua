@@ -2998,7 +2998,7 @@ SKINUNLOCKS = {
     CRAFTINGSTATION = 2,
 }
 
-CIRCUIT_BARS =
+CIRCUIT_BARS = -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
 {
     ALPHA = 0,
     BETA = 1,
@@ -3009,4 +3009,12 @@ for name, i in pairs(CIRCUIT_BARS) do
     CIRCUIT_BARS_LOOKUP[i] = name
 end
 
-MAX_CIRCUIT_SLOTS = 7
+MAX_CIRCUIT_SLOTS = 7 -- NOTES(JBK): Keep this value updated in export_accountitems.lua [EAITAB]
+
+SOCKETQUALITY = {
+    NONE = 0,
+    LOW = 1,
+    MEDIUM = 2,
+    HIGH = 3,
+}
+SOCKETQUALITY_MAXVALUE = table.count(SOCKETQUALITY)

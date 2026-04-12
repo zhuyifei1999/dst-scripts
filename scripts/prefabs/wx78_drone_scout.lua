@@ -14,20 +14,24 @@ local prefabs =
 
 --------------------------------------------------------------------------
 
-local function CreateDecal()
+local function CreateDecal(skin_build)
 	local inst = CreateEntity()
 
 	inst:AddTag("FX")
 	inst:AddTag("NOCLICK")
 	--[[Non-networked entity]]
-	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	inst.entity:SetCanSleep(TheWorld.ismastersim)
 	inst.persists = false
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 
 	inst.AnimState:SetBank("wx78_drone_scout")
-	inst.AnimState:SetBuild("wx78_drone_scout")
+	if skin_build ~= 0 then
+		inst.AnimState:SetSkin(skin_build, "wx78_drone_scout")
+	else
+		inst.AnimState:SetBuild("wx78_drone_scout")
+	end
 	inst.AnimState:PlayAnimation("scan_decal", true)
 	inst.AnimState:SetLightOverride(0.15)
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
@@ -47,7 +51,7 @@ local function Beam_OnRemoveEntity(inst)
 	inst.decal:Remove()
 end
 
-local function CreateBeam()
+local function CreateBeam(skin_build)
 	local inst = CreateEntity()
 
 	inst:AddTag("DECOR")
@@ -60,12 +64,16 @@ local function CreateBeam()
 	inst.entity:AddAnimState()
 
 	inst.AnimState:SetBank("wx78_drone_scout")
-	inst.AnimState:SetBuild("wx78_drone_scout")
+	if skin_build ~= 0 then
+		inst.AnimState:SetSkin(skin_build, "wx78_drone_scout")
+	else
+		inst.AnimState:SetBuild("wx78_drone_scout")
+	end
 	inst.AnimState:PlayAnimation("scan_projection", true)
 	inst.AnimState:SetFinalOffset(-1)
 	inst.AnimState:SetLightOverride(0.15)
 
-	inst.decal = CreateDecal()
+	inst.decal = CreateDecal(skin_build)
 
 	inst:AddComponent("updatelooper")
 	inst.components.updatelooper:AddPostUpdateFn(Beam_PostUpdate)
@@ -78,7 +86,7 @@ end
 local function OnScanningDirty(inst)
 	if inst.scanning:value() then
 		if inst.beam == nil then
-			inst.beam = CreateBeam()
+			inst.beam = CreateBeam(inst.build:value())
 			inst.beam.entity:SetParent(inst.entity)
 		end
 	elseif inst.beam then
@@ -244,6 +252,23 @@ local function OnEntitySleep(inst)
 	inst.SoundEmitter:KillSound("idle")
 end
 
+local function OnBuildDirty(inst)
+	if inst.beam then
+		if inst.build:value() == 0 then
+			inst.beam.AnimState:SetBuild("wx78_drone_scout")
+			inst.beam.decal.AnimState:SetBuild("wx78_drone_scout")
+		else
+			inst.beam.AnimState:SetSkin(inst.build:value(), "wx78_drone_scout")
+			inst.beam.decal.AnimState:SetSkin(inst.build:value(), "wx78_drone_scout")
+		end
+	end
+end
+
+local function OnDroneScoutSkinChanged(inst, skin_build)
+	inst.build:set(skin_build or 0)
+	OnBuildDirty(inst)
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -263,6 +288,7 @@ local function fn()
     inst:AddTag("staysthroughvirtualrooms")
 
 	inst.scanning = net_bool(inst.GUID, "wx78_drone_scout.scanning", "scanningdirty")
+	inst.build = net_hash(inst.GUID, "wx78_drone_scout.build", "builddirty")
 
 	inst:AddComponent("spawnfader")
 
@@ -270,6 +296,7 @@ local function fn()
 
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("scanningdirty", OnScanningDirty)
+		inst:ListenForEvent("builddirty", OnBuildDirty)
 
 		return inst
 	end
@@ -294,6 +321,7 @@ local function fn()
 
 	inst.OnEntityWake = OnEntityWake
 	inst.OnEntitySleep = OnEntitySleep
+	inst.OnDroneScoutSkinChanged = OnDroneScoutSkinChanged
 
 	return inst
 end

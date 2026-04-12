@@ -1,9 +1,13 @@
+local WX78Common = require("prefabs/wx78_common")
+
 local SPACER = 40
 local TEXT_SPACER = SPACER * 0.75
 local LOCK_SPACER = SPACER * 0.85
 
+local BIG_GEAR_SHIFT = SPACER * 0.05
+
 local ORIGIN_CIRCUITRY_X = -149 -- Bigger top gear.
-local ORIGIN_CIRCUITRY_Y = 105
+local ORIGIN_CIRCUITRY_Y = 105 + BIG_GEAR_SHIFT
 
 local ORIGIN_CIRCUITRY_FLOATING_1_X = -203 -- Left most floating gear moving right.
 local ORIGIN_CIRCUITRY_FLOATING_1_Y = 56
@@ -17,7 +21,7 @@ local ORIGIN_CIRCUITRY_FLOATING_4_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y - 41
 local ORIGIN_CHASSIS_SMALL_X = 25 -- Small bottom gear.
 local ORIGIN_CHASSIS_SMALL_Y = 16
 local ORIGIN_CHASSIS_BIG_X = ORIGIN_CHASSIS_SMALL_X -- Bigger top gear.
-local ORIGIN_CHASSIS_BIG_Y = ORIGIN_CHASSIS_SMALL_Y + 65
+local ORIGIN_CHASSIS_BIG_Y = ORIGIN_CHASSIS_SMALL_Y + 65 + BIG_GEAR_SHIFT
 
 -- Inside middle medium gear.
 local ORIGIN_DRONES_X = 165
@@ -66,21 +70,26 @@ local function CheckCircuitSlotStatesInBody(item, player)
     end
 end
 
+local function ActivateGestaltTrapSocketsInBody(item, player)
+    WX78Common.ActivateSocketsIn(item, 1, "socket_gestalttrapper")
+end
+
+local function DeactivateGestaltTrapSocketsInBody(item, player)
+    WX78Common.DeactivateSocketsIn(item, 1)
+end
+
+local function ActivateShadowSocketsInBody(item, player)
+    WX78Common.ActivateSocketsIn(item, 1, "socket_shadow")
+end
+
+local function DeactivateSocketsInBody(item, player)
+    WX78Common.DeactivateSocketsIn(item, 1)
+end
+
 -- FIXME(JBK): WX: Final pass: Rename icons to skill tree skill names.
 
 local function BuildSkillsData(SkillTreeFns)
     local skills = {
-        -- FIXME(JBK): WX: Remove these temporary beta locks!
-        wx78_beta_lock = {
-            desc = "Coming soon.",
-            pos = {ORIGIN_ALLEGIANCE_X - LOCK_SPACER * 0.5, ORIGIN_ALLEGIANCE_Y - LOCK_SPACER * 0.5},
-            group = GROUPS.ALLEGIANCE,
-            tags = {"lock"},
-            root = true,
-            lock_open = function(prefabname, activatedskills, readonly)
-                return false
-            end,
-        },
         ------------------------------------------------------------------------------------------------------------------------
         -- CIRCUITRY
         ------------------------------------------------------------------------------------------------------------------------
@@ -103,6 +112,9 @@ local function BuildSkillsData(SkillTreeFns)
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             root = true,
+            forced_focus = {
+                up = "wx78_circuitry_betabuffs_1",
+            },
 
             onactivate = function(inst, fromload)
                 if not fromload then
@@ -147,12 +159,15 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_1_DESC,
             icon = "wx78_circuit_alpha_1",
-            pos = {ORIGIN_CIRCUITRY_X - SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 0.5},
+            pos = {ORIGIN_CIRCUITRY_X - SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             root = true,
             connects = {
                 "wx78_circuitry_alphabuffs_2",
+            },
+            forced_focus = {
+                down = "wx78_circuitry_halfmoduleuses",
             },
         },
 
@@ -160,7 +175,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_2_DESC,
             icon = "wx78_circuit_alpha_2",
-            pos = {ORIGIN_CIRCUITRY_X - SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 1.5},
+            pos = {ORIGIN_CIRCUITRY_X - SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             connects = {
@@ -178,6 +193,9 @@ local function BuildSkillsData(SkillTreeFns)
             root = true,
             connects = {
                 "wx78_circuitry_betabuffs_2",
+            },
+            forced_focus = {
+                down = "wx78_circuitry_fastercharge",
             },
         },
 
@@ -197,12 +215,16 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_DESC,
             icon = "wx78_circuit_gamma_1",
-            pos = {ORIGIN_CIRCUITRY_X + SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 0.5},
+            pos = {ORIGIN_CIRCUITRY_X + SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             root = true,
             connects = {
                 "wx78_circuitry_gammabuffs_2",
+            },
+            forced_focus = {
+                down = "wx78_circuitry_unpluganycircuit",
+                right = "wx78_extrabody_2",
             },
         },
 
@@ -210,7 +232,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_2_DESC,
             icon = "wx78_circuit_gamma_2",
-            pos = {ORIGIN_CIRCUITRY_X + SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 1.5},
+            pos = {ORIGIN_CIRCUITRY_X + SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             connects = {
@@ -273,7 +295,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_DESC,
             icon = "wx78_ghost_revive_2",
-            pos = {ORIGIN_CHASSIS_BIG_X + SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5},
+            pos = {ORIGIN_CHASSIS_BIG_X + SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
             connects = {
@@ -284,7 +306,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_DESC,
             icon = "wx78_ghost_revive_3",
-            pos = {ORIGIN_CHASSIS_BIG_X + SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5},
+            pos = {ORIGIN_CHASSIS_BIG_X + SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
         },
@@ -292,7 +314,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_DESC,
             icon = "wx78_body_plus_one",
-            pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5},
+            pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS, "wx78_maxbody"},
             connects = {
@@ -303,9 +325,12 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_DESC,
             icon = "wx78_body_plus_one",
-            pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5},
+            pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS, "wx78_maxbody"},
+            forced_focus = {
+                left = "wx78_circuitry_gammabuffs_2",
+            },
             connects = {
                 "wx78_remotebodyswap",
             },
@@ -370,6 +395,9 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wx78_deliverydrone_2",
             },
+            forced_focus = {
+                right = "wx78_deliverydrone_2",
+            },
         },
         wx78_deliverydrone_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_2_TITLE,
@@ -378,6 +406,11 @@ local function BuildSkillsData(SkillTreeFns)
             pos = {ORIGIN_DRONES_TOPRIGHT_X, ORIGIN_DRONES_TOPRIGHT_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
+            forced_focus = {
+                up = "wx78_allegiance_shadow",
+                down = "wx78_zapdrone_1",
+                left = "wx78_deliverydrone_1",
+            },
         },
         wx78_zapdrone_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_TITLE,
@@ -391,6 +424,10 @@ local function BuildSkillsData(SkillTreeFns)
 			ondeactivate = function(inst) inst:RemoveTag("drone_zap_user") end,
             connects = {
                 "wx78_zapdrone_2",
+            },
+            forced_focus = {
+                up = "wx78_deliverydrone_2",
+                down = "wx78_zapdrone_2",
             },
         },
         wx78_zapdrone_2 = {
@@ -411,7 +448,10 @@ local function BuildSkillsData(SkillTreeFns)
             tags = {"allegiance", "lock"},
             root = true,
             lock_open = function(prefabname, activatedskills, readonly)
-                if true then return false end -- FIXME(JBK): WX: Remove this temporary lock!
+                local maxbodies = SkillTreeFns.CountTags(prefabname, "wx78_maxbody", activatedskills)
+                if maxbodies == 0 then
+                    return false
+                end
 
                 local shadow_skills = SkillTreeFns.CountTags(prefabname, "shadow_favor", activatedskills)
                 if shadow_skills > 0 then
@@ -428,20 +468,47 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_allegiance_lunar = {
             title = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_DESC,
-            --icon = "wx78_allegiance_lunar",
+            icon = "wx78_lunar",
             pos = {ORIGIN_ALLEGIANCE_X - 53, ORIGIN_ALLEGIANCE_Y},
             group = GROUPS.ALLEGIANCE,
             tags = {"lunar_favor", "allegiance"},
-            locks = {"wx78_allegiance_lunar_lock_1",
-                "wx78_beta_lock", -- FIXME(JBK): WX: Remove this temporary lock!
+            forced_focus = {
+                down = "wx78_deliverydrone_1",
             },
+            locks = {"wx78_allegiance_lunar_lock_1"},
             onactivate = function(inst)
                 inst:AddTag("player_lunar_aligned")
-                -- FIXME(JBK): WX: Perk.
+                if inst.components.damagetyperesist ~= nil then
+                    inst.components.damagetyperesist:AddResist("lunar_aligned", inst, TUNING.SKILLS.WX78.ALLEGIANCE_LUNAR_RESIST, "allegiance_lunar")
+                end
+                if inst.components.damagetypebonus ~= nil then
+                    inst.components.damagetypebonus:AddBonus("shadow_aligned", inst, TUNING.SKILLS.WX78.ALLEGIANCE_VS_SHADOW_BONUS, "allegiance_lunar")
+                end
+
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", ActivateGestaltTrapSocketsInBody)
+                end
             end,
             ondeactivate = function(inst)
                 inst:RemoveTag("player_lunar_aligned")
-                -- FIXME(JBK): WX: Perk.
+                if inst.components.damagetyperesist ~= nil then
+                    inst.components.damagetyperesist:RemoveResist("lunar_aligned", inst, "allegiance_lunar")
+                end
+                if inst.components.damagetypebonus ~= nil then
+                    inst.components.damagetypebonus:RemoveBonus("shadow_aligned", inst, "allegiance_lunar")
+                end
+
+                if inst.components.leader ~= nil then
+                    for k in pairs(inst.components.leader.followers) do
+                        if k:HasTag("possessedbody") then
+                            inst.components.leader:RemoveFollower(k)
+                        end
+                    end
+                end
+
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", DeactivateGestaltTrapSocketsInBody)
+                end
             end,
         },
         ------------------------------------------------------------------------------------------------------------------------
@@ -452,7 +519,10 @@ local function BuildSkillsData(SkillTreeFns)
             tags = {"allegiance", "lock"},
             root = true,
             lock_open = function(prefabname, activatedskills, readonly)
-                if true then return false end -- FIXME(JBK): WX: Remove this temporary lock!
+                local maxbodies = SkillTreeFns.CountTags(prefabname, "wx78_maxbody", activatedskills)
+                if maxbodies == 0 then
+                    return false
+                end
 
                 local lunar_skills = SkillTreeFns.CountTags(prefabname, "lunar_favor", activatedskills)
                 if lunar_skills > 0 then
@@ -469,20 +539,38 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_allegiance_shadow = {
             title = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC,
-            --icon = "wx78_allegiance_shadow",
+            icon = "wx78_shadow",
             pos = {ORIGIN_ALLEGIANCE_X + 50, ORIGIN_ALLEGIANCE_Y - 3},
             group = GROUPS.ALLEGIANCE,
             tags = {"shadow_favor", "allegiance"},
-            locks = {"wx78_shadow_allegiance_lock_1",
-                "wx78_beta_lock", -- FIXME(JBK): WX: Remove this temporary lock!
-            },
+            locks = {"wx78_shadow_allegiance_lock_1"},
             onactivate = function(inst)
                 inst:AddTag("player_shadow_aligned")
-                -- FIXME(JBK): WX: Perk.
+                if inst.components.damagetyperesist ~= nil then
+                    inst.components.damagetyperesist:AddResist("shadow_aligned", inst, TUNING.SKILLS.WX78.ALLEGIANCE_SHADOW_RESIST, "allegiance_shadow")
+                end
+                if inst.components.damagetypebonus ~= nil then
+                    inst.components.damagetypebonus:AddBonus("lunar_aligned", inst, TUNING.SKILLS.WX78.ALLEGIANCE_VS_LUNAR_BONUS, "allegiance_shadow")
+                end
+
+                WX78Common.ActivateSocketsIn(inst, 1, "socket_shadow")
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", ActivateShadowSocketsInBody)
+                end
             end,
             ondeactivate = function(inst)
                 inst:RemoveTag("player_shadow_aligned")
-                -- FIXME(JBK): WX: Perk.
+                if inst.components.damagetyperesist ~= nil then
+                    inst.components.damagetyperesist:RemoveResist("shadow_aligned", inst, "allegiance_shadow")
+                end
+                if inst.components.damagetypebonus ~= nil then
+                    inst.components.damagetypebonus:RemoveBonus("lunar_aligned", inst, "allegiance_shadow")
+                end
+
+                WX78Common.DeactivateSocketsIn(inst, 1)
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", DeactivateSocketsInBody)
+                end
             end,
         },
     }

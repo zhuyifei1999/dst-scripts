@@ -9,13 +9,14 @@ local assets = JoinArrays({
 }, WX78Common.DEPENDENCIES.assets)
 
 local prefabs = JoinArrays({
-    "wx78_classified",
-    "wx78_big_spark",
 	"wx78_backupbody_globalicon",
 	"wx78_backupbody_revealableicon",
     "explode_reskin",
     "collapse_small",
     "wx78_backupbody_inventory",
+    "wx78_possessedbody",
+    "wx78_heartveinspawner", -- socket_shadow_heart component
+    "wx78_mimicspawner", -- socket_shadow_mimicry component
 }, WX78Common.DEPENDENCIES.prefabs)
 
 local PHYSICS_RADIUS = 0.5
@@ -32,6 +33,10 @@ local function OnWorked(inst, worker)
 
     inst.wx78_backupbody_inventory.components.inventory:DropEverything()
     inst.components.container:DropEverything()
+    local items = inst.components.socketholder:UnsocketEverything()
+    for _, item in ipairs(items) do
+        inst.components.lootdropper:FlingItem(item)
+    end
     local modules = inst.components.upgrademoduleowner:PopAllModules()
     for _, onemodule in ipairs(modules) do
         inst.components.lootdropper:FlingItem(onemodule)
@@ -96,6 +101,20 @@ local function CheckCircuitSlotStatesFrom(inst, owner)
     inst.components.upgrademoduleowner:SetMaxCharge(inst._maxcharge)
 end
 
+local function CheckSocketStatesFrom(inst, owner)
+    if owner and owner.components.skilltreeupdater then
+        if owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow") then
+            WX78Common.ActivateSocketsIn(inst, 1, "socket_shadow")
+        elseif owner.components.skilltreeupdater:IsActivated("wx78_allegiance_lunar") then
+            WX78Common.ActivateSocketsIn(inst, 1, "socket_gestalttrapper")
+        else
+            WX78Common.DeactivateSocketsIn(inst, 1)
+        end
+    else
+        WX78Common.DeactivateSocketsIn(inst, 1)
+    end
+end
+
 local function TryToAttachToOwner(inst, owner)
     if owner == nil or owner.is_snapshot_user_session then
         return false
@@ -123,10 +142,36 @@ local function TryToAttachToOwner(inst, owner)
         end
         inst:CheckBetaCircuitStatesFrom(owner)
         inst:CheckCircuitSlotStatesFrom(owner)
+        inst:CheckSocketStatesFrom(owner)
         return true
     end
 
     return false
+end
+
+local function TryToSpawnPossessedBody(inst, isplanar)
+    local owner = inst.components.linkeditem:GetOwnerInst()
+    if owner == nil or owner.is_snapshot_user_session then
+        return false
+    end
+
+    if owner and owner.wx78_classified then
+        -- Remove this back up body before we spawn the possessed body to attach
+        owner.wx78_classified:TryToRemoveBackupBody(inst)
+    end
+
+    local possessedbody = SpawnPrefab("wx78_possessedbody")
+    possessedbody.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    possessedbody._hide_body_skinfx = true
+    possessedbody.components.follower:SetLeader(owner)
+    possessedbody.components.upgrademoduleowner:SwapUpgradeModules(inst.components.upgrademoduleowner)
+    possessedbody.components.skinner:CopySkinsFromPlayer(inst.wx78_backupbody_inventory, true)
+    possessedbody:SetIsPlanar(isplanar)
+    possessedbody:PushEventImmediate("possessed")
+
+    inst:Remove()
+
+    return true
 end
 
 local function OnBuiltFn(inst, builder)
@@ -157,6 +202,9 @@ end
 local function OnActivateFn(inst, doer)
     -- FIXME(JBK): WX: Make this code less in here and more in a component or component util file.
     inst.components.activatable.inactive = true -- FIXME(JBK): WX: Make this a task?
+
+    inst._backupbody_transferring = true
+    doer._backupbody_transferring = true
 
     local x, y, z = inst.Transform:GetWorldPosition()
     local x2, y2, z2 = doer.Transform:GetWorldPosition()
@@ -233,6 +281,46 @@ local function OnActivateFn(inst, doer)
         doer.components.inventory.ignoresound = false
     end
 
+    if doer.components.socketholder then
+        local maxslotstouse = math.min(inst.components.socketholder.maxsockets, doer.components.socketholder.maxsockets)
+        local itemsfrombody = inst.components.socketholder:UnsocketEverything()
+        local itemsfromplayer = doer.components.socketholder:UnsocketEverything()
+        for slot = 1, maxslotstouse do
+            local item = itemsfrombody[slot]
+            if item and not doer.components.socketholder:TryToSocket(item, doer) then
+                item.Transform:SetPosition(x, y, z)
+                if item.components.inventoryitem then
+                    item.components.inventoryitem:OnDropped(true)
+                end
+            end
+            item = itemsfromplayer[slot]
+            if item and not inst.components.socketholder:TryToSocket(item, doer) then
+                item.Transform:SetPosition(x2, y2, z2)
+                if item.components.inventoryitem then
+                    item.components.inventoryitem:OnDropped(true)
+                end
+            end
+        end
+        for slot = maxslotstouse + 1, inst.components.socketholder.maxsockets do
+            local item = itemsfrombody[slot]
+            if item then
+                item.Transform:SetPosition(x2, y2, z2)
+                if item.components.inventoryitem then
+                    item.components.inventoryitem:OnDropped(true)
+                end
+            end
+        end
+        for slot = maxslotstouse + 1, doer.components.socketholder.maxsockets do
+            local item = itemsfromplayer[slot]
+            if item then
+                item.Transform:SetPosition(x2, y2, z2)
+                if item.components.inventoryitem then
+                    item.components.inventoryitem:OnDropped(true)
+                end
+            end
+        end
+    end
+
     if doer.components.skinner then
         local skindata = deepcopy(inst.wx78_backupbody_inventory.components.skinner:OnSave())
         inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(doer, true)
@@ -271,6 +359,9 @@ local function OnActivateFn(inst, doer)
     end
     inst:PushEvent("teleported")
     doer:PushEvent("teleported")
+
+    inst._backupbody_transferring = nil
+    doer._backupbody_transferring = nil
     return true
 end
 
@@ -312,9 +403,11 @@ local function OnSkillTreeInitializedFn(inst, owner)
             linkeditem:LinkToOwnerUserID(nil)
         end
         inst:TryToDeactivateBetaCircuitStates()
+        WX78Common.DeactivateSocketsIn(inst, 1)
     else
         inst:CheckBetaCircuitStatesFrom(owner)
         inst:CheckCircuitSlotStatesFrom(owner)
+        inst:CheckSocketStatesFrom(owner)
     end
 end
 local function OnOwnerInstCreatedFn(inst, owner)
@@ -470,7 +563,7 @@ local function fn()
     MakeSmallObstaclePhysics(inst, PHYSICS_RADIUS)
     inst:SetPhysicsRadiusOverride(PHYSICS_RADIUS)
 
-    inst.Transform:SetFourFaced()
+    inst.Transform:SetNoFaced()
 
     WX78Common.SetupUpgradeModuleOwnerInstanceFunctions(inst)
 
@@ -552,10 +645,12 @@ local function fn()
 
     inst.OnBuiltFn = OnBuiltFn
     inst.TryToAttachToOwner = TryToAttachToOwner
+    inst.TryToSpawnPossessedBody = TryToSpawnPossessedBody
     inst.TryToActivateBetaCircuitStates = TryToActivateBetaCircuitStates
     inst.TryToDeactivateBetaCircuitStates = TryToDeactivateBetaCircuitStates
     inst.CheckBetaCircuitStatesFrom = CheckBetaCircuitStatesFrom
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
+    inst.CheckSocketStatesFrom = CheckSocketStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
@@ -610,6 +705,9 @@ local function fn_inventory()
     inst.AnimState:PlayAnimation("wx_chassis_idle")
 
     inst.DynamicShadow:SetSize(1.3, .6)
+
+    inst.AnimState:Hide("shad_veins")
+    inst.AnimState:Hide("trapper")
 
 	WX78Common.AddHeatSteamFx_Common(inst, true) --true for no facings
 

@@ -312,6 +312,7 @@ HapticEffects =
 	{ event="WX_rework/tube/HUD_off", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0, category="PLAYER" },		
 	{ event="WX_rework/bee_shield/activate", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0, category="PLAYER" },	
 	{ event="WX_rework/bee_shield/break", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0, category="PLAYER" },	
+	{ event="WX_rework/screech/loop", vibration=true, audio=true, vibration_intensity=25.0, audio_intensity=2.0, category="PLAYER" },		
 	
 	-- character specific effects end ----------------------------------------------------------------------------------------------------------------
 	-- player effects end ----------------------------------------------------------------------------------------------------------------------------

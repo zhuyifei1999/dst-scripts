@@ -1120,6 +1120,78 @@ wx78_scanner_item_clear_fn = wx78_scanner_clear_fn
 wx78_scanner_succeeded_init_fn = wx78_scanner_init_fn
 wx78_scanner_succeeded_clear_fn = wx78_scanner_clear_fn
 
+wx78_drone_scout_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "wx78_drone_scout")
+	if not TheWorld.ismastersim then
+		return
+	end
+	inst:OnDroneScoutSkinChanged(build_name)
+end
+
+wx78_drone_scout_clear_fn = function(inst)
+	basic_clear_fn(inst, "wx78_drone_scout")
+	inst:OnDroneScoutSkinChanged(nil)
+end
+
+wx78_drone_delivery_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "wx78_drone_delivery")
+end
+wx78_drone_delivery_clear_fn = function(inst)
+	basic_clear_fn(inst, "wx78_drone_delivery")
+end
+
+wx78_drone_delivery_item_init_fn = function(inst, build_name)
+	inst.linked_skinname = build_name
+	basic_init_fn(inst, build_name, "wx78_drone_delivery")
+end
+wx78_drone_delivery_item_clear_fn = function(inst)
+	inst.linked_skinname = nil
+	basic_clear_fn(inst, "wx78_drone_delivery")
+end
+
+
+wx78_drone_delivery_small_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "wx78_drone_delivery_small")
+end
+wx78_drone_delivery_small_clear_fn = function(inst)
+	basic_clear_fn(inst, "wx78_drone_delivery_small")
+end
+
+
+wx78_drone_delivery_small_item_init_fn = function(inst, build_name)
+	inst.linked_skinname = build_name
+	basic_init_fn(inst, build_name, "wx78_drone_delivery_small")
+end
+wx78_drone_delivery_small_item_clear_fn = function(inst)
+	inst.linked_skinname = nil
+	basic_clear_fn(inst, "wx78_drone_delivery_small")
+end
+
+
+wx78_drone_zap_init_fn = function(inst, build_name)
+	inst.linked_skinname = build_name
+	basic_init_fn(inst, build_name, "wx78_drone_zap")
+	if inst.OnDroneZapSkinChanged then
+		inst:OnDroneZapSkinChanged(build_name)
+	end
+end
+wx78_drone_zap_clear_fn = function(inst)
+	inst.linked_skinname = nil
+	basic_clear_fn(inst, "wx78_drone_zap")
+	if inst.OnDroneZapSkinChanged then
+		inst:OnDroneZapSkinChanged(nil)
+	end
+end
+wx78_drone_zap_remote_init_fn = wx78_drone_zap_init_fn
+wx78_drone_zap_remote_clear_fn = wx78_drone_zap_clear_fn
+
+wx78_moduleremover_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "wx78_moduleremover")
+end
+wx78_moduleremover_clear_fn = function(inst)
+	basic_clear_fn(inst, "wx78_moduleremover")
+end
+
 portableblender_init_fn = function(inst, build_name)
     inst.linked_skinname = build_name
     basic_init_fn(inst, build_name, "portable_blender")

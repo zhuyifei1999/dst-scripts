@@ -340,6 +340,7 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"wx78_drone_delivery_item",
 	"wx78_drone_delivery_small_item",
 	"wx78_drone_zap_remote",
+	"wx78_gestalttrapper",
 
 	"wx78module_maxhealth",
     "wx78module_maxhealth2",

@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "We aren't allowed to play with that.",
 
 			CANNOT_FIX_DRONE = "We can't fix it.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "A robot cake?",
             GENERIC = "It's sooooo dry!",
         },
+
+        WX78_POSSESSEDBODY = "Who's inside the robot?",
+
+        WX78_GESTALTTRAPPER = "Is it because they have no one to play with?",
+
+        SHADOW_HEART_VEIN = "That makes me feel even worse!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

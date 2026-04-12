@@ -1,3 +1,30 @@
+--global
+function ShouldPlayDangerMusic(player, target)
+	if target.replica.combat == nil then
+		return false
+	elseif (target:HasTag("prey") and not target:HasTag("hostile")) then
+		return false
+	elseif target:HasAnyTag(
+		"bird",
+		"butterfly",
+		"shadow",
+		"shadowchesspiece",
+		"noepicmusic",
+		"thorny",
+		"smashable",
+		"wall",
+		"engineering",
+		"smoldering",
+		"veggie")
+	then
+		return false
+	elseif target:HasAnyTag("shadowminion", "abigail", "possessedbody") then
+		local follower = target.replica.follower
+		return not (follower and follower:GetLeader() == player)
+	end
+	return true
+end
+
 --------------------------------------------------------------------------
 --[[ DynamicMusic class definition ]]
 --------------------------------------------------------------------------
@@ -635,35 +662,22 @@ end
 local function CheckAction(player)
     if player:HasTag("attack") then
         local target = player.replica.combat:GetTarget()
-        if target ~= nil and
-            target:HasTag("_combat") and
-            not ((target:HasTag("prey") and not target:HasTag("hostile")) or
-                target:HasTag("bird") or
-                target:HasTag("butterfly") or
-                target:HasTag("shadow") or
-                target:HasTag("shadowchesspiece") or
-                target:HasTag("noepicmusic") or
-                target:HasTag("thorny") or
-                target:HasTag("smashable") or
-                target:HasTag("wall") or
-                target:HasTag("engineering") or
-                target:HasTag("smoldering") or
-                target:HasTag("veggie")) then
-            if target:HasTag("shadowminion") or target:HasTag("abigail") then
-                local follower = target.replica.follower
-                if not (follower ~= nil and follower:GetLeader() == player) then
-                    StartDanger(player)
-                    return
-                end
-            else
-                StartDanger(player)
-                return
-            end
+		if target and ShouldPlayDangerMusic(player, target) then
+			StartDanger(player)
+			return
         end
     end
     if player:HasTag("working") then
         StartBusy(player)
     end
+end
+
+local function Wx_CheckSpinAction(player, isattack)
+	if isattack then
+		StartDanger(player)
+	else
+		StartBusy(player)
+	end
 end
 
 -- Keep NON_DANGER_TAGS in sync with player_classified NON_DANGER_TAGS
@@ -726,6 +740,7 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("playrideofthevalkyrie", StartRideoftheValkyrieMusic, player)
     inst:ListenForEvent("playboatracemusic", StartBoatRaceMusic, player)
 	inst:ListenForEvent("playbalatromusic", StartBalatroMusic, player)
+	inst:ListenForEvent("wx_performedspinaction", Wx_CheckSpinAction, player)
 end
 
 local function StopPlayerListeners(player)
@@ -750,6 +765,7 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("playrideofthevalkyrie", StartRideoftheValkyrieMusic, player)
     inst:RemoveEventCallback("playboatracemusic", StartBoatRaceMusic, player)
 	inst:RemoveEventCallback("playbalatromusic", StartBalatroMusic, player)
+	inst:RemoveEventCallback("wx_performedspinaction", Wx_CheckSpinAction, player)
 end
 
 local function OnPhase(inst, phase)

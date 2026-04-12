@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "'Tis not mine.'",
 
 			CANNOT_FIX_DRONE = "'Tis dead.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "A cursed loaf, born from the very innards of the metal warrior!",
             GENERIC = "Even Mjolnir could not crack this foul brick!",
         },
+
+        WX78_POSSESSEDBODY = "The metal warrior is truly possessed!",
+
+        WX78_GESTALTTRAPPER = "There is sorcery at work here.",
+
+        SHADOW_HEART_VEIN = "A bad omen to see that in any battle.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

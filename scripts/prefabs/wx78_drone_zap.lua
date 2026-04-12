@@ -11,7 +11,6 @@ local assets_remote =
 	Asset("ANIM", "anim/wx78_drone_zap.zip"),
 	Asset("ANIM", "anim/swap_wx78_drone_zap_remote.zip"),
 	Asset("INV_IMAGE", "wx78_drone_zap_remote_held"),
-	--Asset("INV_IMAGE", "wx78_drone_zap_remote_using"),
 }
 
 local prefabs =
@@ -23,6 +22,10 @@ local prefabs_remote =
 {
 	"wx78_drone_zap",
 }
+
+local function GetInventorySkinImage(skin_build)
+    return string.gsub(skin_build, "wx78_dronezap_", "wx78_dronezapremote_")
+end
 
 local function OnUpdate(inst, dt)
 	local owner = inst.owner:value()
@@ -176,6 +179,11 @@ local function fn()
 		return inst
 	end
 
+	inst.scrapbook_damage = TUNING.SKILLS.WX78.ZAPDRONE_DAMAGE * TUNING.ELECTRIC_DAMAGE_MULT --show dry damage, not immune damage
+	inst.scrapbook_nodamage = true -- This disables weapon damage, the above set scrapbook_damage still shows.
+
+	inst.reskin_tool_cannot_target_this = true --must reskin the remote
+
 	inst.AnimState:PushAnimation("idle")
 
 	inst:AddComponent("inspectable")
@@ -215,14 +223,22 @@ local function WatchSkillRefresh(inst, owner) -- Also listens for modules to inc
 end
 
 local function OnEquip(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", "swap_wx78_drone_zap_remote", "swap_drone_zap_remote")
-	owner.AnimState:OverrideSymbol("drone_zap_remote_parts", "swap_wx78_drone_zap_remote", "drone_zap_remote_parts")
+	local skin_build = inst:GetSkinBuild()
+	if skin_build then
+		owner:PushEvent("equipskinneditem", inst:GetSkinName())
+
+		owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_drone_zap_remote", inst.GUID, "swap_wx78_drone_zap_remote")
+		owner.AnimState:OverrideItemSkinSymbol("drone_zap_remote_parts", skin_build, "drone_zap_remote_parts", inst.GUID, "swap_wx78_drone_zap_remote")
+
+		inst.components.inventoryitem:ChangeImageName(GetInventorySkinImage(skin_build).."_held")
+	else
+		owner.AnimState:OverrideSymbol("swap_object", "swap_wx78_drone_zap_remote", "swap_drone_zap_remote")
+		owner.AnimState:OverrideSymbol("drone_zap_remote_parts", "swap_wx78_drone_zap_remote", "drone_zap_remote_parts")
+
+		inst.components.inventoryitem:ChangeImageName("wx78_drone_zap_remote_held")
+	end
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
-
-	--if not (inst.components.useableequippeditem and inst.components.useableequippeditem:IsInUse()) then
-		inst.components.inventoryitem:ChangeImageName("wx78_drone_zap_remote_held")
-	--end
 
 	WatchSkillRefresh(inst, owner)
 end
@@ -234,6 +250,12 @@ local function OnUnequip(inst, owner)
 
 	if inst.components.useableequippeditem and inst.components.useableequippeditem:IsInUse() then
 		inst.components.useableequippeditem:StopUsingItem(owner)
+	end
+
+	local skin_build = inst:GetSkinBuild()
+	if skin_build then
+		owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+		inst.components.inventoryitem:ChangeImageName(GetInventorySkinImage(skin_build))
 	else
 		inst.components.inventoryitem:ChangeImageName()
 	end
@@ -245,10 +267,10 @@ local function OnUse(inst, doer)
     if not IsFlyingPermittedFromPoint(doer.Transform:GetWorldPosition()) then
         return false, "BADPOSITION"
     end
-	--inst.components.inventoryitem:ChangeImageName("wx78_drone_zap_remote_using")
 
 	if inst.drone == nil then
-		inst.drone = SpawnPrefab("wx78_drone_zap")
+        local dronebuild = inst.linked_skinname and string.gsub(inst.linked_skinname, "wx78_dronezapremote_", "wx78_dronezap_") or nil
+		inst.drone = SpawnPrefab("wx78_drone_zap", dronebuild, inst.skin_id)
 		local x, y, z = inst.Transform:GetWorldPosition()
 		inst.drone.Transform:SetPosition(x, 1.5, z)
 		inst:ListenForEvent("ms_drone_zap_fired", function(drone)
@@ -264,8 +286,6 @@ local function OnUse(inst, doer)
 end
 
 local function OnStopUse(inst, doer)
-	--inst.components.inventoryitem:ChangeImageName(inst.components.equippable:IsEquipped() and "wx78_drone_zap_remote_held" or nil)
-
 	if inst.drone then
 		inst.drone:Kill()
 		inst.drone = nil
@@ -303,6 +323,17 @@ local function OnBatteryUsed(inst, battery, mult)
 	SpawnElectricHitSparks(inst, battery, true)
 
 	return true
+end
+
+local function OnDroneZapSkinChanged(inst, skin_build)
+	if inst.drone then
+		TheSim:ReskinEntity(inst.drone.GUID, inst.drone.skinname, inst.linked_skinname, inst.skin_id)
+	end
+	if skin_build then
+		inst.components.inventoryitem:ChangeImageName(inst.components.equippable:IsEquipped() and GetInventorySkinImage(skin_build).."_held" or GetInventorySkinImage(skin_build))
+	else
+		inst.components.inventoryitem:ChangeImageName(inst.components.equippable:IsEquipped() and "wx78_drone_zap_remote_held" or nil)
+	end
 end
 
 local function OnRemoveEntity(inst)
@@ -382,6 +413,7 @@ local function remotefn()
 		end
 	end
 
+	inst.OnDroneZapSkinChanged = OnDroneZapSkinChanged
 	inst.OnRemoveEntity = OnRemoveEntity
 
 	return inst

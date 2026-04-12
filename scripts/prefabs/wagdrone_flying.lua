@@ -239,6 +239,8 @@ local function fn()
 		return inst
 	end
 
+	inst.scrapbook_damage = TUNING.WAGDRONE_FLYING_DAMAGE * TUNING.ELECTRIC_DAMAGE_MULT --show dry damage, not immune damage
+
 	inst:AddComponent("inspectable")
 	inst.components.inspectable.getstatus = GetStatus
 

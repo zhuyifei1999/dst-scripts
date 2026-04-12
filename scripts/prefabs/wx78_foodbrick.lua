@@ -133,7 +133,7 @@ local function fn()
     inst:AddComponent("tradable")
 
     inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
+    inst.components.fuel.fuelvalue = TUNING.MED_LARGE_FUEL
 
     inst:AddComponent("edible")
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
@@ -143,6 +143,7 @@ local function fn()
 
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY)
+    inst.components.perishable:SetOnPerishFn(inst.Remove) -- If we don't set a perish replacement, it doesn't remove itself, so explicitly set this.
 
     MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
     MakeSmallPropagator(inst)

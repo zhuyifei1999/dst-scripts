@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "What do I care about that?",
 
 			CANNOT_FIX_DRONE = "Can't fix trash.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6104,6 +6106,12 @@ return{
             WET = "Gee thanks, WX.",
             GENERIC = "It would be like trying to eat an actual brick.",
         },
+
+        WX78_POSSESSEDBODY = "What's gotten into you?!",
+
+        WX78_GESTALTTRAPPER = "That WX is always up to something.",
+
+        SHADOW_HEART_VEIN = "Eww. Get away from me!",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

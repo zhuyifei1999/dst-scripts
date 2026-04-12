@@ -497,7 +497,8 @@ local function _CanEntitySeeInDark(inst)
         return inst.components.playervision:HasNightVision()
     end
     local inventory = inst.replica.inventory
-    return inventory ~= nil and inventory:EquipHasTag("nightvision")
+    return inst:HasTag("canseeindark")
+        or (inventory ~= nil and inventory:EquipHasTag("nightvision"))
 end
 
 function CanEntitySeeInDark(inst)

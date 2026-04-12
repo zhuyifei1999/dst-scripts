@@ -464,6 +464,8 @@ return {
 			NOT_MINE = "This belongs to someone else.",
 
 			CANNOT_FIX_DRONE = "It's too damaged to fix.",
+
+            GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6107,6 +6109,12 @@ return {
             WET = "It's a moist try!",
             GENERIC = "It's too hard to eat.",
         },
+
+        WX78_POSSESSEDBODY = "You're not yourself lately!",
+
+        WX78_GESTALTTRAPPER = "What possessed WX to do this?",
+
+        SHADOW_HEART_VEIN = "Science will make anything more useful.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

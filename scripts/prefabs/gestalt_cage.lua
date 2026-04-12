@@ -11,6 +11,7 @@ local assets_filled2 = {
 	Asset("ANIM", "anim/gestalt_cage.zip"),
     Asset("ANIM", "anim/wagdrone_flying.zip"),
 	Asset("INV_IMAGE", "gestalt_cage_filled2"),
+    Asset("INV_IMAGE", "gestalt_cage_filled2_planar"),
 }
 local assets_filled3 = {
 	Asset("ANIM", "anim/gestalt_cage.zip"),
@@ -287,7 +288,7 @@ end
 local function StartCapture(inst)
 	local level = inst.level
 
-	local anim = "success_"..tostring(level)
+	local anim = "success_"..tostring(level)..(inst.isplanar and "_planar" or "")
 	inst.Transform:SetFourFaced()
 	inst.AnimState:PlayAnimation("catch")
 	inst.AnimState:PushAnimation(anim)
@@ -315,6 +316,27 @@ local function StartCapture(inst)
 	end
 
 	inst:ListenForEvent("onputininventory", Filled_ClearFacingModel)
+end
+
+local function OnUsedOnChassis(inst, target, doer)
+	if inst:HasTag("irreplaceable") then
+		return false, "GESTALT_TOO_POWERFUL"
+	end
+
+	if target.TryToSpawnPossessedBody ~= nil and target:HasTag("possessable_chassis") then
+		target:TryToSpawnPossessedBody(inst.isplanar)
+		inst:Remove()
+		return true
+	end
+	return false
+end
+
+local function UseableTargetedItem_ValidTarget(inst, target, doer)
+	return target:HasTag("possessable_chassis")
+end
+
+local function GetUseItemOnVerb(inst, target, doer)
+	return "GESTALT_POSSESS"
 end
 
 local function Filled_GetStatus(inst, viewer)
@@ -369,6 +391,9 @@ local function filledfn1()
     inst.replacementprefab = "wagdrone_rolling"
     inst._custom_candeploy_fn = CLIENT_CanDeployGestaltCage -- for DEPLOYMODE.CUSTOM
 
+	inst.GetUseItemOnVerb = GetUseItemOnVerb
+	inst.UseableTargetedItem_ValidTarget = UseableTargetedItem_ValidTarget
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -385,6 +410,9 @@ local function filledfn1()
 	inst.components.inspectable.getstatus = Filled_GetStatus
 
     inst:AddComponent("tradable")
+
+	inst:AddComponent("useabletargeteditem")
+	inst.components.useabletargeteditem:SetOnUseFn(OnUsedOnChassis)
 
 	inst:AddComponent("inventoryitem")
 	inst:ListenForEvent("onputininventory", Filled_topocket)
@@ -418,6 +446,38 @@ local function filledfn1()
 	return inst
 end
 
+local function SetIsPlanar(inst, planar)
+	inst.isplanar = planar or nil
+
+	if planar then
+		inst.components.inventoryitem:ChangeImageName("gestalt_cage_filled2_planar")
+		if inst.AnimState:IsCurrentAnimation("success_2_loop") then
+			inst.AnimState:PlayAnimation("success_2_planar_loop", true)
+		end
+	else
+		inst.components.inventoryitem:ChangeImageName()
+		if inst.AnimState:IsCurrentAnimation("success_2_planar_loop") then
+			inst.AnimState:PlayAnimation("success_2_loop", true)
+		end
+	end
+end
+
+local function GetIsPlanar(inst)
+	return inst.isplanar
+end
+
+local function OnSave(inst, data)
+	data.isplanar = inst.isplanar
+end
+
+local function OnLoad(inst, data)
+	if data ~= nil then
+		if data.isplanar ~= nil then
+			inst:SetIsPlanar(true)
+		end
+	end
+end
+
 local function filledfn2()
 	local inst = CreateEntity()
 
@@ -434,6 +494,9 @@ local function filledfn2()
 	inst.AnimState:SetSymbolLightOverride("head_fx", 0.5)
 	inst.AnimState:SetSymbolLightOverride("backglowart", 0.3)
 	inst.AnimState:SetSymbolLightOverride("light_on", 0.5)
+    inst.AnimState:SetSymbolLightOverride("SparkleBit", 0.5)
+    inst.AnimState:SetSymbolLightOverride("pb_ray", 0.5)
+    inst.AnimState:SetSymbolLightOverride("pb_energy_loop", 0.5)
 	inst.AnimState:SetSymbolBloom("backglowart")
 	inst.AnimState:SetSymbolBloom("light_on")
 	inst.AnimState:SetSymbolMultColour("backglowart", 1, 1, 1, 0.6)
@@ -448,6 +511,9 @@ local function filledfn2()
 
     inst.replacementprefab = "wagdrone_flying"
     inst._custom_candeploy_fn = CLIENT_CanDeployGestaltCage -- for DEPLOYMODE.CUSTOM
+
+	inst.GetUseItemOnVerb = GetUseItemOnVerb
+	inst.UseableTargetedItem_ValidTarget = UseableTargetedItem_ValidTarget
 
 	inst.entity:SetPristine()
 
@@ -465,6 +531,9 @@ local function filledfn2()
 	inst.components.inspectable.getstatus = Filled_GetStatus
 
     inst:AddComponent("tradable")
+
+	inst:AddComponent("useabletargeteditem")
+	inst.components.useabletargeteditem:SetOnUseFn(OnUsedOnChassis)
 
 	inst:AddComponent("inventoryitem")
 	inst:ListenForEvent("onputininventory", Filled_topocket)
@@ -491,6 +560,12 @@ local function filledfn2()
 	inst.level = 2
 	SetLedStatusFlicker(inst)
 	inst.StartCapture = StartCapture
+
+	inst.SetIsPlanar = SetIsPlanar
+	inst.GetIsPlanar = GetIsPlanar
+
+	inst.OnSave = OnSave
+	inst.OnLoad = OnLoad
 
 	inst.OnEntitySleep = Filled_OnEntitySleep
 	inst.OnEntityWake = Filled_OnEntityWake
@@ -528,6 +603,9 @@ local function filledfn3()
     inst:AddTag("gestalt_cage_filled")
     inst:AddTag("irreplaceable")
 
+	inst.GetUseItemOnVerb = GetUseItemOnVerb
+	inst.UseableTargetedItem_ValidTarget = UseableTargetedItem_ValidTarget
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -544,6 +622,9 @@ local function filledfn3()
 	inst.components.inspectable.getstatus = Filled_GetStatus
 
     inst:AddComponent("tradable")
+
+	inst:AddComponent("useabletargeteditem")
+	inst.components.useabletargeteditem:SetOnUseFn(OnUsedOnChassis)
 
 	inst:AddComponent("inventoryitem")
 	inst:ListenForEvent("onputininventory", Filled_topocket)

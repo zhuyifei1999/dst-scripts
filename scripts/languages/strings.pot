@@ -2293,6 +2293,11 @@ msgctxt "STRINGS.ACTIONS.USEITEMON.GENERIC"
 msgid "Use On"
 msgstr ""
 
+#. STRINGS.ACTIONS.USEITEMON.GESTALT_POSSESS
+msgctxt "STRINGS.ACTIONS.USEITEMON.GESTALT_POSSESS"
+msgid "Transfer Gestalt"
+msgstr ""
+
 #. STRINGS.ACTIONS.USEITEMON.KITCOON_NAMETAG
 msgctxt "STRINGS.ACTIONS.USEITEMON.KITCOON_NAMETAG"
 msgid "Name"
@@ -2306,6 +2311,21 @@ msgstr ""
 #. STRINGS.ACTIONS.USEITEMON.SLINGSHOTMODKIT
 msgctxt "STRINGS.ACTIONS.USEITEMON.SLINGSHOTMODKIT"
 msgid "Mod"
+msgstr ""
+
+#. STRINGS.ACTIONS.USEITEMON.SOCKET_DEFAULT
+msgctxt "STRINGS.ACTIONS.USEITEMON.SOCKET_DEFAULT"
+msgid "Socket"
+msgstr ""
+
+#. STRINGS.ACTIONS.USEITEMON.SOCKET_GESTALTTRAPPER
+msgctxt "STRINGS.ACTIONS.USEITEMON.SOCKET_GESTALTTRAPPER"
+msgid "Install"
+msgstr ""
+
+#. STRINGS.ACTIONS.USEITEMON.SOCKET_SHADOW
+msgctxt "STRINGS.ACTIONS.USEITEMON.SOCKET_SHADOW"
+msgid "Implant"
 msgstr ""
 
 #. STRINGS.ACTIONS.USEITEMON.WAGDRONE_PARTS
@@ -5566,6 +5586,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It's too damaged to fix."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.GESTALT_TOO_POWERFUL
+msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.GESTALT_TOO_POWERFUL"
+msgid "only_used_by_wx78"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.NOT_MINE
@@ -18748,6 +18773,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "It would be unscientific of me not to at least do some experiments."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Science will make anything more useful."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHALLOW_GRAVE"
 msgid "Better you than me."
@@ -22953,6 +22983,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "It's a moist try!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "What possessed WX to do this?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Finite like that."
@@ -22971,6 +23006,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Obviously a very delicate and complicated scientific instrument."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "You're not yourself lately!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SCANNER.GENERIC
@@ -37418,6 +37458,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "Don't worry, I'm great at setting things up!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Wow, it's growing!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SHALLOW_GRAVE"
 msgid "Don't sniff around there, Woby."
@@ -41583,6 +41628,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Kinda mushy now, but that's okay!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "This must do something reaaally neat, Woby."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Wonder if WX wants all this stuff back."
@@ -41596,6 +41646,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Should I start carrying something like this in my first aid kit?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Is that a ghost in there, Woby! Amazing!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SCANNER.GENERIC
@@ -55928,6 +55983,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "I'll have it up and running in just a tick."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "And now growing..."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.SHALLOW_GRAVE"
 msgid "Must have been in a hurry."
@@ -60083,6 +60143,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "WX, how kind of you..."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "Madness..."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "I know better than to question the physics."
@@ -60096,6 +60161,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Did the automaton make off with one of my tools?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "That will never not give me the creeps."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SCANNER.GENERIC
@@ -73523,6 +73593,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "I'll just put these pieces together, and voilà!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Not even suitable for a pasta dish."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.SHALLOW_GRAVE"
 msgid "There was no effort here."
@@ -77678,6 +77753,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "It is most appalling."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "I don't even want to know."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "What did our metal friend leave here?"
@@ -77691,6 +77771,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Ah, I believe this utensil belongs to our metal friend."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Oh non, this is too much!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SCANNER.GENERIC
@@ -91843,6 +91928,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "Dare I toy with such a thing?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "A bad omen to see that in any battle."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHALLOW_GRAVE"
 msgid "They deserved better."
@@ -95998,6 +96088,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "A cursed loaf, born from the very innards of the metal warrior!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "There is sorcery at work here."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "What spoils hath our metal warrior bestowed?"
@@ -96011,6 +96106,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_MODULEREMOVER"
 msgid "I trust my ally knows what they are doing."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "The metal warrior is truly possessed!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SCANNER.GENERIC
@@ -110238,6 +110338,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "There is work to be done."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "The malice grows with each beat."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHALLOW_GRAVE"
 msgid "Fancy..."
@@ -114398,6 +114503,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Of all the things I've eaten here, this takes the cake."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "I hope that's not what I think it is."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "What do you mean it held more than my hat?!"
@@ -114411,6 +114521,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Nerves of steel, that one."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Stay back, you abomination!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SCANNER.GENERIC
@@ -128563,6 +128678,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "Where should we put it?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "That makes me feel even worse!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHALLOW_GRAVE"
 msgid "Aww. Did we know them?"
@@ -132718,6 +132838,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "A robot cake?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "Is it because they have no one to play with?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "It was forever in there."
@@ -132731,6 +132856,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_MODULEREMOVER"
 msgid "We're not sure that's safe..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Who's inside the robot?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SCANNER.GENERIC
@@ -146918,6 +147048,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "I suppose if I tried I could piece it together."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Even when it tries to escape something has to hold it down."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SHALLOW_GRAVE"
 msgid "What difference does it make?"
@@ -151073,6 +151208,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "I've eaten worse."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "I've thought about it too, Abby."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "I wonder what remains."
@@ -151086,6 +151226,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_MODULEREMOVER"
 msgid "What must it be like, to lose a piece of oneself and feel nothing?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Too bad Abby can't do the same."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SCANNER.GENERIC
@@ -165278,6 +165423,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "It cannot be utilized until its been assembled."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "This magic is growing too strong."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHALLOW_GRAVE"
 msgid "This is inadequate."
@@ -169433,6 +169583,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "The automaton has reconstituted spoiled food matter into a compact edible brick."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "It's been reconfigured to permit direct transfer of the entity into the chassis."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Once a repository whose capacity challenged the very laws of physics."
@@ -169446,6 +169601,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Do be careful with that, dear."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "It's a straightforward instance of spectral machina possession, nothing more."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SCANNER.GENERIC
@@ -183598,6 +183758,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "I have to put it together myself?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Eww. Get away from me!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHALLOW_GRAVE"
 msgid "Should have cremated them."
@@ -187758,6 +187923,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Gee thanks, WX."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "That WX is always up to something."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "What do I care about WX's old stuff?"
@@ -187771,6 +187941,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Let me try... hold still, WX!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "What's gotten into you?!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SCANNER.GENERIC
@@ -201998,6 +202173,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "Just needs a bit of elbow grease."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "This is even more twisted. What's it doing?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SHALLOW_GRAVE"
 msgid "They will be missed."
@@ -206163,6 +206343,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Machine processed food?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "Looks like WX repurposed the bossman's contraption."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Wonder what WX left behind."
@@ -206176,6 +206361,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Sheesh, they could just ask for my help!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "WX is getting into some weird stuff. Or it's the other way around."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SCANNER.GENERIC
@@ -220358,6 +220548,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "Is almost done!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Haha! Is shaking while Wolfgang flexes."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHALLOW_GRAVE"
 msgid "Wolfgang will remember you."
@@ -224513,6 +224708,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Thank you for snack, robot!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "Robot is tamper with powerful forces."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Any goodie for Wolfgang?"
@@ -224526,6 +224726,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Is funny robot thing."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Something extra creepy about robot."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SCANNER.GENERIC
@@ -238658,6 +238863,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "It won't do much good sitting there like that."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "I don't trust that it won't grab anything nearby."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHALLOW_GRAVE"
 msgid "Yup, they're dead."
@@ -242813,6 +243023,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Looks good?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "What is that robot up to now?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Anything good in there, Lucy?"
@@ -242826,6 +243041,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Guess that's one way to do it."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Who are you?!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SCANNER.GENERIC
@@ -257003,6 +257223,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "Not done yet"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Cold friend gift?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.SHALLOW_GRAVE"
 msgid "Quiet friend"
@@ -261158,6 +261383,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Food from robot friend!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "Make more robot friend"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Robot friend dropped"
@@ -261171,6 +261401,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Robot friend fixer"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Not robot friend?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SCANNER.GENERIC
@@ -275478,6 +275713,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "All work and no play makes for an irritable imp."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "And even there, it's a snare!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.SHALLOW_GRAVE"
 msgid "Poor soul."
@@ -279638,6 +279878,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Moisturized, yet still not appetized."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "They plan to host a ghost..."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Once a case with endless space, dropped by ol' metal face!"
@@ -279651,6 +279896,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_MODULEREMOVER"
 msgid "It'll work in a pinch, hyuyu!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Is this what you wanted? That your body be haunted?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SCANNER.GENERIC
@@ -293918,6 +294168,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "It not ready yet."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "Want what sad string holds."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.SHALLOW_GRAVE
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.SHALLOW_GRAVE"
 msgid "Who that?"
@@ -298073,6 +298328,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "Made inside Ironfolk? Florp!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "Weird Ironfolk stuff."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC"
 msgid "Stuff inside Ironfolk box?"
@@ -298086,6 +298346,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_MODULEREMOVER"
 msgid "Haha! Ironfolk weird."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "Florp! Who inside Ironfolk?!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SCANNER.GENERIC
@@ -299776,6 +300041,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "REST IN PIECES"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.GESTALT_TOO_POWERFUL
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.GESTALT_TOO_POWERFUL"
+msgid "ENTITY POWER LEVEL EXCEEDS MAXIMUM CONTAINMENT THRESHOLD"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.NOT_MINE
@@ -311880,7 +312150,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.ROTTENEGG.CAN_PROCESS
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.ROTTENEGG.CAN_PROCESS"
-msgid "MY SUPERIOR CIRCUITRY WILL PROCESS THIS FAILED CHILD TO NUTRIENTS"
+msgid "MY SUPERIOR CIRCUITRY WILL PROCESS THIS FAILED CHILD INTO NUTRIENTS"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.ROTTENEGG.GENERIC
@@ -312336,6 +312606,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SHADOW_FORGE_KIT
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.SHADOW_FORGE_KIT"
 msgid "ASSEMBLY REQUIRED"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.SHADOW_HEART_VEIN
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.SHADOW_HEART_VEIN"
+msgid "GROSS. BUT ACCEPTABLE LEVELS OF USEFULNESS"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SHALLOW_GRAVE
@@ -312985,7 +313260,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SPOILED_FISH.CAN_PROCESS
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.SPOILED_FISH.CAN_PROCESS"
-msgid "WORRY NOT ORGANICS. I CAN PROCESS THIS INTO NUTRIENTS"
+msgid "STEP ASIDE ORGANICS. ONLY I CAN PROCESS THIS INTO SUSTENANCE"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SPOILED_FISH.GENERIC
@@ -316500,12 +316775,17 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.GENERIC
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.GENERIC"
-msgid "MISSING INPUT"
+msgid "TOO DENSE FOR PROCESSING. MISSING INPUT"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.WET
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_FOODBRICK.WET"
 msgid "READY FOR REDIGESTION"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_GESTALTTRAPPER"
+msgid "ONLY A WORTHY ENTITY MAY OCCUPY MY PHYSICAL FORM"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_INVENTORYCONTAINER.GENERIC
@@ -316526,6 +316806,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_MODULEREMOVER
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_MODULEREMOVER"
 msgid "COMMENCE UPGRADES"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_POSSESSEDBODY
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_POSSESSEDBODY"
+msgid "YOU'RE PERFECT"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SCANNER.GENERIC
@@ -336048,6 +336333,11 @@ msgctxt "STRINGS.NAMES.SHADOW_FORGE_KIT"
 msgid "Shadowcraft Plinth Kit"
 msgstr ""
 
+#. STRINGS.NAMES.SHADOW_HEART_VEIN
+msgctxt "STRINGS.NAMES.SHADOW_HEART_VEIN"
+msgid "Shadow Atrium Tendril"
+msgstr ""
+
 #. STRINGS.NAMES.SHADOW_KNIGHT
 msgctxt "STRINGS.NAMES.SHADOW_KNIGHT"
 msgid "Shadow Knight"
@@ -339283,6 +339573,11 @@ msgctxt "STRINGS.NAMES.WX78_BACKUPBODY_FMT"
 msgid "{name}'s Backup Chassis"
 msgstr ""
 
+#. STRINGS.NAMES.WX78_BACKUPBODY_INVENTORY
+msgctxt "STRINGS.NAMES.WX78_BACKUPBODY_INVENTORY"
+msgid "WX-78's Backup Chassis"
+msgstr ""
+
 #. STRINGS.NAMES.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.NAMES.WX78_DRONE_DELIVERY"
 msgid "Portable Storage Unit"
@@ -339308,6 +339603,11 @@ msgctxt "STRINGS.NAMES.WX78_FOODBRICK"
 msgid "Nutribrick"
 msgstr ""
 
+#. STRINGS.NAMES.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.NAMES.WX78_GESTALTTRAPPER"
+msgid "Spectral Transfer Module"
+msgstr ""
+
 #. STRINGS.NAMES.WX78_INVENTORYCONTAINER
 msgctxt "STRINGS.NAMES.WX78_INVENTORYCONTAINER"
 msgid "Collapsed Storage Unit"
@@ -339321,6 +339621,16 @@ msgstr ""
 #. STRINGS.NAMES.WX78_MODULEREMOVER
 msgctxt "STRINGS.NAMES.WX78_MODULEREMOVER"
 msgid "Circuit Extractor"
+msgstr ""
+
+#. STRINGS.NAMES.WX78_POSSESSEDBODY
+msgctxt "STRINGS.NAMES.WX78_POSSESSEDBODY"
+msgid "WX-78's Possessed Chassis"
+msgstr ""
+
+#. STRINGS.NAMES.WX78_POSSESSEDBODY_FMT
+msgctxt "STRINGS.NAMES.WX78_POSSESSEDBODY_FMT"
+msgid "{name}'s Possessed Chassis"
 msgstr ""
 
 #. STRINGS.NAMES.WX78_SCANNER
@@ -346425,7 +346735,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.WX78MODULE_SPIN
 msgctxt "STRINGS.RECIPE_DESC.WX78MODULE_SPIN"
-msgid "A fine attack, however you spin it."
+msgid "Chop or smash your way around, and around, and around..."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.WX78MODULE_STACKSIZE
@@ -346443,6 +346753,11 @@ msgctxt "STRINGS.RECIPE_DESC.WX78_BACKUPBODY"
 msgid "It never hurts to have spare hardware. Although data transfer is always a pain."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.WX78_BACKUPBODY_INVENTORY
+msgctxt "STRINGS.RECIPE_DESC.WX78_BACKUPBODY_INVENTORY"
+msgid "It never hurts to have spare hardware. Although data transfer is always a pain."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.WX78_DRONE_DELIVERY_ITEM
 msgctxt "STRINGS.RECIPE_DESC.WX78_DRONE_DELIVERY_ITEM"
 msgid "Enjoy free shipping."
@@ -346456,6 +346771,11 @@ msgstr ""
 #. STRINGS.RECIPE_DESC.WX78_DRONE_ZAP_REMOTE
 msgctxt "STRINGS.RECIPE_DESC.WX78_DRONE_ZAP_REMOTE"
 msgid "Shocking new technology."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.WX78_GESTALTTRAPPER
+msgctxt "STRINGS.RECIPE_DESC.WX78_GESTALTTRAPPER"
+msgid "Allow a lunar entity to possess your chassis. What could go wrong?"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.WX78_MODULEREMOVER
@@ -349760,87 +350080,147 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_BEE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_BEE"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 3 sockets, heals 5 Health every 30 seconds, gains 2 Sanity every minute and increases Maximum Sanity by 100 points."
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from the Bee Queen.\n\nRequires 3 sockets, heals 5 Health every 30 seconds, gains 2 Sanity every minute and increases Maximum Sanity by 100 points.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 25%, and provides a regenerating shield when WX-78 is at full health, giving a one shot protection when the shield is over 15 points."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_COLD
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_COLD"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 3 sockets and lowers body temperature 20 degrees and decreases spoil rate of inventory by 25%. Will also cool nearby survivors.\n\nIf WX-78's wetness reaches 95%, it will drop to 0% and 2 Ice will be spawned."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from an Ice Hound, or Deerclops.\n\nRequires 3 sockets and lowers body temperature 20 degrees and decreases spoil rate of inventory by 25%. Will also cool nearby survivors.\n\nIf WX-78's wetness reaches 95%, it will drop to 0% and 2 Ice will be spawned.\n\nBeta Circuit Tinkering I boosts this circuit to provide 50% fire damage resistance."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_DIGESTION
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_DIGESTION"
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Catcoon.\n\nRequires 2 sockets and allows WX-78 to process spoiled foods, such as Rot, to bake Nutribricks.\n\nGamma Circuit Tinkering I allows WX-78 to also process nearly spoiled foods to bake Nutribricks."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_HEAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_HEAT"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 3 sockets and raises body temperature 20 degrees, increases spoil rate of inventory by 25% and increases drying rate by 10%. Will also warm nearby survivors."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Fire Hound, Geothermite, or Dragonfly.\n\nRequires 3 sockets and raises body temperature 20 degrees, increases spoil rate of inventory by 25% and increases drying rate by 10%. Will also warm nearby survivors.\n\nBeta Circuit Tinkering I boosts this circuit to provide freezing resistance, and grants full immunity to freezing when two are plugged."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_LIGHT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_LIGHT"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 3 sockets and creates light."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Fireflies.\n\nRequires 3 sockets and creates light.\n\nBeta Circuit Tinkering II boosts this circuit to provide a flash light facing WX-78's direction."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_LIGHT2
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_LIGHT2"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 1 socket and creates light."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Depth Worm, Bulbous Lightbug, or Skittersquid.\n\nRequires 1 socket and creates light.\n\nBeta Circuit Tinkering II boosts this circuit to provide a flash light facing WX-78's direction."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 1 socket and raises Maximum Health +40."
+msgid "Plugs into WX-78's Alpha circuit board. Crfating recipe is scanned from a Spider.\n\nRequires 1 socket and raises Maximum Health +40.\n\nAlpha Circuit Tinkering II boosts this circuit to provide 2.5% armor"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH2
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH2"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 2 sockets and increases Maximum Health by 100 points."
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a Nurse Spider\n\nRequires 2 sockets and increases Maximum Health by 100 points.\n\nAlpha Circuit Tinkering II boosts this circuit to provide 5% armor"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHUNGER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHUNGER"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 2 sockets, increases Maximum Hunger by 100 points and reduces Hunger drain by 10%."
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a Slurper, or Bearger.\n\nRequires 2 sockets, increases Maximum Hunger by 100 points and reduces Hunger drain by 20%.\n\nAlpha Circuit Tinkering I boosts the Hunger drain reduction to 25%.\n\nAlpha Circuit Tinkering II boosts the Hunger drain reduction to 30%."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHUNGER1
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHUNGER1"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 1 socket and increases Maximum Hunger by 40 points."
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a regular Hound.\n\nRequires 1 socket and increases Maximum Hunger by 40 points.\n\nAlpha Circuit Tinkering I boosts this circuit to reduce Hunger drain by 5%.\n\nAlpha Circuit Tinkering II boosts the Hunger drain reduction to 10%"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 2 sockets and raises Maximum Sanity +100."
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from Shadow Creatures.\n\nRequires 2 sockets and raises Maximum Sanity +100.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 25%."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY1
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY1"
-msgid "Plugs into WX-78's Alpha circuit board.\n\nRequires 1 socket and raises Maximum Sanity +40."
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a Butterfly, or Moon Moth.\n\nRequires 1 socket and raises Maximum Sanity +40.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 80% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 10%."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MOVESPEED
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MOVESPEED"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 6 sockets and raises movment speed by 25%."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Rabbit.\n\nRequires 6 sockets and raises movement speed by 25%.\n\nBeta Circuit Tinkering II boosts this circuit to reduce slowness effects by 25%."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MOVESPEED2
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MOVESPEED2"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 2 sockets.\nThe first raises movement speed by 25%.\nThe second raises movement speed by 15%.\nThe third raises movement speed by 10%.\nSo the maxmimum speed boost can be 50%."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Rook, or the Ancient Guardian.\n\nRequires 2 sockets.\nThe first raises movement speed by 25%.\nThe second raises movement speed by 15%.\nThe third raises movement speed by 10%.\nThe maxmimum speed boost can be 50%.\n\nBeta Circuit Tinkering II boosts this circuit to reduce slowness effects by 25%."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MUSIC
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MUSIC"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 3 sockets, raises Sanity of nearby survivors 5 points a minute and raises garden plant happiness one step."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Crabby Hermit, or the Crab King.\n\nRequires 3 sockets, raises Sanity of nearby survivors 5 points a minute and raises garden plant happiness one step.\n\nBeta Circuit Tinkering I boosts this circuit to recruit Pig Men and Bunny Men who hear the song."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_NIGHTVISION
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_NIGHTVISION"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 4 sockets and lets the user see in the dark. Turns on at night and when entering the Caves."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Moleworm.\n\nRequires 4 sockets and lets the user see in the dark. Turns on at night and when entering the Caves.\n\nBeta Circuit Tinkering I boosts this circuit to not have mole vision any longer."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_RADAR
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_RADAR"
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Crow, Redbird, Snowbird, Puffin or Canary.\n\nRequires 1 socket and increases Maximum Camera Distance.\n\nBeta Circuit Tinkering I boosts this circuit to increase the ranges of the Roto-Mapper, Zaptrocuter, and Bio Scanalyzer scan."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SCREECH
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SCREECH"
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Molebat.\n\nRequires 3 sockets and allows WX-78 to perform a sonic attack, inflicting panic on nearby creatures, and going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering I allows WX-78 to hold the sonic attack."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SHIELDING
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SHIELDING"
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Rock Lobster, Slurtle, or Snurtle.\n\nRequires 4 sockets and allows WX-78 to perform a block, providing 80% armor, going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering II provides WX-78 with knockback immunity in the block."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SPIN
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SPIN"
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Mossling.\n\nRequires 3 sockets and allows WX-78 to perform a spin when using any Axe, Pickaxe, or Hammer when working or attacking.\n\nGamma Circuit Tinkering II makes WX-78 spin faster."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_STACKSIZE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_STACKSIZE"
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Krampus.\n\nRequires 1 socket and places a infinite stack-size 1 slot container in WX-78's right-most inventory slot."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_TASER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_TASER"
-msgid "Plugs into WX-78's Beta circuit board.\n\nRequires 2 sockets and deals 10 electrical damage to WX78's attackers.\n\nThis module also makes WX-78 immune to electrical shock."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Volt Goat.\n\nRequires 2 sockets and deals 20 electrical damage to WX-78's attackers.\n\nThis module also makes WX-78 immune to electrical shock.\n\nBeta Circuit Tinkering II boosts this circuit to allow WX-78 to get overloaded when being hit, culminating in a 50 electrical damage AoE blast when hit enough times."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78SCANNER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78SCANNER"
 msgid "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_BACKUPBODY
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_BACKUPBODY"
+msgid "A backup chassis for WX-78 to store items, circuits. WX-78 can transfer their consciousness into the chassis."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_DELIVERY
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_DELIVERY"
+msgid "Stores 6 slots of items, and can be sent to explored areas of the map.\n\nWX-78 gave this drone the name of Drew."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_DELIVERY_SMALL
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_DELIVERY_SMALL"
+msgid "Stores 3 slots of items, and can be sent to explored areas of the map.\n\nWX-78 gave this drone the name of Drew."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_SCOUT
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_SCOUT"
+msgid "Explore unknown areas of the map with the Roto-Mapper.\n\nWX-78 gave this drone the name of Scott."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_ZAP
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_DRONE_ZAP"
+msgid "Strike terror into those pathetic organics with the Zaptrocuter.\n\nWX-78 gave this drone the name of Jules."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_FOODBRICK
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_FOODBRICK"
+msgid "Produced by WX-78 with the Redigestion Circuit.\n\nCan be moistened to be edible, or used as fertilizer."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.YELLOWAMULET
@@ -355735,7 +356115,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_DESC"
-msgid "Coming soon."
+msgid "Using \"borrowed\" technology from the Cryptic Founder, allow Gestalts to possess your Backup Chassis and become your spectrobotic minions."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_TITLE
@@ -355745,7 +356125,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC"
-msgid "Coming soon."
+msgid "Allows insertion of select shadow components into your circuitry granting your Chassis various abilities in both inhabited and uninhabited states."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_TITLE
@@ -355945,12 +356325,12 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_LUNAR_ALLEGIANCE_LOCK_1_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_LUNAR_ALLEGIANCE_LOCK_1_DESC"
-msgid "Find and defeat the Celestial Champion.\nHave no Shadow Allegiance Skills."
+msgid "Find and defeat the Celestial Champion.\nHave no shadow affinity.\nBe able to craft a Backup Chassis."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_DESC"
-msgid "Remotely transfer consciousness to any Backup Chassis on the map."
+msgid "Remotely Transfer Consciousness to any Backup Chassis on the map."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_TITLE
@@ -355980,7 +356360,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC"
-msgid "Find and defeat the Ancient Fuelweaver.\nHave no Lunar Allegiance Skills."
+msgid "Find and defeat the Ancient Fuelweaver.\nHave no lunar affinity.\nBe able to craft a Backup Chassis."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_UNPLUG_ANY_CIRCUIT_DESC
@@ -368560,7 +368940,7 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_yule_items
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_yule_items"
-msgid "This Merrymaker Chest contains following skin items: Gingerbread Gate, Gingerbread Fence, Candy Cane, Fluffy Deermuffs, Festive Fungal Lamp."
+msgid "This Merrymaker Chest contains the following skin items: Gingerbread Gate, Gingerbread Fence, Candy Cane, Fluffy Deermuffs, Festive Fungal Lamp."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_yule_wanda
@@ -369695,7 +370075,7 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_beebox_crystal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_beebox_crystal"
-msgid "Set your profile icon to a Crystalline Honeydome"
+msgid "Set your profile icon to a Crystalline Honeydome."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_beefalo
@@ -412028,6 +412408,11 @@ msgctxt "STRINGS.UI.DRESSUP_AVATAR.UNDRESSED_BY_FMT"
 msgid "Undressed by {name}"
 msgstr ""
 
+#. STRINGS.UI.DRONE_ZAP_OVERLAY.ATTACK
+msgctxt "STRINGS.UI.DRONE_ZAP_OVERLAY.ATTACK"
+msgid "Shoot"
+msgstr ""
+
 #. STRINGS.UI.EMAILSCREEN.APR
 msgctxt "STRINGS.UI.EMAILSCREEN.APR"
 msgid "Apr"
@@ -424756,6 +425141,11 @@ msgstr ""
 #. STRINGS.UI.UPGRADEMODULEDISPLAY.UNPLUG_TOP_CIRCUIT
 msgctxt "STRINGS.UI.UPGRADEMODULEDISPLAY.UNPLUG_TOP_CIRCUIT"
 msgid "Unplug First Circuit"
+msgstr ""
+
+#. STRINGS.UI.UPGRADEMODULEDISPLAY.UNSOCKET
+msgctxt "STRINGS.UI.UPGRADEMODULEDISPLAY.UNSOCKET"
+msgid "Extract"
 msgstr ""
 
 #. STRINGS.UI.USERCOMMANDS.BADTARGETFMT

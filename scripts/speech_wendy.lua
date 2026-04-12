@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "I can't do anything with that.",
 
 			CANNOT_FIX_DRONE = "It cannot be brought back.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6101,6 +6103,12 @@ return{
             WET = "I've eaten worse.",
             GENERIC = "It's impossible to eat like that.",
         },
+
+        WX78_POSSESSEDBODY = "Too bad Abby can't do the same.",
+
+        WX78_GESTALTTRAPPER = "I've thought about it too, Abby.",
+
+        SHADOW_HEART_VEIN = "Even when it tries to escape something has to hold it down.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

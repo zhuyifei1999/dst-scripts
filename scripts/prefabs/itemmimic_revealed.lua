@@ -14,6 +14,7 @@ local prefabs =
 local sg = "SGitemmimic_revealed"
 local brain = require("brains/itemmimic_revealedbrain")
 local LOOT = { "nightmarefuel" }
+local NOLOOT = {}
 
 local function on_eye_up(inst)
     if not inst.components.health:IsDead() then
@@ -59,6 +60,29 @@ local function on_timer_done(inst, data)
     end
 end
 
+local function SetNoLoot(inst, noloot)
+    inst.noloot = noloot
+    if inst.noloot then
+        inst.components.lootdropper:SetLoot(NOLOOT)
+    else
+        inst.components.lootdropper:SetLoot(LOOT)
+    end
+end
+
+local function GetNoLoot(inst)
+    return inst.noloot
+end
+
+local function OnLoad(inst, data)
+    if data and data.noloot then
+        inst:SetNoLoot(data.noloot)
+    end
+end
+
+local function OnSave(inst, data)
+    data.noloot = inst.noloot
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -82,6 +106,7 @@ local function fn()
 	inst:AddTag("shadow")
 	inst:AddTag("notraptrigger")
 	inst:AddTag("shadow_aligned")
+    inst:AddTag("itemmimic_revealed")
 
     inst.Transform:SetSixFaced()
 
@@ -140,6 +165,10 @@ local function fn()
     timer:StartTimer("stepping_delay", 35*FRAMES)
 
     --
+
+    inst:AddComponent("knownlocations")
+
+    --
     inst:ListenForEvent("eye_up", on_eye_up)
     inst:ListenForEvent("eye_down", on_eye_down)
     inst:ListenForEvent("death", on_death)
@@ -151,6 +180,11 @@ local function fn()
     inst:SetBrain(brain)
 
     --
+    inst.OnLoad = OnLoad
+    inst.OnSave = OnSave
+    inst.SetNoLoot = SetNoLoot
+    inst.GetNoLoot = GetNoLoot
+
     return inst
 end
 

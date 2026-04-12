@@ -37,6 +37,12 @@ local DroneZapOver = Class(UIAnim, function(self, owner)
 		self:Toggle(data.enable, data.source)
 	end, owner)
 
+	self.inst:ListenForEvent("continuefrompause", function()
+		if self.shown and self.source then
+			self:SetFocus()
+		end
+	end, TheWorld)
+
 	self._onremovesource = function(source)
 		assert(self.source == source)
 		self:Disable()
@@ -71,6 +77,18 @@ function DroneZapOver:Toggle(show, source)
 	end
 end
 
+function DroneZapOver:SetSkinBuild(source)
+	local skin_build = source and source.AnimState:GetSkinBuild()
+	if skin_build and string.len(skin_build) > 0 then
+		skin_build = skin_build.."_overlay"
+		self:GetAnimState():SetSkin(skin_build, "wx78_drone_zap_overlay")
+		self.arrow:GetAnimState():SetSkin(skin_build, "wx78_drone_zap_overlay")
+	else
+		self:GetAnimState():SetBuild("wx78_drone_zap_overlay")
+		self.arrow:GetAnimState():SetBuild("wx78_drone_zap_overlay")
+	end
+end
+
 function DroneZapOver:Enable(source)
 	assert(source)
 	if self.source == nil then
@@ -81,7 +99,9 @@ function DroneZapOver:Enable(source)
 	end
 	self.source = source
 	self.inst:ListenForEvent("onremove", self._onremovesource, source)
+	self:SetSkinBuild(source)
 	self:Show()
+	self:SetFocus()
 	self:GetAnimState():PlayAnimation("zap_over_pre")
 	self:GetAnimState():PushAnimation("zap_over_idle_loop", true)
 	self.arrow:Hide()
@@ -130,6 +150,7 @@ function DroneZapOver:Disable()
 		PostProcessor:SetDistortionFishLensRadius(0)
 		self.aspect_ratio = nil
 		self.source = nil
+		self:ClearFocus()
 	end
 	if self.item then
 		self.inst:RemoveEventCallback("percentusedchange", self._onperecentusedchange, self.item)
@@ -140,6 +161,7 @@ end
 function DroneZapOver:OnHide(was_visible)
 	self:CancelFade()
 	self:StopUpdating()
+	self:ClearFocus()
 end
 
 function DroneZapOver:TryClose()
@@ -271,6 +293,14 @@ function DroneZapOver:OnUpdate(dt)
 			self:EndFade()
 		end
 	end
+end
+
+function DroneZapOver:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+	local t = {}
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL, false, false).." "..STRINGS.ACTIONS.STOPUSINGEQUIPPEDITEM.WX78_DRONE_ZAP_REMOTE)
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ATTACK, false, false ).." "..STRINGS.UI.DRONE_ZAP_OVERLAY.ATTACK)
+	return table.concat(t, "  ")
 end
 
 return DroneZapOver

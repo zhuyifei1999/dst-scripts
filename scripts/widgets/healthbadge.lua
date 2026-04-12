@@ -211,11 +211,7 @@ function HealthBadge:HideEffigy(effigy_type)
     end
 end
 
-local WX_SHIELD_COLOUR = { 243 / 255, 187 / 255, 6 / 255, 0.7 } -- NOTES(OMAR): Keep in sync with fx.lua:WX_SHIELD_COLOUR
--- local WX_SHIELD_COLOUR = { 176 / 255, 163 / 255, 32 / 255, 0.7 } -- yellow
--- local WX_SHIELD_COLOUR = { 23 / 255, 64 / 255, 136 / 255, 0.7 } -- purple
--- local WX_SHIELD_COLOUR = { 43 / 255, 123 / 255, 157 / 255, 0.7 } -- blue
---local WX_SHIELD_COLOUR = { 87 / 255, 132 / 255, 157 / 255, 0.7 } -- teal
+local WX_SHIELD_COLOUR = { 243 / 255, 187 / 255, 6 / 255, 0.5 } -- NOTES(OMAR): Keep in sync with fx.lua:WX_SHIELD_COLOUR
 function HealthBadge:AddWxShield()
     if self.wxshieldanim == nil then
         self.wxshieldanim = self.circleframe:AddChild(UIAnim())
@@ -261,11 +257,30 @@ function HealthBadge:UpdateNums()
 end
 
 function HealthBadge:SetWxCanShieldCharge(canshieldcharge)
-    if canshieldcharge or self.wxshieldpercent >= 1 then
-        self.wxshieldanimflicker:GetAnimState():ShowSymbol("hex_art")
-    else
-        self.wxshieldanimflicker:GetAnimState():HideSymbol("hex_art")
+    local oldcanwxshieldcharge = self.canwxshieldcharge
+    self.canwxshieldcharge = canshieldcharge
+
+    if canshieldcharge ~= oldcanwxshieldcharge then
+        if self.wxshieldanimflicker:GetAnimState():IsCurrentAnimation("full")
+            or self.wxshieldanimflicker:GetAnimState():IsCurrentAnimation("half") then
+            self:PlayWxShieldIdle()
+        else
+            self:PushWxShieldIdle()
+        end
     end
+end
+
+function HealthBadge:GetWxShieldIdleAnim()
+    local anim = self.wxshieldoverpenetrationthreshold and "full" or "half"
+    return (self.canwxshieldcharge and anim) or anim.."_pulse"
+end
+
+function HealthBadge:PlayWxShieldIdle()
+    self.wxshieldanimflicker:GetAnimState():PlayAnimation(self:GetWxShieldIdleAnim(), true)
+end
+
+function HealthBadge:PushWxShieldIdle()
+    self.wxshieldanimflicker:GetAnimState():PushAnimation(self:GetWxShieldIdleAnim(), true)
 end
 
 function HealthBadge:SetWxShieldPercent(newpercent, oldpercent, maxshield, penetrationthreshold)
@@ -276,17 +291,19 @@ function HealthBadge:SetWxShieldPercent(newpercent, oldpercent, maxshield, penet
 
     local current = newpercent * maxshield
     local oldcurrent = oldpercent * maxshield
+
+    self.wxshieldoverpenetrationthreshold = current >= penetrationthreshold
     if oldcurrent ~= current then
         if current >= penetrationthreshold then
             self.wxshieldanimflicker:Show()
             if oldcurrent <= 0 then
                 TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/activate")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("empty_to_full", false)
-                self.wxshieldanimflicker:GetAnimState():PushAnimation("full", true)
+                self:PushWxShieldIdle()
             elseif oldcurrent < penetrationthreshold then
                 TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/activate")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("half_to_full", false)
-                self.wxshieldanimflicker:GetAnimState():PushAnimation("full", true)
+                self:PushWxShieldIdle()
             end
         elseif current < penetrationthreshold then
             local function HideOnAnimOver()
@@ -306,7 +323,7 @@ function HealthBadge:SetWxShieldPercent(newpercent, oldpercent, maxshield, penet
                 self.wxshieldanimflicker:Show()
                 TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/break")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("full_to_half")
-                self.wxshieldanimflicker:GetAnimState():PushAnimation("half", true)
+                self:PushWxShieldIdle()
             elseif current == 0 and not was_over_threshold then
                 self.wxshieldanimflicker:Show()
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("half_to_empty")
@@ -314,7 +331,7 @@ function HealthBadge:SetWxShieldPercent(newpercent, oldpercent, maxshield, penet
             elseif current > 0 and oldcurrent <= 0 then
                 self.wxshieldanimflicker:Show()
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("empty_to_half", false)
-                self.wxshieldanimflicker:GetAnimState():PushAnimation("half", true)
+                self:PushWxShieldIdle()
             end
         end
     end

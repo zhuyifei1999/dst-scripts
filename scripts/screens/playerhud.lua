@@ -1085,7 +1085,16 @@ function PlayerHud:HasInputFocus()
     local active_screen = TheFrontEnd:GetActiveScreen()
     return (active_screen ~= nil and active_screen ~= self)
 		or TheFrontEnd.textProcessorWidget ~= nil
-        or (self.controls ~= nil and (self.controls.inv.open or ((self:IsCraftingOpen() or self:IsSpellWheelOpen() or self:IsCommandWheelOpen()) and TheInput:ControllerAttached())))
+		or (self.controls ~= nil and (
+				self.controls.inv.open or
+				(	(	self:IsCraftingOpen() or
+						self:IsSpellWheelOpen() or
+						self:IsCommandWheelOpen() or
+						self:IsUpgradeModuleWidgetInputFocus()
+					) and
+					TheInput:ControllerAttached()
+				)
+			))
         or self.modfocus ~= nil
 end
 
@@ -1230,6 +1239,7 @@ end
 
 function PlayerHud:OpenSpellWheel(invobject, items, radius, focus_radius, bgdata)
 	self:CloseCrafting()
+	self:TryStopInspectingModules()
 	if self:IsControllerInventoryOpen() then
 		self:CloseControllerInventory()
 	end
@@ -1350,6 +1360,7 @@ function PlayerHud:OpenCommandWheel()
 	end
 	self:CloseCrafting()
 	self:CloseSpellWheel()
+	self:TryStopInspectingModules()
 
     self.controls.inv:Disable()
     self.controls.craftingmenu:Disable()
@@ -1438,9 +1449,6 @@ function PlayerHud:OnControl(control, down)
 			if self.dronezapover.shown and self.dronezapover:TryClose() then
 				return true
 			end
-            if self:TryStopInspectingModules(true) then
-                return true
-            end
         end
     elseif control == CONTROL_PAUSE then
 		if TheInput:ControllerAttached() then
@@ -1762,9 +1770,13 @@ function PlayerHud:OffsetServerPausedWidget(serverpausewidget)
 end
 
 -- Wx
-function PlayerHud:ShowUpgradeModuleWidget(upgrademoduleowner)
+function PlayerHud:IsUpgradeModuleWidgetInputFocus()
+	return self.upgrademodulewidget ~= nil and self.upgrademodulewidget:HasInputFocus()
+end
+
+function PlayerHud:ShowUpgradeModuleWidget()
     self:CloseUpgradeModuleWidget()
-    self.upgrademodulewidget = UpgradeModulesDisplay_Inspecting(self.owner, upgrademoduleowner, self.controls)
+	self.upgrademodulewidget = UpgradeModulesDisplay_Inspecting(self.owner, self.controls)
     self.controls.right_root:AddChild(self.upgrademodulewidget)
     self.controls.secondary_status:HideModuleOwnerDisplay()
     return self.upgrademodulewidget

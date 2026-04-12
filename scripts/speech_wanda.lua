@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "None of my business.",
 
 			CANNOT_FIX_DRONE = "It's beyond repair now.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6097,6 +6099,12 @@ return{
             WET = "WX, how kind of you...",
             GENERIC = "It's too hard to eat.",
         },
+
+        WX78_POSSESSEDBODY = "That will never not give me the creeps.",
+
+        WX78_GESTALTTRAPPER = "Madness...",
+
+        SHADOW_HEART_VEIN = "And now growing...",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

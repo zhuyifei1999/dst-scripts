@@ -3,6 +3,8 @@ require "behaviours/wander"
 require "behaviours/standstill"
 require "behaviours/faceentity"
 
+local BrainCommon = require("brains/braincommon")
+
 local ATTACH_DIST = 1
 local CLOSE_DIST = 8
 
@@ -100,13 +102,17 @@ local LunarThrall_Plant_Gestalt_Brain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+local UPDATE_RATE = 0.25
 function LunarThrall_Plant_Gestalt_Brain:OnStart()
     local root = PriorityNode(
     {
     	WhileNode(function() return self.inst.sg:HasStateTag("idle")  end, "move",
-    		DoAction(self.inst, MoveToPointAction, "Move", true )),
-    	--DoAction(self.inst, MoveToPointAction, "Move", true ),
-    }, .25)
+			PriorityNode(
+            {
+                BrainCommon.PossessChassisNode(self, UPDATE_RATE),
+                DoAction(self.inst, MoveToPointAction, "Move", true ),
+            }, UPDATE_RATE)),
+    }, UPDATE_RATE)
     self.bt = BT(self.inst, root)
 end
 

@@ -203,10 +203,17 @@ function InventoryItemMoisture:GetTargetMoisture()
 			if parent == nil then
 				--no more parent, so use our current exposedroot
 				break
-			elseif parent.components.container and parent.components.container.isexposed then
-				exposedroot = parent
-			else
-				--our parent is an unexposed container or inventory
+			elseif parent.components.container then
+				if parent.components.container.isexposed then
+					exposedroot = parent
+				else
+					--our parent is an unexposed container
+					exposedroot = nil
+					break
+				end
+			else--if parent.components.inventory then
+				--our parent is inventory, treat as our direct owner, wetness depends on moisture component if available
+				owner = parent
 				exposedroot = nil
 				break
 			end

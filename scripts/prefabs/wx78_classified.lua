@@ -126,11 +126,17 @@ end
 --Client interface
 --------------------------------------------------------------------------
 
+local function OnUnsocketShadowSlot(parent, socketposition)
+	SendRPCToServer(RPC.UnplugModule, socketposition)
+end
+
 local function OnEntityReplicated(inst)
     inst._parent = inst.entity:GetParent()
     if inst._parent == nil then
         print("Unable to initialize classified data for wx78_classified")
     else
+		inst:ListenForEvent("socketholder_unsocket", OnUnsocketShadowSlot, inst._parent)
+
         inst._parent:AttachClassified_wx78(inst)
     end
 end
@@ -255,6 +261,20 @@ local function OnEnergyLevelDirty(inst)
     end
 end
 
+local function OnPerformedSpinActionDirty(inst)
+	if inst._parent then
+		inst._parent:PushEvent("wx_performedspinaction", inst.performedspinaction:value())
+	end
+end
+
+local function OnPerformedSpinAction_Server(parent, isattack)
+	local inst = parent.wx78_classified
+	if inst then
+		inst.performedspinaction:set_local(isattack)
+		inst.performedspinaction:set(isattack)
+	end
+end
+
 local function OnShieldDirty(inst)
     if inst._parent ~= nil then
         local maxshield = inst.maxshield:value()
@@ -322,7 +342,7 @@ local function OnInspectUpgradeModuleBarsDirty(inst)
     local owner = ThePlayer
     if owner ~= nil and owner.HUD then
         if inst.inspectupgrademodulebars:value() then
-            owner.HUD:ShowUpgradeModuleWidget(inst._parent)
+			owner.HUD:ShowUpgradeModuleWidget()
         else
             owner.HUD:CloseUpgradeModuleWidget()
         end
@@ -337,6 +357,7 @@ end
 
 --------------------------------------------------------------------------
 local function RegisterNetListeners_mastersim(inst)
+	inst:ListenForEvent("wx_performedspinaction", OnPerformedSpinAction_Server, inst._parent)
 end
 local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("uirobotsparksevent", OnUIRobotSparks)
@@ -345,6 +366,7 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("inspectupgrademodulebarsdirty", OnInspectUpgradeModuleBarsDirty)
     inst:ListenForEvent("numactivebodiesdirty", OnCraftingNetVarDirty)
     inst:ListenForEvent("numdronescoutsdirty", OnCraftingNetVarDirty)
+	inst:ListenForEvent("performedspinactiondirty", OnPerformedSpinActionDirty)
     inst:ListenForEvent("shielddirty", OnShieldDirty)
     inst:ListenForEvent("canshieldchargedirty", OnCanShieldChargeDirty)
 end
@@ -427,6 +449,9 @@ local function fn()
         end
     end
     inst.inspectupgrademodulebars = net_bool(inst.GUID, "inspectupgrademodulebars", "inspectupgrademodulebarsdirty")
+
+	--Spin variables
+	inst.performedspinaction = net_bool(inst.GUID, "wx78.performedspinaction", "performedspinactiondirty")
 
     --Shield variables
     inst._oldshieldpercent = 0

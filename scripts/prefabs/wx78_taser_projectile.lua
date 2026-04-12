@@ -66,7 +66,7 @@ end
 
 local PADDING = 3
 local COMBAT_TAGS = { "_combat", "_health" }
-local CANT_TAGS = { "INLIMBO", "notarget" }
+local CANT_TAGS = { "INLIMBO", "notarget", "noattack", "wall", "playerghost"  }
 local HIT_DURATION = 18 * FRAMES
 
 local function OnUpdate(inst, dt)

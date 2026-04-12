@@ -1,12 +1,22 @@
 -- These functions can also be used for wx78_backupbody so check everything.
--- Search string: WX78Common file definition.
+-- Search string: WX78Common / WX78_Common file definition.
+local WX78Common -- Predeclare for use inside of functions.
 
 local DEPENDENCIES = {
 	assets =
 	{
 		Asset("ANIM", "anim/wx_fx.zip"),
 	},
-	prefabs = {},
+	prefabs = {
+        "wx78_big_spark",
+        "wx78_classified",
+        -- socket_shadow_harvester component
+        "shadow_puff",
+        "shadow_harvester_trail",
+        -- socket_shadow_heart component
+        "wx78_possessed_shadow",
+        "wx78_shadow_heart_debuff",
+    },
 }
 
 ---------------------------------------------------------------------------
@@ -137,8 +147,7 @@ local WX78_UPGRADE_MODULE_ACTIONS = ACTIONS and
             if inst.components.wx78_abilitycooldowns and inst.components.wx78_abilitycooldowns:IsInCooldown("wxscreech") then
                 return false
             end
-
-            return not inst:HasAnyTag("wx_screeching", "busy")
+			return not inst:HasAnyTag("wx_screeching", "busy", "inspectingupgrademodules", "using_drone_remote")
         end,
     },
     [ACTIONS.TOGGLEWXSHIELDING] = {
@@ -150,7 +159,7 @@ local WX78_UPGRADE_MODULE_ACTIONS = ACTIONS and
             if inst.components.wx78_abilitycooldowns and inst.components.wx78_abilitycooldowns:IsInCooldown("wxshielding") then
                 return false
             end
-            return not inst:HasAnyTag("wx_shielding", "busy")
+			return not inst:HasAnyTag("wx_shielding", "busy", "inspectingupgrademodules", "using_drone_remote")
         end,
     },
 }
@@ -176,6 +185,154 @@ local function SetupUpgradeModuleOwnerInstanceFunctions(inst)
     inst.GetModuleTypeCount = GetModuleTypeCount
     inst.UnplugModule = UnplugModule
     inst.CollectUpgradeModuleActions = CollectUpgradeModuleActions
+end
+
+--------------------------------------------------------------------------
+
+local function CreateDizzyFx()
+	local inst = CreateEntity()
+
+	inst:AddTag("DECOR")
+	inst:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false)
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+
+	inst.Transform:SetFourFaced()
+
+	inst.AnimState:SetBank("wilson")
+	inst.AnimState:SetBuild("player_wx78_actions")
+	inst.AnimState:PlayAnimation("dizzy_meter", true)
+	inst.AnimState:SetFinalOffset(2)
+
+	return inst
+end
+
+local function RemoveDizzyFx(inst)
+	inst._dizzyfxremovaltask = nil
+	inst._dizzyfx:Remove()
+	inst._dizzyfx = nil
+end
+
+local function OnDizzyLevel(inst)
+	local level = inst.dizzylevel:value()
+	if level > 0 then
+		if inst._dizzyfxremovaltask then
+			inst._dizzyfxremovaltask:Cancel()
+			inst._dizzyfxremovaltask = nil
+			inst._dizzyfx:Show()
+		elseif inst._dizzyfx == nil then
+			inst._dizzyfx = CreateDizzyFx()
+			inst._dizzyfx.entity:SetParent(inst.entity)
+			inst._dizzyfx.Follower:FollowSymbol(inst.GUID, "headbase")
+		end
+		for i = 1, level do
+			inst._dizzyfx.AnimState:Show("dizzy"..tostring(i))
+		end
+		for i = level + 1, 6 do
+			inst._dizzyfx.AnimState:Hide("dizzy"..tostring(i))
+		end
+	elseif inst._dizzyfx and inst._dizzyfxremovaltask == nil then
+		inst._dizzyfx:Hide()
+		inst._dizzyfxremovaltask = inst:DoTaskInTime(60, RemoveDizzyFx)
+	end
+end
+
+local function SetDizzyLevel(inst, level)
+	if inst.dizzylevel:value() ~= level then
+		inst.dizzylevel:set(level)
+		if not TheNet:IsDedicated() then
+			OnDizzyLevel(inst)
+		end
+	end
+end
+
+local function CalcMaxDizzy(inst)
+	return inst:GetModuleTypeCount("spin") > 1 and TUNING.WX78_SPIN_TIME_TO_DIZZY_2 or TUNING.WX78_SPIN_TIME_TO_DIZZY
+end
+
+local function CalcRecoveredDizzy(inst)
+	local dizzy = inst.sg.mem.wx_spin_buildup
+	local max
+	if dizzy and inst.sg.mem.wx_spin_last then
+		local k = (GetTime() - inst.sg.mem.wx_spin_last) / TUNING.WX78_SPIN_DIZZY_RECOVER_TIME
+		max = CalcMaxDizzy(inst)
+		dizzy = math.max(0, dizzy - k * k * max)
+	end
+	return dizzy, max
+end
+
+local function SetDizzySound(inst, level, recovering)
+	level = Remap(math.floor(level * 12), 1, 12, 0, 0.6)
+	if level > 0 then
+		if inst._dizzysound ~= level then
+			inst._dizzysound = level
+			local volume = level + (recovering and Remap(level, 0, 0.6, 0.1, 0.4) or 0.4)
+			if not inst.SoundEmitter:PlayingSound("dizzyloop") then
+				inst.SoundEmitter:PlaySound("WX_rework/dizzy/loop", "dizzyloop", volume)
+			else
+				inst.SoundEmitter:SetVolume("dizzyloop", volume)
+			end
+			inst.SoundEmitter:SetParameter("dizzyloop", "dizziness", level)
+		end
+	elseif inst._dizzysound then
+		inst._dizzysound = nil
+		inst.SoundEmitter:KillSound("dizzyloop")
+	end
+end
+
+local function DizzyUpdate(inst)--, dt)
+	if inst.sg:HasStateTag("dizzy") then
+		SetDizzyLevel(inst, 6)
+		SetDizzySound(inst, 1)
+		return
+	end
+
+	local dizzy, max
+	local recovering = not inst.sg:HasStateTag("spinning")
+	if recovering then
+		dizzy, max = CalcRecoveredDizzy(inst)
+	else
+		dizzy = inst.sg.mem.wx_spin_buildup
+	end
+	if dizzy and dizzy > 0 then
+		dizzy = math.min(1, dizzy / (max or CalcMaxDizzy(inst)))
+		SetDizzyLevel(inst, math.floor(dizzy * 6))
+		SetDizzySound(inst, dizzy, recovering)
+	else
+		inst.components.updatelooper:RemoveOnUpdateFn(DizzyUpdate)
+		inst._dizzyupdate = nil
+		SetDizzyLevel(inst, 0)
+		SetDizzySound(inst, 0)
+	end
+end
+
+local function StartDizzyFx(inst)
+	if not inst._dizzyupdate then
+		if inst.components.updatelooper == nil then
+			inst:AddComponent("updatelooper")
+		end
+		inst.components.updatelooper:AddOnUpdateFn(DizzyUpdate)
+		inst._dizzyupdate = true
+	end
+	DizzyUpdate(inst, 0)
+end
+
+local function AddDizzyFx_Common(inst)
+	inst.dizzylevel = net_tinybyte(inst.GUID, "wx78.dizzylevel", "dizzyleveldirty")
+
+	if TheWorld.ismastersim then
+		inst.SetDizzyLevel = SetDizzyLevel
+		inst.StartDizzyFx = StartDizzyFx
+		inst.CalcMaxDizzy = CalcMaxDizzy
+		inst.CalcRecoveredDizzy = CalcRecoveredDizzy
+	else
+		inst:ListenForEvent("dizzyleveldirty", OnDizzyLevel)
+	end
 end
 
 --------------------------------------------------------------------------
@@ -334,8 +491,206 @@ local function GetThermicTemperatureFn(inst, observer)
 end
 
 --------------------------------------------------------------------------
+-- socketable
+local function MakeItemSocketable(inst)
+    MakeItemSocketable_Server(inst)
+    local useabletargeteditem = inst.components.useabletargeteditem
+    useabletargeteditem:SetCanSelfTarget(true)
+    useabletargeteditem:SetUsingItemDoesNotToggleUseability(true)
+end
+
+-- socketholder
+local function ShouldAllowSocketable_CLIENT(inst, item, doer)
+    if inst == doer then
+        return true
+    end
+
+    return inst.components.linkeditem and inst.components.linkeditem:GetOwnerUserID() == doer.userid
+end
+
+local function OnGetSocketable(inst, item, doer) -- doer can be nil!
+    local socketname = item.components.socketable:GetSocketName()
+    local socketquality = item.components.socketable:GetSocketQuality()
+    if socketname == "socket_shadow" then
+        if socketquality >= SOCKETQUALITY.LOW then
+            if not inst.components.socket_shadow_harvester then
+                local socket_shadow_harvester = inst:AddComponent("socket_shadow_harvester")
+                socket_shadow_harvester:SetHarvestRadius(TUNING.SKILLS.WX78.HARVEST_RADIUS)
+                socket_shadow_harvester:SetTravelSpeed(TUNING.SKILLS.WX78.HARVEST_TRAVEL_SPEED)
+                socket_shadow_harvester:SetMaxTendrils(TUNING.SKILLS.WX78.HARVEST_MAX_TENDRILS)
+            end
+            if socketquality >= SOCKETQUALITY.MEDIUM then
+                WX78Common.SetHeartVeins(inst, true)
+                if not inst.components.socket_shadow_heart then
+                    local socket_shadow_heart = inst:AddComponent("socket_shadow_heart")
+                    socket_shadow_heart:SetDebuffRadius(TUNING.SKILLS.WX78.SHADOWHEART_DEBUFF_RADIUS)
+                    socket_shadow_heart:SetDamageMult(TUNING.SKILLS.WX78.SHADOWHEART_DAMAGEMULT)
+                end
+                if socketquality >= SOCKETQUALITY.HIGH then
+                    if not inst.components.socket_shadow_mimicry then
+                        inst:AddComponent("socket_shadow_mimicry")
+                    end
+                end
+            end
+        end
+    elseif socketname == "socket_gestalttrapper" then
+        inst:AddTag("possessable_chassis")
+        WX78Common.SetTrapper(inst, true)
+    end
+end
+
+local function OnRemoveSocketable(inst, item)
+    local socketname = item.components.socketable:GetSocketName()
+    if socketname == "socket_shadow" then
+        local socketquality = inst.components.socketholder:GetHighestQualitySocketed("socket_shadow")
+        if socketquality < SOCKETQUALITY.HIGH then
+            inst:RemoveComponent("socket_shadow_mimicry")
+            if socketquality < SOCKETQUALITY.MEDIUM then
+                inst:RemoveComponent("socket_shadow_heart")
+                WX78Common.SetHeartVeins(inst, false)
+                if socketquality < SOCKETQUALITY.LOW then
+                    inst:RemoveComponent("socket_shadow_harvester")
+                end
+            end
+        end
+    elseif socketname == "socket_gestalttrapper" then
+        inst:RemoveTag("possessable_chassis")
+        WX78Common.SetTrapper(inst, false)
+    end
+end
+
+local function ActivateSocketsIn(inst, socketposition, socketname)
+    if inst.components.socketholder then
+        inst.components.socketholder:SetSocketPositionName(socketposition, socketname)
+    end
+end
+local function DeactivateSocketsIn(inst, socketposition)
+    if inst.components.socketholder then
+        inst.components.socketholder:SetSocketPositionName(socketposition, 0)
+    end
+end
+
+--------------------------------------------------------------------------
+-- HeartVeins
+
+local function HideVeins(animstateowner)
+    animstateowner.AnimState:Hide("shad_veins")
+    animstateowner:RemoveEventCallback("animover", HideVeins)
+end
+
+local function OnHeartVeinsChanged(inst, enabled)
+    local animstateowner = inst.wx78_backupbody_inventory or inst
+    if enabled then
+        animstateowner:RemoveEventCallback("animover", HideVeins)
+        animstateowner.AnimState:Show("shad_veins")
+        if animstateowner.AnimState:IsCurrentAnimation("wx_chassis_idle") then
+            animstateowner.AnimState:PlayAnimation("wx_veins_pre", false)
+            animstateowner.AnimState:PushAnimation("wx_chassis_idle", true)
+        end
+    else
+        if not inst._backupbody_transferring and animstateowner.AnimState:IsCurrentAnimation("wx_chassis_idle") then
+            animstateowner.AnimState:PlayAnimation("wx_veins_pst")
+            animstateowner.AnimState:PushAnimation("wx_chassis_idle", true)
+            animstateowner:ListenForEvent("animover", HideVeins)
+        else
+            animstateowner.AnimState:Hide("shad_veins")
+        end
+    end
+end
+
+local function SetHeartVeins(inst, enabled)
+    if inst._has_heartveins ~= enabled then
+        if enabled then
+            inst._has_heartveins = true
+        else
+            inst._has_heartveins = nil
+        end
+        if not inst.isplayer then -- Player is handled in SGwilson.
+            inst:PushEvent("heartveins_changed", inst._has_heartveins)
+        end
+    end
+end
+
+local function HasHeartVeins(inst)
+    local wx = inst.wx78_backupbody_inventory or inst
+    return wx._has_heartveins
+end
+
+-- Trapper
+
+local function HideTrapper(animstateowner)
+    animstateowner.AnimState:Hide("trapper")
+    animstateowner:RemoveEventCallback("animover", HideTrapper)
+end
+
+local function OnTrapperChanged(inst, enabled)
+    local animstateowner = inst.wx78_backupbody_inventory or inst
+    if enabled then
+        animstateowner:RemoveEventCallback("animover", HideTrapper)
+        animstateowner.AnimState:Show("trapper")
+        if animstateowner.AnimState:IsCurrentAnimation("wx_chassis_idle") then
+            animstateowner.AnimState:PlayAnimation("wx_trapper_pre", false)
+            animstateowner.AnimState:PushAnimation("wx_chassis_idle", true)
+        end
+    else
+        if not inst._backupbody_transferring and animstateowner.AnimState:IsCurrentAnimation("wx_chassis_idle") then
+            animstateowner.AnimState:PlayAnimation("wx_trapper_pst")
+            animstateowner.AnimState:PushAnimation("wx_chassis_idle", true)
+            animstateowner:ListenForEvent("animover", HideTrapper)
+        else
+            animstateowner.AnimState:Hide("trapper")
+        end
+    end
+end
+
+local function SetTrapper(inst, enabled)
+    if inst._has_trapper ~= enabled then
+        if enabled then
+            inst._has_trapper = true
+        else
+            inst._has_trapper = nil
+        end
+        if not inst.isplayer then -- Player is handled in SGwilson.
+            inst:PushEvent("trapper_changed", inst._has_trapper)
+        end
+    end
+end
+
+local function HasTrapper(inst)
+    local wx = inst.wx78_backupbody_inventory or inst
+    return wx._has_trapper
+end
+
+--------------------------------------------------------------------------
+
+local function _CanSpinUsingItem_Client(item)
+	return item ~= nil and item:HasAnyTag("CHOP_tool", "MINE_tool", "HAMMER_tool")
+end
+
+local function _CanSpinUsingItem_Server(item)
+	return item	~= nil
+		and item.components.tool ~= nil
+		and (	item.components.tool:CanDoAction(ACTIONS.CHOP) or
+				item.components.tool:CanDoAction(ACTIONS.MINE) or
+				item.components.tool:CanDoAction(ACTIONS.HAMMER)	)
+end
+
+local function CanSpinUsingItem(item)
+	WX78Common.CanSpinUsingItem = TheWorld.ismastersim and _CanSpinUsingItem_Server or _CanSpinUsingItem_Client
+	return WX78Common.CanSpinUsingItem(item)
+end
+
+--------------------------------------------------------------------------
 -- Always LAST!
 local function Initialize_Common(inst)
+    MakeInstSocketHolder_Client(inst, 1)
+    local socketholder = inst.components.socketholder
+    socketholder:SetShouldAllowSocketableFn_CLIENT(ShouldAllowSocketable_CLIENT)
+
+    if inst.AnimState then
+        inst.AnimState:Hide("shad_veins")
+        inst.AnimState:Hide("trapper")
+    end
 end
 local function Initialize_Master(inst)
     inst._temperature_modulelean = 0 -- Positive if "hot", negative if "cold"; see wx78_moduledefs
@@ -348,14 +703,31 @@ local function Initialize_Master(inst)
     inst.components.preserver:SetPerishRateMultiplier(ModuleBasedPreserverRateFn)
 
     inst:ListenForEvent("timerdone", OnTimerFinished)
+
+    local socketholder = inst.components.socketholder
+    socketholder:SetOnGetSocketableFn(OnGetSocketable)
+    socketholder:SetOnRemoveSocketableFn(OnRemoveSocketable)
+
+    if not inst.isplayer then -- Player is handled in SGwilson.
+        inst:ListenForEvent("heartveins_changed", OnHeartVeinsChanged)
+        inst:ListenForEvent("trapper_changed", OnTrapperChanged)
+    end
 end
-return {
+WX78Common = {
     DEPENDENCIES = DEPENDENCIES,
     SetupUpgradeModuleOwnerInstanceFunctions = SetupUpgradeModuleOwnerInstanceFunctions,
     AddTemperatureModuleLeaning = AddTemperatureModuleLeaning,
-
+    MakeItemSocketable = MakeItemSocketable,
+    ActivateSocketsIn = ActivateSocketsIn,
+    DeactivateSocketsIn = DeactivateSocketsIn,
+    SetHeartVeins = SetHeartVeins,
+    HasHeartVeins = HasHeartVeins,
+    SetTrapper = SetTrapper,
+    HasTrapper = HasTrapper,
+	CanSpinUsingItem = CanSpinUsingItem,
 
     -- Initialization functions should be last in the file do not add your functions below this line unless it is for initialization.
+	AddDizzyFx_Common = AddDizzyFx_Common,
 	AddHeatSteamFx_Common = AddHeatSteamFx_Common,
     Initialize_Common = Initialize_Common,
     Initialize_Master = Initialize_Master,
@@ -363,3 +735,5 @@ return {
     -- Exposed for Mods.
     WX78_UPGRADE_MODULE_ACTIONS = WX78_UPGRADE_MODULE_ACTIONS,
 }
+
+return WX78Common

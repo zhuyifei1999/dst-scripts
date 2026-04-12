@@ -209,6 +209,7 @@ local function HarvestPickable(inst, ent, doer)
             Launch(item, doer, 1.5)
         end
     end
+    return success
 end
 
 local function IsEntityInFront(inst, entity, doer_rotation, doer_pos)
@@ -230,13 +231,19 @@ local function DoScythe(inst, target, doer)
 
         local doer_rotation = doer.Transform:GetRotation()
 
+        local harvestedcount = 0
         local ents = TheSim:FindEntities(x, y, z, TUNING.VOIDCLOTH_SCYTHE_HARVEST_RADIUS, HARVEST_MUSTTAGS, HARVEST_CANTTAGS, HARVEST_ONEOFTAGS)
         for _, ent in pairs(ents) do
             if ent:IsValid() and ent.components.pickable ~= nil then
                 if inst:IsEntityInFront(ent, doer_rotation, doer_pos) then
-                    inst:HarvestPickable(ent, doer)
+                    if inst:HarvestPickable(ent, doer) then
+                        harvestedcount = harvestedcount + 1
+                    end
                 end
             end
+        end
+        if harvestedcount > 0 then
+            doer:PushEvent("picksomethingfromaoe", {harvestedcount = harvestedcount,})
         end
     end
 end

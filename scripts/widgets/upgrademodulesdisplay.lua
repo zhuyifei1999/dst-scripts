@@ -77,7 +77,7 @@ local UpgradeModulesDisplay = Class(Widget, function(self, owner, reversed)
         local bar_frame = self:AddChild(UIAnim())
         bar_frame:GetAnimState():SetBank("status_wx")
         bar_frame:GetAnimState():SetBuild("status_wx")
-        bar_frame:GetAnimState():PlayAnimation("frame_open")
+        bar_frame:GetAnimState():PlayAnimation("frame_close")
         bar_frame:GetAnimState():Hide("frame")
         bar_frame:GetAnimState():Hide("frame_extended")
         bar_frame:GetAnimState():Hide("barframe1")
@@ -122,11 +122,8 @@ local UpgradeModulesDisplay = Class(Widget, function(self, owner, reversed)
     self.focus_box.OnGainFocus = FocusBox_OnGainFocus
     self.focus_box.OnLoseFocus = FocusBox_OnLoseFocus
     --
-
     self:StartUpdating()
     self:UpdateMaxEnergy(self.max_energy, self.max_energy)
-    self.open = true
-    self:Close()
 end)
 
 function UpgradeModulesDisplay:IsExtended()

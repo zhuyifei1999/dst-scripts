@@ -160,6 +160,12 @@ local function RemoveDeadPlayer(inst, spawnskeleton)
 			elseif k.components.container ~= nil then
 				k.components.container:DropEverything()
 			end
+            if k.components.socketholder then
+                local items = k.components.socketholder:UnsocketEverything()
+                for _, item in ipairs(items) do
+                    Launch2(item, k, 1, 1, 0.2, 0, 4)
+                end
+            end
 		end
 	end
 
@@ -1303,6 +1309,31 @@ local function SetupBaseSymbolVisibility(inst)
     inst.AnimState:Hide("HEAD_HAT_HELM")
 end
 
+local function SetupOverrideBuilds(inst)
+    --Additional effects symbols for hit_darkness animation
+    inst.AnimState:AddOverrideBuild("player_hit_darkness")
+    inst.AnimState:AddOverrideBuild("player_receive_gift")
+    inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
+    inst.AnimState:AddOverrideBuild("player_actions_uniqueitem_2")
+    inst.AnimState:AddOverrideBuild("player_wrap_bundle")
+    inst.AnimState:AddOverrideBuild("player_lunge")
+    inst.AnimState:AddOverrideBuild("player_attack_leap")
+    inst.AnimState:AddOverrideBuild("player_superjump")
+    inst.AnimState:AddOverrideBuild("player_multithrust")
+    inst.AnimState:AddOverrideBuild("player_parryblock")
+    inst.AnimState:AddOverrideBuild("player_emote_extra")
+    inst.AnimState:AddOverrideBuild("player_boat_plank")
+    inst.AnimState:AddOverrideBuild("player_boat_net")
+    inst.AnimState:AddOverrideBuild("player_boat_sink")
+    inst.AnimState:AddOverrideBuild("player_oar")
+
+    inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
+    inst.AnimState:AddOverrideBuild("player_actions_farming")
+    inst.AnimState:AddOverrideBuild("player_actions_cowbell")
+
+    inst.AnimState:AddOverrideBuild("player_shadow_thrall_parasite")
+end
+
 --------------------------------------------------------------------------
 
 return
@@ -1355,4 +1386,5 @@ return
 	FootstepOverrideFn			= FootstepOverrideFn,
 	FoleyOverrideFn				= FoleyOverrideFn,
     SetupBaseSymbolVisibility   = SetupBaseSymbolVisibility,
+    SetupOverrideBuilds = SetupOverrideBuilds,
 }

@@ -558,6 +558,7 @@ local function destroystructure(staff, target)
 
     -- If the target is a mimic, drop nightmarefuel instead of any of the recipe loot.
     if target.components.itemmimic then
+        -- Do not check ShouldItemMimicBeRevealedFor here, ingredients must be earned.
         if caster then
 		    caster.SoundEmitter:PlaySound("dontstarve/creatures/monkey/poopsplat")
         end

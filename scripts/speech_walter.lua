@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "That's not ours, Woby.",
 
 			CANNOT_FIX_DRONE = "Aww, it can't be fixed.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6139,6 +6141,12 @@ return{
             WET = "Kinda mushy now, but that's okay!",
             GENERIC = "It's harder than a stale dog biscuit, Woby!",
         },
+
+        WX78_POSSESSEDBODY = "Is that a ghost in there, Woby! Amazing!",
+
+        WX78_GESTALTTRAPPER = "This must do something reaaally neat, Woby.",
+
+        SHADOW_HEART_VEIN = "Wow, it's growing!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "Ain't mine.",
 
 			CANNOT_FIX_DRONE = "Ain't fixable.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6103,6 +6105,12 @@ return{
             WET = "Machine processed food?",
             GENERIC = "Now that's a jawbreaker.",
         },
+
+        WX78_POSSESSEDBODY = "WX is getting into some weird stuff. Or it's the other way around.",
+
+        WX78_GESTALTTRAPPER = "Looks like WX repurposed the bossman's contraption.",
+
+        SHADOW_HEART_VEIN = "This is even more twisted. What's it doing?",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

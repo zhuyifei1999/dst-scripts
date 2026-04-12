@@ -1299,6 +1299,9 @@ local states =
 
 		onupdate = function(inst)
 			DoAOEAttackAndDig(inst, -0.4, 3, nil, 1, nil, inst.sg.statemem.targets)
+			if inst.sg.currentstate.name ~= "torpedo" then
+				return
+			end
 			if inst.sg.statemem.icedelay > 0 then
 				inst.sg.statemem.icedelay = inst.sg.statemem.icedelay - 1
 			else

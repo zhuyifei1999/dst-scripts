@@ -517,6 +517,7 @@ function Builder:CheckIngredientsForMimic(ingredients)
     for _, ents in pairs(ingredients) do
         for item in pairs(ents) do
             if item.components.itemmimic then
+                -- Do not check ShouldItemMimicBeRevealedFor here, ingredients must be earned.
                 item.components.itemmimic:TurnEvil(self.inst)
                 return true
             end
@@ -531,6 +532,7 @@ function Builder:CheckDiscountEquipsForMimic()
     if self.inst.components.inventory then
         for slot, item in pairs(self.inst.components.inventory.equipslots) do
             if item and item.prefab == "greenamulet" and item.components.itemmimic then
+                -- Do not check ShouldItemMimicBeRevealedFor here, ingredients must be earned.
                 item.components.itemmimic:TurnEvil(self.inst)
                 return true
             end

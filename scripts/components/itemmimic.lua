@@ -39,14 +39,18 @@ local function on_unequipped(inst, data)
 end
 
 local function turn_evil_redirect(inst, owner)
-    inst.components.itemmimic:TurnEvil(owner)
+    if ShouldItemMimicBeRevealedFor(inst, owner) then
+        inst.components.itemmimic:TurnEvil(owner)
+    end
 end
 
 local function interacted_with_redirect(inst, owner)
-    if owner and owner.components.talker then
-        owner.components.talker:Say(GetActionFailString(owner, "GENERIC", "ITEMMIMIC"))
+    if ShouldItemMimicBeRevealedFor(inst, owner) then
+        if owner and owner.components.talker then
+            owner.components.talker:Say(GetActionFailString(owner, "GENERIC", "ITEMMIMIC"))
+        end
+        inst.components.itemmimic:TurnEvil(owner)
     end
-    inst.components.itemmimic:TurnEvil(owner)
 end
 
 local function on_put_in_inventory(inst, data)
@@ -134,23 +138,34 @@ function ItemMimic:TurnEvil(target)
     if self.inst.components.inventoryitem then
         local owner = self.inst.components.inventoryitem:GetGrandOwner()
         if owner then
-            local holder_component = owner.components.inventory or owner.components.container
-            if holder_component then
-                holder_component:DropItem(self.inst)
+            local container = owner.components.inventory or owner.components.container
+            if container then
+                container:DropItem(self.inst)
             end
         end
     end
 
+    local shoulddrainsanity = ShouldItemMimicBeRevealedFor(self.inst, target)
+
     local replaced = ReplacePrefab(self.inst, "itemmimic_revealed")
+    if self.noloot then
+        replaced:SetNoLoot(self.noloot)
+    end
     replaced:ForceFacePoint(self.inst.Transform:GetWorldPosition())
     replaced:PushEvent("jump", target)
 
     if target and target.sg and target:IsValid() then
         target:PushEvent("startled")
-        if target.components.sanity and not GetGameModeProperty("no_sanity") then
-            target.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
+        if shoulddrainsanity then
+            if target.components.sanity and not GetGameModeProperty("no_sanity") then
+                target.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
+            end
         end
     end
+end
+
+function ItemMimic:SetNoLoot(noloot)
+    self.noloot = noloot
 end
 
 -- Update reaction
@@ -171,6 +186,7 @@ end
 function ItemMimic:OnSave()
     local savedata = {
         add_component_if_missing = true,
+        noloot = self.noloot,
     }
 
     if self._auto_reveal_task then
@@ -181,13 +197,16 @@ function ItemMimic:OnSave()
 end
 
 function ItemMimic:OnLoad(data)
-    if data and data.reveal_time_remaining then
-        if self._auto_reveal_task then
-            self._auto_reveal_task:Cancel()
-            self._auto_reveal_task = nil
-        end
+    if data then
+        self:SetNoLoot(data.noloot)
+        if data.reveal_time_remaining then
+            if self._auto_reveal_task then
+                self._auto_reveal_task:Cancel()
+                self._auto_reveal_task = nil
+            end
 
-        self._auto_reveal_task = self.inst:DoTaskInTime(data.reveal_time_remaining, on_timed_out)
+            self._auto_reveal_task = self.inst:DoTaskInTime(data.reveal_time_remaining, on_timed_out)
+        end
     end
 end
 

@@ -4451,3 +4451,28 @@ function d_getmigrationpopulation(migrator_type)
         return migrationpopulations[migrator_type].populations
     end
 end
+
+function d_hidehovertext()
+	local hover = ThePlayer and ThePlayer.HUD and ThePlayer.HUD.controls.hover
+	if hover then
+		hover.forcehide = true
+		hover:Hide()
+
+		--in case we are unforcehidden, like coming out of mapscreen
+		if not hover._d_forcehide then
+			hover._d_forcehide = true
+			local _onshow = hover.OnShow
+			hover.OnShow = function(hover)
+				_onshow(hover)
+				hover.forcehide = true
+				hover:Hide()
+			end
+		end
+	end
+end
+
+function d_notalking()
+	for _, v in ipairs(AllPlayers) do
+		v.components.talker:IgnoreAll("d_notalking")
+	end
+end

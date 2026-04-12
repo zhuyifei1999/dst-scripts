@@ -614,6 +614,9 @@ function Controls:OnUpdate(dt)
 
     if controller_mode then
         self.mapcontrols:Hide()
+		if self.mapcontrols.focus then
+			self.mapcontrols:ClearFocus()
+		end
     else
         self.mapcontrols:Show()
     end

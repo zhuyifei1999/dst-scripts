@@ -80,7 +80,7 @@ function UpgradeModuleOwner:StartInspecting(inspecter)
         self.inspecter = inspecter
 
         if inspecter.HUD then
-            inspecter.HUD:ShowUpgradeModuleWidget(self.inst)
+			inspecter.HUD:ShowUpgradeModuleWidget()
         end
 
         return true

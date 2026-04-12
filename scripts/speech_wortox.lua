@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "I see it doesn't belong to me!",
 
 			CANNOT_FIX_DRONE = "It's had its fun, and now it's done.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6117,6 +6119,12 @@ return{
             WET = "Moisturized, yet still not appetized.",
             GENERIC = "Not appetizing without first moisturizing.",
         },
+
+        WX78_POSSESSEDBODY = "Is this what you wanted? That your body be haunted?",
+
+        WX78_GESTALTTRAPPER = "They plan to host a ghost...",
+
+        SHADOW_HEART_VEIN = "And even there, it's a snare!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

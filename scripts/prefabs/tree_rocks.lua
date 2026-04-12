@@ -22,6 +22,7 @@ local prefabs =
     "goldnugget",
     "moonrocknugget",
     "moonglass",
+    -- NOTES(JBK): Keep the above loot items in sync with shadow_heart_vein. [SHLTLP]
     "rock_break_fx",
     "tree_rock_chop",
     "tree_rock_fall",

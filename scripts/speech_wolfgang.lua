@@ -454,6 +454,8 @@ return{
 			NOT_MINE = "It is not belong to Wolfgang.",
 
 			CANNOT_FIX_DRONE = "It cannot be repaired... sigh.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -6098,6 +6100,12 @@ return{
             WET = "Thank you for snack, robot!",
             GENERIC = "It is too hard for even Wolfgang mighty teeth.",
         },
+
+        WX78_POSSESSEDBODY = "Something extra creepy about robot.",
+
+        WX78_GESTALTTRAPPER = "Robot is tamper with powerful forces.",
+
+        SHADOW_HEART_VEIN = "Haha! Is shaking while Wolfgang flexes.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

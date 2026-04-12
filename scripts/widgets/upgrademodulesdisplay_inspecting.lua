@@ -6,6 +6,8 @@ local GetModuleDefinitionFromNetID = require("wx78_moduledefs").GetModuleDefinit
 
 local easing = require("easing")
 
+local TIMEOUT = 2 --network calls
+
 -------------------------------------------------------------------------------------------------------
 
 -- The more complex version of the modules display
@@ -34,13 +36,47 @@ local function Chip_OnLoseFocus(self, ...)
     self.parent:OnChipLoseFocus(self)
 end
 
-local UNPLUG_ANY_SKILLNAME = "wx78_circuitry_unpluganycircuit"
-local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, upgrademoduleowner, controls)
+local function ShadowSlot_OnControl(self, control, down, ...)
+	if self._base.OnControl(self, control, down, ...) then
+		return true
+	end
+
+	if not self.focus then
+		return false
+	end
+
+	if control == CONTROL_ACCEPT and down then
+		self.parent.parent:UnplugShadowSlot()
+	end
+end
+
+local function ShadowSlot_OnGainFocus(self, ...)
+	self._base.OnGainFocus(self, ...)
+	self.parent.parent:OnShadowSlotGainFocus()
+end
+
+local function ShadowSlot_OnLoseFocus(self, ...)
+	self._base.OnLoseFocus(self, ...)
+	self.parent.parent:OnShadowSlotLoseFocus()
+end
+
+local SOCKETQUALITY_TO_IMAGES = {
+    ["socket_shadow"] = {
+        [SOCKETQUALITY.NONE] = {},
+        [SOCKETQUALITY.LOW] = {image = "nightmarefuel.tex"},
+        [SOCKETQUALITY.MEDIUM] = {image = "shadowheart.tex"},
+        [SOCKETQUALITY.HIGH] = {image = "shadowheart_infused.tex"},
+    },
+}
+
+local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, controls)
     Widget._ctor(self, "UpgradeModulesDisplay_Inspecting")
     self:UpdateWhilePaused(false)
     self.owner = owner
-    self.upgrademoduleowner = upgrademoduleowner
     self.controls = controls
+
+	self.busylocks = 0
+	self.timeouttask = nil
 
     local max_energy = owner:GetMaxEnergy()
     self.max_energy = max_energy
@@ -51,15 +87,82 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, upg
     self:SetPosition(-425, 0)
 
     -- Skill
-    self.can_unplug_any = owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated(UNPLUG_ANY_SKILLNAME)
+    self.can_unplug_any = false
+    self.has_shadow_affinity = false
+    if owner.components.skilltreeupdater then
+        self.can_unplug_any = owner.components.skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")
+        self.has_shadow_affinity = owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow")
+    end
     local function OnUpdateSkill(_, data)
-        if data.skill == UNPLUG_ANY_SKILLNAME then
-            self.can_unplug_any = owner.components.skilltreeupdater:IsActivated(UNPLUG_ANY_SKILLNAME)
+        local needsrefresh = false
+        if data.skill == "wx78_circuitry_unpluganycircuit" then
+            self.can_unplug_any = owner.components.skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")
+            needsrefresh = true
+        elseif data.skill == "wx78_allegiance_shadow" then
+            self.has_shadow_affinity = owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow")
+            if not self.has_shadow_affinity then
+                self.bg_shadow:UnhookCallback("animover")
+                self.bg_shadow:GetAnimState():Show("affinity_shadow")
+                self.shadow_slot:Hide()
+                self.bg_shadow:GetAnimState():PlayAnimation("affinity_close")
+                self.bg_shadow:HookCallback("animover", function(ui_inst)
+                    self.bg_shadow:GetAnimState():Hide("affinity_shadow")
+                    self.bg_shadow:UnhookCallback("animover")
+                end)
+            else
+                self.bg_shadow:UnhookCallback("animover")
+                self.bg_shadow:GetAnimState():Show("affinity_shadow")
+                self.bg_shadow:GetAnimState():PlayAnimation("affinity_open")
+                self.bg_shadow:HookCallback("animover", function(ui_inst)
+                    self.shadow_slot:Show()
+                    if self.shadow_slot_item_isvalid then
+                        self.shadow_slot_item:Show()
+                    end
+                    self.bg_shadow:UnhookCallback("animover")
+                end)
+            end
+            needsrefresh = true
+        end
+        if needsrefresh then
             self:DoFocusHookups()
+            self:RefocusChip()
+        end
+    end
+    local function UpdateShadowSocketItem(owner, socketposition)
+		self:CancelAsyncTimeout()
+
+        local wasvalid = self.shadow_slot_item_isvalid
+        self.shadow_slot_item_isvalid = nil
+        local socketholder = owner.components.socketholder
+        if socketholder then
+            if socketholder:IsSocketNameForPosition("socket_shadow", socketposition) then
+                local socketquality = owner.components.socketholder:GetQualityForPosition(socketposition)
+                local imagedata = SOCKETQUALITY_TO_IMAGES["socket_shadow"][socketquality]
+                if imagedata and imagedata.image then
+                    self.shadow_slot_item_isvalid = true
+                    self.shadow_slot_item:SetTexture(imagedata.atlas or GetInventoryItemAtlas(imagedata.image), imagedata.image)
+                    self.shadow_slot_item:Show()
+                    if not wasvalid then
+                        self:DoFocusHookups()
+						if not self:IsBusy() then
+							self:RefocusChip()
+						end
+                    end
+                end
+            end
+        end
+        if wasvalid and not self.shadow_slot_item_isvalid then
+            self.shadow_slot_item:SetTexture("images/ui.xml", "white.tex")
+            self.shadow_slot_item:Hide()
+            self:DoFocusHookups()
+			if not self:IsBusy() then
+				self:RefocusChip(nil, nil, socketposition)
+			end
         end
     end
     self.inst:ListenForEvent("onactivateskill_client", OnUpdateSkill, owner)
     self.inst:ListenForEvent("ondeactivateskill_client", OnUpdateSkill, owner)
+	self.inst:ListenForEvent("onsocketeddirty1", function() UpdateShadowSocketItem(owner, 1) end, owner)
     --
 
     self.bg = self:AddChild(UIAnim())
@@ -72,6 +175,7 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, upg
     self.bg:GetAnimState():Hide("shadow")
     self.bg:GetAnimState():Hide("bars_extended")
     self.bg:GetAnimState():Hide("shadow_extended")
+    self.bg:GetAnimState():Hide("affinity_shadow")
     self.bg:MoveToBack()
 
     self.bg_shadow = self:AddChild(UIAnim())
@@ -84,6 +188,26 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, upg
     self.bg_shadow:GetAnimState():Hide("bars_extended")
     self.bg_shadow:GetAnimState():Hide("bars")
     self.bg_shadow:GetAnimState():Hide("shadow_extended")
+    self.shadow_slot = self.bg_shadow:AddChild(Image("images/hud.xml", "inv_slot.tex"))
+    self.shadow_slot:SetPosition(-111, 185, 0)
+    self.shadow_slot:Hide()
+	self.shadow_slot.OnControl = ShadowSlot_OnControl
+	self.shadow_slot.OnGainFocus = ShadowSlot_OnGainFocus
+	self.shadow_slot.OnLoseFocus = ShadowSlot_OnLoseFocus
+    self.shadow_slot_item = self.shadow_slot:AddChild(Image("images/ui.xml", "white.tex"))
+    self.shadow_slot_item:Hide()
+    if not self.has_shadow_affinity then
+        self.bg_shadow:GetAnimState():Hide("affinity_shadow")
+    else
+        self.bg_shadow:UnhookCallback("animover")
+        self.bg_shadow:HookCallback("animover", function(ui_inst)
+            self.shadow_slot:Show()
+            if self.shadow_slot_item_isvalid then
+                self.shadow_slot_item:Show()
+            end
+            self.bg_shadow:UnhookCallback("animover")
+        end)
+    end
 
     self.bg_bars = self:AddChild(UIAnim())
     self.bg_bars:GetAnimState():SetBank("status_wx_chest")
@@ -95,11 +219,13 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, upg
     self.bg_bars:GetAnimState():Hide("shadow")
     self.bg_bars:GetAnimState():Hide("shadow_extended")
     self.bg_bars:GetAnimState():Hide("bars_extended")
+    self.bg_bars:GetAnimState():Hide("affinity_shadow")
     self.bg_bars:MoveToFront()
 
     self.plugs = self:AddChild(UIAnim())
     self.plugs:GetAnimState():SetBank("status_wx_chest")
     self.plugs:GetAnimState():SetBuild("status_wx_chest")
+    self.plugs:GetAnimState():Hide("affinity_shadow")
     self.plugs:GetAnimState():PlayAnimation("slot_open")
     self.plugs:GetAnimState():AnimateWhilePaused(false)
     self.plugs:MoveToFront()
@@ -191,45 +317,118 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, upg
     self.moduleremover:GetAnimState():SetBuild("ui_wx78moduleremover")
     self.moduleremover:GetAnimState():PlayAnimation("appear")
     self.moduleremover:GetAnimState():PushAnimation("idle", false)
-    self.moduleremover:GetAnimState():AnimateWhilePaused(false)
+	--self.moduleremover:GetAnimState():AnimateWhilePaused(false)
     self.moduleremover:SetScale(.5, .5)
     self.moduleremover:Hide()
     self.moduleremover.inst:AddTag("NOCLICK")
 
-    if upgrademoduleowner.wx78_classified ~= nil then
-        self:UpdateEnergyLevel(upgrademoduleowner.wx78_classified.currentenergylevel:value(), 0, true)
+	if self.owner.wx78_classified then
+		self:UpdateEnergyLevel(self.owner.wx78_classified.currentenergylevel:value(), 0, true)
     end
-    self:OnModulesDirty(upgrademoduleowner:GetModulesData(), true)
+	if self.owner.GetModulesData then
+		self:OnModulesDirty(self.owner:GetModulesData(), true)
+	end
     self:FollowMouseConstrained()
 
 	self.default_focus = self.chip_objectpools[0][1]
-    self.inst:DoTaskInTime(0, function() self:ControllerSetFocus() end)
     self:DoFocusHookups()
 
-    self.inst:ListenForEvent("newactiveitem", function() self:OnNewActiveItem() end, self.owner)
-    self:OnNewActiveItem()
+	self.inst:ListenForEvent("controller_removing_module", function(_, item) self:OnControllerStartRemovingModule(item) end, owner)
+	self.inst:ListenForEvent("newactiveitem", function() self:OnNewActiveItem() end, owner)
+	if not TheInput:ControllerAttached() then
+		self:OnNewActiveItem()
+	elseif owner._controller_start_moduleremover then
+		self.inst:DoTaskInTime(0, function(_, item) self:OnControllerStartRemovingModule(item, true) end, owner._controller_start_moduleremover)
+		owner._controller_start_moduleremover = nil
+	end
+
+	self.inst:ListenForEvent("continuefrompause", function()
+		if self.is_using_module_remover and not TheInput:ControllerAttached() then
+			local inventory = self.owner.replica.inventory
+			local item = inventory and inventory:GetActiveItem()
+			if not (item and item:HasActionComponent("upgrademoduleremover")) then
+				self:StopControllerRemovingModule()
+			end
+		end
+	end, TheWorld)
 
     self:UpdateMaxEnergy(self.max_energy, self.max_energy)
+
+	UpdateShadowSocketItem(owner, 1)
 end)
 
-function UpgradeModulesDisplay_Inspecting:ControllerSetFocus()
-    if TheInput:ControllerAttached() then
-        -- TheFrontEnd:StopTrackingMouse()
-        -- TheFrontEnd:LockFocus(true)
-        self:DoFocusHookups()
-        for bartype = 0, #self.chip_objectpools do
-            local objectpool = self.chip_objectpools[bartype]
-            for i = 1, #objectpool do
-                local chip = objectpool[i]
-                if chip and chip.chip_pos then
-                    if not chip.focus and not TheFrontEnd.tracking_mouse then
-	                	chip:SetFocus()
-                        return
-	                end
-                end
-            end
-        end
-    end
+function UpgradeModulesDisplay_Inspecting:IsBusy()
+	return self.busylocks > 0
+end
+
+function UpgradeModulesDisplay_Inspecting:AddBusyLock()
+	self.busylocks = self.busylocks + 1
+end
+
+function UpgradeModulesDisplay_Inspecting:StartAsyncTimeout()
+	if self.timeouttask then
+		self.timeouttask:Cancel()
+	else
+		self:AddBusyLock()
+	end
+	self.timeouttask = self.inst:DoTaskInTime(TIMEOUT, function()
+		self.timeouttask = nil
+		self:RemoveBusyLock()
+	end)
+end
+
+function UpgradeModulesDisplay_Inspecting:CancelAsyncTimeout()
+	if self.timeouttask then
+		self.timeouttask:Cancel()
+		self.timeouttask = nil
+		self:RemoveBusyLock()
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:RemoveBusyLock()
+	self.busylocks = self.busylocks - 1
+	if self.busylocks < 0 then
+		assert(BRANCH ~= "dev")
+		self.busylocks = 0
+	end
+	return self.busylocks == 0
+end
+
+function UpgradeModulesDisplay_Inspecting:ControllerSetFocus(focus)
+	if focus then
+		if TheInput:ControllerAttached() then
+			TheFrontEnd:StopTrackingMouse()
+			self.controllerfocuslock = true
+			TheFrontEnd:LockFocus(true)
+			self:DoFocusHookups()
+			for bartype = 0, #self.chip_objectpools do
+				local index = self.chip_poolindexes[bartype]
+				if index > 1 then
+					local chip = self.chip_objectpools[bartype][index - 1]
+					if not chip.focus then
+						chip:SetFocus()
+					else
+						self:OnChipGainFocus(chip)
+					end
+					return
+				end
+			end
+			if self.shadow_slot_item_isvalid then
+				if not self.shadow_slot.focus then
+					self.shadow_slot:SetFocus()
+				else
+					self.shadow_slot:OnGainFocus()
+				end
+			end
+		end
+	elseif self.controllerfocuslock then
+		self.controllerfocuslock = nil
+		TheFrontEnd:LockFocus(false)
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:HasInputFocus()
+	return self.is_using_module_remover and TheInput:ControllerAttached()
 end
 
 -------------------------------------------------------------
@@ -279,14 +478,67 @@ function UpgradeModulesDisplay_Inspecting:GetToolTipYOffset()
     return y_offset
 end
 
+function UpgradeModulesDisplay_Inspecting:OnLoseFocus()
+	if self.is_using_module_remover and TheInput:ControllerAttached() then
+		self:ToggleUsingModuleRemover(nil)
+		self:OverrideModuleRemoverPositionAndSpeed(nil, nil, nil)
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:OnGainFocus()
+	if not self.is_using_module_remover and TheInput:ControllerAttached() then
+		--coming back from pause menu?
+		self.inst:DoStaticTaskInTime(0, function(inst)
+			if not self.is_using_module_remover and TheInput:ControllerAttached() then
+				self:ClearFocus()
+			end
+		end)
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:StopControllerRemovingModule()
+	self:ToggleUsingModuleRemover(nil)
+	self:ClearFocus()
+	self:OverrideModuleRemoverPositionAndSpeed(nil, nil, nil)
+end
+
+function UpgradeModulesDisplay_Inspecting:OnControllerStartRemovingModule(item, nosound)
+	if item and item:HasActionComponent("upgrademoduleremover") then
+		for _, v in pairs(self.chip_slotsinuse) do
+			if v > 0 then
+				--Found at lease one circuit
+				self:ToggleUsingModuleRemover(item)
+				return
+			end
+		end
+	end
+	if self.shadow_slot_item_isvalid then
+		self:ToggleUsingModuleRemover(item)
+		return
+	end
+	if not nosound then
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
+	end
+end
+
 function UpgradeModulesDisplay_Inspecting:OnNewActiveItem()
-    local active_item = self.owner.replica.inventory:GetActiveItem()
-    if active_item ~= nil and active_item:HasActionComponent("upgrademoduleremover") then
-        self:ControllerSetFocus()
+	--NOTE: controllers do use "activeitem" system in the controller inverntory screen, so still need to check for controllers to block that
+	if not TheInput:ControllerAttached() then
+		local inventory = self.owner.replica.inventory
+		local item = inventory and inventory:GetActiveItem()
+		self:ToggleUsingModuleRemover(item and item:HasActionComponent("upgrademoduleremover") and item or nil)
+	else
+		--possible to reach here when clearing active item when switching to controllers from options screen
+		self:StopControllerRemovingModule()
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:ToggleUsingModuleRemover(item)
+	if item then
         if not self.is_using_module_remover then
             self.moduleremover:GetAnimState():PlayAnimation("appear")
             self.moduleremover:GetAnimState():PushAnimation("idle", false)
-            self:UpdateModuleRemoverBuild(active_item)
+			self:UpdateModuleRemoverBuild(item)
         end
         self.moduleremover:Show()
         self.moduleremover:UnhookCallback("animover")
@@ -309,27 +561,34 @@ function UpgradeModulesDisplay_Inspecting:OnNewActiveItem()
         self.controls:OverrideTooltipPos(GetTooltipPos)
         self.controls.hover:ForceSettleTextPositionOnMove(true)
         self.is_using_module_remover = true
+		self:ControllerSetFocus(true)
     else
         if self.moduleremover.shown then
             TheFrontEnd:GetSound():PlaySound("WX_rework/module_tray/toolclick")
             self.moduleremover:GetAnimState():PlayAnimation("disappear")
+
+			if not self.moduleremover:HasCallback("animover") then
+				self:AddBusyLock()
+			end
             self.moduleremover:HookCallback("animover", function(chip_ui_inst)
+				self.moduleremover:UnhookCallback("animover")
+				self:RemoveBusyLock()
                 self.controls:OverrideTooltipPos(nil)
                 self.controls.hover:ForceSettleTextPositionOnMove(nil)
                 self.moduleremover:Hide()
-                self.moduleremover:UnhookCallback("animover")
             end)
         end
         self.owner:PushEvent("sethovertilehidemodifier", { source = self.inst, hidden = false})
         self.is_using_module_remover = false
+		self:ControllerSetFocus(false)
     end
 end
 
 function UpgradeModulesDisplay_Inspecting:UpdateModuleRemoverBuild(moduleremover)
     local build = moduleremover.AnimState:GetBuild()
-    local skin_build = moduleremover:GetSkinBuild()
+	local skin_build = moduleremover.AnimState:GetSkinBuild()
 
-    if skin_build ~= nil then
+	if skin_build and string.len(skin_build) > 0 then
 		self.moduleremover:GetAnimState():OverrideItemSkinSymbol("wx78_moduleremover01", skin_build, "wx78_moduleremover01", moduleremover.GUID, build)
 	else
 		self.moduleremover:GetAnimState():OverrideSymbol("wx78_moduleremover01", build, "wx78_moduleremover01")
@@ -573,7 +832,7 @@ function UpgradeModulesDisplay_Inspecting:PopModuleAtIndex(bartype, startindex)
     local num_modules_moving = 0
     local slotsinuse = -falling_chip._used_modslots
     for i = 1, #objectpool do
-        local lastchip = objectpool[i-1]
+		local prevchip = objectpool[i-1]
         local chip = objectpool[i]
         if i >= startindex + 1 then
             if chip.chip_pos then
@@ -581,7 +840,7 @@ function UpgradeModulesDisplay_Inspecting:PopModuleAtIndex(bartype, startindex)
                 local slot_distance_from_bottom = slotsinuse + (chip._used_modslots - 1) * 0.5
                 local y_pos = (slot_distance_from_bottom * 20) - 50
                 local pos = Vector3(x_offset, y_pos + y_offset)
-                self:SetChipPosition(lastchip, pos.x, pos.y)
+				self:SetChipPosition(prevchip, pos.x, pos.y)
                 self:PlayChipAnimation(chip, "chip_move")
 
                 num_modules_moving = num_modules_moving + 1
@@ -598,6 +857,7 @@ function UpgradeModulesDisplay_Inspecting:PopModuleAtIndex(bartype, startindex)
 
     TheFrontEnd:GetSound():PlaySoundWithParams("WX_rework/module_tray/module_movedown", { num_modules = num_modules_moving })
 
+	self:AddBusyLock()
     self.inst:DoTaskInTime(CHIP_MOVE_FRAMES, function()
         slotsinuse = 0
         for i = 1, #objectpool do
@@ -631,10 +891,15 @@ function UpgradeModulesDisplay_Inspecting:PopModuleAtIndex(bartype, startindex)
 
         self:DoFocusHookups()
         self:UpdateChipCharges(true)
+		if self:RemoveBusyLock() then
+			self:RefocusChip(bartype, startindex)
+		end
     end)
 end
 
 function UpgradeModulesDisplay_Inspecting:OnModulesDirty(modules_data, init)
+	self:CancelAsyncTimeout()
+
     local first = not init
     local function PlayFirstSound(soundpath)
         if first then
@@ -668,6 +933,9 @@ function UpgradeModulesDisplay_Inspecting:OnModulesDirty(modules_data, init)
     self._oldmodulesdata = modules_data
     self:UpdateChipCharges(true, init)
     self:DoFocusHookups()
+	if not self:IsBusy() then
+		self:RefocusChip()
+	end
 end
 
 function UpgradeModulesDisplay_Inspecting:DropChip(falling_chip)
@@ -685,44 +953,28 @@ function UpgradeModulesDisplay_Inspecting:DropChip(falling_chip)
     falling_chip:ClearFocus()
     falling_chip.inst:AddTag("NOCLICK")
 
-    local our_objectpool = self.chip_objectpools[falling_chip.moduletype]
-    local chip_to_focus = our_objectpool[falling_chip.old_chip_index - 1] -- the last one
-    if not TheFrontEnd.tracking_mouse then
-        if not chip_to_focus then -- If it doesn't exist then, the other bar.
-            falling_chip:SetFocus()
-            local success = self:OnFocusMove(MOVE_LEFT, true)
-            if not success then
-                self:OnFocusMove(MOVE_RIGHT, true)
-            end
-            falling_chip:ClearFocus()
-        else
-            chip_to_focus:SetFocus()
-        end
-    end
-
-    for bartype, index in pairs(self.chip_poolindexes) do
-        local objectpool = self.chip_objectpools[bartype]
-        for i = 1, index - 1 do
-            local otherchip = objectpool[i]
-            if otherchip.focus then
-                otherchip:ClearFocus()
-                otherchip:SetFocus()
-            end
-        end
-    end
     self:PlayChipAnimation(falling_chip, "chip_fall")
 end
 
 function UpgradeModulesDisplay_Inspecting:PopOneModule(bartype)
     local objectpool = self.chip_objectpools[bartype]
-    local falling_chip = objectpool[self.chip_poolindexes[bartype] - 1]
+	local index = self.chip_poolindexes[bartype] - 1
+	local falling_chip = objectpool[index]
 
-    self.chip_poolindexes[bartype] = self.chip_poolindexes[bartype] - 1
+	self.chip_poolindexes[bartype] = index
     self.chip_slotsinuse[bartype] = self.chip_slotsinuse[bartype] - falling_chip._used_modslots
     self:DropChip(falling_chip)
+
+	if not self:IsBusy() then
+		self:RefocusChip(bartype, index)
+	end
 end
 
+--V2C: Very misleading, but this is a network callback like OnModulesDirty,
+--     NOT an internal function like PopOneModule or PopModuleAtIndex.
 function UpgradeModulesDisplay_Inspecting:PopAllModules()
+	self:CancelAsyncTimeout()
+
     local play_sound = false
 
     for bartype, pool in pairs(self.chip_objectpools) do
@@ -743,6 +995,11 @@ function UpgradeModulesDisplay_Inspecting:PopAllModules()
     for bartype, slots in pairs(self.chip_slotsinuse) do
         self.chip_slotsinuse[bartype] = 0
     end
+
+	if not self:IsBusy() then
+		self:DoFocusHookups()
+		self:RefocusChip()
+	end
 end
 
 function UpgradeModulesDisplay_Inspecting:PlayChipAnimation(chip, anim, loop)
@@ -784,11 +1041,10 @@ function UpgradeModulesDisplay_Inspecting:EnableChipGlow(chip, enable)
 end
 
 function UpgradeModulesDisplay_Inspecting:Close()
-    -- TODO close
     self.owner:PushEvent("sethovertilehidemodifier", { source = self.inst, hidden = false })
     self.controls:OverrideTooltipPos(nil)
+	self:ControllerSetFocus(false)
     self:Kill()
-    TheFrontEnd:LockFocus(false)
 end
 
 function UpgradeModulesDisplay_Inspecting:ResolveUnplugModuleIndex(moduletype, moduleindex)
@@ -813,46 +1069,72 @@ function UpgradeModulesDisplay_Inspecting:ResolveUnplugModuleIndex(moduletype, m
 end
 
 local MODULE_REMOVER_OFFSET = Vector3(-25, 0, 0)
+local SHADOW_SLOT_MODULE_REMOVER_OFFSET = Vector3(0, 0, 0)
 function UpgradeModulesDisplay_Inspecting:GetModuleRemoverPosition(chip)
     local w, h = TheSim:GetScreenSize()
     local res_scale = w / RESOLUTION_X
-    return chip:GetWorldPosition() + (MODULE_REMOVER_OFFSET * res_scale)
+	local offset = chip == self.shadow_slot and SHADOW_SLOT_MODULE_REMOVER_OFFSET or MODULE_REMOVER_OFFSET
+	return chip:GetWorldPosition() + offset * res_scale
 end
 
 local NO_UNPLUG_DELAY = 4 * FRAMES
+function UpgradeModulesDisplay_Inspecting:UnplugShadowSlot()
+	if self.is_using_module_remover and self.shadow_slot_item_isvalid and not self:IsBusy() then
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+		self.moduleremover:GetAnimState():PlayAnimation("unplug")
+		self.moduleremover:GetAnimState():PushAnimation("idle", false)
+
+		if not self.moduleremover:HasCallback("animover") then
+			self:AddBusyLock()
+		end
+		self.moduleremover:HookCallback("animover", function(ui_inst)
+			self.moduleremover:UnhookCallback("animover")
+			self.moduleremover.inst:DoTaskInTime(NO_UNPLUG_DELAY, function()
+				if self:RemoveBusyLock() then
+					self:RefocusChip(nil, nil, 1)
+				end
+			end)
+		end)
+
+		local pos = self:GetModuleRemoverPosition(self.shadow_slot)
+		self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, 0.3)
+
+		local socketholder = self.owner.components.socketholder --exists on clients
+		if socketholder and socketholder:IsSocketNameForPosition("socket_shadow", 1) then
+			self:StartAsyncTimeout()
+			socketholder:TryToUnsocket(1)
+		end
+	end
+end
+
 function UpgradeModulesDisplay_Inspecting:UnplugModule(moduletype, moduleindex)
-    if self.is_using_module_remover and not self.no_unplug_flag then
+	if self.is_using_module_remover and not self:IsBusy() then
         moduleindex = self:ResolveUnplugModuleIndex(moduletype, moduleindex)
         local chip = self.chip_objectpools[moduletype][moduleindex]
 
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         self.moduleremover:GetAnimState():PlayAnimation("unplug")
         self.moduleremover:GetAnimState():PushAnimation("idle", false)
+
+		if not self.moduleremover:HasCallback("animover") then
+			self:AddBusyLock()
+		end
         self.moduleremover:HookCallback("animover", function(ui_inst)
+			self.moduleremover:UnhookCallback("animover")
             self.moduleremover.inst:DoTaskInTime(NO_UNPLUG_DELAY, function()
-                self.no_unplug_flag = nil
+				if self:RemoveBusyLock() then
+					self:RefocusChip(moduletype, moduleindex)
+				end
             end)
-            self:OverrideModuleRemoverPositionAndSpeed(nil, nil, .2)
-            -- local no_other_focus = true
-            for bartype, index in pairs(self.chip_poolindexes) do
-                local objectpool = self.chip_objectpools[bartype]
-                for i = 1, index - 1 do
-                    local otherchip = objectpool[i]
-                    if otherchip.focus_sources and otherchip.focus_sources:Get() then
-                        local pos = self:GetModuleRemoverPosition(otherchip)
-                        self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, 0.2)
-                        break
-                    end
-                end
-            end
-            self.moduleremover:UnhookCallback("animover")
         end)
-        self.no_unplug_flag = true
 
         local pos = self:GetModuleRemoverPosition(chip)
         self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, .3)
 
-        self.upgrademoduleowner:UnplugModule(moduletype, moduleindex)
+		if self.owner.UnplugModule then
+			self:StartAsyncTimeout()
+			self.owner:UnplugModule(moduletype, moduleindex)
+		end
     end
 end
 
@@ -887,7 +1169,7 @@ function UpgradeModulesDisplay_Inspecting:ResolveChip(chip)
 end
 
 function UpgradeModulesDisplay_Inspecting:SetChipTooltip(chip, redirected)
-    chip:SetTooltip(STRINGS.UI.UPGRADEMODULEDISPLAY[redirected and "UNPLUG_TOP_CIRCUIT" or "UNPLUG_CIRCUIT"])
+	chip:SetTooltip(STRINGS.UI.UPGRADEMODULEDISPLAY[redirected and "UNPLUG_TOP_CIRCUIT" or "UNPLUG_CIRCUIT"])
 end
 
 function UpgradeModulesDisplay_Inspecting:IsChipValidToFocus(chip)
@@ -904,7 +1186,7 @@ function UpgradeModulesDisplay_Inspecting:SetChipFocusSource(chip, bool, source,
     end
     chip.focus_sources:SetModifier(source, bool, source)
     if chip.focus_sources:Get() then
-        if not self.no_unplug_flag then
+		if not self:IsBusy() then
             local pos = self:GetModuleRemoverPosition(chip)
             self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, 0.2)
         end
@@ -913,25 +1195,179 @@ function UpgradeModulesDisplay_Inspecting:SetChipFocusSource(chip, bool, source,
             chip:GetAnimState():Show("focus")
         end
     else
-        local no_other_focus = true
-        for bartype, index in pairs(self.chip_poolindexes) do
-            local objectpool = self.chip_objectpools[bartype]
-            for i = 1, index - 1 do
-                local otherchip = objectpool[i]
-                if otherchip.focus_sources and otherchip.focus_sources:Get() then
-                    no_other_focus = false
-                    break
-                end
-            end
-        end
-        if no_other_focus and not self.no_unplug_flag then
-            self:OverrideModuleRemoverPositionAndSpeed(nil, nil, .25)
-        end
+		if not self:IsBusy() then
+			local no_other_focus = true
+			for bartype, index in pairs(self.chip_poolindexes) do
+				local objectpool = self.chip_objectpools[bartype]
+				for i = 1, index - 1 do
+					local otherchip = objectpool[i]
+					if otherchip.focus_sources and otherchip.focus_sources:Get() then
+						no_other_focus = false
+						break
+					end
+				end
+			end
+			if self.shadow_slot.focus then
+				no_other_focus = false
+			end
+			if no_other_focus then
+				self:OverrideModuleRemoverPositionAndSpeed(nil, nil, 0.25)
+			end
+		end
         chip:SetTooltip(nil)
-        if self:IsChipValidToFocus(chip) then
-            chip:GetAnimState():Hide("focus")
-        end
+		chip:GetAnimState():Hide("focus")
     end
+end
+
+function UpgradeModulesDisplay_Inspecting:SetShadowSlotFocus(focus)
+	if focus then
+		if not self:IsBusy() then
+			local pos = self:GetModuleRemoverPosition(self.shadow_slot)
+			self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, 0.2)
+		end
+		self.shadow_slot:SetTooltip(STRINGS.UI.UPGRADEMODULEDISPLAY.UNSOCKET)
+	else
+		if not self:IsBusy() then
+			local no_other_focus = true
+			for bartype, index in pairs(self.chip_poolindexes) do
+				local objectpool = self.chip_objectpools[bartype]
+				for i = 1, index - 1 do
+					local otherchip = objectpool[i]
+					if otherchip.focus_sources and otherchip.focus_sources:Get() then
+						no_other_focus = false
+						break
+					end
+				end
+			end
+			if no_other_focus  then
+				self:OverrideModuleRemoverPositionAndSpeed(nil, nil, 0.25)
+			end
+		end
+		self.shadow_slot:SetTooltip(nil)
+	end
+end
+
+--NOTE: moduletype, moduleindex, unsockposition for the LAST REMOVED module or shadowslot, used by controller version only
+function UpgradeModulesDisplay_Inspecting:RefocusChip(moduletype, moduleindex, unsocketposition)
+	local focused_chip
+	for _, objectpool in pairs(self.chip_objectpools) do
+		for _, chip in ipairs(objectpool) do
+			if chip.focus_sources then
+				chip.focus_sources:Reset()
+			end
+			chip:SetTooltip(nil)
+			chip:GetAnimState():Hide("focus")
+			if chip.focus then
+				focused_chip = chip
+			end
+		end
+	end
+
+	self.shadow_slot:SetTooltip(nil)
+
+	if TheInput:ControllerAttached() then
+		if self.is_using_module_remover then
+			if moduletype == nil then
+				--skill changed? removed shadow_slot_item?
+				moduletype = focused_chip and focused_chip.moduletype
+				if moduletype == nil then
+					if self.shadow_slot_item_isvalid and self.shadow_slot.focus then
+						self.shadow_slot:OnGainFocus()
+						return
+					else
+						local barorder = {}
+						if unsocketposition then
+							--just unsocketed shadow slot
+							for bartype = #self.chip_objectpools - 1, 0, -1 do
+								table.insert(barorder, bartype)
+							end
+							table.insert(barorder, #self.chip_objectpools)
+						else
+							for bartype = 0, #self.chip_objectpools do
+								table.insert(barorder, bartype)
+							end
+						end
+						for _, bartype in ipairs(barorder) do
+							local index = self.chip_poolindexes[bartype]
+							if index > 1 then
+								local chip = self.chip_objectpools[bartype][index - 1]
+								if not chip.focus then
+									chip:SetFocus()
+								else
+									self:OnChipGainFocus(chip)
+								end
+								return
+							end
+						end
+					end
+					if self.shadow_slot_item_isvalid then
+						self.shadow_slot:SetFocus()
+					elseif not self:IsBusy() then
+						self:StopControllerRemovingModule()
+					end
+					return
+				end
+			end
+
+			local newchip
+			if focused_chip and focused_chip.moduletype ~= moduletype then
+				newchip = focused_chip
+			else
+				local index = self.chip_poolindexes[moduletype]
+				if index > 1 then
+					local objectpool = self.chip_objectpools[moduletype]
+					moduleindex = math.max(1, (moduleindex or index) - 1)
+					newchip = objectpool[moduleindex]
+					for i = moduleindex + 1, index - 1 do
+						if objectpool[i]._net_id == newchip._net_id then
+							newchip = objectpool[i]
+						else
+							break
+						end
+					end
+				else
+					--scan left
+					for bartype = moduletype - 1, CIRCUIT_BARS.ALPHA, -1 do
+						local index = self.chip_poolindexes[bartype]
+						if index > 1 then
+							newchip = self.chip_objectpools[bartype][index - 1]
+							break
+						end
+					end
+					if newchip == nil then
+						--scan right
+						for bartype = moduletype + 1, CIRCUIT_BARS.GAMMA do
+							local index = self.chip_poolindexes[bartype]
+							if index > 1 then
+								newchip = self.chip_objectpools[bartype][index - 1]
+								break
+							end
+						end
+					end
+				end
+			end
+
+			if newchip then
+				if newchip.focus then
+					self:OnChipGainFocus(newchip)
+				else
+					newchip:SetFocus()
+				end
+			elseif not self.shadow_slot_item_isvalid then
+				self:StopControllerRemovingModule()
+			elseif self.shadow_slot.focus then
+				self.shadow_slot:OnGainFocus()
+			else
+				self.shadow_slot:SetFocus()
+			end
+		end
+	elseif focused_chip then
+		self:OnChipGainFocus(focused_chip)
+	elseif self.shadow_slot_item_isvalid and self.shadow_slot.focus then
+		self.shadow_slot:OnGainFocus()
+	elseif not self:IsBusy() then
+		self:OverrideModuleRemoverPositionAndSpeed(nil, nil, 0.25)
+	end
 end
 
 function UpgradeModulesDisplay_Inspecting:OnChipGainFocus(chip)
@@ -950,13 +1386,21 @@ function UpgradeModulesDisplay_Inspecting:OnChipGainFocus(chip)
 end
 
 function UpgradeModulesDisplay_Inspecting:OnChipLoseFocus(chip)
-    if self.is_using_module_remover then
-        local original_chip = chip
-        local redirected
-        chip, redirected = self:ResolveChip(chip)
-        self:SetChipFocusSource(chip, nil, original_chip, redirected)
-        original_chip:SetTooltip(nil)
-    end
+	local original_chip = chip
+	local redirected
+	chip, redirected = self:ResolveChip(chip)
+	self:SetChipFocusSource(chip, nil, original_chip, redirected)
+	original_chip:SetTooltip(nil)
+end
+
+function UpgradeModulesDisplay_Inspecting:OnShadowSlotGainFocus()
+	if self.is_using_module_remover and self.shadow_slot_item_isvalid then
+		self:SetShadowSlotFocus(true)
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:OnShadowSlotLoseFocus()
+	self:SetShadowSlotFocus(false)
 end
 
 function UpgradeModulesDisplay_Inspecting:UpdateModuleRemoverPosition(x, y)
@@ -976,12 +1420,17 @@ end
 
 function UpgradeModulesDisplay_Inspecting:OverrideModuleRemoverPositionAndSpeed(x, y, speed)
     self._overridetargetpos = (x ~= nil and y ~= nil and Vector3(x, y)) or nil
-    self._overridemoduleremoverspeed = speed or nil
+	self._overridemoduleremoverspeed = (self._overridetargetpos or not TheInput:ControllerAttached()) and speed or nil
 
     if self._overridemoduleremoverspeed or self._overridetargetpos then
         self:StartUpdating()
     else
         self:StopUpdating()
+
+		--likely reached here from unplugging last module
+		if self.is_using_module_remover and TheInput:ControllerAttached() then
+			self:StopControllerRemovingModule()
+		end
     end
 end
 
@@ -991,7 +1440,7 @@ function UpgradeModulesDisplay_Inspecting:FollowMouseConstrained()
         self._lasttime = GetTime()
         self._targetpos = Vector3(pos.x, pos.y)
         self.followhandler = TheInput:AddMoveHandler(function(x, y)
-            if not self._overridetargetpos and not self._overridemoduleremoverspeed then
+			if not (self._overridetargetpos or self._overridemoduleremoverspeed or TheInput:ControllerAttached()) then
                 self._targetpos.x = x
                 self._targetpos.y = y
                 self:UpdateModuleRemoverPosition(x, y)
@@ -1011,9 +1460,10 @@ function UpgradeModulesDisplay_Inspecting:OnUpdate(dt)
     self:UpdateModuleRemoverPosition(self._targetpos.x, self._targetpos.y)
 
     if not isoverriden then -- target pos isn't overriden but speed still is, so we're returning control back once we get to mouse
-        if DistXYSq(self._targetpos, pos) <= BACK_TO_MOUSE_DIST_SQ then
+		if TheInput:ControllerAttached() then
+			self:StopControllerRemovingModule()
+		elseif DistXYSq(self._targetpos, pos) <= BACK_TO_MOUSE_DIST_SQ then
             self:OverrideModuleRemoverPositionAndSpeed(nil, nil, nil)
-            self:StopUpdating()
         else -- Ramp up speed, so you can't just have it chase the mouse.
             self._overridemoduleremoverspeed = self._overridemoduleremoverspeed + (dt / 2)
         end
@@ -1047,11 +1497,11 @@ function UpgradeModulesDisplay_Inspecting:DoFocusHookups()
             local chip = objectpool[i]
             chip:ClearFocusDirs()
             if chip.chip_pos then -- This means it's shown.
-                local lastbarchip, nextbarchip
+				local prevbarchip, nextbarchip
                 local index = 1
                 while self.chip_objectpools[bartype-index] do
-                    lastbarchip = self:GetLastCircuit(bartype-index)
-                    if lastbarchip then
+					prevbarchip = self:GetLastCircuit(bartype-index)
+					if prevbarchip then
                         break
                     else
                         index = index + 1
@@ -1068,34 +1518,121 @@ function UpgradeModulesDisplay_Inspecting:DoFocusHookups()
                     end
                 end
 
-                local lastchip = self.can_unplug_any and objectpool[i-1] or lastbarchip
-                lastchip = (lastchip and lastchip.chip_pos and lastchip) or lastbarchip or nil
+				local prevchip, nextchip
+				if self.can_unplug_any then
+					for j = i - 1, 1, -1 do
+						if objectpool[j]._net_id ~= chip._net_id then
+							prevchip = objectpool[j]
+							break
+						end
+					end
+					for j = i + 1, #objectpool do
+						if objectpool[j].chip_pos == nil then
+							break
+						elseif objectpool[j]._net_id ~= chip._net_id then
+							--found next block of different chips
+							--now find last chip in that block
+							nextchip = objectpool[j]
+							for j = j + 1, #objectpool do
+								if objectpool[j].chip_pos and objectpool[j]._net_id == nextchip._net_id then
+									nextchip = objectpool[j]
+								else
+									break
+								end
+							end
+							break
+						end
+					end
+				end
+				prevchip = prevchip and prevchip.chip_pos and prevchip or prevbarchip
+				nextchip = nextchip and nextchip.chip_pos and nextchip or nextbarchip
 
-                local nextchip = self.can_unplug_any and objectpool[i+1] or nextbarchip
-                nextchip = (nextchip and nextchip.chip_pos and nextchip) or nextbarchip or nil
-
-                if lastchip ~= nil then
-                    chip:SetFocusChangeDir(MOVE_DOWN, lastchip)
-                end
-                if nextchip ~= nil then
-                    chip:SetFocusChangeDir(MOVE_UP, nextchip)
-                end
-                if lastbarchip ~= nil then
-                    chip:SetFocusChangeDir(MOVE_LEFT, lastbarchip)
-                end
-                if nextbarchip ~= nil then
-                    chip:SetFocusChangeDir(MOVE_RIGHT, nextbarchip)
-                end
+				chip:SetFocusChangeDir(MOVE_DOWN, prevchip)
+				chip:SetFocusChangeDir(MOVE_UP, nextchip)
+				chip:SetFocusChangeDir(MOVE_LEFT, prevbarchip)
+				chip:SetFocusChangeDir(MOVE_RIGHT, nextbarchip)
             end
         end
     end
+
+	self.shadow_slot:ClearFocusDirs()
+	if self.shadow_slot_item_isvalid then
+		local chip = self:GetLastCircuit(#self.chip_objectpools)
+		if chip then
+			chip:SetFocusChangeDir(MOVE_LEFT, self.shadow_slot)
+			self.shadow_slot:SetFocusChangeDir(MOVE_RIGHT, chip)
+		end
+
+		for bartype = #self.chip_objectpools - 1, 0, -1 do
+			local chip = self:GetLastCircuit(bartype)
+			if chip then
+				chip:SetFocusChangeDir(MOVE_UP, self.shadow_slot)
+				self.shadow_slot:SetFocusChangeDir(MOVE_DOWN, chip)
+				break
+			end
+		end
+	end
+end
+
+function UpgradeModulesDisplay_Inspecting:OnControl(control, down)
+	if UpgradeModulesDisplay_Inspecting._base.OnControl(self, control, down) then return true end
+
+	if not (self.focus and TheInput:ControllerAttached()) then
+		return false
+	elseif control == CONTROL_CANCEL then
+		if not down then
+			self:StopControllerRemovingModule()
+		end
+		return true
+	elseif down then
+		local dir =
+			(control == TheInput:ResolveVirtualControls(VIRTUAL_CONTROL_INV_LEFT) and MOVE_LEFT) or
+			(control == TheInput:ResolveVirtualControls(VIRTUAL_CONTROL_INV_RIGHT) and MOVE_RIGHT) or
+			(control == TheInput:ResolveVirtualControls(VIRTUAL_CONTROL_INV_UP) and MOVE_UP) or
+			(control == TheInput:ResolveVirtualControls(VIRTUAL_CONTROL_INV_DOWN) and MOVE_DOWN) or
+			nil
+
+		if dir then
+			for _, objectpool in pairs(self.chip_objectpools) do
+				for _, chip in ipairs(objectpool) do
+					if chip.focus then
+						chip:OnFocusMove(dir, true)
+						return true
+					end
+				end
+			end
+			if self.shadow_slot.focus then
+				self.shadow_slot:OnFocusMove(dir, true)
+			end
+			return true
+		end
+	end
 end
 
 function UpgradeModulesDisplay_Inspecting:GetHelpText()
+	if not (self.is_using_module_remover and TheInput:ControllerAttached()) then
+		return
+	end
 	local controller_id = TheInput:GetControllerID()
 	local t = {}
-   	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL, false, false ) .. " " .. STRINGS.UI.OPTIONS.CLOSE)
-   	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false ) .. " " .. STRINGS.UI.UPGRADEMODULEDISPLAY.UNPLUG_CIRCUIT)
+
+	--local scheme = TheInput:GetActiveControlScheme(CONTROL_SCHEME_CAM_AND_INV)
+	--Check Profile directly since this code here is specifically for controller ui.
+	local scheme = Profile:GetControlScheme(CONTROL_SCHEME_CAM_AND_INV) or 1
+	if scheme == 2 then
+		table.insert(t, TheInput:GetLocalizedVirtualDirectionalControl(controller_id, "rstick", CONTROL_CAM_AND_INV_MODIFIER, false).." "..STRINGS.UI.CRAFTING_MENU.NAVIGATION)
+	elseif scheme == 3 then
+		table.insert(t, TheInput:GetLocalizedVirtualDirectionalControl(controller_id, "rstick", CONTROL_CAM_AND_INV_MODIFIER, true).." "..STRINGS.UI.CRAFTING_MENU.NAVIGATION)
+	elseif scheme == 4 or scheme == 5 then
+		table.insert(t, TheInput:GetLocalizedVirtualDirectionalControl(controller_id, "dpad", CONTROL_CAM_AND_INV_MODIFIER, true).." "..STRINGS.UI.CRAFTING_MENU.NAVIGATION)
+	elseif scheme == 6 or scheme == 7 then
+		table.insert(t, TheInput:GetLocalizedVirtualDirectionalControl(controller_id, "dpad", CONTROL_CAM_AND_INV_MODIFIER, false).." "..STRINGS.UI.CRAFTING_MENU.NAVIGATION)
+	else
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_UP).." "..TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_RIGHT).." "..TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_DOWN).." "..TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_LEFT).." "..STRINGS.UI.CRAFTING_MENU.NAVIGATION)
+	end
+
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT, false, false).." "..STRINGS.UI.UPGRADEMODULEDISPLAY.UNPLUG_CIRCUIT)
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL, false, false).." "..STRINGS.UI.OPTIONS.CANCEL)
 	return table.concat(t, "  ")
 end
 
