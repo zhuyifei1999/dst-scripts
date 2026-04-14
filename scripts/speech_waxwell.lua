@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "I hope that's not what I think it is.",
 
-        SHADOW_HEART_VEIN = "The malice grows with each beat.",
+        SHADOW_HEART_VEIN = "And yet it offers gifts from below.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

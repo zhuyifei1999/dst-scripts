@@ -3859,7 +3859,7 @@ local fx =
         bank = "wx78_possessed_shadow",
         build = "wx78_possessed_shadow",
         anim = "shadow_attack",
-        sound = "dontstarve/impacts/impact_flesh_wet_sharp",
+        sound = "rifts2/thrall_wings/flap_walk",
         eightfaced = true,
     },
     {
@@ -3867,6 +3867,7 @@ local fx =
         bank = "merm_shadow_fx",
         build = "merm_shadow_fx",
         anim = "spawn_poof",
+        sound = "meta4/shadow_merm/buff_pst",
         fn = function(inst)
             inst.AnimState:SetFinalOffset(1)
             inst.AnimState:SetMultColour(1, 1, 1, .5)

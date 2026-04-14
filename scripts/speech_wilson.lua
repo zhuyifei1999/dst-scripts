@@ -6114,7 +6114,7 @@ return {
 
         WX78_GESTALTTRAPPER = "What possessed WX to do this?",
 
-        SHADOW_HEART_VEIN = "Science will make anything more useful.",
+        SHADOW_HEART_VEIN = "A vein attempt to be useful.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

@@ -9382,6 +9382,7 @@ function Tune(overrides)
 		WX78_SPIN_EFFICIENCY_DECAY_2 = 0, --0 mult means only 1 target costs usage per swing
 		WX78_SPIN_PICK_EFFICIENCY = 0.2, --base mult for picking
 		WX78_SPIN_RUNSPEED_MULT = 0.6, --mult of current runspeed (including any speed boosts)
+		WX78_SPIN_SLIPPERY = 6,
 		WX78_SPIN_RADIUS = 2.1,
 		WX78_SPIN_START_RANGE = 3, --for attacks, start wind-up a bit early
 		WX78_SPIN_TIME_TO_DIZZY = 8,

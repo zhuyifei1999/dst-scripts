@@ -6105,7 +6105,7 @@ return{
 
         WX78_GESTALTTRAPPER = "What is that robot up to now?",
 
-        SHADOW_HEART_VEIN = "I don't trust that it won't grab anything nearby.",
+        SHADOW_HEART_VEIN = "Don't worry, Luce. I won't let it grab you.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

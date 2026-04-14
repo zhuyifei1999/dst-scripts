@@ -86,6 +86,13 @@ local function DeactivateSocketsInBody(item, player)
     WX78Common.DeactivateSocketsIn(item, 1)
 end
 
+local function OnBackupBodyMaxCountLowered(inst)
+    if inst.wx78_classified then
+        local maxbodies = (inst.components.skilltreeupdater == nil and 0) or inst.components.skilltreeupdater:CountSkillTag("wx78_maxbody")
+        inst.wx78_classified:DetachBodiesToMaximumCount(maxbodies)
+    end
+end
+
 -- FIXME(JBK): WX: Final pass: Rename icons to skill tree skill names.
 
 local function BuildSkillsData(SkillTreeFns)
@@ -277,6 +284,9 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wx78_ghostrevive_1",
             },
+            ondeactivate = function(inst)
+                OnBackupBodyMaxCountLowered(inst)
+            end,
         },
         wx78_ghostrevive_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_TITLE,
@@ -320,6 +330,9 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wx78_extrabody_3",
             },
+            ondeactivate = function(inst)
+                OnBackupBodyMaxCountLowered(inst)
+            end,
         },
         wx78_extrabody_3 = {
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE,
@@ -334,6 +347,9 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wx78_remotebodyswap",
             },
+            ondeactivate = function(inst)
+                OnBackupBodyMaxCountLowered(inst)
+            end,
         },
         wx78_remotebodyswap = {
             title = STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_TITLE,

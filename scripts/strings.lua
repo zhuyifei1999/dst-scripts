@@ -17737,7 +17737,7 @@ STRINGS.SKILLTREE = {
         -- WX78_ALLEGIANCE_LUNAR_DESC = "Allows Gestalts to possess your Backup Chassis through a Spectral Transfer Module and become your spectrobotic followers.",
         WX78_ALLEGIANCE_LUNAR_DESC = "Using \"borrowed\" technology from the Cryptic Founder, allow Gestalts to possess your Backup Chassis and become your spectrobotic minions.",
         WX78_ALLEGIANCE_SHADOW_TITLE = "Shadow Servitor",
-        WX78_ALLEGIANCE_SHADOW_DESC = "Allows insertion of select shadow components into your circuitry granting your Chassis various abilities in both inhabited and uninhabited states.",
+        WX78_ALLEGIANCE_SHADOW_DESC = "Allows insertion of select shadow components into your circuitry, granting your Chassis various abilities in both inhabited and uninhabited states.",
     },
 }
 
@@ -18117,7 +18117,7 @@ STRINGS.SCRAPBOOK = {
         WX78MODULE_SCREECH = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Molebat.\n\nRequires 3 sockets and allows WX-78 to perform a sonic attack, inflicting panic on nearby creatures, and going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering I allows WX-78 to hold the sonic attack.",
         WX78MODULE_DIGESTION = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Catcoon.\n\nRequires 2 sockets and allows WX-78 to process spoiled foods, such as Rot, to bake Nutribricks.\n\nGamma Circuit Tinkering I allows WX-78 to also process nearly spoiled foods to bake Nutribricks.",
         WX78MODULE_SHIELDING = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Rock Lobster, Slurtle, or Snurtle.\n\nRequires 4 sockets and allows WX-78 to perform a block, providing 80% armor, going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering II provides WX-78 with knockback immunity in the block.",
-        WX78MODULE_SPIN = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Mossling.\n\nRequires 3 sockets and allows WX-78 to perform a spin when using any Axe, Pickaxe, or Hammer when working or attacking.\n\nGamma Circuit Tinkering II makes WX-78 spin faster.",
+        WX78MODULE_SPIN = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Mosling.\n\nRequires 3 sockets and allows WX-78 to perform a spin when using any Axe or Pickaxe when working or attacking.\n\nGamma Circuit Tinkering II makes WX-78 spin faster.",
         WX78_FOODBRICK = "Produced by WX-78 with the Redigestion Circuit.\n\nCan be moistened to be edible, or used as fertilizer.",
         WAGSTAFF_TOOL = "An item used by a mysterious character to restrain static.",
         BATBAT = "Each attack drains 6.8 Health from living targets.\n\nIf the user is not at full health, it also drains 3.4 Sanity.",

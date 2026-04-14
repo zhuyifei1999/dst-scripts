@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "Is it because they have no one to play with?",
 
-        SHADOW_HEART_VEIN = "That makes me feel even worse!",
+        SHADOW_HEART_VEIN = "We don't like being around that.",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

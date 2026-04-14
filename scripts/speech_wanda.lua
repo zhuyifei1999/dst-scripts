@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "Madness...",
 
-        SHADOW_HEART_VEIN = "And now growing...",
+        SHADOW_HEART_VEIN = "It's growing...",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

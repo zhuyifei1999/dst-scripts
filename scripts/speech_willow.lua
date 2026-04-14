@@ -6111,7 +6111,7 @@ return{
 
         WX78_GESTALTTRAPPER = "That WX is always up to something.",
 
-        SHADOW_HEART_VEIN = "Eww. Get away from me!",
+        SHADOW_HEART_VEIN = "Disgusting! I don't care what it's got!",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

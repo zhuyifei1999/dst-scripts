@@ -61,6 +61,28 @@ local function TryToRemoveBackupBody(inst, body)
     return true
 end
 
+local function DetachBodiesToMaximumCount(inst, maxbodies)
+    local numactivebodies = inst.numactivebodies:value()
+    local toremovecount = numactivebodies - maxbodies
+    if toremovecount > 0 then
+        for body, _ in pairs(inst.backupbodies) do
+            if toremovecount <= 0 then
+                break
+            end
+            if inst:TryToRemoveBackupBody(body) then
+                local linkeditem = body.components.linkeditem
+                if linkeditem then
+                    linkeditem:LinkToOwnerUserID(nil)
+                end
+                toremovecount = toremovecount - 1
+            end
+        end
+        if toremovecount > 0 then
+            assert(false, "Failed to remove backup bodies to a forced maximum threshold.")
+        end
+    end
+end
+
 --------------------------------------------------------------------------
 --Common interface
 --------------------------------------------------------------------------
@@ -500,6 +522,7 @@ local function fn()
     inst.backupbodies = {}
     inst.TryToAddBackupBody = TryToAddBackupBody
     inst.TryToRemoveBackupBody = TryToRemoveBackupBody
+    inst.DetachBodiesToMaximumCount = DetachBodiesToMaximumCount
 
     inst._GetDebugString = inst.GetDebugString
     inst.GetDebugString = GetDebugString

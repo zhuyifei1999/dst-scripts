@@ -353,4 +353,19 @@ function Eater:CanEat(food)
     return self:TestFood(food, self.caneat)
 end
 
+function Eater:IsTryingToFeedMe(inst)
+	local target
+    local act = inst:GetBufferedAction()
+	if act then
+		target = act.target
+		act = act.action
+	elseif inst.components.playercontroller then
+		act, target = inst.components.playercontroller:GetRemoteInteraction()
+	end
+	return target == self.inst
+		and (	act == ACTIONS.FEED or
+				act == ACTIONS.FEEDPLAYER
+			)
+end
+
 return Eater

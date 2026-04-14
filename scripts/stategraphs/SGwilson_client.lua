@@ -277,8 +277,6 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
 				return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
-			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
-				return not (inst.sg:HasStateTag("prespin") or inst:HasTag("prespin")) and "wx_spin_start" or nil
             end
 			return not (inst.sg:HasStateTag("prehammer") or inst:HasTag("prehammer")) and "hammer_start" or nil
         end),
@@ -8314,7 +8312,7 @@ local states =
 
 	State{
 		name = "wx_spin_start",
-		tags = { "prespin", "working" },
+		tags = { "prespin", "working", "busy" },
 		server_states = { "wx_spin_start", "wx_spin" },
 
 		onenter = function(inst)
@@ -8332,29 +8330,75 @@ local states =
 		end,
 
 		onupdate = function(inst)
-			if inst.sg:ServerStateMatches() then
-				if inst.entity:FlattenMovementPrediction() then
-					inst.sg:GoToState("idle", "noanim")
+			if not inst.sg.statemem.matched then
+				if inst.sg:ServerStateMatches() then
+					if inst.entity:FlattenMovementPrediction() then
+						inst.sg.statemem.matched = true
+						--client induced "nopredict" behaviour
+						inst.entity:SetIsPredictingMovement(false)
+						inst.entity:ClearMovementPrediction()
+						inst:AddTag("nopredict_client")
+						--
+					end
+				elseif inst.bufferedaction == nil then
+					inst.sg:GoToState("idle")
 					return
 				end
-			elseif inst.bufferedaction == nil then
-				inst.sg:GoToState("idle")
+
+				if not inst.sg.statemem.matched then
+					local target = inst.sg.statemem.target
+					if target then
+						if target:IsValid() then
+							inst:ForceFacePoint(target.Transform:GetWorldPosition())
+						else
+							inst.sg.statemem.target = nil
+						end
+					end
+				end
+			elseif not (inst.sg:ServerStateMatches() or
+						inst.AnimState:IsCurrentAnimation("wx_spin_attack_loop") or
+						inst.AnimState:IsCurrentAnimation("wx_spin_attack_loop_slow"))
+			then
+				inst.sg:GoToState("idle", "noanim")
 				return
 			end
 
-			local target = inst.sg.statemem.target
-			if target then
-				if target:IsValid() then
-					inst:ForceFacePoint(target.Transform:GetWorldPosition())
-				else
-					inst.sg.statemem.target = nil
+			if inst.sg:HasStateTag("busy") and
+				not inst.components.playercontroller:IsAnyOfControlsPressed(
+						CONTROL_ACTION,
+						CONTROL_CONTROLLER_ACTION,
+						CONTROL_CONTROLLER_ALTACTION,
+						CONTROL_ATTACK,
+						CONTROL_CONTROLLER_ATTACK,
+						CONTROL_PRIMARY,
+						CONTROL_SECONDARY
+					)
+			then
+				inst.sg:RemoveStateTag("busy")
+			end
+
+			if not inst.sg:HasStateTag("busy") then
+				local xdir = TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)
+				local ydir = TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)
+				local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
+				if math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone then
+					inst.sg:GoToState("idle", inst.sg.statemem.matched and "noanim" or nil)
 				end
 			end
 		end,
 
 		ontimeout = function(inst)
-			inst:ClearBufferedAction()
-			inst.sg:GoToState("idle")
+			if not inst.sg.statemem.matched then
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		onexit = function(inst)
+			if inst.sg.statemem.matched then
+				inst.entity:SetIsPredictingMovement(true)
+				inst:RemoveTag("nopredict_client")
+			end
 		end,
 	},
 }

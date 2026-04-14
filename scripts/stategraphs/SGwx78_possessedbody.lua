@@ -13,6 +13,16 @@ local function GetIceStaffProjectileSound(inst, equip)
     return "dontstarve/wilson/attack_icestaff"
 end
 
+local function DropAllItemsForDeath(inst)
+    inst.components.inventory:DropEverything(true)
+    if inst.components.socketholder then
+        local items = inst.components.socketholder:UnsocketEverything()
+        for _, item in ipairs(items) do
+            Launch2(item, inst, 1, 1, 0.2, 0, 4)
+        end
+    end
+end
+
 local function GetLeader(inst)
     return inst.components.follower ~= nil and inst.components.follower:GetLeader() or nil
 end
@@ -176,13 +186,6 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.HAMMER,
         function(inst)
-			if inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
-				return not inst.sg:HasStateTag("prespin")
-					and (inst.sg:HasStateTag("spinning") and
-						"wx_spin" or
-						"wx_spin_start")
-					or nil
-			end
             return not inst.sg:HasStateTag("prehammer")
                 and (inst.sg:HasStateTag("hammering") and
                     "hammer" or
@@ -273,18 +276,18 @@ local events =
         if is_moving and not should_move then
             inst.sg:GoToState(is_running and "run_stop")
         elseif (is_idling and should_move) or (is_moving and should_move and is_running ~= should_run) then
-            if should_run then
-                if data and data.dir then
-			    	inst.components.locomotor:SetMoveDir(data.dir)
-			    end
-                inst.sg:GoToState("run_start")
+            if data and data.dir then
+                inst.components.locomotor:SetMoveDir(data.dir)
             end
+            inst.sg:GoToState("run_start")
         end
     end),
 
-    --CommonHandlers.OnAttacked(),
-    CommonHandlers.OnDeath(),
-    --CommonHandlers.OnAttack(),
+    EventHandler("death", function(inst, data)
+    	if not inst.sg:HasStateTag("dead") then
+            inst.sg:GoToState("death", data)
+    	end
+    end),
 
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
@@ -355,8 +358,22 @@ local events =
     end),
 
     EventHandler("possessed", function(inst, data)
-        inst.sg:GoToState("spawn")
+        inst.sg:GoToState("spawn", data)
     end),
+
+    EventHandler("toolbroke",
+        function(inst, data)
+			if not inst.sg:HasStateTag("nointerrupt") then
+				inst.sg:GoToState("toolbroke", data.tool)
+			end
+        end),
+
+    EventHandler("armorbroke",
+        function(inst)
+			if not inst.sg:HasStateTag("nointerrupt") then
+				inst.sg:GoToState("armorbroke")
+			end
+        end),
 }
 
 local states =
@@ -365,9 +382,8 @@ local states =
 		name = "spawn",
         tags = { "busy", "notalking", "noattack", "nointerrupt" },
 
-		onenter = function(inst)
+		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
-            inst.AnimState:Show("trapper")
             inst.AnimState:PlayAnimation("wx_chassis_idle", true)
 			if not inst.sg.mem.wx_chassis_build then
 				inst.sg.mem.wx_chassis_build = true
@@ -430,6 +446,7 @@ local states =
 
         onenter = function(inst, pushanim)
             inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
 
             if pushanim then
                 inst.AnimState:PushAnimation("idle_loop", true)
@@ -856,7 +873,94 @@ local states =
             inst:ClearBufferedAction()
 
             inst.components.burnable:Extinguish()
-            inst.AnimState:PlayAnimation("death")
+
+            if inst.deathsoundoverride ~= nil then
+                inst.SoundEmitter:PlaySound(inst.deathsoundoverride)
+            elseif not inst:HasTag("mime") then
+                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/death_voice")
+            end
+
+            if inst.components.sanity:GetPercent() == 0 then
+                inst.sg.statemem.gestaltflee = true
+                inst.AnimState:Show("gestalt_flee")
+            else
+                inst.AnimState:Show("gestalt_die")
+            end
+
+            inst.AnimState:PlayAnimation("wx_chassis_poweroff")
+            if not inst.sg.mem.wx_chassis_build then
+                inst.sg.mem.wx_chassis_build = true
+                inst.AnimState:AddOverrideBuild("wx_chassis")
+            end
+        end,
+
+		timeline =
+		{
+            --#SFX
+            -- gestalt is fleeing
+            FrameEvent(0, function(inst)
+                 if inst.sg.statemem.gestaltflee then
+                     inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/emerge_vocals")
+                 end
+             end),
+
+            -- gestalt is dead
+             FrameEvent(0, function(inst)
+                 if not inst.sg.statemem.gestaltflee then
+                     inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/attack_vocals")
+                 end
+             end),
+
+            --
+            FrameEvent(0, function(inst)
+                if inst.sg.mem.wx_chassis_build then
+                    inst.SoundEmitter:PlaySound("WX_rework/chassis/internal_rumble")
+                end
+            end),
+            FrameEvent(16, function(inst)
+                if inst.sg.mem.wx_chassis_build then
+                    inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet")
+                end
+            end),
+            FrameEvent(22, function(inst)
+                if inst.sg.mem.wx_chassis_build then
+                    inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk")
+                end
+            end),
+            FrameEvent(28, function(inst)
+                if inst.sg.mem.wx_chassis_build then
+                    inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk")
+                end
+            end),
+		},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst:TryToReplaceWithBackupBody()
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.mem.wx_chassis_build then
+                inst.sg.mem.wx_chassis_build = nil
+                inst.AnimState:ClearOverrideBuild("wx_chassis")
+            end
+		end,
+    },
+
+    State{
+        name = "despawn",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+            inst:ClearBufferedAction()
+
+            inst.components.burnable:Extinguish()
 
             if inst.deathsoundoverride ~= nil then
                 inst.SoundEmitter:PlaySound(inst.deathsoundoverride)
@@ -899,8 +1003,7 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst:TryToSpawnBackupBody()
-                    inst:Remove()
+                    inst:TryToReplaceWithBackupBody(true)
                 end
             end),
         },
@@ -912,6 +1015,7 @@ local states =
             end
 		end,
     },
+
 
     State{
         name = "take",
@@ -1827,6 +1931,62 @@ local states =
                 end
             end),
         },
+    },
+
+    State{
+        name = "toolbroke",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst, tool)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_break")
+            inst.AnimState:Hide("ARM_carry")
+            inst.AnimState:Show("ARM_normal")
+
+            if tool == nil or not tool.nobrokentoolfx then
+                SpawnPrefab("brokentool").Transform:SetPosition(inst.Transform:GetWorldPosition())
+            end
+
+            inst.sg.statemem.toolname = tool ~= nil and tool.prefab or nil
+
+            inst.sg:SetTimeout(10 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.toolname ~= nil then
+                local sameTool = inst.components.inventory:FindItem(function(item)
+					return item.prefab == inst.sg.statemem.toolname and item.components.equippable ~= nil
+                end)
+                if sameTool ~= nil then
+                    inst.components.inventory:Equip(sameTool)
+                end
+            end
+
+            if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
+                inst.AnimState:Show("ARM_carry")
+                inst.AnimState:Hide("ARM_normal")
+            end
+        end,
+    },
+
+    State{
+        name = "armorbroke",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_armour_break")
+            inst.sg:SetTimeout(10 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
     },
 }
 

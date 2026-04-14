@@ -271,11 +271,11 @@ local function SetDizzySound(inst, level, recovering)
 	if level > 0 then
 		if inst._dizzysound ~= level then
 			inst._dizzysound = level
-			local volume = level + (recovering and Remap(level, 0, 0.6, 0.1, 0.4) or 0.4)
+			--local volume = level + (recovering and Remap(level, 0, 0.6, 0.1, 0.4) or 0.4)
 			if not inst.SoundEmitter:PlayingSound("dizzyloop") then
-				inst.SoundEmitter:PlaySound("WX_rework/dizzy/loop", "dizzyloop", volume)
-			else
-				inst.SoundEmitter:SetVolume("dizzyloop", volume)
+				inst.SoundEmitter:PlaySound("WX_rework/dizzy/loop", "dizzyloop")--, volume)
+			--else
+			--	inst.SoundEmitter:SetVolume("dizzyloop", volume)
 			end
 			inst.SoundEmitter:SetParameter("dizzyloop", "dizziness", level)
 		end
@@ -527,6 +527,7 @@ local function OnGetSocketable(inst, item, doer) -- doer can be nil!
                     socket_shadow_heart:SetDamageMult(TUNING.SKILLS.WX78.SHADOWHEART_DAMAGEMULT)
                 end
                 if socketquality >= SOCKETQUALITY.HIGH then
+                    WX78Common.SetMimicEyes(inst, true, doer)
                     if not inst.components.socket_shadow_mimicry then
                         inst:AddComponent("socket_shadow_mimicry")
                     end
@@ -545,6 +546,7 @@ local function OnRemoveSocketable(inst, item)
         local socketquality = inst.components.socketholder:GetHighestQualitySocketed("socket_shadow")
         if socketquality < SOCKETQUALITY.HIGH then
             inst:RemoveComponent("socket_shadow_mimicry")
+            WX78Common.SetMimicEyes(inst, false)
             if socketquality < SOCKETQUALITY.MEDIUM then
                 inst:RemoveComponent("socket_shadow_heart")
                 WX78Common.SetHeartVeins(inst, false)
@@ -571,10 +573,75 @@ local function DeactivateSocketsIn(inst, socketposition)
 end
 
 --------------------------------------------------------------------------
+-- Mimic eyes
+local function ShowMimicEyes(inst, doer)
+    local animstateowner = inst.wx78_backupbody_inventory or inst
+    animstateowner.AnimState:Hide("mimic1")
+    animstateowner.AnimState:Hide("mimic2")
+    animstateowner.AnimState:Hide("mimic3")
+    local x, y, z = (doer or inst).Transform:GetWorldPosition()
+    local prng = PRNG_Uniform(math.floor(x + 0.5) * math.floor(z + 0.5))
+    local haseye = false
+    if prng:Rand() < 0.5 then
+        animstateowner.AnimState:Show("mimic1")
+        haseye = true
+    end
+    if prng:Rand() < 0.5 then
+        animstateowner.AnimState:Show("mimic2")
+        haseye = true
+    end
+    if prng:Rand() < 0.5 then
+        animstateowner.AnimState:Show("mimic3")
+        haseye = true
+    end
+    if not haseye then
+        local eyeindex = prng:RandInt(1, 3)
+        animstateowner.AnimState:Show("mimic" .. tostring(eyeindex))
+    end
+end
+
+local function HideMimicEyes(inst)
+    local animstateowner = inst.wx78_backupbody_inventory or inst
+    animstateowner.AnimState:Hide("mimic1")
+    animstateowner.AnimState:Hide("mimic2")
+    animstateowner.AnimState:Hide("mimic3")
+end
+
+local function OnMimicEyesUpdated(inst, data)
+    local enabled, doer
+    if data then
+        enabled = data.enabled
+        doer = data.doer
+    end
+    local animstateowner = inst.wx78_backupbody_inventory or inst
+    if enabled then
+        WX78Common.ShowMimicEyes(inst, doer)
+    else
+        WX78Common.HideMimicEyes(inst)
+    end
+end
+
+local function SetMimicEyes(inst, enabled, doer)
+    -- Always fire off this event to update the mimic eyes since there are three that could be on or off.
+    -- The doer is needed to know what it should be before a teleport happens.
+    inst._has_mimiceyes = enabled
+    if not inst.isplayer then -- Player is handled in SGwilson.
+        inst:PushEvent("mimiceyes_update", {enabled = inst._has_mimiceyes, doer = doer,})
+    end
+end
+
+local function HasMimicEyes(inst)
+    local wx = inst.wx78_backupbody_inventory or inst
+    return wx._has_mimiceyes
+end
+
 -- HeartVeins
 
 local function HideVeins(animstateowner)
     animstateowner.AnimState:Hide("shad_veins")
+    animstateowner.AnimState:Hide("mimic1")
+    animstateowner.AnimState:Hide("mimic2")
+    animstateowner.AnimState:Hide("mimic3")
     animstateowner:RemoveEventCallback("animover", HideVeins)
 end
 
@@ -583,6 +650,9 @@ local function OnHeartVeinsChanged(inst, enabled)
     if enabled then
         animstateowner:RemoveEventCallback("animover", HideVeins)
         animstateowner.AnimState:Show("shad_veins")
+        if WX78Common.HasMimicEyes(inst) then
+            WX78Common.ShowMimicEyes(inst)
+        end
         if animstateowner.AnimState:IsCurrentAnimation("wx_chassis_idle") then
             animstateowner.AnimState:PlayAnimation("wx_veins_pre", false)
             animstateowner.AnimState:PushAnimation("wx_chassis_idle", true)
@@ -594,17 +664,14 @@ local function OnHeartVeinsChanged(inst, enabled)
             animstateowner:ListenForEvent("animover", HideVeins)
         else
             animstateowner.AnimState:Hide("shad_veins")
+            WX78Common.HideMimicEyes(inst)
         end
     end
 end
 
 local function SetHeartVeins(inst, enabled)
     if inst._has_heartveins ~= enabled then
-        if enabled then
-            inst._has_heartveins = true
-        else
-            inst._has_heartveins = nil
-        end
+        inst._has_heartveins = enabled
         if not inst.isplayer then -- Player is handled in SGwilson.
             inst:PushEvent("heartveins_changed", inst._has_heartveins)
         end
@@ -645,11 +712,7 @@ end
 
 local function SetTrapper(inst, enabled)
     if inst._has_trapper ~= enabled then
-        if enabled then
-            inst._has_trapper = true
-        else
-            inst._has_trapper = nil
-        end
+        inst._has_trapper = enabled
         if not inst.isplayer then -- Player is handled in SGwilson.
             inst:PushEvent("trapper_changed", inst._has_trapper)
         end
@@ -664,15 +727,14 @@ end
 --------------------------------------------------------------------------
 
 local function _CanSpinUsingItem_Client(item)
-	return item ~= nil and item:HasAnyTag("CHOP_tool", "MINE_tool", "HAMMER_tool")
+	return item ~= nil and item:HasAnyTag("CHOP_tool", "MINE_tool")
 end
 
 local function _CanSpinUsingItem_Server(item)
 	return item	~= nil
 		and item.components.tool ~= nil
 		and (	item.components.tool:CanDoAction(ACTIONS.CHOP) or
-				item.components.tool:CanDoAction(ACTIONS.MINE) or
-				item.components.tool:CanDoAction(ACTIONS.HAMMER)	)
+				item.components.tool:CanDoAction(ACTIONS.MINE)	)
 end
 
 local function CanSpinUsingItem(item)
@@ -689,7 +751,12 @@ local function Initialize_Common(inst)
 
     if inst.AnimState then
         inst.AnimState:Hide("shad_veins")
+        inst.AnimState:Hide("mimic1")
+        inst.AnimState:Hide("mimic2")
+        inst.AnimState:Hide("mimic3")
         inst.AnimState:Hide("trapper")
+        inst.AnimState:Hide("gestalt_die")
+        inst.AnimState:Hide("gestalt_flee")
     end
 end
 local function Initialize_Master(inst)
@@ -709,6 +776,7 @@ local function Initialize_Master(inst)
     socketholder:SetOnRemoveSocketableFn(OnRemoveSocketable)
 
     if not inst.isplayer then -- Player is handled in SGwilson.
+        inst:ListenForEvent("mimiceyes_update", OnMimicEyesUpdated)
         inst:ListenForEvent("heartveins_changed", OnHeartVeinsChanged)
         inst:ListenForEvent("trapper_changed", OnTrapperChanged)
     end
@@ -720,6 +788,10 @@ WX78Common = {
     MakeItemSocketable = MakeItemSocketable,
     ActivateSocketsIn = ActivateSocketsIn,
     DeactivateSocketsIn = DeactivateSocketsIn,
+    SetMimicEyes = SetMimicEyes,
+    HasMimicEyes = HasMimicEyes,
+    ShowMimicEyes = ShowMimicEyes,
+    HideMimicEyes = HideMimicEyes,
     SetHeartVeins = SetHeartVeins,
     HasHeartVeins = HasHeartVeins,
     SetTrapper = SetTrapper,

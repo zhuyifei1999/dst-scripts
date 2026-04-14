@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "It's been reconfigured to permit direct transfer of the entity into the chassis.",
 
-        SHADOW_HEART_VEIN = "This magic is growing too strong.",
+        SHADOW_HEART_VEIN = "This is dark magic indeed.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

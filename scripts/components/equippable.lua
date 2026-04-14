@@ -145,7 +145,7 @@ end
 
 --V2C: reminder to update replica version as well XD
 function Equippable:IsRestricted(target)
-	if not target:HasTag("player") then
+	if not target:HasAnyTag("player", "possessedbody") then
 		--restricted tags and links only apply to players
 		return false
 	end

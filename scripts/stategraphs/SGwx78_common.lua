@@ -6,8 +6,8 @@ local SGWX78Common = {}
 -- WX-78 common states
 
 local WX_SPIN_PICKABLE_TAGS = { "plant", "lichen", "oceanvine", "kelp" }
-local WX_SPIN_CANT_TAGS = { "INLIMBO", "NOCLICK", "FX", "decor", "intense", "companion", "flight", "invisible", "notarget", "noattack" }
-local WX_SPIN_ONEOF_TAGS = ConcatArrays({ "CHOP_workable", "MINE_workable", "HAMMER_workable", "LunarBuildup", "_combat", --[["pickable",]] }, WX_SPIN_PICKABLE_TAGS)
+local WX_SPIN_CANT_TAGS = { "INLIMBO", "NOCLICK", "FX", "decor", "intense", "companion", "flight", "invisible", "notarget", "noattack", "wall" }
+local WX_SPIN_ONEOF_TAGS = ConcatArrays({ "CHOP_workable", "MINE_workable", "LunarBuildup", "_combat", --[["pickable",]] }, WX_SPIN_PICKABLE_TAGS)
 
 SGWX78Common.WX_SPIN_PICKABLE_TAGS = WX_SPIN_PICKABLE_TAGS
 
@@ -165,7 +165,7 @@ end
 SGWX78Common.AddWX78SpinStates = function(states)
     table.insert(states, State{
         name = "wx_spin_start",
-        tags = { "prespin", "working" },
+		tags = { "prespin", "working", "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -194,6 +194,21 @@ SGWX78Common.AddWX78SpinStates = function(states)
 					inst.sg.statemem.target = nil
 				end
 			end
+
+			if inst.components.playercontroller and
+				inst.sg:HasStateTag("busy") and
+				not inst.components.playercontroller:IsAnyOfControlsPressed(
+						CONTROL_ACTION,
+						CONTROL_CONTROLLER_ACTION,
+						CONTROL_CONTROLLER_ALTACTION,
+						CONTROL_ATTACK,
+						CONTROL_CONTROLLER_ATTACK,
+						CONTROL_PRIMARY,
+						CONTROL_SECONDARY
+					)
+			then
+				inst.sg:RemoveStateTag("busy")
+			end
 		end,
 
 		timeline =
@@ -216,16 +231,18 @@ SGWX78Common.AddWX78SpinStates = function(states)
 			end),
 			FrameEvent(14, function(inst)
 				inst.sg.statemem.spinning = true
+				local released = not inst.sg:HasStateTag("busy") or nil
 				if inst.sg.statemem.quickstart then
 					--convert to world space
 					local theta = inst.Transform:GetRotation() * DEGREES
 					inst.sg:GoToState("wx_spin", {
 						quickstart = inst.sg.statemem.quickstart,
+						released = released,
 						vx = inst.sg.statemem.speed * math.cos(theta),
 						vz = -inst.sg.statemem.speed * math.sin(theta),
 					})
 				else
-					inst.sg:GoToState("wx_spin")
+					inst.sg:GoToState("wx_spin", released and { released = true })
 				end
 			end),
 		},
@@ -278,6 +295,11 @@ SGWX78Common.AddWX78SpinStates = function(states)
             end
 
 			if data then
+				if data.released then
+					inst.sg:RemoveStateTag("busy")
+					inst.sg:RemoveStateTag("nopredict")
+				end
+
 				inst.sg.statemem.vx = data.vx
 				inst.sg.statemem.vz = data.vz
 
@@ -325,13 +347,12 @@ SGWX78Common.AddWX78SpinStates = function(states)
 		onupdate = function(inst, dt)
 			if inst.sg.statemem.targets then
 				local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-				local canchop, canmine, canhammer
+				local canchop, canmine
 				if item and item.components.tool then
 					canchop = item.components.tool:CanDoAction(ACTIONS.CHOP)
 					canmine = item.components.tool:CanDoAction(ACTIONS.MINE)
-					canhammer = item.components.tool:CanDoAction(ACTIONS.HAMMER)
 				end
-				if not (canchop or canmine or canhammer) then
+				if not (canchop or canmine) then
 					inst.AnimState:PlayAnimation(inst.sg.statemem.anim)
 					inst.AnimState:SetFrame(1)
 					inst.AnimState:PushAnimation("wx_spin_attack_pst", false)
@@ -347,6 +368,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 
 				inst.components.combat.ignorehitrange = true
 
+				local pickused = inst.sg.statemem.pickused --cache in case left state
                 local harvestedcount = 0
 				local didwork, didattack = false, false
 				local recoiltarget
@@ -368,6 +390,9 @@ SGWX78Common.AddWX78SpinStates = function(states)
 									inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst)
 								end
 								if BufferedAction(inst, v, ACTIONS.REMOVELUNARBUILDUP, item):Do() then
+									if inst.sg.currentstate.name ~= "wx_spin" then
+										break
+									end
 									inst.sg.statemem.efficiency.MINE = (eff or efficiency_decay) * efficiency_decay
 									hit = true
 								end
@@ -380,6 +405,9 @@ SGWX78Common.AddWX78SpinStates = function(states)
 											inst.components.efficientuser:AddMultiplier(ACTIONS.CHOP, eff, inst)
 										end
 										if BufferedAction(inst, v, ACTIONS.CHOP, item):Do() then
+											if inst.sg.currentstate.name ~= "wx_spin" then
+												break
+											end
 											inst.sg.statemem.efficiency.CHOP = (eff or efficiency_decay) * efficiency_decay
 											hit = true
 										end
@@ -394,21 +422,10 @@ SGWX78Common.AddWX78SpinStates = function(states)
 											inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst)
 										end
 										if BufferedAction(inst, v, ACTIONS.MINE, item):Do() then
+											if inst.sg.currentstate.name ~= "wx_spin" then
+												break
+											end
 											inst.sg.statemem.efficiency.MINE = (eff or efficiency_decay) * efficiency_decay
-											hit = true
-										end
-									else
-										recoiltarget = v
-									end
-								elseif workaction == ACTIONS.HAMMER then
-									inst.SoundEmitter:PlaySound(item and item.hit_skin_sound or "dontstarve/wilson/hit")
-									if canhammer then
-										local eff = inst.sg.statemem.efficiency.HAMMER
-										if eff and inst.components.efficientuser then
-											inst.components.efficientuser:AddMultiplier(ACTIONS.HAMMER, eff, inst)
-										end
-										if BufferedAction(inst, v, ACTIONS.HAMMER, item):Do() then
-											inst.sg.statemem.efficiency.HAMMER = (eff or efficiency_decay) * efficiency_decay
 											hit = true
 										end
 									else
@@ -424,19 +441,18 @@ SGWX78Common.AddWX78SpinStates = function(states)
 							end
 
 							if recoiltarget then
+								inst:ForceFacePoint(x1, y1, z1)
 								if hasbuildup then
 									v.components.lunarhailbuildup:DoWorkToRemoveBuildup(0, inst)
 								else
 									v.components.workable:WorkedBy(inst, 0)
 								end
-								inst:ForceFacePoint(x1, y1, z1)
 								break
 							end
 
 							if not hit and
 								v.components.combat and
 								inst.components.combat:CanTarget(v) and
-								not v:HasTag("wall") and
 								not inst.components.combat:IsAlly(v)
 							then
 								local eff = inst.sg.statemem.efficiency.ATTACK
@@ -449,6 +465,9 @@ SGWX78Common.AddWX78SpinStates = function(states)
 									inst.components.aoediminishingreturns.mult:SetModifier(inst, dim, "wx_spin")
 								end
 								inst.components.combat:DoAttack(v)
+								if inst.sg.currentstate.name ~= "wx_spin" then
+									break
+								end
 								inst.sg.statemem.efficiency.ATTACK = (eff or efficiency_decay) * efficiency_decay
 								inst.sg.statemem.dim = (dim or 1) * aoe_dim
 								didattack = didattack or ShouldPlayDangerMusic(inst, v)
@@ -486,8 +505,10 @@ SGWX78Common.AddWX78SpinStates = function(states)
 					end
 				end
                 if harvestedcount > 0 then
-					if not inst.sg.statemem.pickused and item:IsValid() and item.components.finiteuses and item.components.finiteuses:GetUses() > 0 then
-						inst.sg.statemem.pickused = true
+					if not pickused and item:IsValid() and item.components.finiteuses and item.components.finiteuses:GetUses() > 0 then
+						if inst.sg.currentstate.name == "wx_spin" then
+							inst.sg.statemem.pickused = true
+						end
 						item.components.finiteuses:Use(TUNING.WX78_SPIN_PICK_EFFICIENCY)
 					end
                     inst:PushEvent("picksomethingfromaoe", {harvestedcount = harvestedcount,})
@@ -498,7 +519,6 @@ SGWX78Common.AddWX78SpinStates = function(states)
 				if inst.components.efficientuser then
 					inst.components.efficientuser:RemoveMultiplier(ACTIONS.CHOP, inst)
 					inst.components.efficientuser:RemoveMultiplier(ACTIONS.MINE, inst)
-					inst.components.efficientuser:RemoveMultiplier(ACTIONS.HAMMER, inst)
 					inst.components.efficientuser:RemoveMultiplier(ACTIONS.ATTACK, inst)
 				end
 
@@ -510,7 +530,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 					inst:PushEvent("wx_performedspinaction", didattack)
 				end
 
-				if recoiltarget then
+				if recoiltarget and inst.sg.currentstate.name == "wx_spin" then
 					inst.sg.statemem.targets = nil
 					inst:PushEventImmediate("recoil_off", { target = recoiltarget })
 				end
@@ -528,24 +548,30 @@ SGWX78Common.AddWX78SpinStates = function(states)
 				end
 			end
 
-			if inst.components.playercontroller and
-				inst.sg.statemem.canrelease and
-				not inst.components.playercontroller:IsAnyOfControlsPressed(
-						CONTROL_ACTION,
-						CONTROL_CONTROLLER_ACTION,
-						CONTROL_CONTROLLER_ALTACTION,
-						CONTROL_ATTACK,
-						CONTROL_CONTROLLER_ATTACK,
-						CONTROL_PRIMARY,
-						CONTROL_SECONDARY
-					)
-			then
-				local frame = inst.AnimState:GetCurrentAnimationFrame()
-				inst.AnimState:PlayAnimation(inst.sg.statemem.anim)
-				inst.AnimState:SetFrame(frame + 1)
-				inst.AnimState:PushAnimation("wx_spin_attack_pst", false)
-				inst.sg:GoToState("idle", true)
-				return
+			if inst.components.playercontroller then
+				if inst.sg:HasStateTag("busy") and
+					not inst.components.playercontroller:IsAnyOfControlsPressed(
+							CONTROL_ACTION,
+							CONTROL_CONTROLLER_ACTION,
+							CONTROL_CONTROLLER_ALTACTION,
+							CONTROL_ATTACK,
+							CONTROL_CONTROLLER_ATTACK,
+							CONTROL_PRIMARY,
+							CONTROL_SECONDARY
+						)
+				then
+					inst.sg:RemoveStateTag("busy")
+					inst.sg:RemoveStateTag("nopredict")
+				end
+
+				if not inst.sg:HasStateTag("busy") and inst.sg.statemem.canrelease then
+					local frame = inst.AnimState:GetCurrentAnimationFrame()
+					inst.AnimState:PlayAnimation(inst.sg.statemem.anim)
+					inst.AnimState:SetFrame(frame + 1)
+					inst.AnimState:PushAnimation("wx_spin_attack_pst", false)
+					inst.sg:GoToState("idle", true)
+					return
+				end
 			end
 
 			inst.sg.mem.wx_spin_buildup = (inst.sg.mem.wx_spin_buildup or 0) + dt
@@ -694,6 +720,14 @@ SGWX78Common.AddWX78SpinStates = function(states)
 
 		events =
 		{
+			EventHandler("feetslipped", function(inst)
+				if inst.sg.statemem.vx then
+					inst.Transform:SetRotation(math.atan2(-inst.sg.statemem.vz, inst.sg.statemem.vx) * RADIANS)
+					inst.sg:GoToState("slip")
+				else
+					inst.sg:GoToState("slip", 1)
+				end
+			end),
 			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
 			EventHandler("locomote", function(inst, data)
 				if data and data.remoteoverridelocomote then

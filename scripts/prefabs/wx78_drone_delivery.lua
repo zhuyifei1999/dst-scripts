@@ -395,7 +395,7 @@ end
 local function ChangeToItem(inst, fast)
 	inst.components.container:DropEverything()
 
-	local item = SpawnPrefab(inst.prefab.."_item")
+	local item = SpawnPrefab(inst.prefab.."_item", inst.linked_skinname, inst.skin_id)
 	item.Transform:SetPosition(inst.Transform:GetWorldPosition())
 	item.AnimState:PlayAnimation("collapse")
 	if fast then

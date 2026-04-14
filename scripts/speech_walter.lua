@@ -6146,7 +6146,7 @@ return{
 
         WX78_GESTALTTRAPPER = "This must do something reaaally neat, Woby.",
 
-        SHADOW_HEART_VEIN = "Wow, it's growing!",
+        SHADOW_HEART_VEIN = "Aw, it's so helpful!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

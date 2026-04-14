@@ -6108,7 +6108,7 @@ return{
 
         WX78_GESTALTTRAPPER = "I've thought about it too, Abby.",
 
-        SHADOW_HEART_VEIN = "Even when it tries to escape something has to hold it down.",
+        SHADOW_HEART_VEIN = "From a heart that knows no peace.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

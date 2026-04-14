@@ -6110,7 +6110,7 @@ return{
 
         WX78_GESTALTTRAPPER = "Looks like WX repurposed the bossman's contraption.",
 
-        SHADOW_HEART_VEIN = "This is even more twisted. What's it doing?",
+        SHADOW_HEART_VEIN = "It was creepin' and crawlin' underground.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

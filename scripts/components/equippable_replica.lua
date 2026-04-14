@@ -31,7 +31,7 @@ end
 
 function Equippable:IsRestricted(target)
     --return true if restricted (can't equip)
-	if not target:HasTag("player") then
+	if not target:HasAnyTag("player", "possessedbody") then
 		--restricted tags and links only apply to players
 		return false
 	end

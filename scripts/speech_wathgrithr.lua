@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "There is sorcery at work here.",
 
-        SHADOW_HEART_VEIN = "A bad omen to see that in any battle.",
+        SHADOW_HEART_VEIN = "Such gifts bear ill fortune.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

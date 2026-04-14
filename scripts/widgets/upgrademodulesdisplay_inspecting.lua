@@ -60,12 +60,12 @@ local function ShadowSlot_OnLoseFocus(self, ...)
 	self.parent.parent:OnShadowSlotLoseFocus()
 end
 
-local SOCKETQUALITY_TO_IMAGES = {
+local SOCKETQUALITY_TO_ANIMS = {
     ["socket_shadow"] = {
         [SOCKETQUALITY.NONE] = {},
-        [SOCKETQUALITY.LOW] = {image = "nightmarefuel.tex"},
-        [SOCKETQUALITY.MEDIUM] = {image = "shadowheart.tex"},
-        [SOCKETQUALITY.HIGH] = {image = "shadowheart_infused.tex"},
+        [SOCKETQUALITY.LOW] = {bank = "status_wx_chest", build = "status_wx_chest", animation = "nightmare_fuel_chip_idle", loops = true},
+        [SOCKETQUALITY.MEDIUM] = {bank = "status_wx_chest", build = "status_wx_chest", animation = "shadow_heart_chip_idle", loops = true, layerhides = {"infused"}},
+        [SOCKETQUALITY.HIGH] = {bank = "status_wx_chest", build = "status_wx_chest", animation = "shadow_heart_chip_idle", loops = true},
     },
 }
 
@@ -137,10 +137,26 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
         if socketholder then
             if socketholder:IsSocketNameForPosition("socket_shadow", socketposition) then
                 local socketquality = owner.components.socketholder:GetQualityForPosition(socketposition)
-                local imagedata = SOCKETQUALITY_TO_IMAGES["socket_shadow"][socketquality]
-                if imagedata and imagedata.image then
+                local animdata = SOCKETQUALITY_TO_ANIMS["socket_shadow"][socketquality]
+                if animdata and animdata.bank and animdata.build and animdata.animation then
                     self.shadow_slot_item_isvalid = true
-                    self.shadow_slot_item:SetTexture(imagedata.atlas or GetInventoryItemAtlas(imagedata.image), imagedata.image)
+                    if self.shadow_slot_item_oldanimdata then
+                        if self.shadow_slot_item_oldanimdata.layerhides then
+                            for _, layername in ipairs(self.shadow_slot_item_oldanimdata.layerhides) do
+                                self.shadow_slot_item:GetAnimState():Show(layername)
+                            end
+                        end
+                    end
+                    self.shadow_slot_item_oldanimdata = animdata
+                    self.shadow_slot_item:GetAnimState():SetBank(animdata.bank)
+                    self.shadow_slot_item:GetAnimState():SetBuild(animdata.build)
+                    self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.animation, animdata.loops)
+                    if animdata.layerhides then
+                        for _, layername in ipairs(animdata.layerhides) do
+                            self.shadow_slot_item:GetAnimState():Hide(layername)
+                        end
+                    end
+                    self.shadow_slot_item:GetAnimState():Hide("focus")
                     self.shadow_slot_item:Show()
                     if not wasvalid then
                         self:DoFocusHookups()
@@ -152,7 +168,6 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
             end
         end
         if wasvalid and not self.shadow_slot_item_isvalid then
-            self.shadow_slot_item:SetTexture("images/ui.xml", "white.tex")
             self.shadow_slot_item:Hide()
             self:DoFocusHookups()
 			if not self:IsBusy() then
@@ -188,13 +203,19 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
     self.bg_shadow:GetAnimState():Hide("bars_extended")
     self.bg_shadow:GetAnimState():Hide("bars")
     self.bg_shadow:GetAnimState():Hide("shadow_extended")
-    self.shadow_slot = self.bg_shadow:AddChild(Image("images/hud.xml", "inv_slot.tex"))
-    self.shadow_slot:SetPosition(-111, 185, 0)
+    self.bg_shadow:SetClickable(false)
+    self.shadow_slot = self.bg:AddChild(Image("images/ui.xml", "white.tex"))
+    self.shadow_slot:SetTint(0, 0, 0, 0) -- This is used to normalize the click region to a rectangle only and keeps controller focus hookups.
+    self.shadow_slot:SetPosition(-100, 175, 0)
+    self.shadow_slot:SetSize(95, 122)
     self.shadow_slot:Hide()
 	self.shadow_slot.OnControl = ShadowSlot_OnControl
 	self.shadow_slot.OnGainFocus = ShadowSlot_OnGainFocus
 	self.shadow_slot.OnLoseFocus = ShadowSlot_OnLoseFocus
-    self.shadow_slot_item = self.shadow_slot:AddChild(Image("images/ui.xml", "white.tex"))
+    self.shadow_slot_item = self.shadow_slot:AddChild(UIAnim())
+    self.shadow_slot_item:MoveToBack()
+    self.shadow_slot_item:SetClickable(false)
+    self.shadow_slot_item:GetAnimState():Hide("focus")
     self.shadow_slot_item:Hide()
     if not self.has_shadow_affinity then
         self.bg_shadow:GetAnimState():Hide("affinity_shadow")
@@ -1081,7 +1102,7 @@ local NO_UNPLUG_DELAY = 4 * FRAMES
 function UpgradeModulesDisplay_Inspecting:UnplugShadowSlot()
 	if self.is_using_module_remover and self.shadow_slot_item_isvalid and not self:IsBusy() then
 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-		self.moduleremover:GetAnimState():PlayAnimation("unplug")
+		self.moduleremover:GetAnimState():PlayAnimation("unplug_shadow")
 		self.moduleremover:GetAnimState():PushAnimation("idle", false)
 
 		if not self.moduleremover:HasCallback("animover") then
@@ -1226,6 +1247,9 @@ function UpgradeModulesDisplay_Inspecting:SetShadowSlotFocus(focus)
 			self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, 0.2)
 		end
 		self.shadow_slot:SetTooltip(STRINGS.UI.UPGRADEMODULEDISPLAY.UNSOCKET)
+        if self.shadow_slot_item_isvalid then
+            self.shadow_slot_item:GetAnimState():Show("focus")
+        end
 	else
 		if not self:IsBusy() then
 			local no_other_focus = true
@@ -1244,6 +1268,9 @@ function UpgradeModulesDisplay_Inspecting:SetShadowSlotFocus(focus)
 			end
 		end
 		self.shadow_slot:SetTooltip(nil)
+        if self.shadow_slot_item_isvalid then
+            self.shadow_slot_item:GetAnimState():Hide("focus")
+        end
 	end
 end
 

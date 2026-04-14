@@ -18775,7 +18775,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Science will make anything more useful."
+msgid "A vein attempt to be useful."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SHALLOW_GRAVE
@@ -37460,7 +37460,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Wow, it's growing!"
+msgid "Aw, it's so helpful!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SHALLOW_GRAVE
@@ -55985,7 +55985,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "And now growing..."
+msgid "It's growing..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.SHALLOW_GRAVE
@@ -73595,7 +73595,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Not even suitable for a pasta dish."
+msgid "It has roots and grows in the dirt, but that is no vegetable."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.SHALLOW_GRAVE
@@ -91930,7 +91930,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "A bad omen to see that in any battle."
+msgid "Such gifts bear ill fortune."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SHALLOW_GRAVE
@@ -110340,7 +110340,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "The malice grows with each beat."
+msgid "And yet it offers gifts from below."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SHALLOW_GRAVE
@@ -128680,7 +128680,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "That makes me feel even worse!"
+msgid "We don't like being around that."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SHALLOW_GRAVE
@@ -147050,7 +147050,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Even when it tries to escape something has to hold it down."
+msgid "From a heart that knows no peace."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SHALLOW_GRAVE
@@ -165425,7 +165425,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "This magic is growing too strong."
+msgid "This is dark magic indeed."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SHALLOW_GRAVE
@@ -183760,7 +183760,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Eww. Get away from me!"
+msgid "Disgusting! I don't care what it's got!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.SHALLOW_GRAVE
@@ -202175,7 +202175,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "This is even more twisted. What's it doing?"
+msgid "It was creepin' and crawlin' underground."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.SHALLOW_GRAVE
@@ -220550,7 +220550,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Haha! Is shaking while Wolfgang flexes."
+msgid "Haha! Not as mighty as Wolfgang biceps vein!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SHALLOW_GRAVE
@@ -238865,7 +238865,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "I don't trust that it won't grab anything nearby."
+msgid "Don't worry, Luce. I won't let it grab you."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SHALLOW_GRAVE
@@ -294170,7 +294170,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.SHADOW_HEART_VEIN
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.SHADOW_HEART_VEIN"
-msgid "Want what sad string holds."
+msgid "Thanks, sad heart."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.SHALLOW_GRAVE
@@ -350175,7 +350175,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SPIN
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SPIN"
-msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Mossling.\n\nRequires 3 sockets and allows WX-78 to perform a spin when using any Axe, Pickaxe, or Hammer when working or attacking.\n\nGamma Circuit Tinkering II makes WX-78 spin faster."
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Mosling.\n\nRequires 3 sockets and allows WX-78 to perform a spin when using any Axe or Pickaxe when working or attacking.\n\nGamma Circuit Tinkering II makes WX-78 spin faster."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_STACKSIZE
@@ -356125,7 +356125,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC"
-msgid "Allows insertion of select shadow components into your circuitry granting your Chassis various abilities in both inhabited and uninhabited states."
+msgid "Allows insertion of select shadow components into your circuitry, granting your Chassis various abilities in both inhabited and uninhabited states."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_TITLE

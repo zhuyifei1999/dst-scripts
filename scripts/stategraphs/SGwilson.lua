@@ -904,12 +904,6 @@ local actionhandlers =
         function(inst)
             if inst:HasTag("beaver") then
                 return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
-			elseif inst.GetModuleTypeCount and inst:GetModuleTypeCount("spin") > 0 then
-				return not inst.sg:HasStateTag("prespin")
-					and (inst.sg:HasStateTag("spinning") and
-						"wx_spin" or
-						"wx_spin_start")
-					or nil
             end
             return not inst.sg:HasStateTag("prehammer")
                 and (inst.sg:HasStateTag("hammering") and
@@ -23634,7 +23628,7 @@ local states =
 		name = "slip",
 		tags = { "busy", "nopredict", "nomorph", "jumping", "overridelocomote" },
 
-		onenter = function(inst)
+		onenter = function(inst, speed)
 			ForceStopHeavyLifting(inst)
 			inst.components.locomotor:Stop()
 			inst:ClearBufferedAction()
@@ -23647,7 +23641,7 @@ local states =
 			inst.AnimState:PushAnimation("slip_loop", false)
 			inst.SoundEmitter:PlaySound("dontstarve/movement/iceslab_slipping")
 
-			inst.sg.statemem.speed = inst.components.locomotor:GetRunSpeed()
+			inst.sg.statemem.speed = speed or inst.components.locomotor:GetRunSpeed()
 			inst.Physics:SetMotorVel(inst.sg.statemem.speed * 0.6, 0, 0)
 
 			inst.player_classified.busyremoteoverridelocomote:set(true)
@@ -27136,13 +27130,19 @@ local states =
         name = "plug_module",
         tags = { "doing", "busy" },
 
-        onenter = function(inst, data)
+		onenter = function(inst)
 			inst.components.locomotor:Stop()
             if inst.components.upgrademoduleowner ~= nil then
                 inst.components.upgrademoduleowner:StartInspecting(inst)
             end
             inst.AnimState:PlayAnimation("wx_upgrade_use")
 			inst:ShowActions(false)
+
+			if inst.bufferedaction and inst.bufferedaction.action ~= ACTIONS.APPLYMODULE then
+				inst.sg.statemem.shadowsymbols = true
+				inst.AnimState:OverrideSymbol("sprk_1", "player_wx78_actions", "sprk_shadow_1")
+				inst.AnimState:OverrideSymbol("sprk_2", "player_wx78_actions", "sprk_splat")
+			end
         end,
 
         timeline =
@@ -27182,6 +27182,10 @@ local states =
                     inst.components.upgrademoduleowner:StopInspecting()
                 end
 				inst:ShowActions(true)
+			end
+			if inst.sg.statemem.shadowsymbols then
+				inst.AnimState:OverrideSymbol("sprk_1", "player_wx78_actions", "sprk_1")
+				inst.AnimState:OverrideSymbol("sprk_2", "player_wx78_actions", "sprk_2")
 			end
 		end,
     },
@@ -27412,7 +27416,11 @@ local states =
 			inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("wx_downgrade_use")
 			if data then
-				inst.sg.statemem.unsocketposition = data.socket
+				if data.socket then
+					inst.sg.statemem.unsocketposition = data.socket
+					inst.AnimState:OverrideSymbol("sprk_1", "player_wx78_actions", "sprk_shadow_1")
+					inst.AnimState:OverrideSymbol("sprk_2", "player_wx78_actions", "sprk_splat")
+				end
 				inst.sg.statemem.moduletoremove = data.module
 				inst.sg.statemem.moduleremover = data.moduleremover
 			end
@@ -27487,6 +27495,10 @@ local states =
                 inst.components.inventory:ReturnActiveActionItem(inst.sg.statemem.moduleremover, true)
 				inst:ShowActions(true)
 			end
+			if inst.sg.statemem.shadowsymbols then
+				inst.AnimState:OverrideSymbol("sprk_1", "player_wx78_actions", "sprk_1")
+				inst.AnimState:OverrideSymbol("sprk_2", "player_wx78_actions", "sprk_2")
+			end
 		end,
     },
 
@@ -27550,6 +27562,7 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
+            inst.Transform:SetNoFaced()
 			inst.AnimState:PlayAnimation("wx_chassis_poweroff")
 			if not inst.sg.mem.wx_chassis_build then
 				inst.sg.mem.wx_chassis_build = true
@@ -27609,6 +27622,7 @@ local states =
 		},
 
 		onexit = function(inst)
+            inst.Transform:SetFourFaced()
 			if not inst.sg.statemem.reboot then
 				inst.sg.mem.wx_chassis_build = nil
 				inst.AnimState:ClearOverrideBuild("wx_chassis")
@@ -27642,10 +27656,17 @@ local states =
 
 		onenter = function(inst, moved)
 			inst.components.locomotor:Stop()
+            inst.Transform:SetNoFaced()
             if WX78Common.HasHeartVeins(inst) then
                 inst.AnimState:Show("shad_veins")
+                if WX78Common.HasMimicEyes(inst) then
+                    WX78Common.ShowMimicEyes(inst)
+                else
+                    WX78Common.HideMimicEyes(inst)
+                end
             else
                 inst.AnimState:Hide("shad_veins")
+                WX78Common.HideMimicEyes(inst)
             end
             if WX78Common.HasTrapper(inst) then
                 inst.AnimState:Show("trapper")
@@ -27698,6 +27719,7 @@ local states =
 				inst.AnimState:PlayAnimation("wx_chassis_poweron")
 			end),
 			FrameEvent(15 + 60, function(inst)
+				inst.Transform:SetFourFaced()
 				inst.components.inventory:Show()
 				inst:ShowActions(true)
 				if inst.components.playercontroller then
@@ -27720,6 +27742,7 @@ local states =
 		},
 
 		onexit = function(inst)
+            inst.Transform:SetFourFaced()
 			inst.sg.mem.wx_chassis_build = nil
 			inst.AnimState:ClearOverrideBuild("wx_chassis")
 

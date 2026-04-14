@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "Weird Ironfolk stuff.",
 
-        SHADOW_HEART_VEIN = "Want what sad string holds.",
+        SHADOW_HEART_VEIN = "Thanks, sad heart.",
     },
 
     DESCRIBE_GENERIC = "What that?",

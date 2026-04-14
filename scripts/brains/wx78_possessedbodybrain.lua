@@ -4,6 +4,7 @@ require "behaviours/chaseandattack"
 require "behaviours/doaction"
 require "behaviours/leash"
 require "behaviours/standstill"
+require "behaviours/runawaytodist"
 
 local BrainCommon = require("brains/braincommon")
 
@@ -26,14 +27,14 @@ local function GetTraderFn(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local players = FindPlayersInRange(x, y, z, TRADE_DIST, true)
     for _, player in ipairs(players) do
-        if inst.components.trader:IsTryingToTradeWithMe(player) then
+        if inst.components.trader:IsTryingToTradeWithMe(player) or inst.components.eater:IsTryingToFeedMe(player) then
             return player
         end
     end
 end
 
 local function KeepTraderFn(inst, target)
-    return inst.components.trader:IsTryingToTradeWithMe(target)
+    return inst.components.trader:IsTryingToTradeWithMe(target) or inst.components.eater:IsTryingToFeedMe(target)
 end
 
 local function GetLeader(inst)
@@ -91,6 +92,13 @@ local function IsLeaderAttacking(inst)
     end
 end
 
+local function IsLeaderMoving(inst)
+    local leader = GetLeader(inst)
+    if leader ~= nil then
+        return leader.components.locomotor ~= nil and leader.components.locomotor:WantsToMoveForward()
+    end
+end
+
 local function Create_Starter(action)
     return function(inst, leaderdist, finddist)
         local leader = GetLeader(inst)
@@ -130,6 +138,7 @@ local NODE_ASSIST_CHOP_ACTION =
     starter = Create_Starter(ACTIONS.CHOP),
     keepgoing = Create_KeepGoing(ACTIONS.CHOP),
     finder = Create_FindNew(ACTIONS.CHOP),
+    shouldrun = true,
 }
 local NODE_ASSIST_MINE_ACTION =
 {
@@ -137,6 +146,7 @@ local NODE_ASSIST_MINE_ACTION =
     starter = Create_Starter(ACTIONS.MINE),
     keepgoing = Create_KeepGoing(ACTIONS.MINE),
     finder = Create_FindNew(ACTIONS.MINE),
+    shouldrun = true,
 }
 local NODE_ASSIST_HAMMER_ACTION =
 {
@@ -144,6 +154,7 @@ local NODE_ASSIST_HAMMER_ACTION =
     starter = Create_Starter(ACTIONS.HAMMER),
     keepgoing = Create_KeepGoing(ACTIONS.HAMMER),
     finder = Create_FindNew(ACTIONS.HAMMER),
+    shouldrun = true,
 }
 local NODE_ASSIST_DIG_ACTION =
 {
@@ -151,6 +162,7 @@ local NODE_ASSIST_DIG_ACTION =
     starter = Create_Starter(ACTIONS.DIG),
     keepgoing = Create_KeepGoing(ACTIONS.DIG),
     -- We don't want to dig the same thing
+    shouldrun = true,
 }
 local NODE_ASSIST_TILL_ACTION =
 {
@@ -158,6 +170,7 @@ local NODE_ASSIST_TILL_ACTION =
     starter = Create_Starter(ACTIONS.TILL),
     keepgoing = Create_KeepGoing(ACTIONS.TILL),
     -- Use regular till finding logic
+    shouldrun = true,
 }
 
 local function SetTargetOnLeaderTarget(inst)
@@ -189,15 +202,35 @@ local function GetRunAwayTarget(inst)
         return target
     end
 end
+
+local DROP_TARGET_KITE_DIST_SQ = 14 * 14
+local function LeaderInRangeOfTarget(inst)
+    local leader = GetLeader(inst)
+    local target = GetRunAwayTarget(inst)
+    if leader ~= nil and target ~= nil then
+        if leader:GetDistanceSqToInst(target) > DROP_TARGET_KITE_DIST_SQ then
+            inst.components.combat:SetTarget(nil)
+            return false
+        end
+    end
+    return true
+end
 local RUNAWAY_PARAM = { getfn = GetRunAwayTarget }
-local RUN_AWAY_DIST = 5
-local STOP_RUN_AWAY_DIST = 8
+local MAX_KITE_DIST = 10
+
+local function GetRunDist(inst, hunter)
+    local leader = GetLeader(inst)
+    if leader ~= nil then
+        return math.min(MAX_KITE_DIST, math.sqrt(leader:GetDistanceSqToInst(hunter)))
+    end
+
+    return 1 -- Shrug?
+end
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-local UPDATE_RATE = 0.2
+local UPDATE_RATE = 0.1
 function Wx78_PossessedBodyBrain:OnStart()
-    -- self.kite_run_node = RunAway(self.inst, RUNAWAY_PARAM, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)
     local root = PriorityNode(
     {
         WhileNode(function() return true end, --not self.inst.sg:HasStateTag("busy") end,
@@ -213,10 +246,10 @@ function Wx78_PossessedBodyBrain:OnStart()
                 }, UPDATE_RATE)
             ),
 
-            DoAction(self.inst, DoUpgradeModuleAction),
+            DoAction(self.inst, DoUpgradeModuleAction, nil, true),
 
-            WhileNode(function() return not IsLeaderAttacking(self.inst) end, "is leader not attacking",
-                RunAway(self.inst, RUNAWAY_PARAM, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)),
+            WhileNode(function() return not IsLeaderAttacking(self.inst) and IsLeaderMoving(self.inst) and LeaderInRangeOfTarget(self.inst) end, "is leader not attacking",
+                RunAwayToDist(self.inst, RUNAWAY_PARAM, GetRunDist)),
 
             -- Actions
             WhileNode(function() return HasToolForAction(self.inst, ACTIONS.CHOP) end, "chop with tool",
@@ -242,18 +275,6 @@ function Wx78_PossessedBodyBrain:OnStart()
 
     self.bt = BT(self.inst, root)
 end
-
--- function Wx78_PossessedBodyBrain:DoUpdate()
---     if self.kite_run_node ~= nil then
---         local leader = GetLeader(self.inst)
---         local target = GetRunAwayTarget(self.inst)
---         if leader and target then
---             local dist = math.sqrt(leader:GetDistanceSqToInst(target))
---             self.kite_run_node.see_dist = dist
---             self.kite_run_node.safe_dist = dist
---         end
---     end
--- end
 
 function Wx78_PossessedBodyBrain:OnStop()
 

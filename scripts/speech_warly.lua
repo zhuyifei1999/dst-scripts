@@ -6104,7 +6104,7 @@ return{
 
         WX78_GESTALTTRAPPER = "I don't even want to know.",
 
-        SHADOW_HEART_VEIN = "Not even suitable for a pasta dish.",
+        SHADOW_HEART_VEIN = "It has roots and grows in the dirt, but that is no vegetable.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

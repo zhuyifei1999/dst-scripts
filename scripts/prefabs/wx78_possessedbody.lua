@@ -105,7 +105,7 @@ local function OnChangedLeader(inst, new_leader, prev_leader)
             inst:ListenForEvent("ms_skilltreeinitialized", inst.ms_skilltree_initializecb, new_leader)
         end
     else
-        inst.components.health:Kill() -- Also kill ourselves with no leader
+        inst.sg:GoToState("despawn")
     end
 end
 
@@ -134,11 +134,16 @@ local function OnOwnerInstCreatedFn(inst, owner)
 	-- inst.components.globaltrackingicon:StartTracking(owner)
 end
 local function OnOwnerInstRemovedFn(inst, owner)
-    if owner and owner.wx78_classified then
-        owner.wx78_classified:TryToRemoveBackupBody(inst)
+    if owner then
+        if owner.wx78_classified then
+            owner.wx78_classified:TryToRemoveBackupBody(inst)
+        end
     end
 end
 
+local function OnLoadPostPass(inst, owner)
+    inst:TryToReplaceWithBackupBody(true)
+end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
@@ -149,7 +154,7 @@ local function OnAttacked(inst, data)
     end
 end
 
-local function TryToSpawnBackupBody(inst)
+local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always removes the possessed body.
     local x, y, z = inst.Transform:GetWorldPosition()
     local body = SpawnPrefab("wx78_backupbody")
     body._hide_body_skinfx = true
@@ -171,9 +176,19 @@ local function TryToSpawnBackupBody(inst)
     else
         body.components.linkeditem:LinkToOwnerUserID(inst.components.linkeditem:GetOwnerUserID())
     end
+    if gestaltalive then
+        local stats =
+        {
+            health = inst.components.health.currenthealth,
+            hunger = inst.components.hunger.current,
+            sanity = inst.components.sanity.current,
+        }
+        body:ConfigurePossessed(true, inst:GetIsPlanar(), stats)
+    end
     inst.wx78_backupbody_save_inst = body
     -- body._Light_value = body.Light:IsEnabled() -- HACK flag for default behaviour with Remove and Return to Scene modifying light states.
     -- body:RemoveFromScene()
+    inst:Remove()
     return true
 end
 
@@ -197,12 +212,12 @@ end
 ----------------------------------------------------------------------------------------
 
 local function ShouldAcceptItem(inst, item, giver, count)
-    return item.components.equippable ~= nil -- STUB
+    return item.components.equippable ~= nil and not item.components.equippable:IsRestricted(inst)
 end
 
 local function OnGetItem(inst, giver, item, count)
     --I wear hats (and clothes, and tools.)
-    if item.components.equippable ~= nil then
+    if item.components.equippable ~= nil and not item.components.equippable:IsRestricted(inst) then
         local equipslot = item.components.equippable.equipslot
         local current = inst.components.inventory:GetEquippedItem(equipslot)
         if current ~= nil then
@@ -239,6 +254,19 @@ end
 local function OnSanityDelta(inst, data)
     if data.newpercent == 0 and not inst.components.health:IsDead() then
         inst.components.health:Kill()
+    end
+end
+
+local function ArmorBroke(inst, data)
+    if data.armor ~= nil then
+        -- Prioritize the same type of armor
+        -- and then just choose the next available armor.
+        local nextArmor = inst.components.inventory:FindItem(function(item) return item.prefab == data.armor.prefab and item.components.equippable ~= nil end) 
+            or inst.components.inventory:FindItem(function(item) return item.components.equippable ~= nil and item.components.armor ~= nil end)
+        if nextArmor ~= nil then
+			local force_ui_anim = data.armor.components.armor.keeponfinished
+			inst.components.inventory:Equip(nextArmor, nil, nil, force_ui_anim)
+        end
     end
 end
 
@@ -508,6 +536,8 @@ local function fn()
     hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
 
     inst:AddComponent("inventory")
+    --possessed bodies handle inventory dropping manually in their stategraph
+    inst.components.inventory:DisableDropOnDeath()
 
     local skinner = inst:AddComponent("skinner")
     skinner:SetupNonPlayerData()
@@ -528,15 +558,17 @@ local function fn()
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("sanitydelta", OnSanityDelta)
+    inst:ListenForEvent("armorbroke", ArmorBroke)
 
     inst.SetIsPlanar = SetIsPlanar
     inst.GetIsPlanar = GetIsPlanar
     inst.TryToAttachToOwner = TryToAttachToOwner
-    inst.TryToSpawnBackupBody = TryToSpawnBackupBody
+    inst.TryToReplaceWithBackupBody = TryToReplaceWithBackupBody
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+    inst.OnLoadPostPass = OnLoadPostPass
 
     MakeMediumBurnableCharacter(inst, "torso")
     inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)

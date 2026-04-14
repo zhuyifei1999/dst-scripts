@@ -149,7 +149,7 @@ local function TryToAttachToOwner(inst, owner)
     return false
 end
 
-local function TryToSpawnPossessedBody(inst, isplanar)
+local function TryToSpawnPossessedBody(inst, isplanar, fromownerrejoin, stats)
     local owner = inst.components.linkeditem:GetOwnerInst()
     if owner == nil or owner.is_snapshot_user_session then
         return false
@@ -160,14 +160,32 @@ local function TryToSpawnPossessedBody(inst, isplanar)
         owner.wx78_classified:TryToRemoveBackupBody(inst)
     end
 
+    inst.Physics:SetActive(false)
     local possessedbody = SpawnPrefab("wx78_possessedbody")
     possessedbody.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    if not inst.components.activatable:DoActivate(possessedbody) then
+        inst.Physics:SetActive(true)
+        possessedbody:Remove()
+        if owner and owner.wx78_classified then
+            owner.wx78_classified:TryToAddBackupBody(inst)
+        end
+        return false
+    end
     possessedbody._hide_body_skinfx = true
     possessedbody.components.follower:SetLeader(owner)
-    possessedbody.components.upgrademoduleowner:SwapUpgradeModules(inst.components.upgrademoduleowner)
-    possessedbody.components.skinner:CopySkinsFromPlayer(inst.wx78_backupbody_inventory, true)
     possessedbody:SetIsPlanar(isplanar)
-    possessedbody:PushEventImmediate("possessed")
+    possessedbody:PushEventImmediate("possessed", { fromownerrejoin = fromownerrejoin })
+    if stats ~= nil then
+        if stats.health ~= nil then
+            possessedbody.components.health:SetCurrentHealth(stats.health)
+        end
+        if stats.hunger ~= nil then
+            possessedbody.components.hunger:SetCurrent(stats.hunger)
+        end
+        if stats.sanity ~= nil then
+            possessedbody.components.sanity.current = stats.sanity
+        end
+    end
 
     inst:Remove()
 
@@ -408,8 +426,19 @@ local function OnSkillTreeInitializedFn(inst, owner)
         inst:CheckBetaCircuitStatesFrom(owner)
         inst:CheckCircuitSlotStatesFrom(owner)
         inst:CheckSocketStatesFrom(owner)
+
+        if owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_allegiance_lunar") then
+            if inst.is_possessed then
+                inst:DoTaskInTime(0, function()
+                    inst:TryToSpawnPossessedBody(inst.is_planar, true, inst.saved_stats)
+                end)
+            end
+        else
+            inst:ConfigurePossessed(false)
+        end
     end
 end
+
 local function OnOwnerInstCreatedFn(inst, owner)
 	inst.components.globaltrackingicon:StartTracking(owner)
 end
@@ -483,6 +512,18 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function ConfigurePossessed(inst, possessed, planar, stats) -- stats is a table
+    inst.is_possessed = possessed or nil
+    inst.is_planar = planar or nil
+    inst.saved_stats = stats or nil
+end
+
+local function GetPossessed(inst)
+    return inst.is_possessed
+end
+
+----------------------------------------------------------------------------------------
+
 local function UnregisterGhostRezEvents(inst, doer)
     inst:RemoveEventCallback("ms_respawnedfromghost", inst._ghostrez_respawned, doer)
     inst:RemoveEventCallback("onremove", inst._ghostrez_removed, doer)
@@ -526,6 +567,9 @@ end
 local function OnSave(inst, data)
     data.body_inventory = inst.wx78_backupbody_inventory:GetSaveRecord()
     data.maxcharge = inst._maxcharge or nil
+    data.is_possessed = inst.is_possessed or nil
+    data.is_planar = inst.is_planar or nil
+    data.saved_stats = inst.saved_stats or nil
 end
 
 local function OnLoad(inst, data, newents)
@@ -541,6 +585,9 @@ local function OnLoad(inst, data, newents)
         end
         if data.maxcharge ~= nil then
             inst.components.upgrademoduleowner:SetMaxCharge(data.maxcharge)
+        end
+        if data.is_possessed ~= nil then
+            inst:ConfigurePossessed(true, data.is_planar, data.saved_stats)
         end
     end
 end
@@ -652,6 +699,8 @@ local function fn()
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
     inst.CheckSocketStatesFrom = CheckSocketStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.ConfigurePossessed = ConfigurePossessed
+    inst.GetPossessed = GetPossessed
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
@@ -707,6 +756,9 @@ local function fn_inventory()
     inst.DynamicShadow:SetSize(1.3, .6)
 
     inst.AnimState:Hide("shad_veins")
+    inst.AnimState:Hide("mimic1")
+    inst.AnimState:Hide("mimic2")
+    inst.AnimState:Hide("mimic3")
     inst.AnimState:Hide("trapper")
 
 	WX78Common.AddHeatSteamFx_Common(inst, true) --true for no facings

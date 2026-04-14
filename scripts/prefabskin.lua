@@ -1134,50 +1134,73 @@ wx78_drone_scout_clear_fn = function(inst)
 end
 
 wx78_drone_delivery_init_fn = function(inst, build_name)
-	basic_init_fn(inst, build_name, "wx78_drone_delivery")
+	inst.linked_skinname = build_name:gsub("wx78_dronedelivery", "wx78_dronedelivery_item")
+	if inst.components.placer == nil and not TheWorld.ismastersim then
+		return
+	end
+	inst.AnimState:SetSkin(build_name, "wx78_drone_delivery")
 end
 wx78_drone_delivery_clear_fn = function(inst)
-	basic_clear_fn(inst, "wx78_drone_delivery")
+	inst.linked_skinname = nil
+	inst.AnimState:SetBuild("wx78_drone_delivery")
 end
 
 wx78_drone_delivery_item_init_fn = function(inst, build_name)
 	inst.linked_skinname = build_name
-	basic_init_fn(inst, build_name, "wx78_drone_delivery")
+	if not TheWorld.ismastersim then
+		return
+	end
+	inst.AnimState:SetSkin(build_name, "wx78_drone_delivery")
+	inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 wx78_drone_delivery_item_clear_fn = function(inst)
 	inst.linked_skinname = nil
-	basic_clear_fn(inst, "wx78_drone_delivery")
+	inst.AnimState:SetBuild("wx78_drone_delivery")
+	inst.components.inventoryitem:ChangeImageName()
 end
 
 
 wx78_drone_delivery_small_init_fn = function(inst, build_name)
-	basic_init_fn(inst, build_name, "wx78_drone_delivery_small")
+	inst.linked_skinname = build_name:gsub("wx78_dronedeliverysmall", "wx78_dronedeliverysmall_item")
+	if inst.components.placer == nil and not TheWorld.ismastersim then
+		return
+	end
+	inst.AnimState:SetSkin(build_name, "wx78_drone_delivery_small")
 end
 wx78_drone_delivery_small_clear_fn = function(inst)
-	basic_clear_fn(inst, "wx78_drone_delivery_small")
+	inst.linked_skinname = nil
+	inst.AnimState:SetBuild("wx78_drone_delivery_small")
 end
 
 
 wx78_drone_delivery_small_item_init_fn = function(inst, build_name)
 	inst.linked_skinname = build_name
-	basic_init_fn(inst, build_name, "wx78_drone_delivery_small")
+	if not TheWorld.ismastersim then
+		return
+	end
+	inst.AnimState:SetSkin(build_name, "wx78_drone_delivery_small")
+	inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 wx78_drone_delivery_small_item_clear_fn = function(inst)
 	inst.linked_skinname = nil
-	basic_clear_fn(inst, "wx78_drone_delivery_small")
+	inst.AnimState:SetBuild("wx78_drone_delivery_small")
+	inst.components.inventoryitem:ChangeImageName()
 end
 
 
 wx78_drone_zap_init_fn = function(inst, build_name)
 	inst.linked_skinname = build_name
-	basic_init_fn(inst, build_name, "wx78_drone_zap")
+	if not TheWorld.ismastersim then
+		return
+	end
+	inst.AnimState:SetSkin(build_name, "wx78_drone_zap")
 	if inst.OnDroneZapSkinChanged then
 		inst:OnDroneZapSkinChanged(build_name)
 	end
 end
 wx78_drone_zap_clear_fn = function(inst)
 	inst.linked_skinname = nil
-	basic_clear_fn(inst, "wx78_drone_zap")
+	inst.AnimState:SetBuild("wx78_drone_zap")
 	if inst.OnDroneZapSkinChanged then
 		inst:OnDroneZapSkinChanged(nil)
 	end

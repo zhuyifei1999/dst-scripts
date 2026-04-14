@@ -98,12 +98,11 @@ end
 
 local function Filter_Positions(self, positions, filterfn, ...)
     if positions then
-        local filterdata
         local lastpos = #positions
         local writepos = 1
         for i = 1, lastpos do
             local position = positions[i]
-            if filterfn(self, position, filterdata) then
+            if filterfn(self, position, ...) then
                 positions[writepos] = position
                 writepos = writepos + 1
             end
@@ -150,16 +149,18 @@ end
 
 function SocketHolder:GetHighestQualitySocketedPositions(socketname)
     local positions = self:GetAllSocketPositions(socketname)
-    Filter_Positions(self, positions, Filter_KeepFull)
-    local highestquality
-    for i = 1, #positions do
-        local position = positions[i]
-        local socketquality = self.socketquality[position]:value()
-        if highestquality == nil or socketquality > highestquality then
-            highestquality = socketquality
+    if positions then
+        Filter_Positions(self, positions, Filter_KeepFull)
+        local highestquality
+        for i = 1, #positions do
+            local position = positions[i]
+            local socketquality = self.socketquality[position]:value()
+            if highestquality == nil or socketquality > highestquality then
+                highestquality = socketquality
+            end
         end
+        Filter_Positions(self, positions, Filter_KeepQuality, highestquality)
     end
-    Filter_Positions(self, positions, Filter_KeepQuality, highestquality)
     return positions
 end
 
@@ -172,7 +173,11 @@ function SocketHolder:GetQualityForPosition(position)
 end
 
 function SocketHolder:GetHighestQualitySocketed(socketname)
-    local socketpositions = self:GetHighestQualitySocketedPositions("socket_shadow")
+    local socketpositions = self:GetHighestQualitySocketedPositions(socketname)
+    if not socketpositions then
+        return SOCKETQUALITY.NONE
+    end
+
     local socketquality = self:GetQualityForPosition(socketpositions[1])
     return socketquality
 end
@@ -314,6 +319,10 @@ end
 function SocketHolder:UnsocketPosition(socketposition)
     local item
     local savedata = self.socketdata[socketposition]
+    self.socketmetadata[socketposition] = nil
+    self.socketdata[socketposition] = nil
+    self.socketed[socketposition]:set(false)
+    self.socketquality[socketposition]:set(SOCKETQUALITY.NONE)
     if savedata then
         item = ConvertSaveDataToItem(savedata)
         if item then
@@ -323,10 +332,6 @@ function SocketHolder:UnsocketPosition(socketposition)
             self.inst:PushEvent("onunsocketeditem", {item = item,})
         end
     end
-    self.socketmetadata[socketposition] = nil
-    self.socketdata[socketposition] = nil
-    self.socketed[socketposition]:set(false)
-    self.socketquality[socketposition]:set(SOCKETQUALITY.NONE)
     return item
 end
 

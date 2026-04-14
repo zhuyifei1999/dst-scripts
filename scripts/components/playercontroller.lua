@@ -1145,24 +1145,38 @@ function PlayerController:DoControllerAltActionButton()
 				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
 				SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, nil, act.action.canforce, act.action.mod_name)
 			end
-        elseif self:CanLocomote() then
-            act.preview_cb = function()
-                local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
-				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = not isreleased and 0 or nil
-                SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, isreleased, nil, act.action.mod_name)
-            end
+		else
+			--Still need to let the server know our controller alt action button is down
+			if self.remote_controls[CONTROL_CONTROLLER_ALTACTION] == nil then
+				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+				SendRPCToServer(RPC.ControllerAltActionButton)
+			end
+			if self:CanLocomote() then
+				act.preview_cb = function()
+					local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
+					self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = not isreleased and 0 or nil
+					SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, isreleased, nil, act.action.mod_name)
+				end
+			end
         end
     elseif self.locomotor == nil then
 		act.non_preview_cb = function()
 			self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
 			SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, nil, act.action.canforce, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
 		end
-    elseif self:CanLocomote() then
-        act.preview_cb = function()
-            local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
-			self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = not isreleased and 0 or nil
-            SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, isreleased, nil, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
-        end
+	else
+		--Still need to let the server know our controller alt action button is down
+		if self.remote_controls[CONTROL_CONTROLLER_ALTACTION] == nil then
+			self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+			SendRPCToServer(RPC.ControllerAltActionButton)
+		end
+		if self:CanLocomote() then
+			act.preview_cb = function()
+				local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
+				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = not isreleased and 0 or nil
+				SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, isreleased, nil, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
+			end
+		end
     end
 
     self:DoAction(act)
@@ -4970,6 +4984,11 @@ function PlayerController:OnRightClick(down)
 			if self:TryAOETargeting() or self:TryAOECharging(nil, false) then
 				return
 			end
+			--Still need to let the server know RMB is down
+			if self.remote_controls[CONTROL_SECONDARY] == nil then
+				self.remote_controls[CONTROL_SECONDARY] = 0
+				SendRPCToServer(RPC.RightClick)
+			end
 		end
     elseif maptarget ~= nil then
         local forced_actiondef = act.action.map_only and act.action or nil
@@ -5735,6 +5754,7 @@ local WX78_INTERACTIONS =
     [ACTIONS.MINE] = true,
     [ACTIONS.DIG] = true,
     [ACTIONS.TILL] = true,
+    [ACTIONS.FEEDPLAYER] = true,
 }
 
 function PlayerController:OnRemoteInteractionTarget(actioncode, target)

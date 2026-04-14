@@ -6105,7 +6105,7 @@ return{
 
         WX78_GESTALTTRAPPER = "Robot is tamper with powerful forces.",
 
-        SHADOW_HEART_VEIN = "Haha! Is shaking while Wolfgang flexes.",
+        SHADOW_HEART_VEIN = "Haha! Not as mighty as Wolfgang biceps vein!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",
