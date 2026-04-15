@@ -1,6 +1,6 @@
 -- OMAR: For wx78_possessedbody only, right now.
 
-RunAwayToDist = Class(BehaviourNode, function(self, inst, hunterparams, safe_dist, fn, fix_overhang, walk_instead)
+RunAwayToDist = Class(BehaviourNode, function(self, inst, hunterparams, safe_dist, fn, fix_overhang, walk_instead, allow_boats)
     BehaviourNode._ctor(self, "RunAway")
     self.safe_dist = safe_dist
     if type(hunterparams) == "table" then
@@ -10,6 +10,7 @@ RunAwayToDist = Class(BehaviourNode, function(self, inst, hunterparams, safe_dis
     self.shouldrunfn = fn
 	self.fix_overhang = fix_overhang -- this will put the point check back on land if self.inst is stepping on the ocean overhang part of the land
     self.walk_instead = walk_instead
+    self.allow_boats = allow_boats or nil
 end)
 
 function RunAwayToDist:__tostring()
@@ -39,9 +40,10 @@ function RunAwayToDist:GetRunPosition(pt, hp, safe_dist)
     if find_offset_fn == FindWalkableOffset then
         allowwater_or_allowboat = self.inst.components.locomotor:CanPathfindOnWater()
     end
-	local result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, false, nil, allowwater_or_allowboat) -- try avoiding walls
+
+	local result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, false, nil, allowwater_or_allowboat or self.allow_boats) -- try avoiding walls
     if result_angle == nil then
-		result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls
+		result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, true, nil, self.allow_boats) -- ok don't try to avoid walls
         if result_angle == nil then
 			if self.fix_overhang and not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
                 if self.inst.components.locomotor:IsAquatic() then
@@ -52,7 +54,7 @@ function RunAwayToDist:GetRunPosition(pt, hp, safe_dist)
                 else
 				    local back_on_ground = FindNearbyLand(pt, 1) -- find a point back on proper ground
 				    if back_on_ground ~= nil then
-			            result_offset, result_angle, deflected = FindWalkableOffset(back_on_ground, math.random()*2*math.pi, radius - 1, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
+			            result_offset, result_angle, deflected = FindWalkableOffset(back_on_ground, math.random()*2*math.pi, radius - 1, 8, true, true, nil, nil, self.allow_boats) -- ok don't try to avoid walls, but at least avoid water
 				    end
                 end
 			end
@@ -92,9 +94,9 @@ function RunAwayToDist:Visit()
             local hp = self.hunter:GetPosition()
             local safe_dist = FunctionOrValue(self.safe_dist, self.inst, self.hunter)
             local pos = self:GetRunPosition(pt, hp, safe_dist)
-            pos = hp + pos
 
             if pos ~= nil then
+                pos = hp + pos
                 if self.walk_instead then
                     self.inst.components.locomotor.dest = nil
                     self.inst.components.locomotor:GoToPoint(pos, nil, false)

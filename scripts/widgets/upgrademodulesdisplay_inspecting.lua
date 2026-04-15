@@ -63,9 +63,44 @@ end
 local SOCKETQUALITY_TO_ANIMS = {
     ["socket_shadow"] = {
         [SOCKETQUALITY.NONE] = {},
-        [SOCKETQUALITY.LOW] = {bank = "status_wx_chest", build = "status_wx_chest", animation = "nightmare_fuel_chip_idle", loops = true},
-        [SOCKETQUALITY.MEDIUM] = {bank = "status_wx_chest", build = "status_wx_chest", animation = "shadow_heart_chip_idle", loops = true, layerhides = {"infused"}},
-        [SOCKETQUALITY.HIGH] = {bank = "status_wx_chest", build = "status_wx_chest", animation = "shadow_heart_chip_idle", loops = true},
+		[SOCKETQUALITY.LOW] =
+		{
+			bank = "status_wx_chest",
+			build = "status_wx_chest",
+			animation = "nightmare_fuel_chip_idle",
+			loops = true,
+			initfn = function(AnimState)
+				--AnimState:UsePointFiltering(true)
+				--AnimState:SetMultColour(1, 1, 1, 0.5)
+			end,
+			clearfn = function(AnimState)
+				--AnimState:UsePointFiltering(false)
+				--AnimState:SetMultColour(1, 1, 1, 1)
+			end,
+		},
+		[SOCKETQUALITY.MEDIUM] = {
+			bank = "status_wx_chest",
+			build = "status_wx_chest",
+			animation = "shadow_heart_chip_idle",
+			loops = true,
+			initfn = function(AnimState)
+				AnimState:Hide("infused")
+			end,
+			clearfn = function(AnimState)
+				AnimState:Show("infused")
+			end,
+		},
+		[SOCKETQUALITY.HIGH] =
+		{
+			bank = "status_wx_chest",
+			build = "status_wx_chest",
+			animation = "shadow_heart_chip_idle",
+			loops = true,
+			initfn = function(AnimState)
+			end,
+			clearfn = function(AnimState)
+			end,
+		},
     },
 }
 
@@ -90,13 +125,13 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
     self.can_unplug_any = false
     self.has_shadow_affinity = false
     if owner.components.skilltreeupdater then
-        self.can_unplug_any = owner.components.skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")
+        self.can_unplug_any = owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betterunplug")
         self.has_shadow_affinity = owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow")
     end
     local function OnUpdateSkill(_, data)
         local needsrefresh = false
-        if data.skill == "wx78_circuitry_unpluganycircuit" then
-            self.can_unplug_any = owner.components.skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")
+        if data.skill == "wx78_circuitry_betterunplug" then
+            self.can_unplug_any = owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betterunplug")
             needsrefresh = true
         elseif data.skill == "wx78_allegiance_shadow" then
             self.has_shadow_affinity = owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow")
@@ -140,22 +175,16 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
                 local animdata = SOCKETQUALITY_TO_ANIMS["socket_shadow"][socketquality]
                 if animdata and animdata.bank and animdata.build and animdata.animation then
                     self.shadow_slot_item_isvalid = true
-                    if self.shadow_slot_item_oldanimdata then
-                        if self.shadow_slot_item_oldanimdata.layerhides then
-                            for _, layername in ipairs(self.shadow_slot_item_oldanimdata.layerhides) do
-                                self.shadow_slot_item:GetAnimState():Show(layername)
-                            end
-                        end
+					if self.shadow_slot_item_oldanimdata and self.shadow_slot_item_oldanimdata.clearfn then
+						self.shadow_slot_item_oldanimdata.clearfn(self.shadow_slot_item:GetAnimState())
                     end
                     self.shadow_slot_item_oldanimdata = animdata
                     self.shadow_slot_item:GetAnimState():SetBank(animdata.bank)
                     self.shadow_slot_item:GetAnimState():SetBuild(animdata.build)
                     self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.animation, animdata.loops)
-                    if animdata.layerhides then
-                        for _, layername in ipairs(animdata.layerhides) do
-                            self.shadow_slot_item:GetAnimState():Hide(layername)
-                        end
-                    end
+					if animdata.initfn then
+						animdata.initfn(self.shadow_slot_item:GetAnimState())
+					end
                     self.shadow_slot_item:GetAnimState():Hide("focus")
                     self.shadow_slot_item:Show()
                     if not wasvalid then

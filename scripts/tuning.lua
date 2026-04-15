@@ -7440,11 +7440,10 @@ function Tune(overrides)
             },
 
             WX78 = {
-                -- wx78_circuitry_halfmoduleuses
+                -- wx78_circuitry_betterunplug
                 HALF_MODULE_CONSUMPTION = .5,
-                -- wx78_circuitry_fastercharge
+                -- wx78_circuitry_bettercharge
                 FASTER_CHARGE_MULTIPLIER = 2.5,
-                -- wx78_circuitry_lesschargeloss
                 SAVE_CHARGE_ON_UNPLUG = 1,
                 -- wx78_circuitry_alphabuffs_1
                 MAXHUNGER_SLOWPERCENT_ALPHABUFF = 0.75,
@@ -8218,6 +8217,7 @@ function Tune(overrides)
         SALTLICK_IMPROVED_MAX_LICKS = 480, -- 30 days @ 8 beefalo licks per day (self / (SALTLICK_DURATION * SALTLICK_BEEFALO_USES))
 
         BOATLEAK_PLUG_WETNESS = 1,
+        BOATLEAK_PLUG_WETNESS_INVENTORYITEM = 5,
 
         BOAT_LEAK_PLUGGED_TIME = 20,
         BOAT_LEAK_PLUGGED_TIME_VARIANCE = 5,

@@ -1320,7 +1320,7 @@ local RPC_HANDLERS =
 			local upgrademoduleowner = player.components.upgrademoduleowner
 			if upgrademoduleowner then
 				-- Ensure we have the skill.
-				if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_unpluganycircuit")) then
+				if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_betterunplug")) then
 					local nummodules = upgrademoduleowner:GetNumModules(modulebartype_or_socketposition)
 					if moduleindex ~= nummodules then
 						print(string.format("Cannot unplug module %i of %i", moduleindex, nummodules))

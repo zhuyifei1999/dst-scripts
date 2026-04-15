@@ -5,6 +5,9 @@ local assets = JoinArrays({
     Asset("SCRIPT", "scripts/prefabs/wx78_common.lua"),
     Asset("ANIM", "anim/wx_chassis.zip"),
 	Asset("ANIM", "anim/wx78_map_marker.zip"),
+	Asset("ANIM", "anim/wx78_lunar_affinity_fx.zip"),
+	Asset("ANIM", "anim/brightmare_gestalt_head_evolved.zip"),
+	Asset("ANIM", "anim/lunarthrall_plant_front.zip"),
 }, WX78Common.DEPENDENCIES.assets)
 
 local prefabs = JoinArrays({
@@ -167,15 +170,6 @@ local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always rem
         body:Remove()
         return false
     end
-    local owner = inst.components.linkeditem:GetOwnerInst()
-    if owner ~= nil then
-        if owner.wx78_classified then
-            owner.wx78_classified:TryToRemoveBackupBody(inst)
-        end
-        body:TryToAttachToOwner(owner)
-    else
-        body.components.linkeditem:LinkToOwnerUserID(inst.components.linkeditem:GetOwnerUserID())
-    end
     if gestaltalive then
         local stats =
         {
@@ -185,6 +179,15 @@ local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always rem
         }
         body:ConfigurePossessed(true, inst:GetIsPlanar(), stats)
     end
+    local owner = inst.components.linkeditem:GetOwnerInst()
+    if owner ~= nil then
+        if owner.wx78_classified then
+            owner.wx78_classified:TryToRemoveBackupBody(inst)
+        end
+        body:TryToAttachToOwner(owner)
+    else
+        body.components.linkeditem:LinkToOwnerUserID(inst.components.linkeditem:GetOwnerUserID())
+    end
     inst.wx78_backupbody_save_inst = body
     -- body._Light_value = body.Light:IsEnabled() -- HACK flag for default behaviour with Remove and Return to Scene modifying light states.
     -- body:RemoveFromScene()
@@ -192,39 +195,110 @@ local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always rem
     return true
 end
 
-local function SetIsPlanar(inst, planar)
-    local wasplanar = inst.isplanar
-    inst.isplanar = planar or nil
+local function CreateGestaltFx()
+	local inst = CreateEntity()
 
-    if planar and not wasplanar then
-        inst:AddComponent("planarentity")
-        inst.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.SKILLS.WX78.PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER, "gestalt_possessedbody")
-    elseif wasplanar then
-        inst:RemoveComponent("planarentity")
-        inst.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.SKILLS.WX78.POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER, "gestalt_possessedbody")
-    end
+	inst:AddTag("DECOR")
+	inst:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+
+	inst.Transform:SetFourFaced()
+
+	inst.AnimState:SetBank("wx78_lunar_affinity_fx")
+	inst.AnimState:SetBuild("brightmare_gestalt_head_evolved")
+	inst.AnimState:OverrideSymbol("fx_embers", "lunarthrall_plant_front", "fx_embers")
+	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	inst.AnimState:SetMultColour(1, 1, 1, 0.2)
+	inst.AnimState:SetLightOverride(0.1)
+
+	return inst
+end
+
+local PLANAR_BIT = 1
+local SHOWN_BIT = 2
+
+local function OnPlanarFlagsDirty(inst)
+	if inst.gestaltfx then
+		if bit.band(inst.planarflags:value(), SHOWN_BIT) ~= 0 then
+			local planar = bit.band(inst.planarflags:value(), PLANAR_BIT) ~= 0
+			local anim = planar and "wx78_lunar_affinity_fx_2" or "wx78_lunar_affinity_fx_1"
+			inst.gestaltfx.AnimState:PlayAnimation(anim, true)
+			inst.gestaltfx.AnimState:SetFrame(math.random(inst.gestaltfx.AnimState:GetCurrentAnimationNumFrames()) - 1)
+			inst.gestaltfx:Show()
+		else
+			inst.gestaltfx:Hide()
+		end
+	end
+end
+
+local function SetPlanarBit(inst, flag, val)
+	val = val and bit.bor(inst.planarflags:value(), flag) or bit.bxor(bit.bor(inst.planarflags:value(), flag), flag)
+	if inst.planarflags:value() ~= val then
+		inst.planarflags:set(val)
+		OnPlanarFlagsDirty(inst)
+	end
+end
+
+local function SetPlanarFxShown(inst, shown)
+	SetPlanarBit(inst, SHOWN_BIT, shown)
+end
+
+local function SetIsPlanar(inst, planar)
+	if inst:GetIsPlanar() == not planar then
+		if planar then
+			if inst.components.planarentity == nil then
+				inst:AddComponent("planarentity")
+			end
+			inst.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.SKILLS.WX78.PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER, "gestalt_possessedbody")
+		else
+			inst:RemoveComponent("planarentity")
+			inst.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.SKILLS.WX78.POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER, "gestalt_possessedbody")
+		end
+		SetPlanarBit(inst, PLANAR_BIT, planar)
+	end
 end
 
 local function GetIsPlanar(inst)
-    return inst.isplanar
+	return bit.band(inst.planarflags:value(), PLANAR_BIT) ~= 0
 end
 
 ----------------------------------------------------------------------------------------
 
+local function WeaponPercentChanged(inst, data)
+    if data.percent ~= nil and
+        data.percent <= 0 and
+        inst.components.rechargeable == nil and
+        inst.components.inventoryitem ~= nil and
+        inst.components.inventoryitem.owner ~= nil then
+        inst.components.inventoryitem.owner:PushEvent("toolbroke", { tool = inst })
+    end
+end
+
+local function OnEquip(inst, data)
+    if data ~= nil and data.item ~= nil then
+        data.item:ListenForEvent("percentusedchange", WeaponPercentChanged)
+    end
+end
+
+local function OnUnequip(inst, data)
+    if data ~= nil and data.item ~= nil then
+        data.item:RemoveEventCallback("percentusedchange", WeaponPercentChanged)
+    end
+end
+
+-- We equip stuff from EQUIPONBODY action, not here.
 local function ShouldAcceptItem(inst, item, giver, count)
-    return item.components.equippable ~= nil and not item.components.equippable:IsRestricted(inst)
+    return item.components.inventoryitem ~= nil
 end
 
 local function OnGetItem(inst, giver, item, count)
-    --I wear hats (and clothes, and tools.)
-    if item.components.equippable ~= nil and not item.components.equippable:IsRestricted(inst) then
-        local equipslot = item.components.equippable.equipslot
-        local current = inst.components.inventory:GetEquippedItem(equipslot)
-        if current ~= nil then
-            inst.components.inventory:DropItem(current)
-        end
-        inst.components.inventory:Equip(item)
-    end
+    -- Nothing to do here!
 end
 
 local function CustomCombatDamage(inst, target, weapon, multiplier, mount)
@@ -297,7 +371,7 @@ local function OnOneUpgradeModulePopped(inst, moduleent, was_activated)
         local charge_cost = -moduleslotcount
         local owner = inst.components.linkeditem:GetOwnerInst()
         local skilltreeupdater = owner ~= nil and owner.components.skilltreeupdater or nil
-        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_lesschargeloss") then
+        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_bettercharge") then
             charge_cost = math.min(charge_cost + 1, -1)
         end
         inst.components.upgrademoduleowner:DoDeltaCharge(charge_cost)
@@ -338,7 +412,7 @@ end
 
 local function OnSave(inst, data)
     data.maxcharge = inst._maxcharge or nil
-    data.isplanar = inst.isplanar or nil
+	data.isplanar = inst:GetIsPlanar() or nil
 
     -- WX-78 needs to manually save/load health, hunger, and sanity, in case their maxes
     -- were modified by upgrade circuits, because those components only save current,
@@ -357,7 +431,7 @@ local function OnLoad(inst, data, newents)
             inst.components.upgrademoduleowner:SetMaxCharge(data.maxcharge)
         end
 
-        if data.isplanar ~= nil then
+		if data.isplanar then
             inst:SetIsPlanar(true)
         end
 
@@ -404,6 +478,10 @@ local function fn()
     PlayerCommonExtensions.SetupBaseSymbolVisibility(inst)
     PlayerCommonExtensions.SetupOverrideBuilds(inst)
     inst.AnimState:AddOverrideBuild("player_wx78_actions")
+	inst.AnimState:SetSymbolBloom("fx_puff2_parts")
+	inst.AnimState:SetSymbolBloom("gestalts_parts")
+	inst.AnimState:SetSymbolLightOverride("fx_puff2_parts", 0.1)
+	inst.AnimState:SetSymbolLightOverride("gestalts_parts", 0.1)
 
     --Default to electrocute light values
     inst.Light:SetIntensity(.8)
@@ -430,6 +508,14 @@ local function fn()
     inst:AddTag("canseeindark")
     inst:AddTag("lunar_aligned")
 
+	if not TheNet:IsDedicated() then
+		inst.gestaltfx = CreateGestaltFx()
+		inst.gestaltfx.entity:SetParent(inst.entity)
+		inst.gestaltfx.Follower:FollowSymbol(inst.GUID, "headbase")
+	end
+	inst.planarflags = net_tinybyte(inst.GUID, "wx78_possessedbody.planarflags", "planarflagsdirty")
+	SetPlanarFxShown(inst, true)
+
 	inst.footstepoverridefn = PlayerCommonExtensions.FootstepOverrideFn
 	inst.foleyoverridefn = PlayerCommonExtensions.FoleyOverrideFn
 
@@ -446,6 +532,8 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+		inst:ListenForEvent("planarflagsdirty", OnPlanarFlagsDirty)
+
         return inst
     end
 
@@ -455,6 +543,9 @@ local function fn()
 
     local inspectable = inst:AddComponent("inspectable")
     inspectable.getspecialdescription = GetSpecialDescription
+
+    inst:AddComponent("embarker")
+    inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     PlayerCommonExtensions.ConfigurePlayerLocomotor(inst)
@@ -538,6 +629,7 @@ local function fn()
     inst:AddComponent("inventory")
     --possessed bodies handle inventory dropping manually in their stategraph
     inst.components.inventory:DisableDropOnDeath()
+    inst.components.inventory:Open()
 
     local skinner = inst:AddComponent("skinner")
     skinner:SetupNonPlayerData()
@@ -559,9 +651,12 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("sanitydelta", OnSanityDelta)
     inst:ListenForEvent("armorbroke", ArmorBroke)
+    inst:ListenForEvent("equip", OnEquip)
+    inst:ListenForEvent("unequip", OnUnequip)
 
     inst.SetIsPlanar = SetIsPlanar
     inst.GetIsPlanar = GetIsPlanar
+	inst.SetPlanarFxShown = SetPlanarFxShown
     inst.TryToAttachToOwner = TryToAttachToOwner
     inst.TryToReplaceWithBackupBody = TryToReplaceWithBackupBody
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom

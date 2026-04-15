@@ -7,16 +7,12 @@ local LOCK_SPACER = SPACER * 0.85
 local BIG_GEAR_SHIFT = SPACER * 0.05
 
 local ORIGIN_CIRCUITRY_X = -149 -- Bigger top gear.
-local ORIGIN_CIRCUITRY_Y = 105 + BIG_GEAR_SHIFT
+local ORIGIN_CIRCUITRY_Y = 16 + 65 + BIG_GEAR_SHIFT --105 + BIG_GEAR_SHIFT
 
-local ORIGIN_CIRCUITRY_FLOATING_1_X = -203 -- Left most floating gear moving right.
-local ORIGIN_CIRCUITRY_FLOATING_1_Y = 56
-local ORIGIN_CIRCUITRY_FLOATING_2_X = ORIGIN_CIRCUITRY_FLOATING_1_X + 42
-local ORIGIN_CIRCUITRY_FLOATING_2_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y - 37
-local ORIGIN_CIRCUITRY_FLOATING_3_X = ORIGIN_CIRCUITRY_FLOATING_1_X + 91
-local ORIGIN_CIRCUITRY_FLOATING_3_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y - 8
-local ORIGIN_CIRCUITRY_FLOATING_4_X = ORIGIN_CIRCUITRY_FLOATING_1_X + 139
-local ORIGIN_CIRCUITRY_FLOATING_4_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y - 41
+local ORIGIN_CIRCUITRY_FLOATING_1_X = -206 -- Left most floating gear moving right.
+local ORIGIN_CIRCUITRY_FLOATING_1_Y = 31
+local ORIGIN_CIRCUITRY_FLOATING_2_X = ORIGIN_CIRCUITRY_FLOATING_1_X + 118
+local ORIGIN_CIRCUITRY_FLOATING_2_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y + 5
 
 local ORIGIN_CHASSIS_SMALL_X = 25 -- Small bottom gear.
 local ORIGIN_CHASSIS_SMALL_Y = 16
@@ -93,28 +89,27 @@ local function OnBackupBodyMaxCountLowered(inst)
     end
 end
 
--- FIXME(JBK): WX: Final pass: Rename icons to skill tree skill names.
-
 local function BuildSkillsData(SkillTreeFns)
     local skills = {
         ------------------------------------------------------------------------------------------------------------------------
         -- CIRCUITRY
         ------------------------------------------------------------------------------------------------------------------------
         -- Gear 1 
-        wx78_circuitry_halfmoduleuses = {
-            title = STRINGS.SKILLTREE.WX78.WX78_HALF_MODULE_USES_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_HALF_MODULE_USES_DESC,
-            icon = "wx78_reduce_break",
+
+        wx78_circuitry_betterunplug = {
+            title = STRINGS.SKILLTREE.WX78.WX78_BETTER_UNPLUG_TITLE,
+            desc = STRINGS.SKILLTREE.WX78.WX78_BETTER_UNPLUG_DESC,
+            icon = "wx78_circuitry_betterunplug",
             pos = {ORIGIN_CIRCUITRY_FLOATING_1_X, ORIGIN_CIRCUITRY_FLOATING_1_Y},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             root = true,
         },
 
-        wx78_circuitry_fastercharge = {
-            title = STRINGS.SKILLTREE.WX78.WX78_FASTER_CHARGE_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_FASTER_CHARGE_DESC,
-            icon = "wx78_fast_regen",
+        wx78_circuitry_bettercharge = {
+            title = STRINGS.SKILLTREE.WX78.WX78_BETTER_CHARGE_TITLE,
+            desc = STRINGS.SKILLTREE.WX78.WX78_BETTER_CHARGE_DESC,
+            icon = "wx78_circuitry_bettercharge",
             pos = {ORIGIN_CIRCUITRY_FLOATING_2_X, ORIGIN_CIRCUITRY_FLOATING_2_Y},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -141,31 +136,11 @@ local function BuildSkillsData(SkillTreeFns)
             end,
         },
 
-        wx78_circuitry_unpluganycircuit = {
-            title = STRINGS.SKILLTREE.WX78.WX78_UNPLUG_ANY_CIRCUIT_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_UNPLUG_ANY_CIRCUIT_DESC,
-            icon = "wx78_right_to_modify",
-            pos = {ORIGIN_CIRCUITRY_FLOATING_3_X, ORIGIN_CIRCUITRY_FLOATING_3_Y},
-            group = GROUPS.CIRCUITRY,
-            tags = {GROUPS.CIRCUITRY},
-            root = true,
-        },
-
-        wx78_circuitry_lesschargeloss = {
-            title = STRINGS.SKILLTREE.WX78.WX78_LESS_CHARGE_LOSS_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_LESS_CHARGE_LOSS_DESC,
-            icon = "wx78_half_removal",
-            pos = {ORIGIN_CIRCUITRY_FLOATING_4_X, ORIGIN_CIRCUITRY_FLOATING_4_Y},
-            group = GROUPS.CIRCUITRY,
-            tags = {GROUPS.CIRCUITRY},
-            root = true,
-        },
-
         -- Gear 2
         wx78_circuitry_alphabuffs_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_1_DESC,
-            icon = "wx78_circuit_alpha_1",
+            icon = "wx78_circuitry_alphabuffs_1",
             pos = {ORIGIN_CIRCUITRY_X - SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -174,14 +149,14 @@ local function BuildSkillsData(SkillTreeFns)
                 "wx78_circuitry_alphabuffs_2",
             },
             forced_focus = {
-                down = "wx78_circuitry_halfmoduleuses",
+                down = "wx78_circuitry_betterunplug",
             },
         },
 
         wx78_circuitry_alphabuffs_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALPHA_CIRCUIT_BUFFS_2_DESC,
-            icon = "wx78_circuit_alpha_2",
+            icon = "wx78_circuitry_alphabuffs_2",
             pos = {ORIGIN_CIRCUITRY_X - SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -193,7 +168,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_circuitry_betabuffs_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_BETA_CIRCUIT_BUFFS_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_BETA_CIRCUIT_BUFFS_1_DESC,
-            icon = "wx78_circuit_beta_1",
+            icon = "wx78_circuitry_betabuffs_1",
             pos = {ORIGIN_CIRCUITRY_X, ORIGIN_CIRCUITRY_Y},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -202,14 +177,14 @@ local function BuildSkillsData(SkillTreeFns)
                 "wx78_circuitry_betabuffs_2",
             },
             forced_focus = {
-                down = "wx78_circuitry_fastercharge",
+                down = "wx78_circuitry_bettercharge",
             },
         },
 
         wx78_circuitry_betabuffs_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_BETA_CIRCUIT_BUFFS_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_BETA_CIRCUIT_BUFFS_2_DESC,
-            icon = "wx78_circuit_beta_2",
+            icon = "wx78_circuitry_betabuffs_2",
             pos = {ORIGIN_CIRCUITRY_X, ORIGIN_CIRCUITRY_Y + SPACER},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -221,7 +196,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_circuitry_gammabuffs_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_DESC,
-            icon = "wx78_circuit_gamma_1",
+            icon = "wx78_circuitry_gammabuffs_1",
             pos = {ORIGIN_CIRCUITRY_X + SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -230,7 +205,7 @@ local function BuildSkillsData(SkillTreeFns)
                 "wx78_circuitry_gammabuffs_2",
             },
             forced_focus = {
-                down = "wx78_circuitry_unpluganycircuit",
+                down = "wx78_circuitry_betterunplug",
                 right = "wx78_extrabody_2",
             },
         },
@@ -238,7 +213,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_circuitry_gammabuffs_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_2_DESC,
-            icon = "wx78_circuit_gamma_2",
+            icon = "wx78_circuitry_gammabuffs_2",
             pos = {ORIGIN_CIRCUITRY_X + SPACER, ORIGIN_CIRCUITRY_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -250,7 +225,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_circuitry_slot_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_CIRCUITRY_SLOT_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_CIRCUITRY_SLOT_1_DESC,
-            icon = "wx78_add_slot",
+            icon = "wx78_circuitry_slot_1",
             pos = {ORIGIN_CIRCUITRY_X, ORIGIN_CIRCUITRY_Y + SPACER * 2},
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
@@ -275,7 +250,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_extrabody_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_1_DESC,
-            icon = "wx78_body_multiple",
+            icon = "wx78_extrabody_1",
             pos = {ORIGIN_CHASSIS_SMALL_X, ORIGIN_CHASSIS_SMALL_Y},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS, "wx78_maxbody"},
@@ -291,7 +266,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_ghostrevive_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_1_DESC,
-            icon = "wx78_ghost_revive_1",
+            icon = "wx78_ghostrevive_1",
             pos = {ORIGIN_CHASSIS_BIG_X, ORIGIN_CHASSIS_BIG_Y},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
@@ -304,7 +279,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_ghostrevive_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_2_DESC,
-            icon = "wx78_ghost_revive_2",
+            icon = "wx78_ghostrevive_2",
             pos = {ORIGIN_CHASSIS_BIG_X + SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
@@ -315,7 +290,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_ghostrevive_3 = {
             title = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_GHOSTREVIVE_3_DESC,
-            icon = "wx78_ghost_revive_3",
+            icon = "wx78_ghostrevive_3",
             pos = {ORIGIN_CHASSIS_BIG_X + SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
@@ -323,7 +298,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_extrabody_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_2_DESC,
-            icon = "wx78_body_plus_one",
+            icon = "wx78_extrabody_2",
             pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 0.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS, "wx78_maxbody"},
@@ -337,7 +312,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_extrabody_3 = {
             title = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_DESC,
-            icon = "wx78_body_plus_one",
+            icon = "wx78_extrabody_2",
             pos = {ORIGIN_CHASSIS_BIG_X - SPACER, ORIGIN_CHASSIS_BIG_Y + SPACER * 1.5 - BIG_GEAR_SHIFT},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS, "wx78_maxbody"},
@@ -354,7 +329,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_remotebodyswap = {
             title = STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_REMOTEBODYSWAP_DESC,
-            icon = "wx78_body_swap_knowledge",
+            icon = "wx78_remotebodyswap",
             pos = {ORIGIN_CHASSIS_BIG_X, ORIGIN_CHASSIS_BIG_Y + SPACER * 2},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
@@ -362,7 +337,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_bodycircuits = {
             title = STRINGS.SKILLTREE.WX78.WX78_BODYCIRCUITS_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_BODYCIRCUITS_DESC,
-            icon = "wx78_backup_beta",
+            icon = "wx78_bodycircuits",
             pos = {ORIGIN_CHASSIS_BIG_X, ORIGIN_CHASSIS_BIG_Y + SPACER},
             group = GROUPS.CHASSIS,
             tags = {GROUPS.CHASSIS},
@@ -383,7 +358,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_scoutdrone_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_DESC,
-			icon = "wx78_drone_scout_1",
+			icon = "wx78_scoutdrone_1",
             pos = {ORIGIN_DRONES_X - SPACER * 0.5, ORIGIN_DRONES_Y - SPACER * 0.5},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
@@ -395,7 +370,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_scoutdrone_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_DESC,
-			icon = "wx78_drone_scout_2",
+			icon = "wx78_scoutdrone_2",
             pos = {ORIGIN_DRONES_BOTTOMLEFT_X, ORIGIN_DRONES_BOTTOMLEFT_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
@@ -403,7 +378,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_deliverydrone_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_1_DESC,
-			icon = "wx78_drone_delivery_1",
+			icon = "wx78_deliverydrone_1",
             pos = {ORIGIN_DRONES_X - SPACER * 0.5, ORIGIN_DRONES_Y + SPACER * 0.5},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
@@ -418,7 +393,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_deliverydrone_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_2_DESC,
-			icon = "wx78_drone_delivery_2",
+			icon = "wx78_deliverydrone_2",
             pos = {ORIGIN_DRONES_TOPRIGHT_X, ORIGIN_DRONES_TOPRIGHT_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
@@ -431,7 +406,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_zapdrone_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_DESC,
-			icon = "wx78_drone_zap_1",
+			icon = "wx78_zapdrone_1",
             pos = {ORIGIN_DRONES_X + SPACER * 0.5, ORIGIN_DRONES_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
@@ -449,7 +424,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_zapdrone_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_DESC,
-			icon = "wx78_drone_zap_2",
+			icon = "wx78_zapdrone_2",
             pos = {ORIGIN_DRONES_BOTTOMRIGHT_X, ORIGIN_DRONES_BOTTOMRIGHT_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
@@ -484,7 +459,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_allegiance_lunar = {
             title = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_LUNAR_DESC,
-            icon = "wx78_lunar",
+            icon = "wx78_allegiance_lunar",
             pos = {ORIGIN_ALLEGIANCE_X - 53, ORIGIN_ALLEGIANCE_Y},
             group = GROUPS.ALLEGIANCE,
             tags = {"lunar_favor", "allegiance"},
@@ -555,7 +530,7 @@ local function BuildSkillsData(SkillTreeFns)
         wx78_allegiance_shadow = {
             title = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ALLEGIANCE_SHADOW_DESC,
-            icon = "wx78_shadow",
+            icon = "wx78_allegiance_shadow",
             pos = {ORIGIN_ALLEGIANCE_X + 50, ORIGIN_ALLEGIANCE_Y - 3},
             group = GROUPS.ALLEGIANCE,
             tags = {"shadow_favor", "allegiance"},

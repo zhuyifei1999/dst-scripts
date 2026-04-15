@@ -1711,6 +1711,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.TOGGLEWXSHIELDING, function(inst)
         return inst:HasTag("wx_shielding") and "wx_shield_pst" or "wx_shield_pre"
     end),
+
+    ActionHandler(ACTIONS.EQUIPONBODY, "give"),
 }
 
 local events =

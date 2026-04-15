@@ -148,7 +148,7 @@ local SHIELDINGCOOLDOWN_TIMERNAME = "wxshieldingcooldown"
 
 local function GetChargeRegenTime(inst)
     local mult = 1
-    if inst.components.skilltreeupdater:IsActivated("wx78_circuitry_fastercharge") then
+    if inst.components.skilltreeupdater:IsActivated("wx78_circuitry_bettercharge") then
         mult = TUNING.SKILLS.WX78.FASTER_CHARGE_MULTIPLIER
     end
     return TUNING.WX78_CHARGE_REGENTIME / mult
@@ -457,7 +457,7 @@ local function OnOneUpgradeModulePopped(inst, moduleent, was_activated)
     if was_activated then
         local charge_cost = -moduleslotcount
         local skilltreeupdater = inst.components.skilltreeupdater
-        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_lesschargeloss") then
+        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_bettercharge") then
             charge_cost = math.min(charge_cost + TUNING.SKILLS.WX78.SAVE_CHARGE_ON_UNPLUG, -1)
         end
         inst.components.upgrademoduleowner:DoDeltaCharge(charge_cost)

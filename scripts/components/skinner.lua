@@ -480,6 +480,10 @@ function Skinner:SetupNonPlayerData()
 	self:SetSkinMode("NO_BASE")
 end
 
+function Skinner:IsNonPlayer()
+	return self.skin_name == "NON_PLAYER"
+end
+
 function Skinner:SetSkinName(skin_name, skip_beard_setup, skip_skins_set)
     if skin_name == "" then
         skin_name = self.inst.prefab.."_none"

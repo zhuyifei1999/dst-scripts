@@ -2049,6 +2049,7 @@ local PREFABS =
     ["wx78_backupbody_inventory"] = true,
 
     ["wx78_foodbrick"] = true,
+    ["wx78_gestalttrapper"] = true,
 
     -----------------------------------------------
 

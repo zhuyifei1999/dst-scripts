@@ -55,14 +55,29 @@ local function GetTool(inst)
     return inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
 end
 
-local function HasToolForAction(inst, action)
+local function CanToolDoAction(tool, action)
+    -- tool:CanDoAction is for till
+    return ((tool.components.tool ~= nil and tool.components.tool:CanDoAction(action)) or tool:CanDoAction(action)) 
+end
+
+local function HasToolForAction(inst, action, tryequip)
     local tool = GetTool(inst)
-    return tool ~= nil and
-        (
-            (tool.components.tool ~= nil and tool.components.tool:CanDoAction(action)) or
-            tool:CanDoAction(action) -- for till
-        )
-        or nil
+    if tool ~= nil and CanToolDoAction(tool, action) then
+        return true
+    end
+
+    -- Equip next available tool
+    local nexttool = inst.components.inventory:FindItem(function(item)
+        return item.components.equippable ~= nil and not item.components.equippable:IsRestricted(inst)
+            and CanToolDoAction(item, action)
+    end)
+
+    if nexttool ~= nil then
+        if tryequip then
+            inst.components.inventory:Equip(nexttool)
+        end
+        return true
+    end
 end
 
 local function GetLeaderAction(inst)
@@ -104,7 +119,9 @@ local function Create_Starter(action)
         local leader = GetLeader(inst)
         if leader ~= nil then
             local leaderact, leadertarget = GetLeaderAction(leader)
-            return leaderact == action
+            if leaderact == action and HasToolForAction(inst, action, true) then
+                return true
+            end
         end
     end
 end
@@ -173,13 +190,82 @@ local NODE_ASSIST_TILL_ACTION =
     shouldrun = true,
 }
 
+local function EquipBestWeapon(inst, target)
+    -- Find highest damage weapon to use
+    -- Not the best since it doesnt take into account damage multipliers, can be improved.
+    local bestweapon
+    inst.components.inventory:ForEachItem(function(item)
+        if (bestweapon == nil and item.components.weapon ~= nil) or
+            (bestweapon ~= nil and bestweapon.components.weapon ~= nil and item.components.weapon ~= nil
+            and item.components.weapon:GetDamage(inst, target) > bestweapon.components.weapon:GetDamage(inst, target)) then
+            bestweapon = item
+        end
+    end)
+    if bestweapon and bestweapon ~= GetTool(inst) then
+        inst.components.inventory:Equip(bestweapon)
+    end
+end
+
 local function SetTargetOnLeaderTarget(inst)
     local leader = GetLeader(inst)
     if leader ~= nil then
         local leaderact, leadertarget = GetLeaderAction(leader)
         if leaderact == ACTIONS.ATTACK then
             inst.components.combat:SetTarget(leadertarget)
+            EquipBestWeapon(inst, leadertarget)
         end
+    end
+end
+
+local function EatFoodAction(inst)
+    if inst.sg:HasStateTag("busy") or
+        ( -- We're well topped off, just return for optimization sake.
+            inst.components.health:GetPercent() > 0.9 and
+            inst.components.hunger:GetPercent() > 0.9 and
+            inst.components.sanity:GetPercent() > 0.9
+        )
+    then
+        return
+    end
+
+    local health = inst.components.health.currenthealth
+    local hunger = inst.components.hunger.current
+    local sanity = inst.components.sanity.current
+
+    local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.5 -- Some leniency for healing.
+    local maxhunger = inst.components.hunger.max
+    local maxsanity = inst.components.sanity:GetMaxWithPenalty()
+
+    local besthealth
+    local besthunger
+    local bestsanity
+
+    inst.components.inventory:ForEachItem(function(item)
+        local edible = item.components.edible
+        if edible ~= nil and inst.components.eater:CanEat(item) then
+            local itemhealth = edible:GetHealth(inst)
+            local itemhunger = edible:GetHunger(inst)
+            local itemsanity = edible:GetSanity(inst)
+
+            if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth then
+                if besthealth == nil or (itemhealth > besthealth.components.edible:GetHealth(inst)) then
+                    besthealth = item
+                end
+            elseif itemhunger > 0 and (hunger + itemhunger) <= maxhunger then
+                if besthunger == nil or (itemhunger > besthunger.components.edible:GetHunger(inst)) then
+                    besthunger = item
+                end
+            elseif itemsanity >= TUNING.SANITY_SMALL and (sanity + itemsanity) <= maxsanity then
+                if bestsanity == nil or (itemsanity > bestsanity.components.edible:GetSanity(inst)) then
+                    bestsanity = item
+                end
+            end
+        end
+    end)
+
+    local foodtoeat = besthealth or besthunger or bestsanity
+    if foodtoeat ~= nil then
+        return BufferedAction(inst, foodtoeat, ACTIONS.EAT)
     end
 end
 
@@ -249,7 +335,9 @@ function Wx78_PossessedBodyBrain:OnStart()
             DoAction(self.inst, DoUpgradeModuleAction, nil, true),
 
             WhileNode(function() return not IsLeaderAttacking(self.inst) and IsLeaderMoving(self.inst) and LeaderInRangeOfTarget(self.inst) end, "is leader not attacking",
-                RunAwayToDist(self.inst, RUNAWAY_PARAM, GetRunDist)),
+                RunAwayToDist(self.inst, RUNAWAY_PARAM, GetRunDist, nil, nil, nil, true)),
+
+            DoAction(self.inst, EatFoodAction, nil, true),
 
             -- Actions
             WhileNode(function() return HasToolForAction(self.inst, ACTIONS.CHOP) end, "chop with tool",

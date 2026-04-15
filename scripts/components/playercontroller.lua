@@ -4635,6 +4635,7 @@ function PlayerController:DoActionAutoEquip(buffaction)
 		buffaction.action ~= ACTIONS.DEPLOY_FLOATING and
         buffaction.action ~= ACTIONS.CONSTRUCT and
 		buffaction.action ~= ACTIONS.ADDCOMPOSTABLE and
+        buffaction.action ~= ACTIONS.EQUIPONBODY and
 		(buffaction.action ~= ACTIONS.TOSS or not equippable.inst:HasTag("keep_equip_toss")) and
 		buffaction.action ~= ACTIONS.DECORATESNOWMAN
 	then

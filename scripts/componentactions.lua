@@ -1395,12 +1395,12 @@ local COMPONENT_ACTIONS =
                 if inst:HasTag("reviver") then
                     table.insert(actions, ACTIONS.GIVETOPLAYER)
                 end
-            elseif target:HasTag("player") then
+            elseif target:HasAnyTag("player", "possessedbody") then
 				if not right then
 					local rider = target.replica.rider
 					if not (rider and rider:IsRiding()) and
 						not target:HasTag("wereplayer") and
-						not (GetGameModeProperty("non_item_equips") and inst.replica.equippable)
+                        (target:HasTag("possessedbody") or not (GetGameModeProperty("non_item_equips") and inst.replica.equippable))
 					then
 						local giveall
 						if not (doer.components.playercontroller and doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)) then
@@ -1409,6 +1409,12 @@ local COMPONENT_ACTIONS =
 						end
 						table.insert(actions, giveall and ACTIONS.GIVEALLTOPLAYER or ACTIONS.GIVETOPLAYER)
 					end
+                else
+                    if target:HasTag("possessedbody") -- TODO: only for possessed bodies for now, but can expand to others?
+                        and inst.replica.equippable ~= nil
+                        and not inst.replica.equippable:IsRestricted(target) then
+                        table.insert(actions, ACTIONS.EQUIPONBODY)
+                    end
 				end
 			else
 				local rider = doer.replica.rider
@@ -1803,11 +1809,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        tradable = function(inst, doer, target, actions)
+        tradable = function(inst, doer, target, actions, right)
             if target:HasTag("trader") and
-                not (target:HasTag("player") or target:HasTag("ghost")) and
+                not target:HasAnyTag("player", "ghost", "possessedbody") and
                 not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
                     not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
+
                 table.insert(actions, ACTIONS.GIVE)
             end
 		end,

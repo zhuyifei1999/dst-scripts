@@ -700,8 +700,11 @@ ACTIONS =
 	STARTMAPDELIVER = Action({ rmb = true }),
 	MAPDELIVER_MAP = Action({ map_only=true, closes_map=true, }),
     SWAPBODIES_MAP = Action({ customarrivecheck=ArriveAnywhere, rmb=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
-    TOGGLEWXSCREECH = Action({ priority = 0, invalid_hold_action=true }),
-    TOGGLEWXSHIELDING = Action({ priority = 1, invalid_hold_action=true, }),
+    TOGGLEWXSCREECH = Action({ priority = 1, invalid_hold_action=true }),
+    TOGGLEWXSHIELDING = Action({ priority = 0, invalid_hold_action=true, }),
+
+    -- A unique action to equip things on the possessed bodies, but can still give stuff to their inventory
+    EQUIPONBODY = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -2345,11 +2348,7 @@ ACTIONS.FEEDPLAYER.fn = function(act)
     if act.target ~= nil and
         act.target:IsValid() and
         act.target.sg:HasStateTag("idle") and
-        not (act.target.sg:HasStateTag("busy") or
-            act.target.sg:HasStateTag("attacking") or
-            act.target.sg:HasStateTag("sleeping") or
-            act.target:HasTag("playerghost") or
-            act.target:HasTag("wereplayer")) and
+        not (act.target.sg:HasAnyStateTag("busy", "attacking", "sleeping") or act.target:HasAnyTag("playerghost", "wereplayer")) and
         act.target.components.eater ~= nil and
         act.invobject.components.edible ~= nil and
         act.target.components.eater:CanEat(act.invobject) and
@@ -6854,4 +6853,23 @@ end
 
 ACTIONS.TOGGLEWXSHIELDING.fn = function(act)
 	return true
+end
+
+-- For possessed bodies, but maybe we can expand to other ents in the future?
+ACTIONS.EQUIPONBODY.fn = function(act)
+    if act.target ~= nil and
+            act.target.components.inventory ~= nil and
+            act.invobject ~= nil and
+            act.invobject.components.equippable ~= nil and
+            not act.invobject.components.equippable:IsRestricted(act.target) and
+            (act.target.components.inventory:IsOpenedBy(act.target) or act.target:HasTag("playerghost")) then
+
+        local equipslot = act.invobject.components.equippable.equipslot
+        local current = act.target.components.inventory:GetEquippedItem(equipslot)
+        if current ~= nil then
+            act.target.components.inventory:DropItem(current)
+        end
+        act.target.components.inventory:Equip(act.invobject)
+        return true
+    end
 end

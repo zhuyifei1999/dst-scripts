@@ -3861,6 +3861,9 @@ local fx =
         anim = "shadow_attack",
         sound = "rifts2/thrall_wings/flap_walk",
         eightfaced = true,
+        fn = function(inst)
+            inst.AnimState:SetMultColour(1, 1, 1, .5)
+        end,
     },
     {
         name = "wx78_possessed_shadow_hitfx",

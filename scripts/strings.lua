@@ -1183,6 +1183,8 @@ STRINGS =
             GENERIC = "Activate Block",
             TURNOFF = "Deactivate Block",
         },
+
+        EQUIPONBODY = "Equip on",
     },
 
 	WOBY_COMMANDS =
@@ -4566,8 +4568,8 @@ STRINGS =
 
         -- Meta 6
         WX78_BACKUPBODY_FMT = "{name}'s Backup Chassis",
-        WX78_BACKUPBODY = "WX-78's Backup Chassis", -- For an unnamed backup body.
-        WX78_BACKUPBODY_INVENTORY = "WX-78's Backup Chassis", -- This is for the scrapbook, because the _INVENTORY is the one with an animstate
+		WX78_BACKUPBODY = "Backup Chassis", -- For an unnamed backup body.
+		WX78_BACKUPBODY_INVENTORY = "Backup Chassis", -- This is for the scrapbook, because the _INVENTORY is the one with an animstate
 		WX78_DRONE_SCOUT = "Roto-Mapper",
 		WX78_DRONE_DELIVERY = "Portable Storage Unit",
 		WX78_DRONE_ZAP = "Zaptrocuter",
@@ -4588,7 +4590,7 @@ STRINGS =
 
         WX78_GESTALTTRAPPER = "Spectral Transfer Module",
         WX78_POSSESSEDBODY_FMT = "{name}'s Possessed Chassis",
-        WX78_POSSESSEDBODY = "WX-78's Possessed Chassis", -- For an unnamed possessed body.
+		WX78_POSSESSEDBODY = "Possessed Chassis", -- For an unnamed possessed body.
         SHADOW_HEART_VEIN = "Shadow Atrium Tendril",
 	},
 
@@ -17673,17 +17675,11 @@ STRINGS.SKILLTREE = {
         WX78_CIRCUITRY_SLOT_1_TITLE = "Off By One",
         WX78_CIRCUITRY_SLOT_1_DESC = "Grant an additional slot to all of your circuit bars.",
 
-        WX78_HALF_MODULE_USES_TITLE = "Fine Motor Control",
-        WX78_HALF_MODULE_USES_DESC = "Circuits will lose half the usual amount of durability when unplugged.",
+        WX78_BETTER_CHARGE_TITLE = "Watts Up",
+        WX78_BETTER_CHARGE_DESC = "Passive charge regeneration is much faster, and lose one less charge when unplugging a charged circuit with two or more slots.",
 
-        WX78_FASTER_CHARGE_TITLE = "Watts Up",
-        WX78_FASTER_CHARGE_DESC = "Passive charge regeneration is much faster.",
-
-        WX78_UNPLUG_ANY_CIRCUIT_TITLE = "Right To Modify",
-        WX78_UNPLUG_ANY_CIRCUIT_DESC = "Gain the ability to unplug any circuit in the bar stack.",
-
-        WX78_LESS_CHARGE_LOSS_TITLE = "Energy-Efficient",
-        WX78_LESS_CHARGE_LOSS_DESC = "Lose one less charge when unplugging a charged circuit with two or more slots.",
+        WX78_BETTER_UNPLUG_TITLE = "Right To Modify",
+        WX78_BETTER_UNPLUG_DESC = "Gain the ability to unplug any circuit in the bar stack, and circuits will lose half the usual amount of durability when unplugged.",
 
         WX78_ALPHA_CIRCUIT_BUFFS_1_TITLE = "Alpha Circuits Tinkering I",
         WX78_ALPHA_CIRCUIT_BUFFS_1_DESC = "Processing Circuits gain a new effect in addition to their original effect. Gastrogain Circuits are boosted.",
@@ -18105,16 +18101,16 @@ STRINGS.SCRAPBOOK = {
         WX78MODULE_NIGHTVISION = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Moleworm.\n\nRequires 4 sockets and lets the user see in the dark. Turns on at night and when entering the Caves.\n\nBeta Circuit Tinkering I boosts this circuit to not have mole vision any longer.",
         WX78MODULE_COLD = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from an Ice Hound, or Deerclops.\n\nRequires 3 sockets and lowers body temperature 20 degrees and decreases spoil rate of inventory by 25%. Will also cool nearby survivors.\n\nIf WX-78's wetness reaches 95%, it will drop to 0% and 2 Ice will be spawned.\n\nBeta Circuit Tinkering I boosts this circuit to provide 50% fire damage resistance.",
         WX78MODULE_TASER = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Volt Goat.\n\nRequires 2 sockets and deals 20 electrical damage to WX-78's attackers.\n\nThis module also makes WX-78 immune to electrical shock.\n\nBeta Circuit Tinkering II boosts this circuit to allow WX-78 to get overloaded when being hit, culminating in a 50 electrical damage AoE blast when hit enough times.",
-        WX78MODULE_LIGHT = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Fireflies.\n\nRequires 3 sockets and creates light.\n\nBeta Circuit Tinkering II boosts this circuit to provide a flash light facing WX-78's direction.",
-        WX78MODULE_LIGHT2 = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Depth Worm, Bulbous Lightbug, or Skittersquid.\n\nRequires 1 socket and creates light.\n\nBeta Circuit Tinkering II boosts this circuit to provide a flash light facing WX-78's direction.",
+        WX78MODULE_LIGHT = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Fireflies.\n\nRequires 3 sockets and creates light.\n\nBeta Circuit Tinkering II boosts this circuit to provide a directional cone of light facing WX-78's direction.",
+        WX78MODULE_LIGHT2 = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Depth Worm, Bulbous Lightbug, or Skittersquid.\n\nRequires 1 socket and creates light.\n\nBeta Circuit Tinkering II boosts this circuit to provide a directional cone of light facing WX-78's direction.",
         WX78MODULE_MAXHUNGER = "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a Slurper, or Bearger.\n\nRequires 2 sockets, increases Maximum Hunger by 100 points and reduces Hunger drain by 20%.\n\nAlpha Circuit Tinkering I boosts the Hunger drain reduction to 25%.\n\nAlpha Circuit Tinkering II boosts the Hunger drain reduction to 30%.",
         WX78MODULE_MAXHUNGER1 = "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a regular Hound.\n\nRequires 1 socket and increases Maximum Hunger by 40 points.\n\nAlpha Circuit Tinkering I boosts this circuit to reduce Hunger drain by 5%.\n\nAlpha Circuit Tinkering II boosts the Hunger drain reduction to 10%",
-        WX78MODULE_MUSIC = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Crabby Hermit, or the Crab King.\n\nRequires 3 sockets, raises Sanity of nearby survivors 5 points a minute and raises garden plant happiness one step.\n\nBeta Circuit Tinkering I boosts this circuit to recruit Pig Men and Bunny Men who hear the song.",
-        WX78MODULE_BEE = "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from the Bee Queen.\n\nRequires 3 sockets, heals 5 Health every 30 seconds, gains 2 Sanity every minute and increases Maximum Sanity by 100 points.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 25%, and provides a regenerating shield when WX-78 is at full health, giving a one shot protection when the shield is over 15 points.",
+        WX78MODULE_MUSIC = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Crabby Hermit, or the Crab King.\n\nRequires 3 sockets, raises Sanity of nearby survivors 5 points a minute and raises garden plant happiness from the music.\n\nBeta Circuit Tinkering I boosts this circuit to recruit Pig Men and Bunny Men who hear the song.",
+        WX78MODULE_BEE = "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from the Bee Queen.\n\nRequires 3 sockets, heals 5 Health every 30 seconds, gains 2 Sanity every minute and increases Maximum Sanity by 100 points.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 25%, and provides a regenerating shield when WX-78 is at full health. The shield protects an attack from damaging its health if WX-78 has over 15 shield.",
         WX78MODULE_MAXHEALTH2 = "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a Nurse Spider\n\nRequires 2 sockets and increases Maximum Health by 100 points.\n\nAlpha Circuit Tinkering II boosts this circuit to provide 5% armor",
         WX78MODULE_RADAR = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Crow, Redbird, Snowbird, Puffin or Canary.\n\nRequires 1 socket and increases Maximum Camera Distance.\n\nBeta Circuit Tinkering I boosts this circuit to increase the ranges of the Roto-Mapper, Zaptrocuter, and Bio Scanalyzer scan.",
         WX78MODULE_STACKSIZE = "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from Krampus.\n\nRequires 1 socket and places a infinite stack-size 1 slot container in WX-78's right-most inventory slot.",
-        WX78MODULE_SCREECH = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Molebat.\n\nRequires 3 sockets and allows WX-78 to perform a sonic attack, inflicting panic on nearby creatures, and going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering I allows WX-78 to hold the sonic attack.",
+        WX78MODULE_SCREECH = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Naked Mole Bat.\n\nRequires 3 sockets and allows WX-78 to perform a sonic attack, inflicting panic on nearby creatures, and going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering I allows WX-78 to hold the sonic attack.",
         WX78MODULE_DIGESTION = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Catcoon.\n\nRequires 2 sockets and allows WX-78 to process spoiled foods, such as Rot, to bake Nutribricks.\n\nGamma Circuit Tinkering I allows WX-78 to also process nearly spoiled foods to bake Nutribricks.",
         WX78MODULE_SHIELDING = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Rock Lobster, Slurtle, or Snurtle.\n\nRequires 4 sockets and allows WX-78 to perform a block, providing 80% armor, going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering II provides WX-78 with knockback immunity in the block.",
         WX78MODULE_SPIN = "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Mosling.\n\nRequires 3 sockets and allows WX-78 to perform a spin when using any Axe or Pickaxe when working or attacking.\n\nGamma Circuit Tinkering II makes WX-78 spin faster.",
@@ -18502,7 +18498,9 @@ STRINGS.SCRAPBOOK = {
         WX78_DRONE_ZAP = "Strike terror into those pathetic organics with the Zaptrocuter.\n\nWX-78 gave this drone the name of Jules.",
         WX78_DRONE_SCOUT = "Explore unknown areas of the map with the Roto-Mapper.\n\nWX-78 gave this drone the name of Scott.",
 
-        WX78_BACKUPBODY = "A backup chassis for WX-78 to store items, circuits. WX-78 can transfer their consciousness into the chassis."
+        WX78_BACKUPBODY = "A backup chassis for WX-78 to store items, circuits. WX-78 can transfer their consciousness into the chassis.",
+
+        WX78_GESTALTTRAPPER = "Install on a Backup Chassis to lure a gestalt over and possess it, for your very own spectrobotic minion!",
     },
 
     -- Full name: "{name} Scrapbook Page"

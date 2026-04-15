@@ -604,27 +604,19 @@ local function CheckPossessableChassis(self)
 	return self.possessable_chassis:IsValid() and self.possessable_chassis:HasTag("possessable_chassis")
 end
 
-local function GetPossessableChassisPos(self)
-	return CheckPossessableChassis(self) and self.possessable_chassis:GetPosition() or nil
+local function GetPossessableChassisPos(inst)
+    if not inst.brain then -- Just in case??
+        return
+    end
+	return CheckPossessableChassis(inst.brain) and inst.brain.possessable_chassis:GetPosition() or nil
 end
 
-local function MoveToPossessableAction(inst)
-	if not inst.brain then -- Shouldn't ever be nil but just in case?
-		return
-	end
-
-    local chassis_pos = GetPossessableChassisPos(inst.brain)
-	if chassis_pos then
-        -- inst.components.locomotor:Stop()
-        inst.components.locomotor:Clear()
-		return BufferedAction(inst, nil, ACTIONS.WALKTO, nil, chassis_pos, nil, .2)
-	end
-end
-
+local POSSESS_DIST = .2
 local function PossessChassis(self, update_rate)
     return IfNode(function() return SelectPossessableChassis(self) end, "possess chassis",
 			PriorityNode({
-				FailIfSuccessDecorator(DoAction(self.inst, MoveToPossessableAction, "Move to chassis", true)),
+                FailIfSuccessDecorator(Leash(self.inst, GetPossessableChassisPos, POSSESS_DIST, POSSESS_DIST, true)),
+				-- FailIfSuccessDecorator(DoAction(self.inst, MoveToPossessableAction, "Move to chassis", true)),
 				IfNode(function() return CheckPossessableChassis(self) end, "posses",
 					ActionNode(function() self.inst:PushEventImmediate("possess_chassis", { target = self.possessable_chassis }) end)),
 				FaceEntity(self.inst,

@@ -253,6 +253,37 @@ local actionhandlers =
 			end
 			--failed if reached here!
         end),
+ActionHandler(ACTIONS.EAT,
+        function(inst, action)
+            if inst.sg:HasStateTag("busy") then
+                return
+            end
+            local obj = action.target or action.invobject
+            if obj == nil then
+                return
+            elseif obj.components.edible ~= nil then
+                if not inst.components.eater:PrefersToEat(obj) then
+                    inst:PushEvent("wonteatfood", { food = obj })
+                    return
+                end
+            elseif obj.components.soul ~= nil then
+                if inst.components.souleater == nil then
+                    inst:PushEvent("wonteatfood", { food = obj })
+                    return
+                end
+            else
+                return
+            end
+
+			--NOTE: Keep states in sync with ACTIONS.FEEDPLAYER.fn
+			local state =
+				(obj:HasTag("quickeat") and "quickeat") or
+				(obj:HasTag("sloweat") and "eat") or
+				((obj.components.edible.foodtype == FOODTYPE.MEAT and not obj:HasTag("fooddrink")) and "eat") or -- #EGGNOG_HACK, eggnog is the one meat drink, we don't have a long drink, so exclude from eat state
+				"quickeat"
+
+			return state
+        end),
 
     ActionHandler(ACTIONS.TOGGLEWXSCREECH, function(inst)
         return inst:HasTag("wx_screeching") and "wx_screech_pst" or "wx_screech_pre"
@@ -291,6 +322,7 @@ local events =
 
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
+    CommonHandlers.OnHop(),
 
     EventHandler("freeze",
         function(inst)
@@ -886,6 +918,7 @@ local states =
             else
                 inst.AnimState:Show("gestalt_die")
             end
+			inst:SetPlanarFxShown(false)
 
             inst.AnimState:PlayAnimation("wx_chassis_poweroff")
             if not inst.sg.mem.wx_chassis_build then
@@ -948,6 +981,7 @@ local states =
                 inst.sg.mem.wx_chassis_build = nil
                 inst.AnimState:ClearOverrideBuild("wx_chassis")
             end
+			inst:SetPlanarFxShown(true)
 		end,
     },
 
@@ -2048,6 +2082,63 @@ nil, -- fns
 { -- data
     skip_vfx = true,
 })
+
+local hop_timelines =
+{
+    hop_pre =
+    {
+        TimeEvent(0, function(inst)
+            inst.components.embarker.embark_speed = math.clamp(inst.components.locomotor:RunSpeed() * inst.components.locomotor:GetSpeedMultiplier() + TUNING.WILSON_EMBARK_SPEED_BOOST, TUNING.WILSON_EMBARK_SPEED_MIN, TUNING.WILSON_EMBARK_SPEED_MAX)
+        end),
+    },
+    hop_loop =
+    {
+        TimeEvent(0, function(inst)
+            inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/jump")
+        end),
+    },
+}
+
+local function landed_in_falling_state(inst)
+    if inst.components.drownable == nil then
+        return nil
+    end
+
+    local fallingreason = inst.components.drownable:GetFallingReason()
+    if fallingreason == nil then
+        return nil
+    end
+
+    if fallingreason == FALLINGREASON.OCEAN then
+        return "sink"
+    elseif fallingreason == FALLINGREASON.VOID then
+        return "abyss_fall"
+    end
+
+    return nil -- TODO(JBK): Fallback for unknown falling reason?
+end
+
+local hop_anims =
+{
+	pre = function(inst) return inst.components.inventory:IsHeavyLifting() and "boat_jumpheavy_pre" or "boat_jump_pre" end,
+	loop = function(inst) return inst.components.inventory:IsHeavyLifting() and "boat_jumpheavy_loop" or "boat_jump_loop" end,
+	pst = function(inst)
+		if inst.components.inventory:IsHeavyLifting() then
+			return "boat_jumpheavy_pst"
+		elseif inst.components.embarker.embarkable and inst.components.embarker.embarkable:HasTag("teeteringplatform") then
+			inst.sg:AddStateTag("teetering")
+			return "boat_jump_to_teeter"
+		end
+		return "boat_jump_pst"
+	end,
+}
+
+local function hop_land_sound(inst)
+	return not inst.sg:HasStateTag("teetering") and "turnoftides/common/together/boat/jump_on" or nil
+end
+
+CommonStates.AddRowStates(states, false)
+CommonStates.AddHopStates(states, true, hop_anims, hop_timelines, hop_land_sound, landed_in_falling_state, {start_embarking_pre_frame = 4*FRAMES})
 
 SGWX78Common.AddWX78SpinStates(states)
 SGWX78Common.AddWX78ShieldStates(states)

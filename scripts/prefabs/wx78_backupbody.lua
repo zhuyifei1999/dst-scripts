@@ -342,7 +342,12 @@ local function OnActivateFn(inst, doer)
     if doer.components.skinner then
         local skindata = deepcopy(inst.wx78_backupbody_inventory.components.skinner:OnSave())
         inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(doer, true)
-        doer.components.skinner:OnLoad(skindata)
+
+        if doer.components.skinner:IsNonPlayer() then
+            doer.components.skinner:CopySkinsFromPlayer(inst.wx78_backupbody_inventory, true)
+        else
+            doer.components.skinner:OnLoad(skindata)
+        end
     end
 
     if doer.components.upgrademoduleowner then
@@ -479,7 +484,7 @@ local function OnOneUpgradeModulePopped(inst, moduleent, was_activated)
         local charge_cost = -moduleslotcount
         local owner = inst.components.linkeditem:GetOwnerInst()
         local skilltreeupdater = owner.components.skilltreeupdater
-        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_lesschargeloss") then
+        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_bettercharge") then
             charge_cost = math.min(charge_cost + 1, -1)
         end
         inst.components.upgrademoduleowner:DoDeltaCharge(charge_cost)
@@ -760,6 +765,9 @@ local function fn_inventory()
     inst.AnimState:Hide("mimic2")
     inst.AnimState:Hide("mimic3")
     inst.AnimState:Hide("trapper")
+
+    inst.scrapbook_inspectonseen = true
+    inst.scrapbook_specialinfo = "WX78_BACKUPBODY"
 
 	WX78Common.AddHeatSteamFx_Common(inst, true) --true for no facings
 

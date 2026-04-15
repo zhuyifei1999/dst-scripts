@@ -2246,6 +2246,8 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "turf"
     elseif t:HasTag("backpack") then
         subcat = "backpack"
+    elseif t.components.upgrademodule then -- has to be above container
+        subcat = "upgrademodule"
     elseif t:HasTag("chest") or Scrapbook_IsOnCraftingFilter("CONTAINERS", t.prefab) then
         subcat = "container"
     elseif t:HasTag("battlesong") then
@@ -2292,8 +2294,6 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "ornament"
     elseif string.find(t.prefab, "trinket") then
         subcat = "trinket"
-    elseif t.components.upgrademodule then
-        subcat = "upgrademodule"
     elseif t:HasTag("halloween_ornament") then
         subcat = "halloweenornament"
     elseif t:HasTag("spider") then
