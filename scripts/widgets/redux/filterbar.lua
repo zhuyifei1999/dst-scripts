@@ -163,6 +163,12 @@ local search_match = function( search, str )
     return false
 end
 
+local SKIN_NAME_REDIRECTS = {
+    -- NOTES(JBK): This is a hack for a discrepency between itemdefs and what the game has for the prefab naming.
+    -- Instead of adjusting the game the itemdef should be changed but it is too late for that now.
+    wx78_drone_delivery_small = "wx78_drone_delivery",
+}
+
 function FilterBar:AddSearch( thin )
     self.thin_mode = thin
 
@@ -223,7 +229,7 @@ function FilterBar:AddSearch( thin )
 
         local base_prefab = GetSkinData(item_key).base_prefab
         if base_prefab ~= nil then
-            if search_match( search_str, string.upper(STRINGS.NAMES[string.upper(base_prefab)]) ) then
+            if search_match( search_str, string.upper(STRINGS.NAMES[string.upper(SKIN_NAME_REDIRECTS[base_prefab] or base_prefab)]) ) then
                 return true
             end
         end
