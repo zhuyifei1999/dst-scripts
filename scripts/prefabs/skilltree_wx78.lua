@@ -504,17 +504,12 @@ local function BuildSkillsData(SkillTreeFns)
         },
         ------------------------------------------------------------------------------------------------------------------------
         wx78_shadow_allegiance_lock_1 = {
-            --desc = STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC,
-            desc = STRINGS.SKILLTREE.TEMPORARILY_DISABLED, -- FIXME(JBK): WX: Remove this when finished.
+            desc = STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC,
             pos = {ORIGIN_ALLEGIANCE_X + 7, ORIGIN_ALLEGIANCE_Y - 18},
             group = "allegiance",
             tags = {"allegiance", "lock"},
             root = true,
             lock_open = function(prefabname, activatedskills, readonly)
-                if true then -- FIXME(JBK): WX: Remove this when finished.
-                    return false
-                end
-
                 local maxbodies = SkillTreeFns.CountTags(prefabname, "wx78_maxbody", activatedskills)
                 if maxbodies == 0 then
                     return false
