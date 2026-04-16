@@ -3687,6 +3687,20 @@ MISC_ITEMS =
 		output_items = {  "winona_lunar", "body_winona_lunar", "legs_winona_lunar", "wathgrithr_lunar", "body_wathgrithr_lunar", "hand_wathgrithr_lunar", "legs_wathgrithr_lunar", "wathgrithrhat_lunar", "spear_wathgrithr_lunar", "wolfgang_lunar", "body_wolfgang_lunar", "hand_wolfgang_lunar", "legs_wolfgang_lunar", "wortox_shadow", "body_wortox_shadow", "hand_wortox_shadow", "legs_wortox_shadow", "walter_shadow", "body_walter_shadow", "legs_walter_shadow", "walterhat_shadow", "warly_shadow", "body_warly_shadow", "legs_warly_shadow", "feet_warly_shadow", },
 		release_group = 145,
 	},
+	pack_magician_chest_shadow_resurrected =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 0,
+		build_name_override = "mysterybox_lava_4",
+		display_atlas = "images/iap_images_magician_chest_shadow_resurrected.xml",
+		display_tex = "magician_chest_shadow_resurrected.tex",
+		box_build = "box_shared",
+		display_items = {  "magician_chest_shadow_resurrected", },
+		output_items = {  "magician_chest_shadow_resurrected", },
+		release_group = 180,
+	},
 	pack_magma_all =
 	{
 		type = "purchase",
@@ -4577,6 +4591,20 @@ MISC_ITEMS =
 		display_items = {  "amulet_blue_relic", "amulet_green_relic", "amulet_orange_relic", "amulet_purple_relic", "amulet_red_relic", "amulet_yellow_relic", "armor_skeleton_relic", "skeletonhat_relic", "starstaff_relic", "wall_dreadstone_relic", "townportal_relic", "nightmare_torch_relic", "sisturn_beachhouse", "sisturn_nest", "lucy_broadaxe", "lucy_chained", "lucy_picnic", "lucy_punk", "wx78_scanner_fancy", "wx78_scanner_junky", "spicepack_porcelain", "spicepack_rustic", "spicepack_silver", "spicepack_survivor", "portable_blender_porcelain", "portable_blender_rustic", "portable_blender_silver", "portable_blender_survivor", "portable_cook_pot_porcelain", "portable_cook_pot_rustic", "portable_cook_pot_silver", "portable_cook_pot_survivor", "portable_spicer_porcelain", "portable_spicer_rustic", "portable_spicer_silver", "portable_spicer_survivor", "slingshot_bandaged", "slingshot_nature", "slingshot_spiked", "slingshot_straws", "pupington_woby_baddog", "pupington_woby_ribbon", },
 		output_items = {  "amulet_blue_relic", "amulet_green_relic", "amulet_orange_relic", "amulet_purple_relic", "amulet_red_relic", "amulet_yellow_relic", "armor_skeleton_relic", "skeletonhat_relic", "starstaff_relic", "wall_dreadstone_relic", "townportal_relic", "nightmare_torch_relic", "sisturn_beachhouse", "sisturn_nest", "lucy_broadaxe", "lucy_chained", "lucy_picnic", "lucy_punk", "wx78_scanner_fancy", "wx78_scanner_junky", "spicepack_porcelain", "spicepack_rustic", "spicepack_silver", "spicepack_survivor", "portable_blender_porcelain", "portable_blender_rustic", "portable_blender_silver", "portable_blender_survivor", "portable_cook_pot_porcelain", "portable_cook_pot_rustic", "portable_cook_pot_silver", "portable_cook_pot_survivor", "portable_spicer_porcelain", "portable_spicer_rustic", "portable_spicer_silver", "portable_spicer_survivor", "slingshot_bandaged", "slingshot_nature", "slingshot_spiked", "slingshot_straws", "pupington_woby_baddog", "pupington_woby_ribbon", },
 		release_group = 164,
+	},
+	pack_researchlab2_science_resurrected =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 0,
+		build_name_override = "mysterybox_lava_4",
+		display_atlas = "images/iap_images_researchlab2_science_resurrected.xml",
+		display_tex = "researchlab2_science_resurrected.tex",
+		box_build = "box_shared",
+		display_items = {  "researchlab2_science_resurrected", },
+		output_items = {  "researchlab2_science_resurrected", },
+		release_group = 180,
 	},
 	pack_retro_items =
 	{
@@ -7582,6 +7610,19 @@ MISC_ITEMS =
 		output_items = {  "wurt_survivor", "body_wurt_survivor", "hand_wurt_survivor", "legs_wurt_survivor", },
 		release_group = 171,
 	},
+	pack_wx78_ancient =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 105,
+		build_name_override = "wx78_ancient",
+		display_atlas = "bigportraits/wx78_ancient.xml",
+		display_tex = "wx78_ancient_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wx78_ancient", "body_wx78_ancient", "feet_wx78_ancient", "hand_wx78_ancient", },
+		output_items = {  "wx78_ancient", "body_wx78_ancient", "feet_wx78_ancient", "hand_wx78_ancient", },
+		release_group = 180,
+	},
 	pack_wx78_deluxe =
 	{
 		type = "purchase",
@@ -7608,6 +7649,34 @@ MISC_ITEMS =
 		display_items = {  "wx78_formalp", "body_wx78_formalp", },
 		output_items = {  "wx78_formalp", "body_wx78_formalp", },
 		release_group = 130,
+	},
+	pack_wx78_gothicjewel =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_wx78_gothicjewel.xml",
+		display_tex = "wx78_gothicjewel.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wx78_moduleremover_gothic", "wx78_scanner_gothic", "wx78_dronedeliverysmall_gothic", "wx78_dronescout_gothic", "wx78_dronezapremote_gothic", "wx78_moduleremover_jewelbox", "wx78_scanner_jewelbox", "wx78_dronedeliverysmall_jewelbox", "wx78_dronescout_jewelbox", "wx78_dronezapremote_jewelbox", },
+		output_items = {  "wx78_moduleremover_gothic", "wx78_scanner_gothic", "wx78_dronedeliverysmall_gothic", "wx78_dronescout_gothic", "wx78_dronezapremote_gothic", "wx78_moduleremover_jewelbox", "wx78_scanner_jewelbox", "wx78_dronedeliverysmall_jewelbox", "wx78_dronescout_jewelbox", "wx78_dronezapremote_jewelbox", },
+		release_group = 180,
+	},
+	pack_wx78_gothicjewel_all =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_wx78_gothicjewel_all.xml",
+		display_tex = "wx78_gothicjewel_all.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wx78_ancient", "wx78_moduleremover_gothic", "wx78_scanner_gothic", "wx78_dronedeliverysmall_gothic", "wx78_dronescout_gothic", "wx78_dronezapremote_gothic", "wx78_moduleremover_jewelbox", "wx78_scanner_jewelbox", "wx78_dronedeliverysmall_jewelbox", "wx78_dronescout_jewelbox", "wx78_dronezapremote_jewelbox", },
+		output_items = {  "wx78_ancient", "body_wx78_ancient", "feet_wx78_ancient", "hand_wx78_ancient", "wx78_moduleremover_gothic", "wx78_scanner_gothic", "wx78_dronedeliverysmall_gothic", "wx78_dronescout_gothic", "wx78_dronezapremote_gothic", "wx78_moduleremover_jewelbox", "wx78_scanner_jewelbox", "wx78_dronedeliverysmall_jewelbox", "wx78_dronescout_jewelbox", "wx78_dronezapremote_jewelbox", },
+		release_group = 180,
 	},
 	pack_wx78_masquerade =
 	{
@@ -8108,6 +8177,13 @@ MISC_ITEMS =
 		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
 		rarity = "Loyal",
 		release_group = 94,
+	},
+	playerportrait_bg_beeboxinsect =
+	{
+		type = "playerportrait",
+		skin_tags = { "INSECT", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 180,
 	},
 	playerportrait_bg_beefalo =
 	{
@@ -9189,6 +9265,13 @@ MISC_ITEMS =
 		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 94,
+	},
+	profileflair_beeboxinsect =
+	{
+		type = "profileflair",
+		skin_tags = { "INSECT", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 180,
 	},
 	profileflair_beefalo =
 	{

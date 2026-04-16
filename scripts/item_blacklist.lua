@@ -332,11 +332,25 @@ ITEM_DISPLAY_BLACKLIST =
 	woby_big_ribbon = true,
 	woby_big_ribbon_lunar = true,
 	woby_big_ribbon_shadow = true,
+	wx78_dronedelivery_gothic = true,
+	wx78_dronedelivery_item_gothic = true,
+	wx78_dronedelivery_item_jewelbox = true,
+	wx78_dronedelivery_jewelbox = true,
+	wx78_dronedeliverysmall_item_gothic = true,
+	wx78_dronedeliverysmall_item_jewelbox = true,
+	wx78_dronezap_gothic = true,
+	wx78_dronezap_gothic_overlay = true,
+	wx78_dronezap_jewelbox = true,
+	wx78_dronezap_jewelbox_overlay = true,
 	wx78_scanner_catcoon_item = true,
 	wx78_scanner_fancy_item = true,
+	wx78_scanner_gothic_item = true,
+	wx78_scanner_jewelbox_item = true,
 	wx78_scanner_junky_item = true,
 	wx78_scanner_succeeded_catcoon = true,
 	wx78_scanner_succeeded_fancy = true,
+	wx78_scanner_succeeded_gothic = true,
+	wx78_scanner_succeeded_jewelbox = true,
 	wx78_scanner_succeeded_junky = true,
 	beebox_hermit_yule = true,
 	hermit_chair_rocking_yule = true,
@@ -420,5 +434,10 @@ SKINS_EVENTLOCK =
 UNLOCKABLE_SKINS =
 {
 	w_radio_basic = true,
+}
+
+CRAFTING_RECIPE_UNLOCKED_SKIN =
+{
+	bulbin_rw_basic = true,
 }
 

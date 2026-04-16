@@ -357228,6 +357228,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.beebox_house"
 msgid "This charming little abode is sure to put your bees at ease."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.beebox_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.beebox_insect"
+msgid "Mixing honey and butter, who would have thought?"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.beebox_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.beebox_victorian"
 msgid "The bees are all abuzz over this antique hive."
@@ -360083,6 +360088,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wurt_yule"
 msgid "This sweet little dress is plum perfect for the season."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_ancient
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_ancient"
+msgid "So too shall the bearer become hollow as this forsaken hull."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_cook
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_cook"
 msgid "Every kitchen needs a dishwasher."
@@ -362248,6 +362258,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_workboot_tan_clay"
 msgid "These 'muddy shoes tan' colored boots will protect you from stubbing your toes, but not a whole lot else."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.feet_wx78_ancient
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wx78_ancient"
+msgid "Tread as you will upon hallowed ground."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wx78_gladiator
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wx78_gladiator"
 msgid "These boots were made for crushing, and that's just what they'll do."
@@ -363796,6 +363811,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wurt_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wurt_victorian"
 msgid "Wurt was never one to be treated with kid-gloves."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hand_wx78_ancient
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wx78_ancient"
+msgid "A curse upon all you touch!"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wx78_gladiator
@@ -366068,6 +366088,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.magician_chest_shadow"
 msgid "This devious depository can only be the work of dark magic."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.magician_chest_shadow_resurrected
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.magician_chest_shadow_resurrected"
+msgid "This devious depository can only be the work of dark magic."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.mast_crabking
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mast_crabking"
 msgid "Let your boat boast your victory over a colossal crustacean."
@@ -367463,6 +367488,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_lunarshadow"
 msgid "This Moon vs. Shadow Chest contains Winona, Wigfrid, and Wolfgang's Moonbound skin items, and Wortox, Walter, and Warly's Triumphant skin items."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.pack_magician_chest_shadow_resurrected
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_magician_chest_shadow_resurrected"
+msgid "This Resurrected Chest contains a Nightmarish Magician's Chest."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.pack_magma_all
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_magma_all"
 msgid "This Magmatic Chest contains every survivor's complete set of Magmatic skin items."
@@ -367796,6 +367826,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.pack_reliclostandfound_combo
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_reliclostandfound_combo"
 msgid "This Favorite Things Reliquary Chest contains the Favorite Things Chest, Part II and the Reliquary Chest."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_researchlab2_science_resurrected
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_researchlab2_science_resurrected"
+msgid "This Resurrected Chest contains an All-Chemical Engine."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_retro_items
@@ -368918,6 +368953,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wurt_survivor"
 msgid "This Chest contains Wurt's complete set of Survivor skin items."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_ancient
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_ancient"
+msgid "This Chest contains WX-78's complete set of Archaic skin items."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_deluxe
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_deluxe"
 msgid "This Deluxe Wardrobe contains WX-78's complete set of Guest of Honor, Roseate, Survivor, Triumphant, and Experimental skin items."
@@ -368926,6 +368966,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_formal"
 msgid "This Chest contains WX-78's complete set of Guest of Honor skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel"
+msgid "This Chest contains the following WX-78 skin items: Dark Delivery Drone, Rococo Courier, Macabre Mapper, Rococo Reconnaissance, Gloomy Loomer Controller, Lacquered 'Lectrocuter Controller, Crimson-Forged Extractor, and Accented Extractor."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_all
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_all"
+msgid "This Chest contains the WX-78 Pretty Dark Things Chest, and WX-78's complete set of Archaic skin items."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_masquerade
@@ -369280,6 +369330,11 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_beeboxcrystal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_beeboxcrystal"
+msgid "Equip this item to change your character's background portrait."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_beeboxinsect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_beeboxinsect"
 msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
@@ -370156,6 +370211,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_beebox_crystal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_beebox_crystal"
 msgid "Set your profile icon to a Crystalline Honeydome."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_beeboxinsect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_beeboxinsect"
+msgid "Set your profile icon to a Butterbee."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_beefalo
@@ -371505,6 +371565,11 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.researchlab2_science
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab2_science"
+msgid "Some might say that storing unstable chemicals next to a running engine is a \"bad idea\", but these people simply lack your vision."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab2_science_resurrected
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab2_science_resurrected"
 msgid "Some might say that storing unstable chemicals next to a running engine is a \"bad idea\", but these people simply lack your vision."
 msgstr ""
 
@@ -375623,6 +375688,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wurt_yule"
 msgid "The scale-less' festivities are a bit saccharine for Wurt's taste, but she's not one to turn down sweets."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_ancient
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_ancient"
+msgid "What's the difference between a cursed idol and a soulless automaton? The curse fades, but the gears never stop."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_combatant
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_combatant"
 msgid "Few things get them more excited than the prospect of destroying fleshlings."
@@ -375631,6 +375701,86 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_cook
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_cook"
 msgid "WX-78 must have some utensil addons somewhere around here."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_gothic"
+msgid "Appropriately coffin-shaped for the lifeless possessions of a soulless being."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_item_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_item_gothic"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_item_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_item_jewelbox"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedelivery_jewelbox"
+msgid "A mechanical overlord's treasures demand delivery in due style."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_gothic"
+msgid "Appropriately coffin-shaped for the lifeless possessions of a soulless being."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_item_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_item_gothic"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_item_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_item_jewelbox"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronedeliverysmall_jewelbox"
+msgid "A mechanical overlord's treasures demand delivery in due style."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronescout_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronescout_gothic"
+msgid "It feels at home in the fog and mist of lands unknown."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronescout_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronescout_jewelbox"
+msgid "Too fancy for exploring, yet explore it must!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_gothic"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_gothic_overlay
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_gothic_overlay"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_jewelbox"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_jewelbox_overlay
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronezap_jewelbox_overlay"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronezapremote_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronezapremote_gothic"
+msgid "Let the fleshlings feel watched, then shock them when they least expect it!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_dronezapremote_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_dronezapremote_jewelbox"
+msgid "An opulent interface befitting a mechanical overlord."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
@@ -375666,6 +375816,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_masquerade
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_masquerade"
 msgid "A gleaming testament to WX-78's unchallenged supremacy, and a reminder of their inevitable reign."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_moduleremover_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_moduleremover_gothic"
+msgid "A dread instrument for self-surgery."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_moduleremover_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_moduleremover_jewelbox"
+msgid "A fine implement for delicate work."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_nature
@@ -375733,6 +375893,26 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_fancy_item"
 msgid "A luxury tool for humble tasks."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_gothic"
+msgid "Scan for secrets best left buried."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_gothic_item
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_gothic_item"
+msgid "Scan for secrets best left buried."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_jewelbox"
+msgid "Fancy scanning you here."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_jewelbox_item
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_jewelbox_item"
+msgid "Fancy scanning you here."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_junky
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_junky"
 msgid "Nothing beats nuts and bolts."
@@ -375751,6 +375931,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_fancy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_fancy"
 msgid "A luxury tool for humble tasks."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_gothic"
+msgid "Scan for secrets best left buried."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_jewelbox"
+msgid "Fancy scanning you here."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_scanner_succeeded_junky
@@ -376551,6 +376741,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.beebox_house
 msgctxt "STRINGS.SKIN_NAMES.beebox_house"
 msgid "Home Sweet Home"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.beebox_insect
+msgctxt "STRINGS.SKIN_NAMES.beebox_insect"
+msgid "Butterbee"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.beebox_victorian
@@ -379408,6 +379603,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_wurt_yule"
 msgid "Sugarplum Dress"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wx78_ancient
+msgctxt "STRINGS.SKIN_NAMES.body_wx78_ancient"
+msgid "Hull of Iniquity"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wx78_cook
 msgctxt "STRINGS.SKIN_NAMES.body_wx78_cook"
 msgid "WX-78's Gorge Garb"
@@ -381573,6 +381773,11 @@ msgctxt "STRINGS.SKIN_NAMES.feet_workboot_tan_clay"
 msgid "Steel-Toed Boots"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.feet_wx78_ancient
+msgctxt "STRINGS.SKIN_NAMES.feet_wx78_ancient"
+msgid "Blasphemer Boots"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.feet_wx78_gladiator
 msgctxt "STRINGS.SKIN_NAMES.feet_wx78_gladiator"
 msgid "Cast Iron Boots"
@@ -383121,6 +383326,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.hand_wurt_victorian
 msgctxt "STRINGS.SKIN_NAMES.hand_wurt_victorian"
 msgid "Fuzzy Kid Claws"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hand_wx78_ancient
+msgctxt "STRINGS.SKIN_NAMES.hand_wx78_ancient"
+msgid "Idol Hands"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_wx78_gladiator
@@ -385393,6 +385603,11 @@ msgctxt "STRINGS.SKIN_NAMES.magician_chest_shadow"
 msgid "Nightmarish Magician's Chest"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.magician_chest_shadow_resurrected
+msgctxt "STRINGS.SKIN_NAMES.magician_chest_shadow_resurrected"
+msgid "Nightmarish Magician's Chest"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.mast_crabking
 msgctxt "STRINGS.SKIN_NAMES.mast_crabking"
 msgid "Crab King Sail"
@@ -386788,6 +387003,11 @@ msgctxt "STRINGS.SKIN_NAMES.pack_lunarshadow"
 msgid "Moon vs. Shadow Chest"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.pack_magician_chest_shadow_resurrected
+msgctxt "STRINGS.SKIN_NAMES.pack_magician_chest_shadow_resurrected"
+msgid "Nightmarish Magician's Chest Resurrected Chest"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.pack_magma_all
 msgctxt "STRINGS.SKIN_NAMES.pack_magma_all"
 msgid "All Survivors Magmatic Chest"
@@ -387121,6 +387341,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.pack_reliclostandfound_combo
 msgctxt "STRINGS.SKIN_NAMES.pack_reliclostandfound_combo"
 msgid "Favorite Things Reliquary Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_researchlab2_science_resurrected
+msgctxt "STRINGS.SKIN_NAMES.pack_researchlab2_science_resurrected"
+msgid "All-Chemical Engine Resurrected Chest"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.pack_retro_items
@@ -388243,6 +388468,11 @@ msgctxt "STRINGS.SKIN_NAMES.pack_wurt_survivor"
 msgid "Wurt Survivor Chest"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.pack_wx78_ancient
+msgctxt "STRINGS.SKIN_NAMES.pack_wx78_ancient"
+msgid "WX-78 Archaic Chest"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.pack_wx78_deluxe
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_deluxe"
 msgid "WX-78 Deluxe Wardrobe"
@@ -388251,6 +388481,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.pack_wx78_formal
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_formal"
 msgid "WX-78 Guest of Honor Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_wx78_gothicjewel
+msgctxt "STRINGS.SKIN_NAMES.pack_wx78_gothicjewel"
+msgid "WX-78 Pretty Dark Things Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_all
+msgctxt "STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_all"
+msgid "WX-78 Pretty Dark Idolatry Chest"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.pack_wx78_masquerade
@@ -388606,6 +388846,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.playerportrait_bg_beeboxcrystal
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_beeboxcrystal"
 msgid "Crystalline Honeydome Portrait"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.playerportrait_bg_beeboxinsect
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_beeboxinsect"
+msgid "Butterbee Portrait"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_beefalo
@@ -389481,6 +389726,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.profileflair_beebox_crystal
 msgctxt "STRINGS.SKIN_NAMES.profileflair_beebox_crystal"
 msgid "Crystalline Honeydome"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_beeboxinsect
+msgctxt "STRINGS.SKIN_NAMES.profileflair_beeboxinsect"
+msgid "Butterbee"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_beefalo
@@ -390830,6 +391080,11 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.researchlab2_science
 msgctxt "STRINGS.SKIN_NAMES.researchlab2_science"
+msgid "All-Chemical Engine"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab2_science_resurrected
+msgctxt "STRINGS.SKIN_NAMES.researchlab2_science_resurrected"
 msgid "All-Chemical Engine"
 msgstr ""
 
@@ -394948,6 +395203,11 @@ msgctxt "STRINGS.SKIN_NAMES.wurt_yule"
 msgid "The Merrymaker"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wx78_ancient
+msgctxt "STRINGS.SKIN_NAMES.wx78_ancient"
+msgid "The Archaic"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wx78_combatant
 msgctxt "STRINGS.SKIN_NAMES.wx78_combatant"
 msgid "The Challenger"
@@ -394956,6 +395216,86 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.wx78_cook
 msgctxt "STRINGS.SKIN_NAMES.wx78_cook"
 msgid "The Culinarian"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedelivery_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedelivery_gothic"
+msgid "Dark Delivery Drone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedelivery_item_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedelivery_item_gothic"
+msgid "Dark Delivery Drone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedelivery_item_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedelivery_item_jewelbox"
+msgid "Rococo Courier"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedelivery_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedelivery_jewelbox"
+msgid "Rococo Courier"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_gothic"
+msgid "Dark Delivery Drone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_item_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_item_gothic"
+msgid "Dark Delivery Drone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_item_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_item_jewelbox"
+msgid "Rococo Courier"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronedeliverysmall_jewelbox"
+msgid "Rococo Courier"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronescout_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronescout_gothic"
+msgid "Macabre Mapper"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronescout_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronescout_jewelbox"
+msgid "Rococo Reconnaissance"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronezap_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronezap_gothic"
+msgid "Gloomy Loomer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronezap_gothic_overlay
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronezap_gothic_overlay"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronezap_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronezap_jewelbox"
+msgid "Lacquered 'Lectrocuter"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronezap_jewelbox_overlay
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronezap_jewelbox_overlay"
+msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronezapremote_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronezapremote_gothic"
+msgid "Gloomy Loomer Controller"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_dronezapremote_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_dronezapremote_jewelbox"
+msgid "Lacquered 'Lectrocuter Controller"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wx78_formal
@@ -394991,6 +395331,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.wx78_masquerade
 msgctxt "STRINGS.SKIN_NAMES.wx78_masquerade"
 msgid "The Masquerader"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_moduleremover_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_moduleremover_gothic"
+msgid "Crimson-Forged Extractor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_moduleremover_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_moduleremover_jewelbox"
+msgid "Accented Extractor"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wx78_nature
@@ -395058,6 +395408,26 @@ msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_fancy_item"
 msgid "Lavish Scanalyzer"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wx78_scanner_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_gothic"
+msgid "Somber Scanalyzer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_scanner_gothic_item
+msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_gothic_item"
+msgid "Somber Scanalyzer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_scanner_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_jewelbox"
+msgid "Sumptuous Scanalyzer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_scanner_jewelbox_item
+msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_jewelbox_item"
+msgid "Sumptuous Scanalyzer"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wx78_scanner_junky
 msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_junky"
 msgid "Utility Scanalyzer"
@@ -395076,6 +395446,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.wx78_scanner_succeeded_fancy
 msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_succeeded_fancy"
 msgid "Lavish Scanalyzer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_scanner_succeeded_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_succeeded_gothic"
+msgid "Somber Scanalyzer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_scanner_succeeded_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_scanner_succeeded_jewelbox"
+msgid "Sumptuous Scanalyzer"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wx78_scanner_succeeded_junky
@@ -396878,6 +397258,11 @@ msgctxt "STRINGS.SKIN_QUOTES.wurt_yule"
 msgid "\"Am sugarplum fairy, florp. Gimme plums!\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wx78_ancient
+msgctxt "STRINGS.SKIN_QUOTES.wx78_ancient"
+msgid "\"BOW BEFORE ME, FLESHLINGS!\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wx78_combatant
 msgctxt "STRINGS.SKIN_QUOTES.wx78_combatant"
 msgid "\"THIS UNIT IS BATTLE READY\""
@@ -397291,6 +397676,11 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.INVISIBLE
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.INVISIBLE"
 msgid "Pantomime Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.JEWELBOX
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.JEWELBOX"
+msgid "Jeweled Collection"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.LAVA
@@ -398761,6 +399151,21 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WORMHOLE
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WORMHOLE"
 msgid "Worm Hole"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78DRONEDELIVERY
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78DRONEDELIVERY"
+msgid "Portable Storage Unit"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78DRONESCOUT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78DRONESCOUT"
+msgid "Roto-Mapper"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78MODULEREMOVER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78MODULEREMOVER"
+msgid "Circuit Extractor"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SCANNER
@@ -423531,6 +423936,16 @@ msgstr ""
 #. STRINGS.UI.SKINSSCREEN.ALL
 msgctxt "STRINGS.UI.SKINSSCREEN.ALL"
 msgid "All"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.ALLOWS_CRAFTING
+msgctxt "STRINGS.UI.SKINSSCREEN.ALLOWS_CRAFTING"
+msgid "Enables Crafting of {item}"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.ALLOWS_CRAFTING_POPUP
+msgctxt "STRINGS.UI.SKINSSCREEN.ALLOWS_CRAFTING_POPUP"
+msgid "Allows you to craft {item} in the game."
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.BACK

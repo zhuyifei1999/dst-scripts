@@ -27608,7 +27608,7 @@ local states =
 					inst.wx78_classified.poweroffoverlay:set(true)
 				end
 			end),
-			FrameEvent(48, function(inst)
+			FrameEvent(54, function(inst)
 				if inst.wx78_classified then
 					inst:ScreenFade(false, 0)
 				end

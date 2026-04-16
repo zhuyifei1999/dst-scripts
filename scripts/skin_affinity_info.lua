@@ -1195,6 +1195,7 @@ return
 	},
 	wx78 =
 	{
+		"body_wx78_ancient",
 		"body_wx78_cook",
 		"body_wx78_formal",
 		"body_wx78_formalp",
@@ -1218,6 +1219,7 @@ return
 		"body_wx78_wip",
 		"body_wx78_wrestler",
 		"body_wx78_yule",
+		"feet_wx78_ancient",
 		"feet_wx78_gladiator",
 		"feet_wx78_ice",
 		"feet_wx78_lunar",
@@ -1228,6 +1230,7 @@ return
 		"feet_wx78_wip",
 		"feet_wx78_wrestler",
 		"feet_wx78_yule",
+		"hand_wx78_ancient",
 		"hand_wx78_gladiator",
 		"hand_wx78_ice",
 		"hand_wx78_lunar",
@@ -1246,6 +1249,7 @@ return
 		"legs_wx78_retro",
 		"legs_wx78_victorian",
 		"legs_wx78_yule",
+		"wx78_ancient",
 		"wx78_combatant",
 		"wx78_cook",
 		"wx78_formal",

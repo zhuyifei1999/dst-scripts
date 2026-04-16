@@ -13,6 +13,7 @@ local assets = JoinArrays({
 local prefabs = JoinArrays({
     "explode_reskin",
     "collapse_small",
+	"globalmapiconunderfog",
 }, WX78Common.DEPENDENCIES.prefabs)
 
 local brain = require("brains/wx78_possessedbodybrain")
@@ -472,7 +473,11 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
     inst.entity:AddDynamicShadow()
+	inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+
+	inst.MiniMapEntity:SetIcon("wx78_possessedbody.png")
+	inst.MiniMapEntity:SetCanUseCache(false)
 
     inst.Transform:SetFourFaced()
     inst.DynamicShadow:SetSize(1.3, .6)
@@ -551,6 +556,9 @@ local function fn()
 
     local inspectable = inst:AddComponent("inspectable")
     inspectable.getspecialdescription = GetSpecialDescription
+
+	inst:AddComponent("maprevealable")
+	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
 
     inst:AddComponent("embarker")
     inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED
