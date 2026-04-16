@@ -229,7 +229,7 @@ end
 local function EatFoodAction(inst)
     if not inst.sg:HasStateTag("busy") then
         -- We're well topped off, just return for optimization sake.
-        if inst.components.health:GetPercent() > 0.9 and inst.components.hunger:GetPercent() > 0.9 and inst.components.sanity:GetPercent() > 0.9 then
+        if inst.components.health:GetPercent() <= 0.9 or inst.components.hunger:GetPercent() <= 0.9 or inst.components.sanity:GetPercent() <= 0.9 then
             local health = inst.components.health.currenthealth
             local hunger = inst.components.hunger.current
             local sanity = inst.components.sanity.current
