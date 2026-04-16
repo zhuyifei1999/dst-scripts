@@ -86,6 +86,8 @@ local function GetLeaderAction(inst)
 	if act then
 		target = act.target
 		act = act.action
+    elseif inst.sg:HasStateTag("spinning") and inst._lastspintime and GetTime() - inst._lastspintime < 1 then
+        act, target = inst._lastspinaction, inst._lastspintarget
 	elseif inst.components.playercontroller then
 		act, target = inst.components.playercontroller:GetRemoteInteraction()
 	end
@@ -201,7 +203,11 @@ local function EquipBestWeapon(inst, target)
             bestweapon = item
         end
     end)
-    if bestweapon and bestweapon ~= GetTool(inst) then
+    local heldweapon = GetTool(inst)
+    if bestweapon and bestweapon ~= heldweapon
+        and (heldweapon == nil or heldweapon.components.weapon == nil or (
+            bestweapon.components.weapon:GetDamage(inst, target) ~= heldweapon.components.weapon:GetDamage(inst, target)
+        )) then
         inst.components.inventory:Equip(bestweapon)
     end
 end
@@ -213,59 +219,70 @@ local function SetTargetOnLeaderTarget(inst)
         if leaderact == ACTIONS.ATTACK then
             inst.components.combat:SetTarget(leadertarget)
             EquipBestWeapon(inst, leadertarget)
+        elseif leader.components.combat.target ~= nil then
+            inst.components.combat:SetTarget(leader.components.combat.target)
+            EquipBestWeapon(inst, leader.components.combat.target)
         end
     end
 end
 
 local function EatFoodAction(inst)
-    if inst.sg:HasStateTag("busy") or
-        ( -- We're well topped off, just return for optimization sake.
-            inst.components.health:GetPercent() > 0.9 and
-            inst.components.hunger:GetPercent() > 0.9 and
-            inst.components.sanity:GetPercent() > 0.9
-        )
-    then
-        return
-    end
+    if not inst.sg:HasStateTag("busy") then
+        -- We're well topped off, just return for optimization sake.
+        if inst.components.health:GetPercent() > 0.9 and inst.components.hunger:GetPercent() > 0.9 and inst.components.sanity:GetPercent() > 0.9 then
+            local health = inst.components.health.currenthealth
+            local hunger = inst.components.hunger.current
+            local sanity = inst.components.sanity.current
 
-    local health = inst.components.health.currenthealth
-    local hunger = inst.components.hunger.current
-    local sanity = inst.components.sanity.current
+            local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.5 -- Some leniency for healing.
+            local maxhunger = inst.components.hunger.max
+            local maxsanity = inst.components.sanity:GetMaxWithPenalty()
 
-    local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.5 -- Some leniency for healing.
-    local maxhunger = inst.components.hunger.max
-    local maxsanity = inst.components.sanity:GetMaxWithPenalty()
+            local besthealth
+            local besthunger
+            local bestsanity
 
-    local besthealth
-    local besthunger
-    local bestsanity
+            inst.components.inventory:ForEachItem(function(item)
+                local edible = item.components.edible
+                if edible ~= nil and inst.components.eater:CanEat(item) then
+                    local itemhealth = edible:GetHealth(inst)
+                    local itemhunger = edible:GetHunger(inst)
+                    local itemsanity = edible:GetSanity(inst)
 
-    inst.components.inventory:ForEachItem(function(item)
-        local edible = item.components.edible
-        if edible ~= nil and inst.components.eater:CanEat(item) then
-            local itemhealth = edible:GetHealth(inst)
-            local itemhunger = edible:GetHunger(inst)
-            local itemsanity = edible:GetSanity(inst)
-
-            if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth then
-                if besthealth == nil or (itemhealth > besthealth.components.edible:GetHealth(inst)) then
-                    besthealth = item
+                    if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth then
+                        if besthealth == nil or (itemhealth > besthealth.components.edible:GetHealth(inst)) then
+                            besthealth = item
+                        end
+                    elseif itemhunger > 0 and (hunger + itemhunger) <= maxhunger then
+                        if besthunger == nil or (itemhunger > besthunger.components.edible:GetHunger(inst)) then
+                            besthunger = item
+                        end
+                    elseif itemsanity >= TUNING.SANITY_SMALL and (sanity + itemsanity) <= maxsanity then
+                        if bestsanity == nil or (itemsanity > bestsanity.components.edible:GetSanity(inst)) then
+                            bestsanity = item
+                        end
+                    end
                 end
-            elseif itemhunger > 0 and (hunger + itemhunger) <= maxhunger then
-                if besthunger == nil or (itemhunger > besthunger.components.edible:GetHunger(inst)) then
-                    besthunger = item
-                end
-            elseif itemsanity >= TUNING.SANITY_SMALL and (sanity + itemsanity) <= maxsanity then
-                if bestsanity == nil or (itemsanity > bestsanity.components.edible:GetSanity(inst)) then
-                    bestsanity = item
-                end
+            end)
+
+            local foodtoeat = besthealth or besthunger or bestsanity
+            if foodtoeat ~= nil then
+                return BufferedAction(inst, foodtoeat, ACTIONS.EAT)
             end
         end
-    end)
 
-    local foodtoeat = besthealth or besthunger or bestsanity
-    if foodtoeat ~= nil then
-        return BufferedAction(inst, foodtoeat, ACTIONS.EAT)
+        if inst.components.eater:IsSpoiledProcessor() then
+            local spoiledtoeat = inst.components.inventory:FindItem(function(item)
+                local edible = item.components.edible
+                return edible ~= nil
+                    and inst.components.eater:CanEat(item)
+                    and inst.components.eater:CanProcessSpoiledItem(item)
+            end)
+
+            if spoiledtoeat ~= nil then
+                return BufferedAction(inst, spoiledtoeat, ACTIONS.EAT)
+            end
+        end
     end
 end
 
@@ -303,16 +320,26 @@ local function LeaderInRangeOfTarget(inst)
 end
 local RUNAWAY_PARAM = { getfn = GetRunAwayTarget }
 local MAX_KITE_DIST = 10
+local TOLERANCE_DIST = .5
 
 local function GetRunDist(inst, hunter)
+    local attack_range = inst.components.combat:GetAttackRange()
     local leader = GetLeader(inst)
     if leader ~= nil then
-        return math.min(MAX_KITE_DIST, math.sqrt(leader:GetDistanceSqToInst(hunter)))
+        local dist = math.max(attack_range, math.min(math.sqrt(leader:GetDistanceSqToInst(hunter)), MAX_KITE_DIST))
+        if inst._lastdist == nil or (math.abs(inst._lastdist - dist) >= TOLERANCE_DIST) then
+            inst._lastdist = dist
+            inst._lastruntime = GetTime()
+            return dist
+        else
+            return inst._lastdist
+        end
     end
 
     return 1 -- Shrug?
 end
 
+local RUN_AFTER_KITE_DELAY = 1
 --------------------------------------------------------------------------------------------------------------------------------
 
 local UPDATE_RATE = 0.1
@@ -337,8 +364,6 @@ function Wx78_PossessedBodyBrain:OnStart()
             WhileNode(function() return not IsLeaderAttacking(self.inst) and IsLeaderMoving(self.inst) and LeaderInRangeOfTarget(self.inst) end, "is leader not attacking",
                 RunAwayToDist(self.inst, RUNAWAY_PARAM, GetRunDist, nil, nil, nil, true)),
 
-            DoAction(self.inst, EatFoodAction, nil, true),
-
             -- Actions
             WhileNode(function() return HasToolForAction(self.inst, ACTIONS.CHOP) end, "chop with tool",
                 BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_CHOP_ACTION)),
@@ -355,7 +380,14 @@ function Wx78_PossessedBodyBrain:OnStart()
             WhileNode(function() return HasToolForAction(self.inst, ACTIONS.TILL) end, "till with tool",
                 BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_TILL_ACTION)),
 
-            Follow(self.inst, GetLeader, FOLLOW_MIN_DIST, FOLLOW_TARGET_DIST, FOLLOW_MAX_DIST, true),
+            SequenceNode{
+                ConditionWaitNode(function()
+                    return self.inst._lastruntime == nil or (GetTime() - self.inst._lastruntime > RUN_AFTER_KITE_DELAY)
+                end, "Wait after kiting"),
+                Follow(self.inst, GetLeader, FOLLOW_MIN_DIST, FOLLOW_TARGET_DIST, FOLLOW_MAX_DIST, true),
+            },
+
+            DoAction(self.inst, EatFoodAction, nil, true),
             FaceEntity(self.inst, GetFaceLeaderFn, KeepFaceLeaderFn),
             StandStill(self.inst),
         }, UPDATE_RATE))

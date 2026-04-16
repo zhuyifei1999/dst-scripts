@@ -608,16 +608,17 @@ local function GetPossessableChassisPos(inst)
     if not inst.brain then -- Just in case??
         return
     end
+
 	return CheckPossessableChassis(inst.brain) and inst.brain.possessable_chassis:GetPosition() or nil
 end
 
-local POSSESS_DIST = .2
+local POSSESS_DIST = .5
+local POSSESS_DIST_INNER = POSSESS_DIST - .1
 local function PossessChassis(self, update_rate)
     return IfNode(function() return SelectPossessableChassis(self) end, "possess chassis",
 			PriorityNode({
-                FailIfSuccessDecorator(Leash(self.inst, GetPossessableChassisPos, POSSESS_DIST, POSSESS_DIST, true)),
-				-- FailIfSuccessDecorator(DoAction(self.inst, MoveToPossessableAction, "Move to chassis", true)),
-				IfNode(function() return CheckPossessableChassis(self) end, "posses",
+                FailIfSuccessDecorator(Leash(self.inst, GetPossessableChassisPos, POSSESS_DIST, POSSESS_DIST_INNER, true)),
+				IfNode(function() return CheckPossessableChassis(self) end, "possess",
 					ActionNode(function() self.inst:PushEventImmediate("possess_chassis", { target = self.possessable_chassis }) end)),
 				FaceEntity(self.inst,
 					function() return self.possessable_chassis end,

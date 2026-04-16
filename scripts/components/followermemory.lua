@@ -66,6 +66,10 @@ function FollowerMemory:IsRememberedLeader(target)
 	return self.leaderid ~= nil and target.userid == self.leaderid and target.prefab == self.leaderchar
 end
 
+function FollowerMemory:GetTrackingPlayer()
+	return self.task and self.task.player
+end
+
 --V2C: Purposely not adding a GetRememberedLeader(), because that can be misleading
 --     to people who don't understand that it can return nil when the leader is not
 --     available on the shard.
@@ -203,6 +207,12 @@ function FollowerMemory:OnLoad(data)--, ents)
 	self._loading_lost_leader = data.lost
 	self:OnChangedLeader(self.inst.components.follower and self.inst.components.follower:GetLeader())
 	self._loading_lost_leader = nil
+end
+
+function FollowerMemory:LoadPostPass()--ents, data)
+	if self.inst.components.follower then
+		self.inst.components.follower:ClearCachedPlayerLeader()
+	end
 end
 
 function FollowerMemory:GetDebugString()

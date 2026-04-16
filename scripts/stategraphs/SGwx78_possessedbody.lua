@@ -33,6 +33,8 @@ local function GetLeaderAction(inst)
 	if act then
 		target = act.target
 		act = act.action
+    elseif inst.sg:HasStateTag("spinning") and inst._lastspintime and GetTime() - inst._lastspintime < 1 then
+        act, target = inst._lastspinaction, inst._lastspintarget
 	elseif inst.components.playercontroller then
 		act, target = inst.components.playercontroller:GetRemoteInteraction()
 	end
@@ -253,7 +255,7 @@ local actionhandlers =
 			end
 			--failed if reached here!
         end),
-ActionHandler(ACTIONS.EAT,
+    ActionHandler(ACTIONS.EAT,
         function(inst, action)
             if inst.sg:HasStateTag("busy") then
                 return
@@ -294,6 +296,7 @@ ActionHandler(ACTIONS.EAT,
     end),
 }
 
+local BLOWDART_TAGS = {"blowdart", "blowpipe"}
 local events =
 {
     EventHandler("locomote", function(inst, data)
@@ -376,10 +379,15 @@ local events =
 				data ~= nil and data.target
 			then
 				if not inst.sg:HasStateTag("prespin") then
-                    inst.sg:GoToState(inst.sg:HasStateTag("spinning") and "wx_spin" or "wx_spin_start")
+                    inst.sg:GoToState(inst.sg:HasStateTag("spinning") and "wx_spin" or "wx_spin_start", {
+                        target = data.target,
+                    })
                 end
             else
-                inst.sg:GoToState("attack", data ~= nil and data.target or nil)
+                inst.sg:GoToState(
+                    (weapon ~= nil
+                        and (weapon:HasOneOfTags(BLOWDART_TAGS) and "blowdart"))
+                    or "attack", data ~= nil and data.target or nil)
             end
 		end
 	end),
@@ -391,6 +399,10 @@ local events =
 
     EventHandler("possessed", function(inst, data)
         inst.sg:GoToState("spawn", data)
+    end),
+
+    EventHandler("become_dormant", function(inst, data)
+        inst.sg:GoToState("despawn")
     end),
 
     EventHandler("toolbroke",
@@ -870,6 +882,108 @@ local states =
             end),
         },
 
+
+        ontimeout = function(inst)
+            inst.sg:RemoveStateTag("attack")
+            inst.sg:AddStateTag("idle")
+        end,
+
+        events =
+        {
+            EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.components.combat:SetTarget(nil)
+            if inst.sg:HasStateTag("abouttoattack") then
+                inst.components.combat:CancelAttack()
+            end
+        end,
+    },
+
+    State{
+        name = "blowdart",
+        tags = { "attack", "notalking", "abouttoattack" },
+
+        onenter = function(inst, target)
+            if inst.components.combat:InCooldown() then
+                inst.sg:RemoveStateTag("abouttoattack")
+                inst:ClearBufferedAction()
+                inst.sg:GoToState("idle", true)
+                return
+            end
+
+            local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            inst.components.combat:SetTarget(target)
+            inst.components.combat:StartAttack()
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dart_pre")
+            if inst.sg.laststate == inst.sg.currentstate then
+                inst.sg.statemem.chained = true
+				inst.AnimState:SetFrame(5)
+            end
+            inst.AnimState:PushAnimation("dart", false)
+
+            inst.sg:SetTimeout(math.max((inst.sg.statemem.chained and 14 or 18) * FRAMES, inst.components.combat.min_attack_period))
+
+            if target ~= nil and target:IsValid() then
+                inst:FacePoint(target.Transform:GetWorldPosition())
+                inst.sg.statemem.attacktarget = target
+                inst.sg.statemem.retarget = target
+            end
+
+            if (equip ~= nil and equip.projectiledelay or 0) > 0 then
+                --V2C: Projectiles don't show in the initial delayed frames so that
+                --     when they do appear, they're already in front of the player.
+                --     Start the attack early to keep animation in sync.
+                inst.sg.statemem.projectiledelay = (inst.sg.statemem.chained and 9 or 14) * FRAMES - equip.projectiledelay
+                if inst.sg.statemem.projectiledelay <= 0 then
+                    inst.sg.statemem.projectiledelay = nil
+                end
+            end
+        end,
+
+        onupdate = function(inst, dt)
+            if (inst.sg.statemem.projectiledelay or 0) > 0 then
+                inst.sg.statemem.projectiledelay = inst.sg.statemem.projectiledelay - dt
+                if inst.sg.statemem.projectiledelay <= 0 then
+                    inst.components.combat:DoAttack(inst.sg.statemem.attacktarget)
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end
+        end,
+
+        timeline =
+        {
+            FrameEvent(8, function(inst)
+                if inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
+            end),
+            FrameEvent(9, function(inst)
+                if inst.sg.statemem.chained and inst.sg.statemem.projectiledelay == nil then
+                    inst.components.combat:DoAttack(inst.sg.statemem.attacktarget)
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+            FrameEvent(13, function(inst)
+                if not inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
+            end),
+            FrameEvent(14, function(inst)
+                if not inst.sg.statemem.chained and inst.sg.statemem.projectiledelay == nil then
+                    inst.components.combat:DoAttack(inst.sg.statemem.attacktarget)
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+        },
 
         ontimeout = function(inst)
             inst.sg:RemoveStateTag("attack")

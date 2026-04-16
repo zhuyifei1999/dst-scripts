@@ -1269,6 +1269,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "They must be too busy to come now, Woby girl.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "It doesn't wanna come with us, Woby.",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

@@ -1227,6 +1227,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "My warriors must still be feasting in Valhalla! I shall hail them in due time.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Fret not, faithful warrior. I shall return for thee.",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

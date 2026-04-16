@@ -697,6 +697,7 @@ local function OnTrapperChanged(inst, enabled)
         animstateowner.AnimState:Show("trapper")
         if animstateowner.AnimState:IsCurrentAnimation("wx_chassis_idle") then
             animstateowner.AnimState:PlayAnimation("wx_trapper_pre", false)
+            animstateowner.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet")
             animstateowner.AnimState:PushAnimation("wx_chassis_idle", true)
         end
     else
@@ -722,6 +723,24 @@ end
 local function HasTrapper(inst)
     local wx = inst.wx78_backupbody_inventory or inst
     return wx._has_trapper
+end
+
+-- For telling our possessed chassis what to do.
+local function OnWxSpinActions(inst, actionsdata)
+    local actiondata = actionsdata[1]
+    -- Prioritize an attack first.
+    for i, data in ipairs(actionsdata) do
+        if data.action == ACTIONS.ATTACK then
+            actiondata = data
+            break
+        end
+    end
+
+    if actiondata ~= nil then
+        inst._lastspinaction = actiondata.action
+        inst._lastspintarget = actiondata.target
+        inst._lastspintime = GetTime()
+    end
 end
 
 --------------------------------------------------------------------------
@@ -779,6 +798,8 @@ local function Initialize_Master(inst)
         inst:ListenForEvent("mimiceyes_update", OnMimicEyesUpdated)
         inst:ListenForEvent("heartveins_changed", OnHeartVeinsChanged)
         inst:ListenForEvent("trapper_changed", OnTrapperChanged)
+    else
+        inst:ListenForEvent("ms_wx_spinactions", OnWxSpinActions)
     end
 end
 WX78Common = {

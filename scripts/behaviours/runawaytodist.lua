@@ -72,6 +72,8 @@ function RunAwayToDist:GetRunPosition(pt, hp, safe_dist)
     return result_offset
 end
 
+local TOLERANCE_DIST = .5
+local TOLERANCE_DIST_SQ = TOLERANCE_DIST*TOLERANCE_DIST
 function RunAwayToDist:Visit()
     if self.status == READY then
 		if self.gethunterfn then
@@ -94,6 +96,12 @@ function RunAwayToDist:Visit()
             local hp = self.hunter:GetPosition()
             local safe_dist = FunctionOrValue(self.safe_dist, self.inst, self.hunter)
             local pos = self:GetRunPosition(pt, hp, safe_dist)
+
+            if distsq(pos, pt) <= TOLERANCE_DIST_SQ then
+                self.status = FAILED
+                self.inst.components.locomotor:Stop()
+                return
+            end
 
             if pos ~= nil then
                 pos = hp + pos

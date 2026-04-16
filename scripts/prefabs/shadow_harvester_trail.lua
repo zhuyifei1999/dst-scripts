@@ -1,5 +1,5 @@
 local assets = {
-    Asset("ANIM", "anim/wx78_nightmare_fuel.zip"), -- FIXME(JBK): WX: Animation name.
+    Asset("ANIM", "anim/wx78_nightmare_fuel.zip"),
     Asset("ANIM", "anim/shadow_breath.zip"),
 }
 

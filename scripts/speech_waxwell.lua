@@ -1227,6 +1227,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "What could possibly be so important that they would not come when I call?",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Too many of this piece on the board already, I suppose.",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

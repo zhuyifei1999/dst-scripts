@@ -67,9 +67,24 @@ local function IsWildChess(ent, skipchesstagtest)
 	return not (leader and leader.isplayer) and (skipchesstagtest or ent:HasTag("chess"))
 end
 
+--"chess" specific test, since they may not actually be following their
+--leader even if they're available, due to clockworktracker max limits.
+local function HasSameLeaderOrMem(a, b)
+	a = (a.components.follower and a.components.follower:GetLeader()) or
+		(a.components.followermemory and a:HasTag("chess") and a.components.followermemory:GetTrackingPlayer()) or
+		a
+
+	b = (b.components.follower and b.components.follower:GetLeader()) or
+		(b.components.followermemory and b:HasTag("chess") and b.components.followermemory:GetTrackingPlayer()) or
+		b
+
+	return a == b
+end
+
 local function IsAlly(inst, target)
 	return IsWildChess(inst, true) and IsWildChess(target)
 		or inst.components.combat:IsAlly(target)
+		or HasSameLeaderOrMem(inst, target)
 end
 
 local RETARGET_MUST_TAGS = { "_combat" }
@@ -154,6 +169,7 @@ local function OnAttacked(inst, data)
 			inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST,
 				function(dude)--, inst)
 					return dude ~= data.attacker and IsWildChess(dude)
+						and not HasSameLeaderOrMem(data.attacker, dude)
 				end,
 				MAX_TARGET_SHARES)
 		end
@@ -171,8 +187,25 @@ local function TryBefriendChess(inst, doer)
 		doer.components.leader and
 		doer.components.minigame_participator == nil
 	then
+		if inst.components.followermemory:IsRememberedLeader(doer) and
+			doer.components.clockworktracker and
+			not doer.components.clockworktracker:CanAddClockwork(inst)
+		then
+			return false
+		end
+
 		doer:PushEvent("makefriend")
 		inst.components.followermemory:RememberAndSetLeader(doer)
+
+		if doer.components.clockworktracker == nil then
+			doer:AddComponent("clockworktracker")
+		end
+		if doer.components.clockworktracker:CanAddClockwork(inst) then
+			doer.components.clockworktracker:AddClockwork(inst)
+		else
+			inst.components.follower:SetLeader(nil)
+			doer:PushEvent("ms_maxclockworks", inst)
+		end
 
 		local target = inst.components.combat.target
 		if target and (IsAlly(inst, target) or (target.isplayer and not TheNet:GetPVPEnabled())) then

@@ -175,6 +175,7 @@ local function TryToSpawnPossessedBody(inst, isplanar, fromownerrejoin, stats)
     possessedbody.components.follower:SetLeader(owner)
     possessedbody:SetIsPlanar(isplanar)
     possessedbody:PushEventImmediate("possessed", { fromownerrejoin = fromownerrejoin })
+
     if stats ~= nil then
         if stats.health ~= nil then
             possessedbody.components.health:SetCurrentHealth(stats.health)

@@ -2930,6 +2930,7 @@ CommonStates.AddPossessChassisState = function(states, anim, possess_frame_timin
         onenter = function(inst, target)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation(FunctionOrValue(anim, inst))
+            inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/melt")
 			inst:ForceFacePoint(target.Transform:GetWorldPosition())
 			inst.sg.statemem.target = target
 

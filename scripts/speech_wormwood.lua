@@ -1231,6 +1231,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Neigh machine busy busy?",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Why friend not follow?",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

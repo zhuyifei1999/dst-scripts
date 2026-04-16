@@ -57,10 +57,7 @@ local SkillTreeWidget = Class(Widget, function(self, prefabname, targetdata, fro
         -- Our backgrounds are now at a fixed resolution size to keep art and visuals in the correct aspect ratio.
         -- The backgrounds we use are about 20% bigger for alpha visuals to antialias.
         if BRANCH == "dev" then
-            --assert(IsBackgroundSizeGood(self.bg_tree), "Skill tree background image for " .. bg_tree_imagename .. " must be of size: " .. BG_WIDTH .. " x " .. BG_HEIGHT)
-            if not IsBackgroundSizeGood(self.bg_tree) then
-                print("FIXME(JBK): WX: Fixup skill tree background sizing! This will be an assert in dev later.", bg_tree_imagename)
-            end
+            assert(IsBackgroundSizeGood(self.bg_tree), "Skill tree background image for " .. bg_tree_imagename .. " must be of size: " .. BG_WIDTH_ART .. " x " .. BG_HEIGHT_ART)
         end
         self.bg_tree:SetPosition(5, 50)
         self.bg_tree:ScaleToSize(BG_WIDTH_INGAME, BG_HEIGHT_INGAME)

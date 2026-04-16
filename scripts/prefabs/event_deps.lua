@@ -254,9 +254,7 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-				Asset("ANIM", "anim/dst_menu_meta6.zip"), -- #TODO FIXME remove later.
-				Asset("PKGREF", "anim/dst_menu_yoth.zip"),
-				Asset("PKGREF", "sound/music_frontend_WX.fsb"), -- #TODO FIXME remove later
+				Asset("ANIM", "anim/dst_menu_yoth.zip"),
 				Asset("PKGREF", "sound/music_frontend_yoth2026.fsb"),
             },
         },

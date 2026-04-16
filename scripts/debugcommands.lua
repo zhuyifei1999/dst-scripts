@@ -4453,7 +4453,8 @@ function d_getmigrationpopulation(migrator_type)
 end
 
 function d_hidehovertext()
-	local hover = ThePlayer and ThePlayer.HUD and ThePlayer.HUD.controls.hover
+	local controls = ThePlayer and ThePlayer.HUD and ThePlayer.HUD.controls
+	local hover = controls and controls.hover
 	if hover then
 		hover.forcehide = true
 		hover:Hide()
@@ -4467,6 +4468,20 @@ function d_hidehovertext()
 				hover.forcehide = true
 				hover:Hide()
 			end
+		end
+	end
+	if controls then
+		if controls.playeractionhint then
+			controls.playeractionhint.text:Hide()
+		end
+		if controls.playeractionhint_itemhighlight then
+			controls.playeractionhint_itemhighlight.text:Hide()
+		end
+		if controls.attackhint then
+			controls.attackhint.text:Hide()
+		end
+		if controls.groundactionhint then
+			controls.groundactionhint.text:Hide()
 		end
 	end
 end

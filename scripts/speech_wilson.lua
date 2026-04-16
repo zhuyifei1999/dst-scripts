@@ -1237,6 +1237,8 @@ return {
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "They must be busy horsing around.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Why won't it follow me?",--when befriending clockworks, only 2 of each kind will follow. max of  follow, WX has more.
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

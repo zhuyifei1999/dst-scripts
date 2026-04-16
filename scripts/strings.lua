@@ -17735,6 +17735,7 @@ STRINGS.SKILLTREE = {
         WX78_ALLEGIANCE_SHADOW_TITLE = "Shadow Servitor",
         WX78_ALLEGIANCE_SHADOW_DESC = "Allows insertion of select shadow components into your circuitry, granting your Chassis various abilities in both inhabited and uninhabited states.",
     },
+    TEMPORARILY_DISABLED = "Temporarily disabled.",
 }
 
 STRINGS.SCRAPBOOK = {

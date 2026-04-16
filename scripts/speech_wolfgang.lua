@@ -1228,6 +1228,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Maybe horsey not ready come to Wolfgang.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Why? Is something Wolfgang said?",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

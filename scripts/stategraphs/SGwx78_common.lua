@@ -372,6 +372,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
                 local harvestedcount = 0
 				local didwork, didattack = false, false
 				local recoiltarget
+				local actiondata = {}
 				local x, y, z = inst.Transform:GetWorldPosition()
 				for _, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.WX78_SPIN_RADIUS + 3, nil, WX_SPIN_CANT_TAGS, WX_SPIN_ONEOF_TAGS)) do
 					if v ~= inst and not inst.sg.statemem.targets[v] and v:IsValid() and v.entity:IsVisible() then
@@ -390,6 +391,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 									inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst)
 								end
 								if BufferedAction(inst, v, ACTIONS.REMOVELUNARBUILDUP, item):Do() then
+									table.insert(actiondata, { action = ACTIONS.REMOVELUNARBUILDUP, target = v })
 									if inst.sg.currentstate.name ~= "wx_spin" then
 										break
 									end
@@ -405,6 +407,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 											inst.components.efficientuser:AddMultiplier(ACTIONS.CHOP, eff, inst)
 										end
 										if BufferedAction(inst, v, ACTIONS.CHOP, item):Do() then
+											table.insert(actiondata, { action = ACTIONS.CHOP, target = v })
 											if inst.sg.currentstate.name ~= "wx_spin" then
 												break
 											end
@@ -422,6 +425,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 											inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst)
 										end
 										if BufferedAction(inst, v, ACTIONS.MINE, item):Do() then
+											table.insert(actiondata, { action = ACTIONS.MINE, target = v })
 											if inst.sg.currentstate.name ~= "wx_spin" then
 												break
 											end
@@ -465,6 +469,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 									inst.components.aoediminishingreturns.mult:SetModifier(inst, dim, "wx_spin")
 								end
 								inst.components.combat:DoAttack(v)
+								table.insert(actiondata, { action = ACTIONS.ATTACK, target = v })
 								if inst.sg.currentstate.name ~= "wx_spin" then
 									break
 								end
@@ -486,6 +491,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 								end
 								local success, loot = v.components.pickable:Pick(TheWorld)
 								if loot then
+									table.insert(actiondata, { action = ACTIONS.PICK, target = v })
                                     harvestedcount = harvestedcount + 1
 									for _, v in ipairs(loot) do
 										Launch(v, inst, 1.5)
@@ -530,6 +536,10 @@ SGWX78Common.AddWX78SpinStates = function(states)
 					inst:PushEvent("wx_performedspinaction", didattack)
 				end
 
+				if #actiondata > 0 then
+					inst:PushEvent("ms_wx_spinactions", actiondata)
+				end
+
 				if recoiltarget and inst.sg.currentstate.name == "wx_spin" then
 					inst.sg.statemem.targets = nil
 					inst:PushEventImmediate("recoil_off", { target = recoiltarget })
@@ -545,6 +555,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 				end
 				if (didwork or didattack) then
 					inst.sg.statemem.quickstart = nil
+					inst.sg.statemem.didhit = true
 				end
 			end
 
@@ -584,6 +595,27 @@ SGWX78Common.AddWX78SpinStates = function(states)
 			if inst.sg.mem.wx_spin_buildup > dizzytime then
 				inst.sg:GoToState("wx_spin_dizzy")
 				return
+			end
+
+			--for non-players
+			if inst.components.playercontroller == nil then
+				local target = inst.sg.statemem.target
+				if not (target and target:IsValid()) then
+					target = inst.components.combat and inst.components.combat.target
+					inst.sg.statemem.target = target
+				end
+				if inst.sg.statemem.canrelease and
+					(	(inst.components.locomotor and inst.components.locomotor:WantsToMoveForward()) or
+						not (inst.sg.statemem.didhit or inst.components.combat:TargetIs(target))
+					)
+				then
+					local frame = inst.AnimState:GetCurrentAnimationFrame()
+					inst.AnimState:PlayAnimation(inst.sg.statemem.anim)
+					inst.AnimState:SetFrame(frame + 1)
+					inst.AnimState:PushAnimation("wx_spin_attack_pst", false)
+					inst.sg:GoToState("idle", true)
+					return
+				end
 			end
 
 			inst.sg.mem.wx_spin_last = GetTime()

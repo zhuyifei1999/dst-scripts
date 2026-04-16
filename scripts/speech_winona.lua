@@ -1233,6 +1233,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "I guess them horses ain't ready to show up just yet.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Well fine then, don't follow me.",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

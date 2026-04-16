@@ -1227,6 +1227,8 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Springy Ironfolk too busy? Florp!",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Florp! What your problem?",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",

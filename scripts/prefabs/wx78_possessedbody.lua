@@ -108,7 +108,12 @@ local function OnChangedLeader(inst, new_leader, prev_leader)
             inst:ListenForEvent("ms_skilltreeinitialized", inst.ms_skilltree_initializecb, new_leader)
         end
     else
-        inst.sg:GoToState("despawn")
+        -- Our previous leader died, so we should die too.
+        if prev_leader.components.health ~= nil and prev_leader.components.health:IsDead() then
+            inst.components.health:Kill()
+        else
+            inst:PushEventImmediate("become_dormant")
+        end
     end
 end
 
@@ -144,10 +149,6 @@ local function OnOwnerInstRemovedFn(inst, owner)
     end
 end
 
-local function OnLoadPostPass(inst, owner)
-    inst:TryToReplaceWithBackupBody(true)
-end
-
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         if data.attacker.components.leader ~= nil and
@@ -158,6 +159,13 @@ local function OnAttacked(inst, data)
 end
 
 local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always removes the possessed body.
+    -- Save stats here before messing with upgrademoduleowner, otherwise we get incorrect stats
+    local stats =
+    {
+        health = inst.components.health.currenthealth,
+        hunger = inst.components.hunger.current,
+        sanity = inst.components.sanity.current,
+    }
     local x, y, z = inst.Transform:GetWorldPosition()
     local body = SpawnPrefab("wx78_backupbody")
     body._hide_body_skinfx = true
@@ -171,12 +179,6 @@ local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always rem
         return false
     end
     if gestaltalive then
-        local stats =
-        {
-            health = inst.components.health.currenthealth,
-            hunger = inst.components.hunger.current,
-            sanity = inst.components.sanity.current,
-        }
         body:ConfigurePossessed(true, inst:GetIsPlanar(), stats)
     end
     local owner = inst.components.linkeditem:GetOwnerInst()
@@ -420,8 +422,8 @@ local function OnSave(inst, data)
     -- So, if we wait to re-apply them in our OnLoad, we will have them properly
     -- (as entity OnLoad runs after component OnLoads)
     data._wx78_health = inst.components.health.currenthealth
-    -- data._wx78_sanity = inst.components.sanity.current
-    -- data._wx78_hunger = inst.components.hunger.current
+    data._wx78_sanity = inst.components.sanity.current
+    data._wx78_hunger = inst.components.hunger.current
     data._wx78_shield = inst.components.wx78_shield.currentshield
 end
 
@@ -444,18 +446,22 @@ local function OnLoad(inst, data, newents)
             inst.components.health:SetCurrentHealth(data._wx78_health)
         end
 
-        -- if data._wx78_sanity then
-        --     inst.components.sanity.current = data._wx78_sanity
-        -- end
+        if data._wx78_sanity then
+            inst.components.sanity.current = data._wx78_sanity
+        end
 
-        -- if data._wx78_hunger then
-        --     inst.components.hunger.current = data._wx78_hunger
-        -- end
+        if data._wx78_hunger then
+            inst.components.hunger.current = data._wx78_hunger
+        end
 
         if data._wx78_shield then
             inst.components.wx78_shield.currentshield = data._wx78_shield
         end
     end
+end
+
+local function OnLoadPostPass(inst, owner)
+    inst:TryToReplaceWithBackupBody(true)
 end
 
 local function fn()
@@ -507,6 +513,8 @@ local function fn()
     inst:AddTag("alltrader")
     inst:AddTag("canseeindark")
     inst:AddTag("lunar_aligned")
+    inst:AddTag("electricdamageimmune")
+    --electricdamageimmune is for combat and not lightning strikes
 
 	if not TheNet:IsDedicated() then
 		inst.gestaltfx = CreateGestaltFx()
@@ -616,6 +624,7 @@ local function fn()
     inst:AddComponent("planardefense")
     inst:AddComponent("sheltered")
     inst:AddComponent("wx78_abilitycooldowns")
+    inst:AddComponent("luckuser")
 
     inst.components.damagetyperesist:AddResist("lunar_aligned", inst, TUNING.SKILLS.WX78.POSSESSEDBODY_LUNAR_RESIST, "lunaraligned")
     inst.components.damagetypebonus:AddBonus("shadow_aligned", inst, TUNING.SKILLS.WX78.POSSESSEDBODY_VS_SHADOW_BONUS, "lunaraligned")
@@ -624,7 +633,7 @@ local function fn()
     inst.components.debuffable:SetFollowSymbol("headbase", 0, -200, 0)
 
     local hauntable = inst:AddComponent("hauntable")
-    hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
+    hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
 
     inst:AddComponent("inventory")
     --possessed bodies handle inventory dropping manually in their stategraph

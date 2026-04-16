@@ -91,6 +91,14 @@ local function COMMON_ItemTileRefresh(inst)
     end
 end
 
+local function COMMON_GetFertilizerKey(inst)
+    return inst.prefab
+end
+
+local function fertilizerresearchfn(inst)
+    return inst:GetFertilizerKey()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -106,12 +114,15 @@ local function fn()
 
     inst.pickupsound = "vegetation_firm" -- 'squidgy' when wet
 
+    inst:AddTag("fertilizerresearchable")
+
     MakeInventoryFloatable(inst, "small", 0.07, 1.2)
     MakeDeployableFertilizerPristine(inst)
 
     inst.stackable_CanStackWithFn = COMMON_CanStackWithFn
     inst.itemtile_Refresh = COMMON_ItemTileRefresh
     inst.wet_prefix = STRINGS.WET_PREFIX.WX78_FOODBRICK
+    inst.GetFertilizerKey = COMMON_GetFertilizerKey
 
     inst.entity:SetPristine()
 
@@ -144,6 +155,9 @@ local function fn()
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY)
     inst.components.perishable:SetOnPerishFn(inst.Remove) -- If we don't set a perish replacement, it doesn't remove itself, so explicitly set this.
+
+    inst:AddComponent("fertilizerresearchable")
+    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
 
     MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
     MakeSmallPropagator(inst)

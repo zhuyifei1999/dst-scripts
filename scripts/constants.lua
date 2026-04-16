@@ -849,7 +849,7 @@ SPECIAL_EVENTS =
     YOTS = "year_of_the_snake",
     YOTH = "year_of_the_knight",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTH
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 WORLD_EXTRA_EVENTS = {}
 
 FESTIVAL_EVENTS =
@@ -986,12 +986,11 @@ SPECIAL_EVENT_MUSIC =
     },  
     ]]  
 
-	--[[ Wx BETA has this event turned on, but is using the meta 6 banner and music
     [SPECIAL_EVENTS.YOTH] =
     {
 		bank = "music_frontend_yoth2026.fsb",
 		sound = "dontstarve/music/music_FE_yoth2026",
-	},]]
+	},
 }
 
 FESTIVAL_EVENT_MUSIC =
