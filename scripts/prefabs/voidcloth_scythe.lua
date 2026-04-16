@@ -209,6 +209,7 @@ local function HarvestPickable(inst, ent, doer)
             Launch(item, doer, 1.5)
         end
     end
+    return success
 end
 
 local function IsEntityInFront(inst, entity, doer_rotation, doer_pos)
@@ -230,13 +231,19 @@ local function DoScythe(inst, target, doer)
 
         local doer_rotation = doer.Transform:GetRotation()
 
+        local harvestedcount = 0
         local ents = TheSim:FindEntities(x, y, z, TUNING.VOIDCLOTH_SCYTHE_HARVEST_RADIUS, HARVEST_MUSTTAGS, HARVEST_CANTTAGS, HARVEST_ONEOFTAGS)
         for _, ent in pairs(ents) do
             if ent:IsValid() and ent.components.pickable ~= nil then
                 if inst:IsEntityInFront(ent, doer_rotation, doer_pos) then
-                    inst:HarvestPickable(ent, doer)
+                    if inst:HarvestPickable(ent, doer) then
+                        harvestedcount = harvestedcount + 1
+                    end
                 end
             end
+        end
+        if harvestedcount > 0 then
+            doer:PushEvent("picksomethingfromaoe", {harvestedcount = harvestedcount,})
         end
     end
 end
@@ -256,42 +263,10 @@ local NO_TAGS = shallowcopy(NO_TAGS_PVP)
 table.insert(NO_TAGS, "player")
 table.insert(NO_TAGS, "wall")
 
-local function HasFriendlyLeader(target, attacker)
-    local target_leader = target.components.follower and target.components.follower:GetLeader()
-
-    if target_leader ~= nil then
-
-        if target_leader.components.inventoryitem then
-            target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-        end
-
-        local PVP_enabled = TheNet:GetPVPEnabled()
-        return (target_leader ~= nil 
-                and (target_leader:HasTag("player") 
-                and not PVP_enabled)) or
-                (target.components.domesticatable and target.components.domesticatable:IsDomesticated() 
-                and not PVP_enabled) or
-                (target.components.saltlicker and target.components.saltlicker.salted
-                and not PVP_enabled)
-    end
-
-    return false
-end
-
 local function ShadowAoEValidFn(target, attacker)
-    if target:HasTag("playerghost") then
-        return false
-    end
-
-    if target:HasTag("monster") and not TheNet:GetPVPEnabled() and 
-        ((target.components.follower and target.components.follower:GetLeader() ~= nil and 
-            target.components.follower:GetLeader():HasTag("player")) or target.bedazzled) then
-        return false
-    end
-
-    if HasFriendlyLeader(target, attacker) then
-        return false
-    end
+	if attacker.components.combat:IsAlly(target) then
+		return false
+	end
 
     TryToSparkOn(target, attacker)
     return true

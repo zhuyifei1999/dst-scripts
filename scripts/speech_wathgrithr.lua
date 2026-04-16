@@ -23,6 +23,9 @@ return{
             NOTMERM = "The little beastie must gather her own legions.",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "It belongs to the metal warrior.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "I can only command one beastie!",
 			TICOON = "I hath already found a guide.",
             BUSY_STATION = "It is not my time yet.",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "I respect thine loyalty to our metal warrior, scout.",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "T'would not be wise to anger the fish beasts.",
             NOTSOULJARHANDLER = "I shall not meddle with that.",
             RESTRICTED = "‘Tis not for me.",
+            NOTAROBOT = "It belongs to the metal warrior.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "T'would not do to meddle with my ally's effects.",
             NOTSOULJARHANDLER = "I shall not meddle with that.",
             RESTRICTED = "‘Tis not for me.",
+            NOTAROBOT = "It belongs to the metal warrior.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -417,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -429,6 +454,8 @@ return{
 			NOT_MINE = "'Tis not mine.'",
 
 			CANNOT_FIX_DRONE = "'Tis dead.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -1200,6 +1227,14 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "My warriors must still be feasting in Valhalla! I shall hail them in due time.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Fret not, faithful warrior. I shall return for thee.",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -2810,7 +2845,11 @@ return{
         ROCKS = "Some pretty normal rocks.",
         ROOK = "Chaaaarge!",
         ROPE = "Strong enough to bind the sails of my longship.",
-        ROTTENEGG = "Ruined for eating, but primed for battle.",
+        ROTTENEGG =
+        {
+            GENERIC = "Ruined for eating, but primed for battle.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "To absorb the felled queen's power!",
         JELLYBEAN = "The yield of an industrious candy farmer.",
         SADDLE_BASIC = "Now to find a faithful steed.",
@@ -2912,7 +2951,11 @@ return{
 			GENERIC = "The champion of the spiders. To battle!",
 			SLEEPING = "It is cowardly to attack a sleeping enemy.",
 		},
-		SPOILED_FOOD = "Age has only made this food gross, not wise.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Age has only made this food gross, not wise.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Keep thy hand from out mine fires!",
@@ -4074,7 +4117,11 @@ return{
         FISHMEAT_COOKED = "Joy!",
         FISHMEAT_SMALL = "This sea meat will serve me well.",
         FISHMEAT_SMALL_COOKED = "This meat will swim in my belly!",
-		SPOILED_FISH = "You smell of your failure.",
+		SPOILED_FISH =
+        {
+            GENERIC = "You smell of your failure.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Meat is best when it's fresh!",
         POCKET_SCALE = "How did I fare with my catch?",
@@ -6021,6 +6068,45 @@ return{
 
         YOTH_KNIGHTSTICK = "A swift charger to ride into battle.",
         YOTH_CHAIR_ROCKING_ITEM = "A fine chance for the younglings to learn the saddle!", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "Go forth, valiant scoutling!",
+		WX78_DRONE_DELIVERY = "Loyal courier! Provision thy Iron Lord!",
+		WX78_DRONE_ZAP = "Rain lightening upon thy foes!",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "By this, the Iron Lord calls a Valkyrie from the heavens!",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "These boons shall empower our metal warrior.",
+        WX78MODULE_STACKSIZE = "These boons shall empower our metal warrior.",
+        WX78MODULE_DIGESTION = "These boons shall empower our metal warrior.",
+        WX78MODULE_SCREECH = "These boons shall empower our metal warrior.",
+        WX78MODULE_LIGHT2 = "These boons shall empower our metal warrior.",
+        WX78MODULE_SHIELDING = "These boons shall empower our metal warrior.",
+        WX78MODULE_SPIN = "These boons shall empower our metal warrior.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+--fallback to speech_wilson.lua 			NOPOWER = "only_used_by_wx78", -- Held but can't open due to wx charge level too low
+            GENERIC = "What spoils hath our metal warrior bestowed?", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "A cursed loaf, born from the very innards of the metal warrior!",
+            GENERIC = "Even Mjolnir could not crack this foul brick!",
+        },
+
+        WX78_POSSESSEDBODY = "The metal warrior is truly possessed!",
+
+        WX78_GESTALTTRAPPER = "There is sorcery at work here.",
+
+        SHADOW_HEART_VEIN = "Such gifts bear ill fortune.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

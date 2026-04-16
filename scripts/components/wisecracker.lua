@@ -444,6 +444,10 @@ local Wisecracker = Class(function(self, inst)
 		end
 	end)
 
+	inst:ListenForEvent("ms_maxclockworks", function(inst, target)
+		inst.components.talker:Say(GetString(inst, "ANNOUNCE_MAX_CLOCKWORKS"))
+	end)
+
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)
     end

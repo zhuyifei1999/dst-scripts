@@ -19,6 +19,7 @@ function PocketWatch_Dismantler:Dismantle(target, doer)
     local pt = receiver ~= nil and self.inst:GetPosition() or doer:GetPosition()
 
     if target.components.itemmimic then
+        -- Do not check ShouldItemMimicBeRevealedFor here, ingredients must be earned.
         if doer and doer.SoundEmitter then
 		    doer.SoundEmitter:PlaySound("dontstarve/creatures/monkey/poopsplat")
         end

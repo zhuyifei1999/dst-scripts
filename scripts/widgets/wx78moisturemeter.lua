@@ -2,8 +2,6 @@ local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
-local BADMOISTURE_PERCENT = TUNING.WX78_MINACCEPTABLEMOISTURE / 100
-
 local WX78MoistureMeter = Class(Widget, function(self, owner)
     Widget._ctor(self, "WX78MoistureMeter")
     self.owner = owner
@@ -68,10 +66,14 @@ local WX78MoistureMeter = Class(Widget, function(self, owner)
     self.left_sparks:GetAnimState():AnimateWhilePaused(false)
     self.left_sparks:SetClickable(false)
 
-    self:UpdateBadMoistureMarkerLevel(BADMOISTURE_PERCENT)
+    self:UpdateBadMoistureMarkerLevel()
 
     self.ondorobotspark = function(owner) self:DoSpark() end
     self.inst:ListenForEvent("do_robot_spark", self.ondorobotspark, self.owner)
+
+    self.onupgrademoduleownerupdate = function(owner) self:UpdateBadMoistureMarkerLevel() end
+    self.inst:ListenForEvent("upgrademodulesdirty", self.onupgrademoduleownerupdate, self.owner)
+    self.inst:ListenForEvent("energylevelupdate", self.onupgrademoduleownerupdate, self.owner)
     ---------------------------------------------------------------------------------
 
     self.num = self:AddChild(Text(BODYTEXTFONT, 33))
@@ -88,10 +90,15 @@ local function calculate_spark_angle(meter_percent)
     return angle1 * RADIANS
 end
 
-function WX78MoistureMeter:UpdateBadMoistureMarkerLevel(new_percent)
-    self.marker:GetAnimState():SetPercent("anim", (1 - BADMOISTURE_PERCENT))
+function WX78MoistureMeter:UpdateBadMoistureMarkerLevel()
+    local badmoisturepercent = (self.owner.GetMinimumAcceptableMoisture and self.owner:GetMinimumAcceptableMoisture() or 0) / 100
+    self:SetBadMoistureMarkerLevel(badmoisturepercent)
+end
 
-    local spark_angle = calculate_spark_angle(BADMOISTURE_PERCENT)
+function WX78MoistureMeter:SetBadMoistureMarkerLevel(new_percent)
+    self.marker:GetAnimState():SetPercent("anim", (1 - new_percent))
+
+    local spark_angle = calculate_spark_angle(new_percent)
 
     self.right_sparks:SetRotation(spark_angle)
     self.left_sparks:SetRotation(-spark_angle)

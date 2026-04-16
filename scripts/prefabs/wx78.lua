@@ -1,33 +1,44 @@
 local MakePlayerCharacter = require("prefabs/player_common")
+local PlayerCommonExtensions = require("prefabs/player_common_extensions")
+local WX78Common = require("prefabs/wx78_common")
 local WX78MoistureMeter = require("widgets/wx78moisturemeter")
 local easing = require("easing")
 
-local assets =
-{
+local assets = JoinArrays({
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("SCRIPT", "scripts/prefabs/wx78_common.lua"),
 
     Asset("SOUND", "sound/wx78.fsb"),
 
     Asset("ANIM", "anim/player_idles_wx.zip"),
     Asset("ANIM", "anim/wx_upgrade.zip"),
+    Asset("ANIM", "anim/player_wx78_actions.zip"),
+    Asset("ANIM", "anim/player_mount_wx78_actions.zip"),
+    Asset("ANIM", "anim/player_wx78_defense.zip"),
     Asset("ANIM", "anim/player_mount_wx78_upgrade.zip"),
     Asset("ANIM", "anim/wx_fx.zip"),
-}
+	Asset("ANIM", "anim/wx_chassis.zip"),
+	Asset("ANIM", "anim/wx_overlay.zip"),
+	Asset("ANIM", "anim/wx_drone_zap_use.zip"),
+	Asset("ANIM", "anim/wx_mount_drone_zap_use.zip"),
 
-local prefabs =
-{
+    Asset("SCRIPT", "scripts/prefabs/skilltree_wx78.lua"),
+}, WX78Common.DEPENDENCIES.assets)
+
+local prefabs = JoinArrays({
     "cracklehitfx",
     "gears",
     "sparks",
-    "wx78_big_spark",
-    "wx78_heat_steam",
     "wx78_moduleremover",
-    "wx78_musicbox_fx",
     "wx78_scanner_item",
-}
+    -- Meta 6
+    "wx78_abilitycooldown",
+    "wx78_backupbody",
+    "wx78_possessedbody",
+    "wx78_possessed_shadow_hitfx",
+}, WX78Common.DEPENDENCIES.prefabs)
 
 local WX78ModuleDefinitionFile = require("wx78_moduledefs")
-local GetWX78ModuleByNetID = WX78ModuleDefinitionFile.GetModuleDefinitionFromNetID
 
 local WX78ModuleDefinitions = WX78ModuleDefinitionFile.module_definitions
 for mdindex, module_def in ipairs(WX78ModuleDefinitions) do
@@ -41,165 +52,135 @@ end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
-----------------------------------------------------------------------------------------
+local function SpawnBigSpark(inst)
+    SpawnPrefab("wx78_big_spark"):AlignToTarget(inst)
+end
 
-local CHARGEREGEN_TIMERNAME = "chargeregenupdate"
-local MOISTURETRACK_TIMERNAME = "moisturetrackingupdate"
-local HUNGERDRAIN_TIMERNAME = "hungerdraintick"
-local HEATSTEAM_TIMERNAME = "heatsteam_tick"
+local function COMMON_GetShieldPenetrationThreshold(inst)
+    if inst.components.wx78_shield ~= nil then
+        return inst.components.wx78_shield:GetPenetrationThreshold()
+    elseif inst.wx78_classified ~= nil then
+        return inst.wx78_classified.shieldpenetrationthreshold:value()
+    else
+        return 15
+    end
+end
 
-----------------------------------------------------------------------------------------
-
-local function CLIENT_GetEnergyLevel(inst)
-    if inst.components.upgrademoduleowner ~= nil then
-        return inst.components.upgrademoduleowner.charge_level
-    elseif inst.player_classified ~= nil then
-        return inst.player_classified.currentenergylevel:value()
+local function COMMON_GetCurrentShield(inst)
+    if inst.components.wx78_shield ~= nil then
+        return inst.components.wx78_shield:GetCurrent()
+    elseif inst.wx78_classified ~= nil then
+        return inst.wx78_classified.currentshield:value()
     else
         return 0
     end
 end
 
-local function get_plugged_module_indexes(inst)
-    local upgrademodule_defindexes = {}
-    for _, module in ipairs(inst.components.upgrademoduleowner.modules) do
-        table.insert(upgrademodule_defindexes, module._netid)
-    end
-
-    -- Fill out the rest of the table with 0s
-    while #upgrademodule_defindexes < TUNING.WX78_MAXELECTRICCHARGE do
-        table.insert(upgrademodule_defindexes, 0)
-    end
-
-    return upgrademodule_defindexes
-end
-
-local DEFAULT_ZEROS_MODULEDATA = {0, 0, 0, 0, 0, 0}
-local function CLIENT_GetModulesData(inst)
-    local data = nil
-
-    if inst.components.upgrademoduleowner ~= nil then
-        data = get_plugged_module_indexes(inst)
-    elseif inst.player_classified ~= nil then
-        data = {}
-        for _, module_netvar in ipairs(inst.player_classified.upgrademodules) do
-            table.insert(data, module_netvar:value())
-        end
+local function COMMON_GetMaxShield(inst)
+    if inst.components.wx78_shield ~= nil then
+        return inst.components.wx78_shield:GetMax()
+    elseif inst.wx78_classified ~= nil then
+        return inst.wx78_classified.maxshield:value()
     else
-        data = DEFAULT_ZEROS_MODULEDATA
+        return 1
     end
-
-    return data
 end
 
-local function CLIENT_CanUpgradeWithModule(inst, module_prefab)
-    if module_prefab == nil then
-        return false
-    end
-
-    local slots_inuse = (module_prefab._slots or 0)
-
-    if inst.components.upgrademoduleowner ~= nil then
-        for _, module in ipairs(inst.components.upgrademoduleowner.modules) do
-            local modslots = (module.components.upgrademodule ~= nil and module.components.upgrademodule.slots)
-                or 0
-            slots_inuse = slots_inuse + modslots
-        end
-    elseif inst.player_classified ~= nil then
-        for _, module_netvar in ipairs(inst.player_classified.upgrademodules) do
-            local module_definition = GetWX78ModuleByNetID(module_netvar:value())
-            if module_definition ~= nil then
-                slots_inuse = slots_inuse + module_definition.slots
-            end
-        end
+local function COMMON_GetCanShieldCharge(inst)
+    if inst.components.wx78_shield ~= nil then
+        return inst.components.wx78_shield:GetCanShieldCharge()
+    elseif inst.wx78_classified ~= nil then
+        return inst.wx78_classified.canshieldcharge:value()
     else
         return false
     end
-
-    return (TUNING.WX78_MAXELECTRICCHARGE - slots_inuse) >= 0
 end
 
-local function CLIENT_CanRemoveModules(inst)
-    if inst.components.upgrademoduleowner ~= nil then
-        return inst.components.upgrademoduleowner:NumModules() > 0
-    elseif inst.player_classified ~= nil then
-        -- Assume that, if the first module slot netvar is 0, we have no modules.
-        return inst.player_classified.upgrademodules[1]:value() ~= 0
+-- Used for temp ground speed modifier, slow multiplier override, and equippable walk speed modifier
+local function COMMON_ModifySpeedMultiplier(inst, mult) --, item)
+    if inst.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_2") and mult < 1 then
+        -- 3 speed modules reduces a slow debuff to 25% of its original value.
+        local speed_mod_count = inst:GetModuleTypeCount("movespeed", "movespeed2")
+        local denominator = 4
+        local reclaim_speed_penalty = (1 - mult) / denominator
+        return math.min(mult + reclaim_speed_penalty * speed_mod_count, 1)
+    end
+    return mult
+end
+
+local function COMMON_ExtraConfigurePlayerLocomotor(inst)
+    inst.components.locomotor:SetTempGroundSpeedMultiplierModifier(inst.ModifySpeedMultiplier)
+end
+
+local function COMMON_StopUsingDrone(inst)
+	if inst.components.inventory then
+		local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		if item and
+			item:HasTag("wx_remotecontroller") and
+			item.components.useableequippeditem and
+			item.components.useableequippeditem:IsInUse()
+		then
+			item.components.useableequippeditem:StopUsingItem(inst)
+		end
+	else
+		SendRPCToServer(RPC.StopUsingDrone)
+	end
+end
+
+local function COMMON_StopInspectingModules(inst)
+    if inst.components.upgrademoduleowner then
+        inst:PushEventImmediate("stopinspectingmodule")
     else
-        return false
+        SendRPCToServer(RPC.StopInspectingModules)
     end
 end
 
 ----------------------------------------------------------------------------------------
-local function OnForcedNightVisionDirty(inst)
-    if inst.components.playervision ~= nil then
-        if inst._forced_nightvision:value() then
-            inst.components.playervision:PushForcedNightVision(inst)
-        else
-            inst.components.playervision:PopForcedNightVision(inst)
-        end
+
+local CHARGEREGEN_TIMERNAME = "chargeregenupdate"
+local MOISTURETRACK_TIMERNAME = "moisturetrackingupdate"
+local HUNGERDRAIN_TIMERNAME = "hungerdraintick"
+
+local SCREECHCOOLDOWN_TIMERNAME = "wxscreechcooldown"
+local SHIELDINGCOOLDOWN_TIMERNAME = "wxshieldingcooldown"
+
+----------------------------------------------------------------------------------------
+
+local function GetChargeRegenTime(inst)
+    local mult = 1
+    if inst.components.skilltreeupdater:IsActivated("wx78_circuitry_bettercharge") then
+        mult = TUNING.SKILLS.WX78.FASTER_CHARGE_MULTIPLIER
     end
+    return TUNING.WX78_CHARGE_REGENTIME / mult
 end
 
-local NIGHTVISIONMODULE_GRUEIMMUNITY_NAME = "wxnightvisioncircuit"
-local function SetForcedNightVision(inst, nightvision_on)
-    inst._forced_nightvision:set(nightvision_on)
-
-    if inst.components.playervision ~= nil then
-        if nightvision_on then
-            inst.components.playervision:PushForcedNightVision(inst)
-        else
-            inst.components.playervision:PopForcedNightVision(inst)
-        end
-    end
-
-    -- The nightvision event might get consumed during save/loading,
-    -- so push an extra custom immunity into the table.
-    if nightvision_on then
-        inst.components.grue:AddImmunity(NIGHTVISIONMODULE_GRUEIMMUNITY_NAME)
-    else
-        inst.components.grue:RemoveImmunity(NIGHTVISIONMODULE_GRUEIMMUNITY_NAME)
-    end
-end
-
-local function OnPlayerDeactivated(inst)
-    inst:RemoveEventCallback("onremove", OnPlayerDeactivated)
-    if not TheNet:IsDedicated() then
-        inst:RemoveEventCallback("forced_nightvision_dirty", OnForcedNightVisionDirty)
-    end
-end
-
-local function OnPlayerActivated(inst)
-    inst:ListenForEvent("onremove", OnPlayerDeactivated)
-    if not TheNet:IsDedicated() then
-        inst:ListenForEvent("forced_nightvision_dirty", OnForcedNightVisionDirty)
-        OnForcedNightVisionDirty(inst)
-    end
+local function StartChargeRegenTimer(inst)
+    inst.components.timer:StartTimer(CHARGEREGEN_TIMERNAME, inst:GetChargeRegenTime())
 end
 
 ----------------------------------------------------------------------------------------
 
 local function do_chargeregen_update(inst)
-    if not inst.components.upgrademoduleowner:ChargeIsMaxed() then
-        inst.components.upgrademoduleowner:AddCharge(1)
+    if not inst.components.upgrademoduleowner:IsChargeMaxed() then
+        inst.components.upgrademoduleowner:DoDeltaCharge(1)
     end
 end
 
 local function OnUpgradeModuleChargeChanged(inst, data)
     -- The regen timer gets reset every time the energy level changes, whether it was by the regen timer or not.
     inst.components.timer:StopTimer(CHARGEREGEN_TIMERNAME)
-    
-    if not inst.components.upgrademoduleowner:ChargeIsMaxed() then
-        inst.components.timer:StartTimer(CHARGEREGEN_TIMERNAME, TUNING.WX78_CHARGE_REGENTIME)
+
+    if not inst.components.upgrademoduleowner:IsChargeMaxed() then
+        StartChargeRegenTimer(inst)
 
         -- If we just got put to 0 from a non-0 value, tell the player.
-        if data.old_level ~= 0 and data.new_level == 0 then
+        if data.old_level ~= 0 and data.new_level == 0 and not data.isloading then
             inst.components.talker:Say(GetString(inst, "ANNOUNCE_DISCHARGE"))
         end
     else
         -- If our charge is maxed (this is a post-assignment callback), and our previous charge was not,
         -- we just hit the max, so tell the player.
-        if data.old_level ~= inst.components.upgrademoduleowner.max_charge then
+        if data.old_level ~= inst.components.upgrademoduleowner.max_charge and not data.isloading then
             inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARGE"))
         end
     end
@@ -234,6 +215,10 @@ local function OnLoad(inst, data)
         if data._wx78_hunger then
             inst.components.hunger.current = data._wx78_hunger
         end
+
+        if data._wx78_shield then
+            inst.components.wx78_shield.currentshield = data._wx78_shield
+        end
     end
 end
 
@@ -248,6 +233,7 @@ local function OnSave(inst, data)
     data._wx78_health = inst.components.health.currenthealth
     data._wx78_sanity = inst.components.sanity.current
     data._wx78_hunger = inst.components.hunger.current
+    data._wx78_shield = inst.components.wx78_shield.currentshield
 end
 
 ----------------------------------------------------------------------------------------
@@ -260,49 +246,18 @@ local function OnLightningStrike(inst)
             inst.components.health:DoDelta(TUNING.HEALING_SUPERHUGE, false, "lightning")
             inst.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
 
-            inst.components.upgrademoduleowner:AddCharge(1)
+            inst.components.upgrademoduleowner:DoDeltaCharge(1)
         end
     end
 end
 
 ----------------------------------------------------------------------------------------
-local HEATSTEAM_TICKRATE = 5
-local function do_steam_fx(inst)
-    local steam_fx = SpawnPrefab("wx78_heat_steam")
-    steam_fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    steam_fx.Transform:SetRotation(inst.Transform:GetRotation())
-
-    inst.components.timer:StartTimer(HEATSTEAM_TIMERNAME, HEATSTEAM_TICKRATE)
-end
-
--- Negative is colder, positive is warmer
-local function AddTemperatureModuleLeaning(inst, leaning_change)
-    inst._temperature_modulelean = inst._temperature_modulelean + leaning_change
-
-    if inst._temperature_modulelean > 0 then
-        inst.components.heater:SetThermics(true, false)
-
-        if not inst.components.timer:TimerExists(HEATSTEAM_TIMERNAME) then
-            inst.components.timer:StartTimer(HEATSTEAM_TIMERNAME, HEATSTEAM_TICKRATE, false, 0.5)
-        end
-
-        inst.components.frostybreather:ForceBreathOff()
-    elseif inst._temperature_modulelean == 0 then
-        inst.components.heater:SetThermics(false, false)
-
-        inst.components.timer:StopTimer(HEATSTEAM_TIMERNAME)
-
-        inst.components.frostybreather:ForceBreathOff()
-    else
-        inst.components.heater:SetThermics(false, true)
-
-        inst.components.timer:StopTimer(HEATSTEAM_TIMERNAME)
-
-        inst.components.frostybreather:ForceBreathOn()
-    end
-end
-
 -- Wetness/Moisture/Rain ---------------------------------------------------------------
+
+local function COMMON_GetMinimumAcceptableMoisture(inst)
+    return TUNING.WX78_MINACCEPTABLEMOISTURE
+end
+
 local function initiate_moisture_update(inst)
     if not inst.components.timer:TimerExists(MOISTURETRACK_TIMERNAME) then
         inst.components.timer:StartTimer(MOISTURETRACK_TIMERNAME, TUNING.WX78_MOISTUREUPDATERATE*FRAMES)
@@ -311,13 +266,13 @@ end
 
 local function stop_moisturetracking(inst)
     inst.components.timer:StopTimer(MOISTURETRACK_TIMERNAME)
-
     inst._moisture_steps = 0
 end
 
 local function moisturetrack_update(inst)
+    local minacceptablemoisture = inst:GetMinimumAcceptableMoisture()
     local current_moisture = inst.components.moisture:GetMoisture()
-    if current_moisture > TUNING.WX78_MINACCEPTABLEMOISTURE then
+    if current_moisture > minacceptablemoisture then
         -- The update will loop until it is stopped by going under the acceptable moisture level.
         initiate_moisture_update(inst)
     end
@@ -333,32 +288,34 @@ local function moisturetrack_update(inst)
 
     if inst._moisture_steps >= TUNING.WX78_MOISTURESTEPTRIGGER then
         local damage_per_second = easing.inSine(
-                current_moisture - TUNING.WX78_MINACCEPTABLEMOISTURE,
+                current_moisture - minacceptablemoisture,
                 TUNING.WX78_MIN_MOISTURE_DAMAGE,
                 TUNING.WX78_PERCENT_MOISTURE_DAMAGE,
-                inst.components.moisture:GetMaxMoisture() - TUNING.WX78_MINACCEPTABLEMOISTURE
+                inst.components.moisture:GetMaxMoisture() - minacceptablemoisture
         )
         local seconds_per_update = TUNING.WX78_MOISTUREUPDATERATE / 30
 
         inst.components.health:DoDelta(inst._moisture_steps * seconds_per_update * damage_per_second, false, "water")
-        inst.components.upgrademoduleowner:AddCharge(-1)
+        inst.components.upgrademoduleowner:DoDeltaCharge(-1)
+        inst.components.wx78_shield:SetCurrent(0)
         inst._moisture_steps = 0
 
 		if not inst.sg:HasStateTag("invisible") and inst.entity:IsVisible() then
-			SpawnPrefab("wx78_big_spark"):AlignToTarget(inst)
+			SpawnBigSpark(inst)
 		end
 		inst:PushEventImmediate("wx78_spark")
     end
 
     -- Send a message for the UI.
     inst:PushEvent("do_robot_spark")
-    if inst.player_classified ~= nil then
-        inst.player_classified.uirobotsparksevent:push()
+    if inst.wx78_classified ~= nil then
+        inst.wx78_classified.uirobotsparksevent:push()
     end
 end
 
 local function OnWetnessChanged(inst, data)
     if not (inst.components.health ~= nil and inst.components.health:IsDead()) then
+        local minacceptablemoisture = inst:GetMinimumAcceptableMoisture()
         if data.new >= TUNING.WX78_COLD_ICEMOISTURE and inst.components.upgrademoduleowner:GetModuleTypeCount("cold") > 0 then
             inst.components.moisture:SetMoistureLevel(0)
 
@@ -370,9 +327,9 @@ local function OnWetnessChanged(inst, data)
             end
 
             stop_moisturetracking(inst)
-        elseif data.new > TUNING.WX78_MINACCEPTABLEMOISTURE and data.old <= TUNING.WX78_MINACCEPTABLEMOISTURE then
+        elseif data.new > minacceptablemoisture and data.old <= minacceptablemoisture then
             initiate_moisture_update(inst)
-        elseif data.new <= TUNING.WX78_MINACCEPTABLEMOISTURE and data.old > TUNING.WX78_MINACCEPTABLEMOISTURE then
+        elseif data.new <= minacceptablemoisture and data.old > minacceptablemoisture then
             stop_moisturetracking(inst)
         end
     end
@@ -389,8 +346,8 @@ local function OnBecameRobot(inst)
     inst.Light:SetIntensity(.9)
     inst.Light:SetColour(235 / 255, 121 / 255, 12 / 255)
 
-    if not inst.components.upgrademoduleowner:ChargeIsMaxed() then
-        inst.components.timer:StartTimer(CHARGEREGEN_TIMERNAME, TUNING.WX78_CHARGE_REGENTIME)
+    if not inst.components.upgrademoduleowner:IsChargeMaxed() then
+        StartChargeRegenTimer(inst)
     end
 end
 
@@ -400,9 +357,15 @@ local function OnBecameGhost(inst)
     inst.components.timer:StopTimer(CHARGEREGEN_TIMERNAME)
 end
 
-local function OnDeath(inst)
+local function DoDeathConsequences(inst)
     inst.components.upgrademoduleowner:PopAllModules()
     inst.components.upgrademoduleowner:SetChargeLevel(0)
+end
+
+local function OnDeath(inst)
+    if not inst.wx78_backupbody_save then
+        DoDeathConsequences(inst)
+    end
 
     stop_moisturetracking(inst)
     inst.components.timer:StopTimer(HUNGERDRAIN_TIMERNAME)
@@ -436,17 +399,18 @@ end
 ----------------------------------------------------------------------------------------
 
 local function OnEat(inst, food)
-    if food ~= nil and food.components.edible ~= nil then
-        if food.components.edible.foodtype == FOODTYPE.GEARS then
+    local edible = food.components.edible
+    if edible~= nil then
+        if edible.foodtype == FOODTYPE.GEARS then
             inst._gears_eaten = inst._gears_eaten + 1
 
             inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/levelup")
         end
-    end
 
-    local charge_amount = TUNING.WX78_CHARGING_FOODS[food.prefab]
-    if charge_amount ~= nil then
-        inst.components.upgrademoduleowner:AddCharge(charge_amount)
+        local charge_amount = edible.chargevalue
+        if charge_amount ~= nil and charge_amount ~= 0 then
+            inst.components.upgrademoduleowner:DoDeltaCharge(charge_amount)
+        end
     end
 end
 
@@ -454,10 +418,10 @@ end
 
 local function OnFrozen(inst)
     if inst.components.freezable == nil or not inst.components.freezable:IsFrozen() then
-        SpawnPrefab("wx78_big_spark"):AlignToTarget(inst)
+        SpawnBigSpark(inst)
 
         if not inst.components.upgrademoduleowner:IsChargeEmpty() then
-            inst.components.upgrademoduleowner:AddCharge(-TUNING.WX78_FROZEN_CHARGELOSS)
+            inst.components.upgrademoduleowner:DoDeltaCharge(-TUNING.WX78_FROZEN_CHARGELOSS)
         end
     end
 end
@@ -465,56 +429,68 @@ end
 ----------------------------------------------------------------------------------------
 
 local function OnUpgradeModuleAdded(inst, moduleent)
-    local slots_for_module = moduleent.components.upgrademodule.slots
-    inst._chip_inuse = inst._chip_inuse + slots_for_module
+    local moduletype = moduleent.components.upgrademodule:GetType()
 
-    local upgrademodule_defindexes = get_plugged_module_indexes(inst)
-
-    inst:PushEvent("upgrademodulesdirty", upgrademodule_defindexes)
-    if inst.player_classified ~= nil then
-        local newmodule_index = inst.components.upgrademoduleowner:NumModules()
-        inst.player_classified.upgrademodules[newmodule_index]:set(moduleent._netid or 0)
+    inst:PushEvent("upgrademodulesdirty", inst:GetModulesData())
+    if inst.wx78_classified ~= nil then
+        local newmodule_index = inst.components.upgrademoduleowner:GetNumModules(moduletype)
+        inst.wx78_classified.upgrademodulebars[moduletype][newmodule_index]:set(moduleent._netid or 0)
     end
 end
 
 local function OnUpgradeModuleRemoved(inst, moduleent)
-    inst._chip_inuse = inst._chip_inuse - moduleent.components.upgrademodule.slots
-
-    -- If the module has 1 use left, it's about to be destroyed, so don't return it to the inventory.
-    if moduleent.components.finiteuses == nil or moduleent.components.finiteuses:GetUses() > 1 then
-        if moduleent.components.inventoryitem ~= nil and inst.components.inventory ~= nil then
-            inst.components.inventory:GiveItem(moduleent, nil, inst:GetPosition())
+    -- If the module has 0.5 use left, it's about to be destroyed, so don't return it to the inventory.
+    if moduleent.components.finiteuses == nil or moduleent.components.finiteuses:GetUses() > 0.5 then
+        if not inst.components.upgrademoduleowner:IsSwapping() and moduleent.components.inventoryitem ~= nil and inst.components.inventory ~= nil then
+            -- No pos if we're dead so we don't see the inv icon when we're dying and inventory is hidden
+            local pos = not inst.components.health:IsDead() and inst:GetPosition() or nil
+            inst.components.inventory:GiveItem(moduleent, nil, pos)
         end
     end
 end
 
-local function OnOneUpgradeModulePopped(inst, moduleent)
-    inst:PushEvent("upgrademodulesdirty", get_plugged_module_indexes(inst))
-    if inst.player_classified ~= nil then
-        -- This is a callback of the remove, so our current NumModules should be
-        -- 1 lower than the index of the module that was just removed.
-        local top_module_index = inst.components.upgrademoduleowner:NumModules() + 1
-        inst.player_classified.upgrademodules[top_module_index]:set(0)
+local function OnOneUpgradeModulePopped(inst, moduleent, was_activated)
+    -- If the module we just popped was charged, use that charge
+    -- as the cost of this removal.
+    local moduletype = moduleent.components.upgrademodule:GetType()
+    local moduleslotcount = moduleent.components.upgrademodule:GetSlots()
+    if was_activated then
+        local charge_cost = -moduleslotcount
+        local skilltreeupdater = inst.components.skilltreeupdater
+        if skilltreeupdater and skilltreeupdater:IsActivated("wx78_circuitry_bettercharge") then
+            charge_cost = math.min(charge_cost + TUNING.SKILLS.WX78.SAVE_CHARGE_ON_UNPLUG, -1)
+        end
+        inst.components.upgrademoduleowner:DoDeltaCharge(charge_cost)
+    end
+
+    inst:PushEvent("upgrademodulesdirty", inst:GetModulesData())
+    if inst.wx78_classified ~= nil then
+        for i, netvar in ipairs(inst.wx78_classified.upgrademodulebars[moduletype]) do
+            local module = inst.components.upgrademoduleowner:GetModule(moduletype, i)
+            netvar:set(module ~= nil and module._netid or 0)
+        end
     end
 end
 
 local function OnAllUpgradeModulesRemoved(inst)
-    SpawnPrefab("wx78_big_spark"):AlignToTarget(inst)
+    SpawnBigSpark(inst)
 
     inst:PushEvent("upgrademoduleowner_popallmodules")
 
-    if inst.player_classified ~= nil then
-        inst.player_classified.upgrademodules[1]:set(0)
-        inst.player_classified.upgrademodules[2]:set(0)
-        inst.player_classified.upgrademodules[3]:set(0)
-        inst.player_classified.upgrademodules[4]:set(0)
-        inst.player_classified.upgrademodules[5]:set(0)
-        inst.player_classified.upgrademodules[6]:set(0)
+    if inst.wx78_classified ~= nil then
+        for i, modules in pairs(inst.wx78_classified.upgrademodulebars) do
+            for j, netvar in ipairs(modules) do
+                netvar:set(0)
+            end
+        end
     end
 end
 
 local function CanUseUpgradeModule(inst, moduleent)
-    if (TUNING.WX78_MAXELECTRICCHARGE - inst._chip_inuse) < moduleent.components.upgrademodule.slots then
+    local moduletype = moduleent.components.upgrademodule:GetType()
+    local slots_in_use = inst.components.upgrademoduleowner:GetUsedSlotCount(moduletype)
+    local max_charge = inst.components.upgrademoduleowner:GetMaxChargeLevel()
+    if max_charge - slots_in_use < moduleent.components.upgrademodule:GetSlots() then
         return false, "NOTENOUGHSLOTS"
     else
         return true
@@ -523,15 +499,15 @@ end
 
 ----------------------------------------------------------------------------------------
 
-local function OnChargeFromBattery(inst, battery)
-    if inst.components.upgrademoduleowner:ChargeIsMaxed() then
+local function OnChargeFromBattery(inst, battery, mult)
+    if inst.components.upgrademoduleowner:IsChargeMaxed() then
         return false, "CHARGE_FULL"
     end
 
     inst.components.health:DoDelta(TUNING.HEALING_SMALL, false, "lightning")
     inst.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
 
-    inst.components.upgrademoduleowner:AddCharge(1)
+    inst.components.upgrademoduleowner:DoDeltaCharge(1)
 
 	--V2C: -switched to stategraph event instead of GoToState
 	--     -use Immediate to preserve legacy timing
@@ -542,22 +518,8 @@ end
 
 ----------------------------------------------------------------------------------------
 
-local function ModuleBasedPreserverRateFn(inst, item)
-    return (inst._temperature_modulelean > 0 and TUNING.WX78_PERISH_HOTRATE)
-        or (inst._temperature_modulelean < 0 and TUNING.WX78_PERISH_COLDRATE)
-        or 1
-end
-
-----------------------------------------------------------------------------------------
-
-local function GetThermicTemperatureFn(inst, observer)
-    return inst._temperature_modulelean * TUNING.WX78_HEATERTEMPPERMODULE
-end
-
-----------------------------------------------------------------------------------------
-
 local function CanSleepInBagFn(wx, bed)
-    if wx._light_modules == nil or wx._light_modules == 0 then
+    if wx._lightmodule_radius == nil or wx._lightmodule_radius == 0 then
         return true
     else
         return false, "ANNOUNCE_NOSLEEPHASPERMANENTLIGHT"
@@ -575,14 +537,20 @@ end
 
 local function on_hunger_drain_tick(inst)
     if inst.components.health ~= nil and not (inst.components.health:IsDead() or inst.components.health:IsInvincible()) then
-        inst.components.upgrademoduleowner:AddCharge(-1)
+        inst.components.upgrademoduleowner:DoDeltaCharge(-1)
 
 		if not inst.sg:HasStateTag("invisible") and inst.entity:IsVisible() then
-			SpawnPrefab("wx78_big_spark"):AlignToTarget(inst)
+			SpawnBigSpark(inst)
 		end
 		inst:PushEventImmediate("wx78_spark")
     end
     inst.components.timer:StartTimer(HUNGERDRAIN_TIMERNAME, TUNING.WX78_HUNGRYCHARGEDRAIN_TICKTIME)
+end
+
+----------------------------------------------------------------------------------------
+
+local function RedirectToWxShield(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
+	return inst.components.wx78_shield ~= nil and inst.components.wx78_shield:OnTakeDamage(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
 end
 
 ----------------------------------------------------------------------------------------
@@ -594,23 +562,163 @@ local function OnTimerFinished(inst, data)
         moisturetrack_update(inst)
     elseif data.name == CHARGEREGEN_TIMERNAME then
         do_chargeregen_update(inst)
-    elseif data.name == HEATSTEAM_TIMERNAME then
-        do_steam_fx(inst)
     end
 end
 
 ----------------------------------------------------------------------------------------
 
+local function CustomCombatDamage(inst, target)
+	local debuff = target:GetDebuff("wx78_shadow_heart_debuff")
+    if not debuff then
+        return 1
+    end
+    local fx = SpawnPrefab("wx78_possessed_shadow_hitfx") -- FIXME(JBK): WX: This would be best as a net_event on the buff inst with the buff being networked.
+    fx.entity:SetParent(target.entity)
+    return TUNING.SKILLS.WX78.SHADOWHEART_DAMAGEMULT
+end
+
+----------------------------------------------------------------------------------------
+
+local function OnDroneStartTracking(inst, drone)
+    if inst.wx78_classified then
+        inst.wx78_classified.numdronescouts:set(inst.wx78_classified.numdronescouts:value() + 1)
+        if inst.HUD then
+            inst:PushEvent("refreshcrafting")
+        end
+    end
+end
+local function OnDroneStopTracking(inst, drone)
+    if inst.wx78_classified then
+        inst.wx78_classified.numdronescouts:set(inst.wx78_classified.numdronescouts:value() - 1)
+        if inst.HUD then
+            inst:PushEvent("refreshcrafting")
+        end
+    end
+end
+
+----------------------------------------------------------------------------------------
+
+local function OnDeactivateSkill(inst, data)
+	if data then
+		if data.skill == "wx78_scoutdrone_1" then
+			inst.components.wx78_dronescouttracker:ReleaseAllDrones()
+		end
+	end
+end
+
+local function OnSkillTreeInitialized(inst)
+	local skilltreeupdater = inst.components.skilltreeupdater
+	if not (skilltreeupdater and skilltreeupdater:IsActivated("wx78_scoutdrone_1")) then
+		inst.components.wx78_dronescouttracker:ReleaseAllDrones()
+	end
+end
+
+----------------------------------------------------------------------------------------
+
+local function TryToSpawnBackupBody(inst)
+    inst.wx78_backupbody_save = nil
+    if (inst.wx78_classified and inst.wx78_classified:GetNumFreeBackupBodies() or 0) > 0 then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local body = SpawnPrefab("wx78_backupbody")
+        body._hide_body_skinfx = true
+        body.components.upgrademoduleowner:SetChargeLevel(0)
+        if inst.components.upgrademoduleowner then
+            inst.components.upgrademoduleowner:SetChargeLevel(0)
+        end
+        body.Transform:SetPosition(x, y, z)
+        if not body.components.activatable:CanActivate(inst) then
+            body:Remove()
+            return false
+        end
+        if not body.components.activatable:DoActivate(inst) then
+            body:Remove()
+            return false
+        end
+        inst.wx78_backupbody_save_inst = body
+        body._Light_value = body.Light:IsEnabled() -- HACK flag for default behaviour with Remove and Return to Scene modifying light states.
+        body:RemoveFromScene()
+        return true
+    end
+    DoDeathConsequences(inst) -- Only needs to call on fail because all of the modules and energy is transferred into the body.
+    return false
+end
+
+----------------------------------------------------------------------------------------
+
+local function GetPointSpecialActions(inst, pos, useitem, right)
+	local actions = {}
+
+    if right and useitem == nil then
+        if inst.components.playercontroller ~= nil and inst.components.playercontroller.isclientcontrollerattached then
+            if inst.CollectUpgradeModuleActions then
+                inst:CollectUpgradeModuleActions(actions)
+            end
+        end
+
+        if inst.checkingmapactions then
+			if inst.components.skilltreeupdater then
+				if inst.components.skilltreeupdater:IsActivated("wx78_remotebodyswap") then
+					table.insert(actions, ACTIONS.SWAPBODIES_MAP)
+				end
+				if inst.components.skilltreeupdater:IsActivated("wx78_scoutdrone_1") then
+					table.insert(actions, ACTIONS.MAPSCOUTSELECT_MAP)
+				end
+			end
+        end
+    end
+
+	return actions
+end
+
+local function OnSetOwner(inst)
+    if inst.components.playeractionpicker ~= nil then
+        inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
+    end
+    if TheWorld.ismastersim then
+        inst.wx78_classified.Network:SetClassifiedTarget(inst)
+    end
+end
+
+local function AttachClassified_wx78(inst, classified)
+    inst.wx78_classified = classified
+    inst.ondetach_wx78_classified = function() inst:DetachClassified_wx78() end
+    inst:ListenForEvent("onremove", inst.ondetach_wx78_classified, classified)
+end
+
+local function DetachClassified_wx78(inst)
+    inst.wx78_classified = nil
+    inst.ondetach_wx78_classified = nil
+end
+
+----------------------------------------------------------------------------------------
+
+local function OnRemoveEntity(inst)
+    if inst.wx78_classified ~= nil then
+        if TheWorld.ismastersim then
+            inst.wx78_classified:Remove()
+            inst.wx78_classified = nil
+        else
+            inst.wx78_classified._parent = nil
+            inst:RemoveEventCallback("onremove", inst.ondetach_wx78_classified, inst.wx78_classified)
+            inst:DetachClassified_wx78()
+        end
+    end
+    if inst._OnRemoveEntity ~= nil then
+        inst._OnRemoveEntity(inst)
+    end
+end
+
 local function common_postinit(inst)
     inst:AddTag("electricdamageimmune")
     --electricdamageimmune is for combat and not lightning strikes
     --also used in stategraph for not stomping custom light values
-    
+
     inst:AddTag("batteryuser")          -- from batteryuser component
     inst:AddTag("chessfriend")
     inst:AddTag("HASHEATER")            -- from heater component
     inst:AddTag("soulless")
     inst:AddTag("upgrademoduleowner")   -- from upgrademoduleowner component
+    inst:AddTag("wx78_shield")          -- from wx78_shield component
 
     if TheNet:GetServerGameMode() == "quagmire" then
         inst:AddTag("quagmire_shopper")
@@ -618,27 +726,37 @@ local function common_postinit(inst)
         if not TheNet:IsDedicated() then
             inst.CreateMoistureMeter = WX78MoistureMeter
         end
-
-        inst._forced_nightvision = net_bool(inst.GUID, "wx78.forced_nightvision", "forced_nightvision_dirty")
-        inst:ListenForEvent("playeractivated", OnPlayerActivated)
-        inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
     end
+    inst.AttachClassified_wx78 = AttachClassified_wx78
+    inst.DetachClassified_wx78 = DetachClassified_wx78
+    inst:ListenForEvent("setowner", OnSetOwner)
 
-    inst.AnimState:AddOverrideBuild("wx_upgrade")
+    inst.AnimState:AddOverrideBuild("player_wx78_actions")
 
     inst.components.talker.mod_str_fn = string.utf8upper
 
     inst.foleysound = "dontstarve/movement/foley/wx78"
 
-    ----------------------------------------------------------------
-    -- For UI save/loading
-    inst.GetEnergyLevel = CLIENT_GetEnergyLevel
-    inst.GetModulesData = CLIENT_GetModulesData
+    inst:AddComponent("wx78_abilitycooldowns")
 
+	WX78Common.AddHeatSteamFx_Common(inst)
+	WX78Common.AddDizzyFx_Common(inst)
+
+    inst.GetMinimumAcceptableMoisture = COMMON_GetMinimumAcceptableMoisture
+    inst.GetShieldPenetrationThreshold = COMMON_GetShieldPenetrationThreshold
+    inst.GetCurrentShield = COMMON_GetCurrentShield
+    inst.GetMaxShield = COMMON_GetMaxShield
+    inst.GetCanShieldCharge = COMMON_GetCanShieldCharge
+    inst.ModifySpeedMultiplier = COMMON_ModifySpeedMultiplier -- Also used for locomotor:SetSlowMultiplier in wx78module_defs
+    inst.inventory_EquippableWalkSpeedMultModifier = COMMON_ModifySpeedMultiplier
+    inst.ExtraConfigurePlayerLocomotor = COMMON_ExtraConfigurePlayerLocomotor
+    WX78Common.SetupUpgradeModuleOwnerInstanceFunctions(inst)
+	inst.StopUsingDrone = COMMON_StopUsingDrone
+    inst.StopInspectingModules = COMMON_StopInspectingModules
     ----------------------------------------------------------------
-    -- For actionfail tests
-    inst.CanUpgradeWithModule = CLIENT_CanUpgradeWithModule
-    inst.CanRemoveModules = CLIENT_CanRemoveModules
+    inst._OnRemoveEntity = inst.OnRemoveEntity
+    inst.OnRemoveEntity = OnRemoveEntity
+    WX78Common.Initialize_Common(inst)
 end
 
 local function master_postinit(inst)
@@ -648,16 +766,17 @@ local function master_postinit(inst)
 	inst.customidlestate = "wx78_funnyidle"
 
     ----------------------------------------------------------------
+
+    inst.wx78_classified = SpawnPrefab("wx78_classified")
+    inst.wx78_classified.entity:SetParent(inst.entity)
+
+    ----------------------------------------------------------------
     inst.components.health:SetMaxHealth(TUNING.WX78_HEALTH)
     inst.components.hunger:SetMax(TUNING.WX78_HUNGER)
     inst.components.sanity:SetMax(TUNING.WX78_SANITY)
-
     ----------------------------------------------------------------
     inst._gears_eaten = 0
-    inst._chip_inuse = 0
     inst._moisture_steps = 0
-    inst._temperature_modulelean = 0        -- Positive if "hot", negative if "cold"; see wx78_moduledefs
-    inst._num_frostybreath_modules = 0      -- So modules can activate WX's frostybreath outside of winter/low worldstate temperature
 
     ----------------------------------------------------------------
     if inst.components.eater ~= nil then
@@ -671,6 +790,8 @@ local function master_postinit(inst)
         inst.components.freezable.onfreezefn = OnFrozen
     end
 
+    inst.GetChargeRegenTime = GetChargeRegenTime
+
     ----------------------------------------------------------------
     inst:AddComponent("upgrademoduleowner")
     inst.components.upgrademoduleowner.onmoduleadded = OnUpgradeModuleAdded
@@ -679,6 +800,7 @@ local function master_postinit(inst)
     inst.components.upgrademoduleowner.onallmodulespopped = OnAllUpgradeModulesRemoved
     inst.components.upgrademoduleowner.canupgradefn = CanUseUpgradeModule
     inst.components.upgrademoduleowner:SetChargeLevel(3)
+    inst.components.upgrademoduleowner:SetMaxCharge(TUNING.WX78_INITIAL_MAXCHARGELEVEL)
 
     inst:ListenForEvent("energylevelupdate", OnUpgradeModuleChargeChanged)
 
@@ -688,17 +810,18 @@ local function master_postinit(inst)
 
     ----------------------------------------------------------------
     inst:AddComponent("batteryuser")
-    inst.components.batteryuser.onbatteryused = OnChargeFromBattery
+	inst.components.batteryuser:SetOnBatteryUsedFn(OnChargeFromBattery)
 
     ----------------------------------------------------------------
-    inst:AddComponent("preserver")
-    inst.components.preserver:SetPerishRateMultiplier(ModuleBasedPreserverRateFn)
 
-    ----------------------------------------------------------------
-    inst:AddComponent("heater")
-    inst.components.heater:SetThermics(false, false)
-    inst.components.heater.heatfn = GetThermicTemperatureFn
+    inst:AddComponent("wx78_shield")
+    inst.components.wx78_shield:SetMax(1)
+    inst.components.wx78_shield:SetCurrent(0)
+    inst.components.health.deltamodifierfn = RedirectToWxShield
 
+	inst:AddComponent("wx78_dronescouttracker")
+    inst.components.wx78_dronescouttracker:SetOnStartTrackingFn(OnDroneStartTracking)
+    inst.components.wx78_dronescouttracker:SetOnStopTrackingFn(OnDroneStopTracking)
     ----------------------------------------------------------------
     inst.components.foodaffinity:AddPrefabAffinity("butterflymuffin", TUNING.AFFINITY_15_CALORIES_LARGE)
 
@@ -714,6 +837,8 @@ local function master_postinit(inst)
     inst:ListenForEvent("startstarving", OnStartStarving)
     inst:ListenForEvent("stopstarving", OnStopStarving)
     inst:ListenForEvent("timerdone", OnTimerFinished)
+    inst:ListenForEvent("ondeactivateskill_server", OnDeactivateSkill)
+    inst:ListenForEvent("ms_skilltreeinitialized", OnSkillTreeInitialized)
 
     ----------------------------------------------------------------
     inst.components.playerlightningtarget:SetHitChance(TUNING.WX78_LIGHTNING_TARGET_CHANCE)
@@ -723,18 +848,23 @@ local function master_postinit(inst)
     OnBecameRobot(inst)
 
     ----------------------------------------------------------------
-    inst.AddTemperatureModuleLeaning = AddTemperatureModuleLeaning
-    inst.SetForcedNightVision = SetForcedNightVision
+    inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.TryToSpawnBackupBody = TryToSpawnBackupBody
 
     ----------------------------------------------------------------
+
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    WX78Common.Initialize_Master(inst)
 
     ----------------------------------------------------------------
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/wx78").master_postinit(inst)
     elseif TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "prefabs/wx78").master_postinit(inst)
+    else
+        inst.components.combat.customdamagemultfn = CustomCombatDamage
     end
 end
 

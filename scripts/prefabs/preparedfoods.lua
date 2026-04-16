@@ -121,6 +121,7 @@ local function MakePreparedFood(data)
         inst.components.edible.nochill = data.nochill or nil
         inst.components.edible.spice = data.spice
         inst.components.edible:SetOnEatenFn(data.oneatenfn)
+        inst.components.edible.chargevalue = data.chargevalue or nil -- Wx-78
 
         inst:AddComponent("inspectable")
 

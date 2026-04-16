@@ -497,7 +497,8 @@ local function _CanEntitySeeInDark(inst)
         return inst.components.playervision:HasNightVision()
     end
     local inventory = inst.replica.inventory
-    return inventory ~= nil and inventory:EquipHasTag("nightvision")
+    return inst:HasTag("canseeindark")
+        or (inventory ~= nil and inventory:EquipHasTag("nightvision"))
 end
 
 function CanEntitySeeInDark(inst)
@@ -780,10 +781,12 @@ function GetSkilltreeBG_Internal(imagename)
     local images2 = "images/skilltree3.xml"
     local images3 = "images/skilltree4.xml"
     local images4 = "images/skilltree5.xml"
+    local images5 = "images/skilltree6.xml"
     return TheSim:AtlasContains(images1, imagename) and images1
             or TheSim:AtlasContains(images2, imagename) and images2
             or TheSim:AtlasContains(images3, imagename) and images3
             or TheSim:AtlasContains(images4, imagename) and images4
+            or TheSim:AtlasContains(images5, imagename) and images5
             or nil
 end
 
@@ -856,24 +859,66 @@ function UnregisterGlobalMapIcon(inst)
         return
     end
     GlobalMapIconsDB.insts[inst] = nil
-    if GlobalMapIconsDB.prefabs[inst.prefab] then
-        GlobalMapIconsDB.prefabs[inst.prefab][inst] = nil
-        if next(GlobalMapIconsDB.prefabs[inst.prefab]) == nil then
-            GlobalMapIconsDB.prefabs[inst.prefab] = nil
+	local name = inst._GlobalMapIconsDB_Name or inst.prefab
+	if GlobalMapIconsDB.prefabs[name] then
+		GlobalMapIconsDB.prefabs[name][inst] = nil
+		if next(GlobalMapIconsDB.prefabs[name]) == nil then
+			GlobalMapIconsDB.prefabs[name] = nil
         end
     end
     inst:RemoveEventCallback("onremove", UnregisterGlobalMapIcon)
 end
-function RegisterGlobalMapIcon(inst)
+function RegisterGlobalMapIcon(inst, name)
     if GlobalMapIconsDB.insts[inst] ~= nil then
         print("RegisterGlobalMapIcon called for a second time for inst", inst)
         print(_TRACEBACK())
         return
     end
+	name = name or inst.prefab
+	inst._GlobalMapIconsDB_Name = name ~= inst.prefab and name or nil
     GlobalMapIconsDB.insts[inst] = true
-    GlobalMapIconsDB.prefabs[inst.prefab] = GlobalMapIconsDB.prefabs[inst.prefab] or {}
-    GlobalMapIconsDB.prefabs[inst.prefab][inst] = true
+	GlobalMapIconsDB.prefabs[name] = GlobalMapIconsDB.prefabs[name] or {}
+	GlobalMapIconsDB.prefabs[name][inst] = true
     inst:ListenForEvent("onremove", UnregisterGlobalMapIcon)
+end
+
+function FindClosestMapIconInRangeSq(name, x, y, z, rangesq, restricted_doer)
+	local mapent
+	local ents_bin = GlobalMapIconsDB.prefabs[name]
+	if ents_bin then
+		local ismastersim = TheWorld.ismastersim
+		for ent in pairs(ents_bin) do
+			local isrestricted
+			if restricted_doer then
+				if ent.MiniMapEntity then
+					--old style global icons use MiniMapEntity:SetRestriction(...)
+					if not ent.MiniMapEntity:EntityHasRestriction(restricted_doer.GUID) then
+						isrestricted = true
+					end
+				elseif ismastersim and ent.owner ~= restricted_doer then
+					--see global tracking icons (host needs to validate this way, clients don't because the icon should be classified.)
+					isrestricted = true
+				end
+			end
+			if not isrestricted then
+				local x1, _, z1 = ent.Transform:GetWorldPosition()
+				local dsq = math2d.DistSq(x, z, x1, z1)
+				if dsq < rangesq then
+					rangesq = dsq
+					mapent = ent
+				end
+			end
+		end
+	end
+	return mapent
+end
+
+function FindClosestMapIconInRange(name, x, y, z, range, restricted_doer)
+	return FindClosestMapIconInRangeSq(name, x, y, z, range * range, restricted_doer)
+end
+
+function FindClosestMapIcon(name, x, y, z, restricted_doer)
+	return FindClosestMapIconInRangeSq(name, x, y, z, math.huge, restricted_doer)
 end
 
 ----------------------------------------------------------------------------------------------

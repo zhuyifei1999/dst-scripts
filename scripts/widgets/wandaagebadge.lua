@@ -306,4 +306,12 @@ function OldAgeBadge:HealthDelta(data)
     end
 end
 
+function OldAgeBadge:ForceHealthPulse(data)
+    local pulse_colour = (data.up and "green") or (data.down and "red")
+    if pulse_colour then
+        self:Pulse(pulse_colour)
+        self.turnofftask = self.inst:DoTaskInTime(0.25, function() self:PulseOff() end)
+    end
+end
+
 return OldAgeBadge

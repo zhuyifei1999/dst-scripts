@@ -1,3 +1,5 @@
+local WX78Common = require("prefabs/wx78_common")
+
 local assets =
 {
     Asset("ANIM", "anim/shadowheart.zip"),
@@ -42,11 +44,16 @@ local function fn()
 
     inst:AddTag("shadowheart")
 
+    MakeItemSocketable_Client(inst, "socket_shadow")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    WX78Common.MakeItemSocketable(inst)
+    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.MEDIUM)
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)

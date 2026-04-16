@@ -87,8 +87,8 @@ local function GetBurstTargets(player)
 			-- filter out things that are allies or followers of allies, but not burnable bernie
 			local combat = player.replica.combat
 			local isally = combat and combat:IsAlly(v)
-			if not (isally and v:HasTag("bigbernie") and v:HasTag("canlight")) then
-				if isally or combat == nil or combat:TargetHasFriendlyLeader(v) then
+			if not (isally and v:HasAllTags("bigbernie", "canlight")) then
+				if isally or combat == nil or combat:IsAlly(v) then
 					-- remove alies
 					should_remove = true
 				elseif v:HasTag("companion") then

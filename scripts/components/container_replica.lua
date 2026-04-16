@@ -334,22 +334,43 @@ function Container:EnableReadOnlyContainer(enable)
 end
 
 function Container:IsReadOnlyContainer()
-    if not self.classified then
-        return false
-    end
-
-    return self.classified.readonlycontainer:value()
+	return self.classified ~= nil and self.classified.readonlycontainer:value()
 end
 
 function Container:CanTakeItemInSlot(item, slot)
-    return item ~= nil
-        and item.replica.inventoryitem ~= nil
-        and item.replica.inventoryitem:CanGoInContainer()
-        and not item.replica.inventoryitem:CanOnlyGoInPocket()
-        and (not item.replica.inventoryitem:CanOnlyGoInPocketOrPocketContainers() or self.inst.replica.inventoryitem and self.inst.replica.inventoryitem:CanOnlyGoInPocket())
-        and not self:IsReadOnlyContainer()
-        and not (GetGameModeProperty("non_item_equips") and item.replica.equippable ~= nil)
-        and (self.itemtestfn == nil or self:itemtestfn(item, slot))
+	local inventoryitem = item and item.replica.inventoryitem
+	if inventoryitem == nil then
+		return false
+	elseif not inventoryitem:CanGoInContainer() or inventoryitem:CanOnlyGoInPocket() then
+		return false
+	elseif inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
+		local my_inventoryitem = self.inst.replica.inventoryitem
+		if not (my_inventoryitem and my_inventoryitem:CanOnlyGoInPocket()) then
+			return false
+		end
+	end
+
+	if self:IsReadOnlyContainer() then
+		return false
+	elseif GetGameModeProperty("non_item_equips") and item.replica.equippable then
+		return false
+	elseif slot then
+		if slot < 1 or slot > self:GetNumSlots() then
+			return false
+		end
+		local existingitem = self:GetItemInSlot(slot)
+		local existing_inventoryitem = existingitem and existingitem.replica.inventoryitem
+		if existing_inventoryitem and existing_inventoryitem:IsLockedInSlot() then
+			local existing_stackable = existingitem.replica.stackable
+			if not (existing_stackable and
+					not existing_stackable:IsFull() and
+					existing_stackable:CanStackWith(item))
+			then
+				return false
+			end
+		end
+	end
+	return self.itemtestfn == nil or self:itemtestfn(item, slot)
 end
 
 function Container:GetSpecificSlotForItem(item)
@@ -384,7 +405,7 @@ function Container:IsSideWidget()
     return self.issidewidget
 end
 
-Container.SetOpener = function() end --depreciated, kept in case a mod calls this function.
+Container.SetOpener = function() end --deprecated, kept in case a mod calls this function.
 
 function Container:IsOpenedBy(guy)
     if self.inst.components.container ~= nil then

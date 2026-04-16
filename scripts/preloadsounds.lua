@@ -274,8 +274,9 @@ function PreloadSounds()
     --      but preloadsounds.lua is loaded first, so we only
     --      access the constants within function calls.
     PreloadSoundList({
-        (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].bank) or
-        (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].bank) or
-        "music_frontend.fsb",
+		(	FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] or
+			SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] or
+			DEFAULT_FE_MUSIC
+		).bank,
     })
 end

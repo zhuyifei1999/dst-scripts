@@ -989,7 +989,7 @@ AddGameDebugKey(KEY_KP_PLUS, function()
                 ConsoleRemote("c_sethealth(%d)", {1})
                 ConsoleRemote("c_setsanity(%d)", {1})
             else
-                ConsoleRemote("ThePlayer.components.sanity:DoDelta(%d)", {5})
+                ConsoleRemote("c_addelectricity(%d)", {1})
             end
         elseif TheInput:IsKeyDown(KEY_SHIFT) then
             ConsoleRemote("ThePlayer.components.hunger:DoDelta(%d)", {25})
@@ -1006,7 +1006,7 @@ AddGameDebugKey(KEY_KP_PLUS, function()
                 c_sethealth(1)
                 c_setsanity(1)
             else
-                MainCharacter.components.sanity:DoDelta(5)
+                c_addelectricity(1)
             end
         elseif TheInput:IsKeyDown(KEY_SHIFT) then
             MainCharacter.components.hunger:DoDelta(25)
@@ -1025,11 +1025,11 @@ AddGameDebugKey(KEY_KP_MINUS, function()
         if TheInput:IsKeyDown(KEY_CTRL) then
             --ConsoleRemote("ThePlayer.components.temperature:DoDelta(%d)", {-10})
             --ConsoleRemote("TheSim:SetTimeScale(%d)", {TheSim:GetTimeScale() - .25})
-            ConsoleRemote("ThePlayer.components.sanity:DoDelta(%d)", {-5})
+            ConsoleRemote("c_addelectricity(%d)", {-1})
         elseif TheInput:IsKeyDown(KEY_SHIFT) then
             ConsoleRemote("ThePlayer.components.hunger:DoDelta(%d)", {-25})
         elseif TheInput:IsKeyDown(KEY_ALT) then
-            ConsoleRemote("ThePlayer.components.sanity:SetPercent(%d)", {0})
+            ConsoleRemote("ThePlayer.components.sanity:DoDelta(%d)", {-5})
         else
             ConsoleRemote("ThePlayer.components.health:DoDelta(%d)", {-25})
         end
@@ -1037,11 +1037,11 @@ AddGameDebugKey(KEY_KP_MINUS, function()
         if TheInput:IsKeyDown(KEY_CTRL) then
             --MainCharacter.components.temperature:DoDelta(-10)
             --TheSim:SetTimeScale(TheSim:GetTimeScale() - .25)
-            MainCharacter.components.sanity:DoDelta(-5)
+            c_addelectricity(-1)
         elseif TheInput:IsKeyDown(KEY_SHIFT) then
             MainCharacter.components.hunger:DoDelta(-25)
         elseif TheInput:IsKeyDown(KEY_ALT) then
-            MainCharacter.components.sanity:SetPercent(0)
+            MainCharacter.components.sanity:DoDelta(-5)
         else
             MainCharacter.components.health:DoDelta(-25, nil, "debug_key")
         end

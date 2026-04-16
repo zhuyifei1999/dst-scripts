@@ -463,6 +463,7 @@ local function fn()
 
 	inst:AddComponent("gestaltcapturable")
 	inst.components.gestaltcapturable:SetLevel(2)
+    inst.components.gestaltcapturable:SetIsPlanar(true)
 	inst.components.gestaltcapturable:SetOnCapturedFn(OnCaptured)
 
 	inst.debris = nil

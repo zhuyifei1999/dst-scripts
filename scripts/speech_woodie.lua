@@ -23,6 +23,9 @@ return{
             NOTMERM = "Must be a merm thing.",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "Only for robots.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "I need to take care of the pet I have.",
 			TICOON = "I've already got another one of these critters helping me.",
             BUSY_STATION = "We gotta wait, Luce.",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "Not very talkative, eh?",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "I got no business in there.",
             NOTSOULJARHANDLER = "I don't deal with souls.",
             RESTRICTED = "Can't do it.",
+            NOTAROBOT = "Only for robots.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "I wouldn't wanna muddle it up.",
             NOTSOULJARHANDLER = "I don't deal with souls.",
             RESTRICTED = "Can't do it.",
+            NOTAROBOT = "Only for robots.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -417,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -429,6 +454,8 @@ return{
 			NOT_MINE = "She's not mine.",
 
 			CANNOT_FIX_DRONE = "It's beyond repair.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -1201,6 +1228,14 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "The horses must be busy now, Luce.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Maybe I've got enough.",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -2811,7 +2846,11 @@ return{
         ROCKS = "Could make a decent little inukshuk with these.",
         ROOK = "Hmm... does the rook move in a straight line? I forget.",
         ROPE = "Good for holding stuff to other stuff.",
-        ROTTENEGG = "One less bird. Good.",
+        ROTTENEGG =
+        {
+            GENERIC = "One less bird. Good.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "I'm majestic enough as is.",
         JELLYBEAN = "You can barely taste the bean!",
         SADDLE_BASIC = "Yep, that'll get us there.",
@@ -2913,7 +2952,11 @@ return{
 			GENERIC = "They come in yellow now?",
 			SLEEPING = "You're snoozin' fer a bruisin'.",
 		},
-		SPOILED_FOOD = "Aw, it's Diefenbakered.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Aw, it's Diefenbakered.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "I really wish I hadn't seen that.",
@@ -4075,7 +4118,11 @@ return{
         FISHMEAT_COOKED = "I wish I had some chips.",
         FISHMEAT_SMALL = "I hope I don't attract bears.",
         FISHMEAT_SMALL_COOKED = "Looks good to me.",
-		SPOILED_FISH = "I think it's time to throw this out.",
+		SPOILED_FISH =
+        {
+            GENERIC = "I think it's time to throw this out.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Reminds me of the old salmon fisheries.",
         POCKET_SCALE = "I'm gonna reel in a whopper, no doubt aboot it.",
@@ -6022,6 +6069,45 @@ return{
 
         YOTH_KNIGHTSTICK = "Looks like the one I had as a kid.",
         YOTH_CHAIR_ROCKING_ITEM = "Might be nice for stress relief.", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "Adventurous little guy, eh?",
+		WX78_DRONE_DELIVERY = "To think I carried all my stuff to the cabin.",
+		WX78_DRONE_ZAP = "Look at that airborne menace, Luce!",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "Some sort of robot toy.",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "Some fancy robot bits.",
+        WX78MODULE_STACKSIZE = "Some fancy robot bits.",
+        WX78MODULE_DIGESTION = "Some fancy robot bits.",
+        WX78MODULE_SCREECH = "Some fancy robot bits.",
+        WX78MODULE_LIGHT2 = "Some fancy robot bits.",
+        WX78MODULE_SHIELDING = "Some fancy robot bits.",
+        WX78MODULE_SPIN = "Some fancy robot bits.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+--fallback to speech_wilson.lua 			NOPOWER = "only_used_by_wx78", -- Held but can't open due to wx charge level too low
+            GENERIC = "Anything good in there, Lucy?", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "Looks good?",
+            GENERIC = "I'd break my teeth on that!",
+        },
+
+        WX78_POSSESSEDBODY = "Who are you?!",
+
+        WX78_GESTALTTRAPPER = "What is that robot up to now?",
+
+        SHADOW_HEART_VEIN = "Don't worry, Luce. I won't let it grab you.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

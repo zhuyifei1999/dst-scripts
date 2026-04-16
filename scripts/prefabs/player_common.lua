@@ -1417,6 +1417,12 @@ local function OnDespawn(inst, migrationdata)
 
     if (GetGameModeProperty("drop_everything_on_despawn") or TUNING.DROP_EVERYTHING_ON_DESPAWN) and migrationdata == nil then
         inst.components.inventory:DropEverything()
+        if inst.components.socketholder then
+            local items = inst.components.socketholder:UnsocketEverything()
+            for _, item in ipairs(items) do
+                Launch2(item, inst, 1, 1, 0.2, 0, 4)
+            end
+        end
 
 		local followers = inst.components.leader.followers
 		for k, v in pairs(followers) do
@@ -1425,6 +1431,12 @@ local function OnDespawn(inst, migrationdata)
 			elseif k.components.container ~= nil then
 				k.components.container:DropEverything()
 			end
+            if k.components.socketholder then
+                local items = k.components.socketholder:UnsocketEverything()
+                for _, item in ipairs(items) do
+                    Launch2(item, k, 1, 1, 0.2, 0, 4)
+                end
+            end
 		end
     else
         inst.components.inventory:DropEverythingWithTag("irreplaceable")
@@ -1573,6 +1585,12 @@ fns.SetCameraZoomed = function(inst, iszoomed)
     if TheWorld.ismastersim then
         inst.player_classified.iscamerazoomed:set(iszoomed)
     end
+end
+
+fns.SetAerialCamera = function(inst, isaerial)
+	if TheWorld.ismastersim then
+		inst.player_classified.isaerialcamera:set(isaerial)
+	end
 end
 
 fns.SnapCamera = function(inst, resetrot)
@@ -1920,7 +1938,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_cannon.zip"),
 		Asset("ANIM", "anim/player_actions_scythe.zip"),
 		Asset("ANIM", "anim/player_actions_deploytoss.zip"),
-		Asset("ANIM", "anim/player_actions_spray.zip"),
 
         Asset("ANIM", "anim/player_boat.zip"),
         Asset("ANIM", "anim/player_boat_plank.zip"),
@@ -2297,22 +2314,16 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         end
     end
 
-local function auratest(inst, target, can_initiate)
-
+local function auratest(inst, target)
     if target.components.minigame_participator ~= nil then
         return false
     end
 
-    if (target:HasTag("player") and not TheNet:GetPVPEnabled()) or target:HasTag("ghost") or target:HasTag("noauradamage") then
+	if (target.isplayer and not TheNet:GetPVPEnabled()) or target:HasAnyTag("ghost", "noauradamage") then
         return false
     end
 
-    if target.components.follower and target.components.follower:GetLeader() ~= nil and
-         target.components.follower:GetLeader():HasTag("player") then
-        return false
-    end
-
-    return true
+	return not inst.components.combat:IsAlly(target)
 end
 
 
@@ -2343,16 +2354,7 @@ end
         end
         inst.AnimState:PlayAnimation("idle")
 
-        -- NOTES(JBK): Keep these in sync with wortox_decoy. [WSDCSC]
-        inst.AnimState:Hide("ARM_carry")
-        inst.AnimState:Hide("HAT")
-        inst.AnimState:Hide("HAIR_HAT")
-        inst.AnimState:Show("HAIR_NOHAT")
-        inst.AnimState:Show("HAIR")
-        inst.AnimState:Show("HEAD")
-        inst.AnimState:Hide("HEAD_HAT")
-		inst.AnimState:Hide("HEAD_HAT_NOHELM")
-		inst.AnimState:Hide("HEAD_HAT_HELM")
+        ex_fns.SetupBaseSymbolVisibility(inst)
 
         inst.AnimState:OverrideSymbol("fx_wipe", "wilson_fx", "fx_wipe")
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
@@ -2360,28 +2362,7 @@ end
         inst.AnimState:OverrideSymbol("snap_fx", "player_actions_fishing_ocean_new", "snap_fx")
         inst.AnimState:OverrideSymbol("chalice_swap_comp", "chalice_swap", "chalice_swap_comp")
 
-        --Additional effects symbols for hit_darkness animation
-        inst.AnimState:AddOverrideBuild("player_hit_darkness")
-        inst.AnimState:AddOverrideBuild("player_receive_gift")
-        inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
-        inst.AnimState:AddOverrideBuild("player_actions_uniqueitem_2")
-        inst.AnimState:AddOverrideBuild("player_wrap_bundle")
-        inst.AnimState:AddOverrideBuild("player_lunge")
-        inst.AnimState:AddOverrideBuild("player_attack_leap")
-        inst.AnimState:AddOverrideBuild("player_superjump")
-        inst.AnimState:AddOverrideBuild("player_multithrust")
-        inst.AnimState:AddOverrideBuild("player_parryblock")
-        inst.AnimState:AddOverrideBuild("player_emote_extra")
-        inst.AnimState:AddOverrideBuild("player_boat_plank")
-        inst.AnimState:AddOverrideBuild("player_boat_net")
-        inst.AnimState:AddOverrideBuild("player_boat_sink")
-        inst.AnimState:AddOverrideBuild("player_oar")
-
-        inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
-        inst.AnimState:AddOverrideBuild("player_actions_farming")
-        inst.AnimState:AddOverrideBuild("player_actions_cowbell")
-
-        inst.AnimState:AddOverrideBuild("player_shadow_thrall_parasite")
+        ex_fns.SetupOverrideBuilds(inst)
 
         inst.DynamicShadow:SetSize(1.3, .6)
 
@@ -2851,6 +2832,7 @@ end
         inst.AddCameraExtraDistance = fns.AddCameraExtraDistance
         inst.RemoveCameraExtraDistance = fns.RemoveCameraExtraDistance
         inst.SetCameraZoomed = fns.SetCameraZoomed
+		inst.SetAerialCamera = fns.SetAerialCamera
         inst.SnapCamera = fns.SnapCamera
         inst.ScreenFade = fns.ScreenFade
         inst.ScreenFlash = fns.ScreenFlash

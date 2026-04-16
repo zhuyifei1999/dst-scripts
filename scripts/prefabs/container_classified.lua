@@ -475,7 +475,7 @@ local function ReturnActiveItemToSlot(inst, slot)
             if item == nil then
                 local giveitem = SlotItem(active_item, slot)
                 PushItemGet(inst, giveitem, true)
-            elseif item.replica.stackable ~= nil and item.prefab == active_item.prefab and item:StackableSkinHack(active_item) then
+            elseif item.replica.stackable ~= nil and item.replica.stackable:CanStackWith(active_item) then
                 local stacksize = item.replica.stackable:StackSize() + active_item.replica.stackable:StackSize()
                 local maxsize = item.replica.stackable:MaxSize()
                 PushStackSize(inst, nil, item, math.min(stacksize, maxsize), true)
@@ -579,7 +579,7 @@ local function AddOneOfActiveItemToSlot(inst, slot)
         local inventory, active_item, busy = QueryActiveItem()
         if not busy and active_item ~= nil then
             local item = inst:GetItemInSlot(slot)
-            if item ~= nil and item.prefab == active_item.prefab and item:StackableSkinHack(active_item) then
+            if item ~= nil and item.replica.stackable:CanStackWith(active_item) then
                 PushStackSize(inst, nil, item, item.replica.stackable:StackSize() + 1, true)
                 PushStackSize(inst, inventory, active_item, nil, nil, active_item.replica.stackable:StackSize() - 1, true)
                 SendRPCToServer(RPC.AddOneOfActiveItemToSlot, slot, inst._parent)
@@ -593,7 +593,7 @@ local function AddAllOfActiveItemToSlot(inst, slot)
         local inventory, active_item, busy = QueryActiveItem()
         if not busy and active_item ~= nil then
             local item = inst:GetItemInSlot(slot)
-            if item ~= nil and item.prefab == active_item.prefab and item:StackableSkinHack(active_item) then
+            if item ~= nil and item.replica.stackable:CanStackWith(active_item) then
                 local stacksize = item.replica.stackable:StackSize() + active_item.replica.stackable:StackSize()
                 local maxsize = item.replica.stackable:MaxSize()
                 if stacksize <= maxsize then
@@ -810,9 +810,9 @@ local function ReceiveItem(inst, item, count, forceslot)
                     if emptyslot == nil then
                         emptyslot = i
                     end
-                elseif slotitem.prefab == item.prefab and item:StackableSkinHack(slotitem) and
-                    slotitem.replica.stackable ~= nil and
-                    not slotitem.replica.stackable:IsFull() then
+                elseif slotitem.replica.stackable ~= nil and
+                    not slotitem.replica.stackable:IsFull() and
+                    slotitem.replica.stackable:CanStackWith(item) then
                     local stacksize = slotitem.replica.stackable:StackSize() + count
                     local maxsize = slotitem.replica.stackable:MaxSize()
                     if stacksize > maxsize then

@@ -517,6 +517,7 @@ function Builder:CheckIngredientsForMimic(ingredients)
     for _, ents in pairs(ingredients) do
         for item in pairs(ents) do
             if item.components.itemmimic then
+                -- Do not check ShouldItemMimicBeRevealedFor here, ingredients must be earned.
                 item.components.itemmimic:TurnEvil(self.inst)
                 return true
             end
@@ -531,6 +532,7 @@ function Builder:CheckDiscountEquipsForMimic()
     if self.inst.components.inventory then
         for slot, item in pairs(self.inst.components.inventory.equipslots) do
             if item and item.prefab == "greenamulet" and item.components.itemmimic then
+                -- Do not check ShouldItemMimicBeRevealedFor here, ingredients must be earned.
                 item.components.itemmimic:TurnEvil(self.inst)
                 return true
             end
@@ -916,6 +918,9 @@ function Builder:HasIngredients(recipe)
 		if self.freebuildmode then
 			return true
 		end
+        if recipe.getlimitedrecipecount and recipe:getlimitedrecipecount(self.inst) <= 0 then
+            return false
+        end
 		for i, v in ipairs(recipe.ingredients) do
             if not self.inst.components.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self.ingredientmod)), true) then
 				return false

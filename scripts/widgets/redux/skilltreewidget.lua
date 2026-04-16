@@ -9,6 +9,15 @@ local UIAnim = require "widgets/uianim"
 
 require("util")
 
+local BG_WIDTH_ART = 625
+local BG_HEIGHT_ART = 384
+local BG_WIDTH_INGAME = 521
+local BG_HEIGHT_INGAME = 320
+local TOLERANCE = 2 -- NOTES(JBK): Tolerance for atlasing packing with UV coordinates rounding errors.
+local function IsBackgroundSizeGood(bg)
+    local width, height = bg:GetSize()
+    return math.abs(width - BG_WIDTH_ART) <= TOLERANCE and math.abs(height - BG_HEIGHT_ART) <= TOLERANCE
+end
 -------------------------------------------------------------------------------------------------------
 local SkillTreeWidget = Class(Widget, function(self, prefabname, targetdata, fromfrontend)
     Widget._ctor(self, "SkillTreeWidget")
@@ -34,8 +43,25 @@ local SkillTreeWidget = Class(Widget, function(self, prefabname, targetdata, fro
     else
         self.bg_tree = self.root:AddChild(Image(bg_tree_atlas, bg_tree_imagename))
     end
-    self.bg_tree:SetPosition(2,-20)
-    self.bg_tree:ScaleToSize(600, 460)
+    local use_deprecated_dimensions = false
+    if not table.contains(DST_CHARACTERLIST, self.target) then
+        -- Modded characters may have already created art for their skill trees use the old fallback if the dimensions are not what we expect.
+        if not IsBackgroundSizeGood(self.bg_tree) then
+            use_deprecated_dimensions = true
+        end
+    end
+    if use_deprecated_dimensions then
+        self.bg_tree:SetPosition(2, -20)
+        self.bg_tree:ScaleToSize(600, 460)
+    else
+        -- Our backgrounds are now at a fixed resolution size to keep art and visuals in the correct aspect ratio.
+        -- The backgrounds we use are about 20% bigger for alpha visuals to antialias.
+        if BRANCH == "dev" then
+            assert(IsBackgroundSizeGood(self.bg_tree), "Skill tree background image for " .. bg_tree_imagename .. " must be of size: " .. BG_WIDTH_ART .. " x " .. BG_HEIGHT_ART)
+        end
+        self.bg_tree:SetPosition(5, 50)
+        self.bg_tree:ScaleToSize(BG_WIDTH_INGAME, BG_HEIGHT_INGAME)
+    end
 
     local defs = skilltreedefs.SKILLTREE_METAINFO[prefabname]
     local tint_bright, tint_dim

@@ -7,6 +7,7 @@ end)
 local UPDATE_RATE = 0.5
 local AVOID_PLAYER_DIST = 4.0
 local AVOID_PLAYER_STOP = 6.0
+local LEASH_RANGE = TUNING.SKILLS.WX78.MIMICHEART_SPAWN_DENSITY_RANGE * 0.5 -- FIXME(JBK): WX: Move this to data stored on the inst somewhere.
 
 local itemmimic_data = require("prefabs/itemmimic_data")
 
@@ -37,6 +38,20 @@ local function initiate_mimicry(inst, mimicable_entity)
     inst._try_mimic_task = nil
 end
 
+local function GetLeashPos(inst)
+    return inst.components.knownlocations and inst.components.knownlocations:GetLocation("leash") or nil
+end
+
+local function IsInLeashRange(inst, ent)
+    local leashpos = GetLeashPos(inst)
+    if not leashpos then
+        -- No leashpos means there is no leash so it is always in range.
+        return true
+    end
+
+    return ent:GetDistanceSqToPoint(leashpos) < LEASH_RANGE * LEASH_RANGE
+end
+
 local function LookForMimicAction(inst)
     if inst._try_mimic_task or inst.components.timer:TimerExists("mimic_blocker") then return nil end
 
@@ -47,7 +62,7 @@ local function LookForMimicAction(inst)
     ))
     local found_mimicable = nil
     for _, mimicable_entity in pairs(mimicables_nearby) do
-        if not mimicable_entity.components.itemmimic then
+        if not mimicable_entity.components.itemmimic and IsInLeashRange(inst, mimicable_entity) then
             found_mimicable = mimicable_entity
         end
     end
@@ -62,6 +77,7 @@ function ItemMimic_RevealedBrain:OnStart()
     local root = PriorityNode({
         WhileNode(function() return not self.inst.sg:HasStateTag("jumping") end, "Isn't Jumping",
             PriorityNode({
+                Leash(self.inst, GetLeashPos, LEASH_RANGE, LEASH_RANGE),
                 WhileNode(function() return self.inst.components.timer:TimerExists("recently_spawned") end, "Just Spawned",
                     PanicAndAvoid(self.inst, GetClosestPlayer, AVOID_PLAYER_STOP)
                 ),
@@ -70,7 +86,7 @@ function ItemMimic_RevealedBrain:OnStart()
                 FailIfSuccessDecorator(ActionNode(function() LookForMimicAction(self.inst) end, "Spy For Mimicables")),
                 FailIfSuccessDecorator(ConditionWaitNode(function() return not self.inst._mimicry_queued end, "Block While Doing Mimic Action")),
 
-                Wander(self.inst),
+                Wander(self.inst, GetLeashPos, LEASH_RANGE),
             }, UPDATE_RATE)
         ),
     }, UPDATE_RATE)

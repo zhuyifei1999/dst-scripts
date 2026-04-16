@@ -53,8 +53,6 @@ function ChaseAndAttack:Visit()
     end
 
     if self.status == RUNNING then
-        local is_attacking = self.inst.sg:HasStateTag("attack")
-
         if combat.target == nil or not combat.target.entity:IsValid() then
             self.status = FAILED
             combat:SetTarget(nil)

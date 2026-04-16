@@ -1,6 +1,6 @@
-local UI_LEFT, UI_RIGHT = -214, 228
+local UI_LEFT, UI_RIGHT = -207, 223
 local UI_VERTICAL_MIDDLE = (UI_LEFT + UI_RIGHT) * 0.5
-local UI_TOP, UI_BOTTOM = 176, 20
+local UI_TOP, UI_BOTTOM = 168, 0
 local TILE_SIZE, TILE_HALFSIZE = 34, 16
 local SKILLTREESTRINGS = STRINGS.SKILLTREE.WORMWOOD
 
@@ -47,7 +47,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.SAPLINGCRAFTING_TITLE,
             desc = SKILLTREESTRINGS.SAPLINGCRAFTING_DESC,
             icon = "wormwood_saplingcrafting",
-            pos = {UI_VERTICAL_MIDDLE - 105, UI_BOTTOM + 10},
+            pos = {UI_VERTICAL_MIDDLE - 100, UI_BOTTOM + 10},
 
             group = "crafting",
             tags = {"crafting"},
@@ -59,7 +59,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BERRYBUSHCRAFTING_TITLE,
             desc = SKILLTREESTRINGS.BERRYBUSHCRAFTING_DESC,
             icon = "wormwood_berrybushcrafting",
-            pos = {UI_VERTICAL_MIDDLE - 105 - 50, UI_BOTTOM + 10},
+            pos = {UI_VERTICAL_MIDDLE - 100 - 50, UI_BOTTOM + 10},
 
             group = "crafting",
             tags = {"crafting"},
@@ -72,7 +72,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.JUICYBERRYBUSHCRAFTING_TITLE,
             desc = SKILLTREESTRINGS.JUICYBERRYBUSHCRAFTING_DESC,
             icon = "wormwood_juicyberrybushcrafting",
-            pos = {UI_VERTICAL_MIDDLE - 115 - 60, UI_BOTTOM + 58},
+            pos = {UI_VERTICAL_MIDDLE - 110 - 60, UI_BOTTOM + 58},
 
             group = "crafting",
             tags = {"crafting"},
@@ -81,7 +81,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.REEDSCRAFTING_TITLE,
             desc = SKILLTREESTRINGS.REEDSCRAFTING_DESC,
             icon = "wormwood_reedscrafting",
-            pos = {UI_VERTICAL_MIDDLE - 105 - 100, UI_BOTTOM + 10},
+            pos = {UI_VERTICAL_MIDDLE - 100 - 100, UI_BOTTOM + 10},
 
             group = "crafting",
             tags = {"crafting"},
@@ -93,7 +93,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.LUREPLANTCRAFTING_TITLE,
             desc = SKILLTREESTRINGS.LUREPLANTCRAFTING_DESC,
             icon = "wormwood_lureplantbulbcrafting",
-            pos = {UI_VERTICAL_MIDDLE - 115 - 120, UI_BOTTOM + 58},
+            pos = {UI_VERTICAL_MIDDLE - 110 - 120, UI_BOTTOM + 58},
 
             group = "crafting",
             tags = {"crafting"},
@@ -103,7 +103,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.MUSHROOMPLANTER_RATEBONUS_1_TITLE,
             desc = SKILLTREESTRINGS.MUSHROOMPLANTER_RATEBONUS_1_DESC,
             icon = "wormwood_mushroomplanter_ratebonus1",
-            pos = {UI_VERTICAL_MIDDLE - 35, UI_BOTTOM + 65},
+            pos = {UI_VERTICAL_MIDDLE - 35, UI_BOTTOM + 70},
 
             group = "crafting",
             tags = {"crafting"},
@@ -115,7 +115,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.MUSHROOMPLANTER_RATEBONUS_2_TITLE,
             desc = SKILLTREESTRINGS.MUSHROOMPLANTER_RATEBONUS_2_DESC,
             icon = "wormwood_mushroomplanter_ratebonus2",
-            pos = {UI_VERTICAL_MIDDLE - 90, UI_BOTTOM + 95},
+            pos = {UI_VERTICAL_MIDDLE - 90, UI_BOTTOM + 100},
 
             group = "crafting",
             tags = {"crafting"},
@@ -128,7 +128,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.MUSHROOMPLANTER_UPGRADE_TITLE,
             desc = SKILLTREESTRINGS.MUSHROOMPLANTER_UPGRADE_DESC,
             icon = "wormwood_mushroomplanter_upgrade",
-            pos = {UI_VERTICAL_MIDDLE - 90, UI_BOTTOM + 145},
+            pos = {UI_VERTICAL_MIDDLE - 90, UI_BOTTOM + 155},
 
             group = "crafting",
             tags = {"crafting"},
@@ -140,7 +140,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.MOON_CAP_EATING_TITLE,
             desc = SKILLTREESTRINGS.MOON_CAP_EATING_DESC,
             icon = "wormwood_moon_cap_eating",
-            pos = {UI_VERTICAL_MIDDLE - 70, UI_BOTTOM + 190},
+            pos = {UI_VERTICAL_MIDDLE - 70, UI_BOTTOM + 200},
 
             group = "crafting",
             tags = {"crafting"},
@@ -149,7 +149,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.SYRUPCRAFTING_TITLE,
             desc = SKILLTREESTRINGS.SYRUPCRAFTING_DESC,
             icon = "wormwood_syrupcrafting",
-            pos = {UI_VERTICAL_MIDDLE - 30, UI_BOTTOM + 125},
+            pos = {UI_VERTICAL_MIDDLE - 30, UI_BOTTOM + 135},
 
             group = "crafting",
             tags = {"crafting"},
@@ -221,7 +221,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_SPEED1_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_SPEED1_DESC,
             icon = "wormwood_blooming_speed1",
-            pos = {UI_VERTICAL_MIDDLE + 105, UI_BOTTOM + 10},
+            pos = {UI_VERTICAL_MIDDLE + 100, UI_BOTTOM + 10},
 
             group = "gathering",
             tags = {"blooming"},
@@ -243,7 +243,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_SPEED2_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_SPEED2_DESC,
             icon = "wormwood_blooming_speed2",
-            pos = {UI_VERTICAL_MIDDLE + 105 + 50, UI_BOTTOM + 10},
+            pos = {UI_VERTICAL_MIDDLE + 100 + 50, UI_BOTTOM + 10},
 
             group = "gathering",
             tags = {"blooming"},
@@ -265,7 +265,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_OVERHEATPROTECTION_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_OVERHEATPROTECTION_DESC,
             icon = "wormwood_blooming_overheatprotection",
-            pos = {UI_VERTICAL_MIDDLE + 165, UI_BOTTOM + 60},
+            pos = {UI_VERTICAL_MIDDLE + 160, UI_BOTTOM + 60},
 
             group = "gathering",
             tags = {"blooming"},
@@ -287,7 +287,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_MAX_UPGRADE_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_MAX_UPGRADE_DESC,
             icon = "wormwood_blooming_speed3",
-            pos = {UI_VERTICAL_MIDDLE + 105 + 100, UI_BOTTOM + 10},
+            pos = {UI_VERTICAL_MIDDLE + 100 + 100, UI_BOTTOM + 10},
 
             group = "gathering",
             tags = {"blooming"},
@@ -300,7 +300,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_PHOTOSYNTHESIS_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_PHOTOSYNTHESIS_DESC,
             icon = "wormwood_blooming_photosynthesis",
-            pos = {UI_VERTICAL_MIDDLE + 165 + 55, UI_BOTTOM + 60},
+            pos = {UI_VERTICAL_MIDDLE + 160 + 55, UI_BOTTOM + 60},
 
             group = "gathering",
             tags = {"blooming"},
@@ -319,7 +319,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_FARMRANGE1_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_FARMRANGE1_DESC,
             icon = "wormwood_blooming_farmrange1",
-            pos = {UI_VERTICAL_MIDDLE + 55, UI_BOTTOM + 45 + TILE_SIZE},
+            pos = {UI_VERTICAL_MIDDLE + 55, UI_BOTTOM + 55 + TILE_SIZE},
 
             group = "gathering",
             tags = {"blooming"},
@@ -338,7 +338,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.QUICK_SELFFERTILIZER_TITLE,
             desc = SKILLTREESTRINGS.QUICK_SELFFERTILIZER_DESC,
             icon = "wormwood_quick_selffertilizer",
-            pos = {UI_VERTICAL_MIDDLE + 95, UI_BOTTOM + 115},
+            pos = {UI_VERTICAL_MIDDLE + 95, UI_BOTTOM + 125},
 
             group = "gathering",
             tags = {"blooming"},
@@ -351,7 +351,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BUGS_TITLE,
             desc = SKILLTREESTRINGS.BUGS_DESC,
             icon = "wormwood_bugs",
-            pos = {UI_VERTICAL_MIDDLE + 43, UI_BOTTOM + 150},
+            pos = {UI_VERTICAL_MIDDLE + 43, UI_BOTTOM + 160},
 
             group = "gathering",
             tags = {"blooming"},
@@ -361,7 +361,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.BLOOMING_TRAPBRAMBLE_TITLE,
             desc = SKILLTREESTRINGS.BLOOMING_TRAPBRAMBLE_DESC,
             icon = "wormwood_blooming_trapbramble",
-            pos = {UI_VERTICAL_MIDDLE + 137, UI_BOTTOM + 145},
+            pos = {UI_VERTICAL_MIDDLE + 137, UI_BOTTOM + 155},
 
             group = "gathering",
             tags = {"blooming"},
@@ -374,19 +374,19 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.ARMOR_BRAMBLE_TITLE,
             desc = SKILLTREESTRINGS.ARMOR_BRAMBLE_DESC,
             icon = "wormwood_armor_bramble",
-            pos = {UI_VERTICAL_MIDDLE + 120, UI_BOTTOM + 187},
+            pos = {UI_VERTICAL_MIDDLE + 120, UI_BOTTOM + 197},
 
             group = "gathering",
             tags = {"blooming"},
         },
 
         wormwood_allegiance_lock_lunar_1 = SkillTreeFns.MakeCelestialChampionLock({
-            pos = {UI_LEFT + 13, UI_BOTTOM + 110},
+            pos = {UI_LEFT + 13, UI_BOTTOM + 120},
             group = "allegiance1",
         }),
         wormwood_allegiance_count_lock_1 = {
             desc = SKILLTREESTRINGS.COUNT_LOCK_1_DESC,
-            pos = {UI_LEFT + 13, UI_BOTTOM + 140},
+            pos = {UI_LEFT + 13, UI_BOTTOM + 150},
             group = "allegiance1",
             tags = {"allegiance", "lock"},
             locks = {"wormwood_allegiance_lock_lunar_1"},
@@ -398,7 +398,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.LUNAR_MUTATIONS_1_TITLE,
             desc = SKILLTREESTRINGS.LUNAR_MUTATIONS_1_DESC,
             icon = "wormwood_lunar_mutations_1",
-            pos = {UI_LEFT + 13, UI_BOTTOM + 175},
+            pos = {UI_LEFT + 13, UI_BOTTOM + 190},
             locks = {"wormwood_allegiance_lock_lunar_1", "wormwood_allegiance_count_lock_1"},
 
             onactivate = function(owner, from_load)
@@ -434,7 +434,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.LUNAR_MUTATIONS_2_TITLE,
             desc = SKILLTREESTRINGS.LUNAR_MUTATIONS_2_DESC,
             icon = "wormwood_lunar_mutations_2",
-            pos = {UI_LEFT - 14, UI_TOP + 60},
+            pos = {UI_LEFT - 14, UI_TOP + 65},
             group = "allegiance1",
             tags = {"allegiance", "lunar", "lunar_favor"},
         },
@@ -442,7 +442,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = SKILLTREESTRINGS.LUNAR_MUTATIONS_3_TITLE,
             desc = SKILLTREESTRINGS.LUNAR_MUTATIONS_3_DESC,
             icon = "wormwood_lunar_mutations_3",
-            pos = {UI_LEFT + 40, UI_TOP + 60},
+            pos = {UI_LEFT + 40, UI_TOP + 65},
             group = "allegiance1",
             tags = {"allegiance", "lunar", "lunar_favor"},
         },

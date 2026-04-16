@@ -35,7 +35,7 @@ local function ChooseAttack(inst, target)
     -- Take turns flamethrowering one target, otherwise we all go in the same line potentially and that looks ugly.
     if inst.canflamethrower and not inst.components.timer:TimerExists("flamethrower_cd") and not TargetAlreadyBeingFlameThrowered(inst, target) then
 		inst.sg:GoToState("flamethrower_pre", target)
-    elseif inst:GetDistanceSqToInst(target) <= inst.components.combat:CalcHitRangeSq(target) then
+    elseif target and inst:GetDistanceSqToInst(target) <= inst.components.combat:CalcHitRangeSq(target) then
         inst.sg:GoToState("attack", target)
 	end
 end

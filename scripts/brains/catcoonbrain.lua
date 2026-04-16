@@ -45,8 +45,9 @@ local function PlayAction(inst)
 					or "catfood"
 
 		if cattoyairborne and not (target.sg and (target.sg:HasStateTag("landing") or target.sg:HasStateTag("landed"))) then
-			if inst.last_play_air_time and (GetTime() - inst.last_play_air_time) < 15 then
-				return 
+			if (not target.components.cattoy or not target.components.cattoy:ShouldBypassLastAirTime())
+                and inst.last_play_air_time and (GetTime() - inst.last_play_air_time) < 15 then
+				return
 			end
 			action = BufferedAction(inst, target, ACTIONS.CATPLAYAIR)
 		else

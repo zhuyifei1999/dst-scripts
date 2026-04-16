@@ -18,23 +18,23 @@ local CAT2 = -32 -20
 local CAT3 = 150 -30
 
 -- controlled burn
-local L1X = -8
+local L1X = 3
 local L1Y = -10
 
 --embers
-local L2X = -6
-local L2Y = 2
+local L2X = 4
+local L2Y = -2
 
 --lighter
-local L3X = -5
+local L3X = 4
 local L3Y = -10
 
 --Bernie block
-local B1X = 8
+local B1X = 14
 local B1Y = -20
 
 --Bottom Bernie Block
-local B2X = 7
+local B2X = 12
 local B2Y = 3
 
 -- shadow affinity

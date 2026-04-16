@@ -192,12 +192,24 @@ BrainCommon.IpecacsyrupPanicTrigger = function(inst)
 end
 
 --------------------------------------------------------------------------
--- Actions: MINE, CHOP
+-- Actions: MINE, CHOP, DIG, TILL
 
 local MINE_TAGS = { "MINE_workable" }
 local MINE_CANT_TAGS = { "carnivalgame_part", "event_trigger", "waxedplant" }
 local CHOP_TAGS = { "CHOP_workable" }
 local CHOP_CANT_TAGS = { "carnivalgame_part", "event_trigger", "waxedplant" }
+local DIG_ONEOF_TAGS = { "farm_debris", "tree" }
+local DIG_CANT_TAGS = { "carnivalgame_part", "event_trigger", "waxedplant" }
+local SOILMUST = { "soil" }
+local SOILMUSTNOT = { "merm_soil_blocker", "farm_debris", "NOBLOCK" }
+
+--------------------------------
+
+local function GetLeader(inst)
+    return inst.components.follower and inst.components.follower:GetLeader()
+end
+
+--------------------------------
 
 local function IsDeciduousTreeMonster(guy)
     return guy.monster and guy.prefab == "deciduoustree"
@@ -207,9 +219,70 @@ local function FindDeciduousTreeMonster(inst, finddist)
     return FindEntity(inst, finddist / 3, IsDeciduousTreeMonster, CHOP_TAGS)
 end
 
-local function GetLeader(inst)
-    return inst.components.follower and inst.components.follower:GetLeader()
+--------------------------------
+
+local function IsDigValid(guy, inst) -- we include trees, so make sure it's a diggable tree (i.e. stump)
+    return guy.components.workable ~= nil and guy.components.workable:GetWorkAction() == ACTIONS.DIG
 end
+
+local function CollectTillSites(inst, digsites, tile)
+    local cent = Vector3(TheWorld.Map:GetTileCenterPoint(tile[1], 0, tile[2]))
+    local soils = TheSim:FindEntities(cent.x, 0, cent.z, 2, SOILMUST, SOILMUSTNOT)
+
+    if #soils < 9 then
+        local dist = 4/3
+        for dx=-dist,dist,dist do
+            local dobreak = false
+            for dz=-dist,dist,dist do
+                local localsoils = TheSim:FindEntities(cent.x+dx,0, cent.z+dz, 0.21, SOILMUST, SOILMUSTNOT)
+                if #localsoils < 1 and TheWorld.Map:CanTillSoilAtPoint(cent.x+dx,0,cent.z+dz) then
+                    table.insert(digsites,{pos = Vector3(cent.x+dx,0,cent.z+dz), tile = tile })
+                end
+            end
+        end
+    end
+
+    return digsites
+end
+
+local function FindTillPosition(inst)
+    local tiles = {}
+
+    if not inst.digtile then
+        -- collect garden tiles in a 9x9 grid
+        local RANGE = 4
+        local pos = Vector3(inst.Transform:GetWorldPosition())
+
+        for x=-RANGE,RANGE,1 do
+            for z=-RANGE,RANGE,1 do
+                local tx = pos.x + (x*4)
+                local tz = pos.z + (z*4)
+                local tile = TheWorld.Map:GetTileAtPoint(tx, 0, tz)
+                if tile == WORLD_TILES.FARMING_SOIL then
+                    table.insert(tiles,{tx,tz})
+                end
+            end
+        end
+    else
+        table.insert(tiles,inst.digtile)
+    end
+
+    -- find diggable places in those tiles.
+    local digsites = {}
+    for i,tile in ipairs(tiles)do
+        digsites = CollectTillSites(inst,digsites, tile)
+    end
+
+    if #digsites > 0 then
+        local pos = digsites[math.random(1,#digsites)].pos
+        inst.digtile = digsites[math.random(1,#digsites)].tile
+        return pos
+    end
+
+    inst.digtile = nil
+end
+
+-----------
 
 local AssistLeaderDefaults = {
     MINE = {
@@ -242,7 +315,7 @@ local AssistLeaderDefaults = {
                 return true
             end
             local leader = GetLeader(inst)
-            return (leader ~= nil and leader.sg ~= nil and leader.sg:HasStateTag("chopping"))
+            return (leader ~= nil and leader.sg ~= nil and leader.sg:HasAnyStateTag("chopping", "spinning"))
                 or FindDeciduousTreeMonster(inst, finddist) ~= nil
         end,
         KeepGoing = function(inst, leaderdist, finddist)
@@ -272,6 +345,62 @@ local AssistLeaderDefaults = {
                 end
 
                 return BufferedAction(inst, target, ACTIONS.CHOP)
+            end
+        end,
+    },
+    DIG = {
+        Starter = function(inst, finddist)
+            if inst.stump_target ~= nil then
+                return true
+            end
+            local leader = GetLeader(inst)
+            return (leader ~= nil and leader.sg ~= nil and leader.sg:HasStateTag("digging"))
+        end,
+        KeepGoing = function(inst, leaderdist, finddist)
+            if inst.stump_target then
+                return true
+            end
+            local leader = GetLeader(inst)
+            return leader ~= nil and inst:IsNear(leader, leaderdist)
+        end,
+        FindNew = function(inst, leaderdist, finddist)
+            local target = FindEntity(inst, finddist, IsDigValid, nil, DIG_CANT_TAGS, DIG_ONEOF_TAGS)
+
+            if target == nil then
+                local leader = GetLeader(inst)
+                if leader then
+                    target = FindEntity(leader, finddist, IsDigValid, nil, DIG_CANT_TAGS, DIG_ONEOF_TAGS)
+                end
+            end
+
+            if target ~= nil then
+                if inst.stump_target ~= nil then
+                    target = inst.stump_target
+                    inst.stump_target = nil
+                end
+
+                return BufferedAction(inst, target, ACTIONS.DIG)
+            end
+        end,
+    },
+    TILL = {
+        Starter = function(inst, finddist)
+            local leader = GetLeader(inst)
+            return (leader ~= nil and leader.sg ~= nil and leader.sg:HasStateTag("tilling"))
+        end,
+        KeepGoing = function(inst, leaderdist, finddist)
+            local leader = GetLeader(inst)
+            return leader ~= nil and inst:IsNear(leader, leaderdist)
+        end,
+        FindNew = function(inst, leaderdist, finddist)
+            local pos = FindTillPosition(inst)
+            local tool = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+            if pos then
+                pos = Vector3(pos.x -0.02 + math.random()*0.04,0,pos.z -0.02 + math.random()*0.04)
+
+                local marker = SpawnPrefab("merm_soil_marker")
+                marker.Transform:SetPosition(pos.x, pos.y, pos.z)
+                return BufferedAction(inst, nil, ACTIONS.TILL, tool, pos)
             end
         end,
     },
@@ -455,5 +584,48 @@ local function NodeAssistLeaderPickUps(self, parameters)
     },.25)
 end
 BrainCommon.NodeAssistLeaderPickUps = NodeAssistLeaderPickUps
+
+--------------------------------------------------------------------------
+
+local SEE_POSSESSABLE_CHASSIS_DIST = 10
+local POSESSABLE_CHASSIS_TAGS = { "possessable_chassis" }
+local NO_POSSESSABLE_CHASSIS_TAGS = { "NOCLICK" }
+
+local function IsPossessableChassisValid(guy, inst)
+    return guy.components.linkeditem == nil or guy.components.linkeditem:GetOwnerInst() ~= nil
+end
+
+local function SelectPossessableChassis(self)
+	self.possessable_chassis = FindEntity(self.inst, SEE_POSSESSABLE_CHASSIS_DIST, IsPossessableChassisValid, POSESSABLE_CHASSIS_TAGS, NO_POSSESSABLE_CHASSIS_TAGS)
+	return self.possessable_chassis ~= nil
+end
+
+local function CheckPossessableChassis(self)
+	return self.possessable_chassis:IsValid() and self.possessable_chassis:HasTag("possessable_chassis")
+end
+
+local function GetPossessableChassisPos(inst)
+    if not inst.brain then -- Just in case??
+        return
+    end
+
+	return CheckPossessableChassis(inst.brain) and inst.brain.possessable_chassis:GetPosition() or nil
+end
+
+local POSSESS_DIST = .5
+local POSSESS_DIST_INNER = POSSESS_DIST - .1
+local function PossessChassis(self, update_rate)
+    return IfNode(function() return SelectPossessableChassis(self) end, "possess chassis",
+			PriorityNode({
+                FailIfSuccessDecorator(Leash(self.inst, GetPossessableChassisPos, POSSESS_DIST, POSSESS_DIST_INNER, true)),
+				IfNode(function() return CheckPossessableChassis(self) end, "possess",
+					ActionNode(function() self.inst:PushEventImmediate("possess_chassis", { target = self.possessable_chassis }) end)),
+				FaceEntity(self.inst,
+					function() return self.possessable_chassis end,
+					function() return CheckPossessableChassis(self) end),
+			}, update_rate))
+end
+
+BrainCommon.PossessChassisNode = PossessChassis
 
 return BrainCommon

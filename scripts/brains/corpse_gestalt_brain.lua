@@ -4,6 +4,8 @@ local SCREEN_DIST_SQ = PLAYER_CAMERA_SEE_DISTANCE_SQ
 
 local CORPSE_TRACK_NAME = "corpse"
 
+local BrainCommon = require("brains/braincommon")
+
 local function CalcNewPosition(inst, radius, angle)
     local anglediff = math.random() * (PI*.45)
 
@@ -72,13 +74,18 @@ local CorpseGestaltBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+local UPDATE_RATE = 0.25
 function CorpseGestaltBrain:OnStart()
     local root = PriorityNode(
     {
         WhileNode(function() return self.inst.sg:HasStateTag("idle") end, "CanMove",
-            DoAction(self.inst, MoveToPointAction, "Move", true )
+            PriorityNode(
+            {
+                BrainCommon.PossessChassisNode(self, UPDATE_RATE),
+                DoAction(self.inst, MoveToPointAction, "Move", true ),
+            }, UPDATE_RATE)
         ),
-    }, .25)
+    }, UPDATE_RATE)
 
     self.bt = BT(self.inst, root)
 end

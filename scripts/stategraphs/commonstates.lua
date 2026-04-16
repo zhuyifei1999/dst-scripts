@@ -2122,10 +2122,11 @@ local function DoWashAshore(inst, skip_splash)
 	inst.components.drownable:WashAshore()
 end
 
-CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns)
+CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns, data)
 	anims = anims or {}
 	timelines = timelines or {}
 	fns = fns or {}
+    data = data or {}
 
     table.insert(states, State{
         name = "sink",
@@ -2160,6 +2161,9 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
 				DoWashAshore(inst, skip_anim)
 			end
 
+            if fns.sink_onenter ~= nil then
+                fns.sink_onenter(inst)
+            end
         end,
 
 		timeline = timelines.sink,
@@ -2168,7 +2172,7 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
         {
             EventHandler("animover", function(inst)
                 if inst.sg.statemem.has_anim and inst.AnimState:AnimDone() then
-					DoWashAshore(inst)
+					DoWashAshore(inst, data.skip_splash)
 				end
             end),
 
@@ -2204,6 +2208,10 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
 			if inst.components.combat ~= nil then
 				inst.components.combat:DropTarget()
 			end
+
+            if fns.sink_onexit ~= nil then
+                fns.sink_onexit(inst)
+            end
 
 			inst:RestartBrain("sinking")
         end,
@@ -2291,10 +2299,11 @@ local function DoVoidFall(inst, skip_vfx)
     end
 end
 
-CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
+CommonStates.AddVoidFallStates = function(states, anims, timelines, fns, data)
 	anims = anims or {}
 	timelines = timelines or {}
 	fns = fns or {}
+    data = data or {}
 
     table.insert(states, State{
         name = "abyss_fall",
@@ -2338,7 +2347,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
         {
             EventHandler("animover", function(inst)
                 if inst.sg.statemem.has_anim and inst.AnimState:AnimDone() then
-					DoVoidFall(inst)
+					DoVoidFall(inst, data.skip_vfx)
 				end
             end),
 
@@ -2375,6 +2384,10 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
 				inst.components.combat:DropTarget()
 			end
 
+            if fns.abyss_fall_onenter ~= nil then
+
+            end
+
 			inst:RestartBrain("abyss_fall")
         end,
     })
@@ -2406,7 +2419,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
             SpawnPrefab("fallingswish_clouds_fast").Transform:SetPosition(x, y, z)
         end,
 
-		timeline = timelines.fallinvoid,
+		timeline = timelines.voiddrop,
 
         events =
         {
@@ -2892,3 +2905,63 @@ CommonStates.AddParasiteReviveState = function(states)
         },
     })
 end
+
+--------------------------------------------------------
+
+-- Gestalt chassis possess common states
+
+local function onpossesschassis(inst, data)
+    if not inst.sg:HasStateTag("busy") then
+        inst.sg:GoToState("possess_chassis", data.target)
+    end
+end
+
+CommonHandlers.OnPossessChassis = function()
+    return EventHandler("possess_chassis", onpossesschassis)
+end
+
+CommonStates.AddPossessChassisState = function(states, anim, possess_frame_timing, fns)
+    fns = fns or {}
+
+    table.insert(states, State{
+        name = "possess_chassis",
+        tags = { "busy", "noattack", "jumping" },
+
+        onenter = function(inst, target)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation(FunctionOrValue(anim, inst))
+            inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/melt")
+			inst:ForceFacePoint(target.Transform:GetWorldPosition())
+			inst.sg.statemem.target = target
+
+            if fns.onenter ~= nil then
+                fns.onenter(inst)
+            end
+		end,
+
+        timeline =
+        {
+            FrameEvent(possess_frame_timing, function(inst)
+                local isplanar = inst.components.gestaltcapturable and inst.components.gestaltcapturable:GetIsPlanar()
+				if inst.sg.statemem.target:TryToSpawnPossessedBody(isplanar) then
+					inst.persists = false
+				end
+			end),
+        },
+
+        events =
+        {
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					if inst.persists then
+						inst.sg:GoToState("idle")
+					else
+						inst:Remove()
+					end
+				end
+			end),
+        },
+    })
+end
+
+--------------------------------------------------------

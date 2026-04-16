@@ -932,6 +932,24 @@ local function updateeyebuild(inst)
     end
 end
 
+local function CanBeRollCalledFn(inst, leader)
+    local skilltreeupdater = leader.components.skilltreeupdater
+
+    if inst:HasTag("lunarminion") then
+        return skilltreeupdater and skilltreeupdater:IsActivated("wurt_lunar_allegiance_1")
+    elseif inst:HasTag("shadowminion") then
+        return skilltreeupdater and skilltreeupdater:IsActivated("wurt_shadow_allegiance_1")
+    end
+
+    if inst:HasTag("mermguard") then
+        -- Merm Guards require Wurt
+        return leader:HasTag("merm") and not leader:HasTag("mermdisguise")
+    else
+        -- Merms require player to wear disguise, or have a merm king already existing
+        return leader:HasTag("merm") or (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKingAnywhere())
+    end
+end
+
 local function OnChangedLeader(inst, new_leader, prev_leader)
     inst._last_leader = prev_leader -- We lose leader on death, so save it here.
 end
@@ -1074,6 +1092,7 @@ local function MakeMerm(name, assets, prefabs, common_postinit, master_postinit,
         inst:AddComponent("knownlocations")
 
         inst:AddComponent("follower")
+        inst.components.follower:SetCanBeRollCalledFn(CanBeRollCalledFn)
         inst.components.follower.OnChangedLeader = OnChangedLeader
 
         inst:AddComponent("mermcandidate")

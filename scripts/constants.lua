@@ -26,9 +26,11 @@ PLAYER_CAMERA_SEE_DISTANCE = 40.0 -- NOTES(JBK): Based off of an approximation o
 PLAYER_CAMERA_SEE_DISTANCE_SQ = PLAYER_CAMERA_SEE_DISTANCE * PLAYER_CAMERA_SEE_DISTANCE -- Helper.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE = 20.0 -- NOTES(JBK): This is an approximate distance traveled where the camera should snap and fade out to not cause disorientations.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE_SQ = PLAYER_CAMERA_SHOULD_SNAP_DISTANCE * PLAYER_CAMERA_SHOULD_SNAP_DISTANCE -- Helper.
---NOTE if we ever have other ways of increasing camera in-game, increase this!
-PLAYER_CAMERA_MAX_DIST = 65 -- 50 maxdist in forest world + 15 maxdist from scrap_monoclehat
-PLAYER_CAMERA_MAX_DIST_CAVES = 50 -- 35 maxdist in caves world + 15 maxdist from scrap_monoclehat
+
+PLAYER_CAMERA_MAX_DIST = 80 -- This is the max distance we can do before we risk seeing entities pop in and out
+
+-- Deprecated, left in case of mods.
+PLAYER_CAMERA_MAX_DIST_CAVES = PLAYER_CAMERA_MAX_DIST
 
 ENTITY_POPIN_RADIUS = 64.0 -- Read only value.
 ENTITY_POPOUT_RADIUS = ENTITY_POPIN_RADIUS * 1.2 -- Read only value.
@@ -847,7 +849,7 @@ SPECIAL_EVENTS =
     YOTS = "year_of_the_snake",
     YOTH = "year_of_the_knight",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTH
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 WORLD_EXTRA_EVENTS = {}
 
 FESTIVAL_EVENTS =
@@ -986,9 +988,9 @@ SPECIAL_EVENT_MUSIC =
 
     [SPECIAL_EVENTS.YOTH] =
     {
-        bank = "music_frontend_yoth2026.fsb",
-        sound = "dontstarve/music/music_FE_yoth2026",
-    },
+		bank = "music_frontend_yoth2026.fsb",
+		sound = "dontstarve/music/music_FE_yoth2026",
+	},
 }
 
 FESTIVAL_EVENT_MUSIC =
@@ -1007,6 +1009,42 @@ FESTIVAL_EVENT_MUSIC =
     },
 }
 
+DEFAULT_FE_MUSIC =
+{
+	--bank = "music_frontend_WX.fsb",
+	bank = "music_frontend.fsb",
+	sound = "dontstarve/music/music_FE_WX",
+	--sound = "dontstarve/music/music_FE_cavepuzzle",
+	--sound = "dontstarve/music/music_FE_wagboss",
+	--sound = "dontstarve/music/music_FE_balatro",
+	--sound = "dontstarve/music/music_FE_rifts4",
+	--sound = "dontstarve/music/music_FE_winonawurt",
+	--sound = "dontstarve/music/music_FE_junkyardhog",
+	--sound = "dontstarve/music/music_FE_riftsthree",
+	--sound = "dontstarve/music/music_FE_survivorsguideone",
+	--sound = "dontstarve/music/music_FE_shadowrift",
+	--sound = "dontstarve/music/music_FE_lunarrift",
+	--sound = "dontstarve/music/music_FE_daywalker",
+	--sound = "dontstarve/music/music_FE_maxwell",
+	--sound = "dontstarve/music/music_FE_charliestage",
+	--sound = "dontstarve/music/music_FE_wickerbottom",
+	--sound = "dontstarve/music/music_FE",
+	--sound = "dontstarve/music/music_FE_pirates",
+	--sound = "dontstarve/music/music_FE_WX",
+	--sound = "dontstarve/music/music__moonstorm_FE",
+	--sound = "dontstarve/music/musicFE_webber",
+	--sound = "dontstarve/music/music_FE_wanda",
+	--sound = "terraria1/common/music_main_eot",
+	--sound = "dontstarve/music/music_FE",
+}
+
+---------------------------------------------------------
+--If changing this logic, remember to update preloadsounds.lua
+FE_MUSIC = (
+	FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] or
+	SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] or
+	DEFAULT_FE_MUSIC
+).sound
 
 ---------------------------------------------------------
 local SPECIAL_EVENT_SKIN_TAGS =
@@ -1039,7 +1077,6 @@ local FESTIVAL_EVENT_INFO =
         LATEST_SEASON = 1,
     },
 }
-
 
 ---------------------------------------------------------
 -- Refers to holiday-specific events.
@@ -1164,37 +1201,6 @@ function Client_IsTournamentActive() -- ticket_name is optional
 end
 
 ---------------------------------------------------------
---If changing this logic, remember to update preloadsounds.lua
---default:
---  bank = "music_frontend.fsb"
---  sound = "dontstarve/music/music_FE"
-FE_MUSIC =
-    (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
-    (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE_cavepuzzle"
-    --"dontstarve/music/music_FE_wagboss"
-    --"dontstarve/music/music_FE_balatro"
-    --"dontstarve/music/music_FE_rifts4"
-    --"dontstarve/music/music_FE_winonawurt"
-    --"dontstarve/music/music_FE_junkyardhog"
-    --"dontstarve/music/music_FE_riftsthree"
-    --"dontstarve/music/music_FE_survivorsguideone"
-    --"dontstarve/music/music_FE_shadowrift"
-    --"dontstarve/music/music_FE_lunarrift"
-    --"dontstarve/music/music_FE_daywalker"
-    --"dontstarve/music/music_FE_maxwell"
-    --"dontstarve/music/music_FE_charliestage"
-    --"dontstarve/music/music_FE_wickerbottom"
-    --"dontstarve/music/music_FE"
-    --"dontstarve/music/music_FE_pirates"
-    --"dontstarve/music/music_FE_WX"
-    --"dontstarve/music/music__moonstorm_FE"
-    --"dontstarve/music/musicFE_webber"
-    --"dontstarve/music/music_FE_wanda"
-    --"terraria1/common/music_main_eot"
-
-
----------------------------------------------------------
 -- Pickup sounds for in game events.
 PICKUPSOUNDS = {
     ["wood"] = "aqol/new_test/wood",
@@ -1219,7 +1225,6 @@ NUM_WINTERFOOD = 9
 
 SANITY_MODE_INSANITY = 0
 SANITY_MODE_LUNACY = 1
-
 
 TECH =
 {
@@ -2101,6 +2106,7 @@ FARM_PLANT_STRESS = {
 CRAFTINGSTATION_LIMITED_RECIPES = {}
 CRAFTINGSTATION_LIMITED_RECIPES_LOOKUPS = {}
 CRAFTINGSTATION_LIMITED_RECIPES_COUNT = 0
+EXTERNALLY_HANDLED_LIMITED_RECIPES = {} -- These are from getlimitedrecipecount where the number limit is expected to be synchronized on the client and server.
 
 CHARACTER_INGREDIENT =
 {
@@ -2135,6 +2141,7 @@ SKILLTREE_EQUIPPABLE_RESTRICTED_TAGS =
     ["wathgrithrshielduser"] = "wathgrithr",
     [UPGRADETYPES.SPEAR_LIGHTNING.."_upgradeuser"] = "wathgrithr",
     ["nabbaguser"] = "wortox",
+	["drone_zap_user"] = "wx78",
 }
 
 -- IngredientMod must be one of the following values
@@ -2989,3 +2996,24 @@ SKINUNLOCKS = {
     ALWAYS = 1,
     CRAFTINGSTATION = 2,
 }
+
+CIRCUIT_BARS = -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
+{
+    ALPHA = 0,
+    BETA = 1,
+    GAMMA = 2,
+}
+CIRCUIT_BARS_LOOKUP = {}
+for name, i in pairs(CIRCUIT_BARS) do
+    CIRCUIT_BARS_LOOKUP[i] = name
+end
+
+MAX_CIRCUIT_SLOTS = 7 -- NOTES(JBK): Keep this value updated in export_accountitems.lua [EAITAB]
+
+SOCKETQUALITY = {
+    NONE = 0,
+    LOW = 1,
+    MEDIUM = 2,
+    HIGH = 3,
+}
+SOCKETQUALITY_MAXVALUE = table.count(SOCKETQUALITY)

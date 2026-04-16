@@ -2,6 +2,8 @@ require("stategraphs/commonstates")
 
 local events =
 {
+	CommonHandlers.OnDeath(),
+
 	EventHandler("locomote", function(inst)
 		if inst.components.locomotor:WantsToMoveForward() and not inst.components.gestaltcapturable:IsTargeted() then
 			if inst.sg:HasStateTag("idle") then
@@ -17,19 +19,17 @@ local events =
 		end
 	end),
 
-    EventHandler("death", function(inst)
-		inst.sg:GoToState("death", "death")
-	end),
     EventHandler("doattack", function(inst)
-        if not (inst.sg:HasStateTag("busy")) then
-            inst.sg:GoToState(inst.isguard and "guardattack"
-								or "attack")
+        if not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState(inst.isguard and "guardattack" or "attack")
         end
     end),
 	EventHandler("captured", function(inst)
 		--can interrupt ANY state
 		inst.sg:GoToState("captured")
 	end),
+
+	CommonHandlers.OnPossessChassis(),
 }
 
 local function FindBestAttackTarget(inst)
@@ -386,14 +386,18 @@ CommonStates.AddWalkStates(states,
     },
     walktimeline =
     {
-        TimeEvent(0*FRAMES, SpawnTrail),
+        FrameEvent(0, SpawnTrail),
         --TimeEvent(5*FRAMES, SpawnTrail),
     },
     endtimeline =
     {
     },
-}
-, nil, nil, true)
+}, nil, nil, true)
 
+CommonStates.AddPossessChassisState(states,
+function(inst)
+	return inst.isguard and "infest_corpse_small" or "melt2"
+end,
+25)
 
 return StateGraph("gestalt", states, events, "idle")

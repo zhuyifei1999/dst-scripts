@@ -71,7 +71,8 @@ function SkillTreeUpdater:ActivateSkill_Server(skill) -- NOTES(JBK): Use Activat
     --print("[STUpdater] ActivateSkill SERVER", characterprefab, skill)
     local onactivate = skilltreedefs.SKILLTREE_DEFS[characterprefab][skill].onactivate
     if onactivate then
-        onactivate(self.inst)
+        local fromload = self.skilltree.skip_validation
+        onactivate(self.inst, fromload)
     end
     self.inst:PushEvent("onactivateskill_server", {skill = skill,})
     self.inst._skilltreeactivatedany:push()
@@ -117,7 +118,8 @@ function SkillTreeUpdater:DeactivateSkill_Server(skill) -- NOTES(JBK): Use Deact
     --print("[STUpdater] DeactivateSkill SERVER", characterprefab, skill)
     local ondeactivate = skilltreedefs.SKILLTREE_DEFS[characterprefab][skill].ondeactivate
     if ondeactivate then
-        ondeactivate(self.inst)
+        local fromload = self.skilltree.skip_validation
+        ondeactivate(self.inst, fromload)
     end
     self.inst:PushEvent("ondeactivateskill_server", {skill = skill,})
 end

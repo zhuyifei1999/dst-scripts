@@ -2451,6 +2451,7 @@ end
 
 ClickMouseoverSoundReduction = CreateRepeatedSoundVolumeReduction(0.25, 0.75) --if fired in the last 0.25 seconds, reduce the volume to 75%
 LuckSoundReduction = CreateRepeatedSoundVolumeReduction(0.75, 0.50) --if fired in the last 0.5 seconds, reduce the volume to 50%
+UpgradeModuleMouseoverSoundReduction = CreateRepeatedSoundVolumeReduction(1.0, 0.65) --if fired in the last 1.0 seconds, reduce the volume to 65%
 
 local currently_displaying = nil
 function DisplayAntiAddictionNotification( notification )

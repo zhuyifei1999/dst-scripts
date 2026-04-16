@@ -118,49 +118,8 @@ local function FindFoodAction(inst)
     end
 end
 
-local function IsDeciduousTreeMonster(guy)
-    return guy.monster and guy.prefab == "deciduoustree"
-end
-
-local CHOP_MUST_TAGS = { "CHOP_workable" }
-local function FindDeciduousTreeMonster(inst)
-    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, CHOP_MUST_TAGS)
-end
-
 local function GetLeader(inst)
     return inst.components.follower and inst.components.follower:GetLeader()
-end
-
-local function KeepChoppingAction(inst)
-    if inst.tree_target then
-        return true
-    end
-    local leader = GetLeader(inst)
-    return (leader ~= nil and
-            inst:IsNear(leader, KEEP_CHOPPING_DIST))
-        or FindDeciduousTreeMonster(inst) ~= nil
-end
-
-local function StartChoppingCondition(inst)
-    if inst.tree_target then
-        return true
-    end
-    local leader = GetLeader(inst)
-    return (leader ~= nil and leader.sg ~= nil and leader.sg:HasStateTag("chopping"))
-        or FindDeciduousTreeMonster(inst) ~= nil
-end
-
-local function FindTreeToChopAction(inst)
-    local target = FindEntity(inst, SEE_TREE_DIST, nil, CHOP_MUST_TAGS)
-    if target ~= nil then
-        if inst.tree_target ~= nil then
-            target = inst.tree_target
-            inst.tree_target = nil
-        else
-            target = FindDeciduousTreeMonster(inst) or target
-        end
-        return BufferedAction(inst, target, ACTIONS.CHOP)
-    end
 end
 
 local function HasValidHome(inst)
@@ -375,10 +334,12 @@ function PigBrain:OnStart()
         PriorityNode{
             ChattyNode(self.inst, "PIG_TALK_FIND_MEAT",
                 DoAction(self.inst, FindFoodAction )),
-            IfThenDoWhileNode(function() return StartChoppingCondition(self.inst) end, function() return KeepChoppingAction(self.inst) end, "chop",
-                LoopNode{
-                    ChattyNode(self.inst, "PIG_TALK_HELP_CHOP_WOOD",
-                        DoAction(self.inst, FindTreeToChopAction ))}),
+            BrainCommon.NodeAssistLeaderDoAction(self, {
+                action = "CHOP", -- Required.
+                finder_finddist = SEE_TREE_DIST,
+                keepgoing_leaderdist = KEEP_CHOPPING_DIST,
+                chatterstring = "PIG_TALK_HELP_CHOP_WOOD",
+            }),
             ChattyNode(self.inst, "PIG_TALK_FOLLOWWILSON",
                 Follow(self.inst, GetLeader, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST)),
             IfNode(function() return GetLeader(self.inst) end, "has leader",

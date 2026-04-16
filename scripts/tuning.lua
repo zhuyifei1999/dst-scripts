@@ -147,9 +147,9 @@ function Tune(overrides)
         WX78_MAX_HUNGER = 200,
         WX78_MAX_SANITY = 300,
 
-        WX78_HEALTH = 125,
-        WX78_HUNGER = 125,
-        WX78_SANITY = 150,
+        WX78_HEALTH = 100,
+        WX78_HUNGER = 100,
+        WX78_SANITY = 100,
 
         HAMMER_LOOT_PERCENT = .5,
         BURNT_HAMMER_LOOT_PERCENT = .25,
@@ -1717,6 +1717,7 @@ function Tune(overrides)
         SPIDERHAT_RANGE = 12,
         ONEMANBAND_PERISHTIME = 6*seg_time,
         ONEMANBAND_RANGE = 12,
+        ONEMANBAND_MAXFOLLOWERS = 10,
         HEATROCK_NUMUSES = 8,
 
         GRASS_UMBRELLA_PERISHTIME = 2*total_day_time*perish_warp,
@@ -5850,6 +5851,8 @@ function Tune(overrides)
 
         TREEGROWTH_NUTRIENTS            = {  8, 32,  8 },
 
+        WX78_FOODBRICK_NUTRIENTS        = {  0, 32,  0 },
+
 		WORMWOOD_MANURE_HEAL_VALUES = { 2, 3, 8, 12 },
 
 		WORMWOOD_COMPOST_HEAL_VALUES = { 4, 6, 8, 32 },
@@ -6553,7 +6556,7 @@ function Tune(overrides)
         RUINS_CAVEIN_OBSTACLE_FALL_DAMAGE = 40,
 
         -- WX78 Refresh
-        WX78_MAXELECTRICCHARGE = 6,
+        WX78_MAXELECTRICCHARGE = 6, -- Deprecated, use WX78_INITIAL_MAXCHARGELEVEL
         WX78_MINACCEPTABLEMOISTURE = 15,
         WX78_HUNGRYCHARGEDRAIN_TICKTIME = 300 * FRAMES,
         WX78_CHARGE_REGENTIME = 3*seg_time,
@@ -6569,7 +6572,7 @@ function Tune(overrides)
         WX78_MIN_MOISTURE_DAMAGE = -0.60,     -- Damage per second
         WX78_PERCENT_MOISTURE_DAMAGE = -1.2,
 
-        WX78_MAXHEALTH_BOOST = 50,
+        WX78_MAXHEALTH_BOOST = 40,
 
         WX78_MAXSANITY1_BOOST = 40,
 
@@ -6592,11 +6595,12 @@ function Tune(overrides)
         WX78_PERISH_COLDRATE = 0.75,
         WX78_PERISH_HOTRATE = 1.25,
 
-        WX78_TASERDAMAGE = 20,
+        WX78_TASERDAMAGE = 20, -- This causes a chain stun to nearby targets when the primary target is damaged.
 
-        WX78_LIGHT_BASERADIUS = 3.5,
-        WX78_LIGHT_EXTRARADIUS = 1.5,
+        WX78_LIGHT_BASERADIUS = 3.5, -- Deprecated.
+        WX78_LIGHT_EXTRARADIUS = 1.5, -- Deprecated.
 
+        -- Depracated ranges, these were used inconsistently together...
         WX78_MUSIC_TENDRANGE = 12,
         WX78_MUSIC_AURADSQ = 256,
         WX78_MUSIC_UPDATERATE = 144*FRAMES,
@@ -6606,9 +6610,9 @@ function Tune(overrides)
         WX78_BEE_TICKPERIOD = seg_time,
         WX78_BEE_HEALTHPERTICK = 5.0,
 
-        WX78_MAXHEALTH2_MULT = 3.0, -- A multiplier on WX78_MAXHEALTH_BOOST
+        WX78_MAXHEALTH2_MULT = 2.5, -- A multiplier on WX78_MAXHEALTH_BOOST
 
-        WX78_CHARGING_FOODS = {
+        WX78_CHARGING_FOODS = { -- Deprecated. Set edible.chargevalue instead.
             voltgoatjelly = 1,
             voltgoatjelly_spice_chili = 1,
             voltgoatjelly_spice_garlic = 1,
@@ -7434,6 +7438,124 @@ function Tune(overrides)
                 ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
                 VOIDCLOTHSCYTHE_AOE_RANGE = 2.5,
             },
+
+            WX78 = {
+                -- wx78_circuitry_betterunplug
+                HALF_MODULE_CONSUMPTION = .5,
+                -- wx78_circuitry_bettercharge
+                FASTER_CHARGE_MULTIPLIER = 2.5,
+                SAVE_CHARGE_ON_UNPLUG = 1,
+                -- wx78_circuitry_alphabuffs_1
+                MAXHUNGER_SLOWPERCENT_ALPHABUFF = 0.75,
+                MAXHUNGER1_SLOWPERCENT_ALPHABUFF = 0.95,
+                MAXSANITY1_SANITY_MOD_ALPHABUFF = 0.8,
+                MAXSANITY_SANITY_MOD_ALPHABUFF = 0.5,
+                -- wx78_circuitry_alphabuffs_2
+                MAXHEALTH_ARMOR_ALPHABUFF_2 = 0.025,
+                MAXHEALTH2_ARMOR_MULT = 2,
+                MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.70,
+                MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
+                MAXSANITY1_DAPPERNESS_MULT = 0.10,
+                MAXSANITY_DAPPERNESS_MULT = 0.25,
+                BEE_SHIELD_REGEN_PER_SECOND = 0.25,
+                BEE_SHIELDPERCENT = 0.2, -- how much shield dependant on max health.
+
+                -- wx78_circuitry_betabuffs_1
+                COLD_FIRE_DAMAGE_SCALE = 0.5, -- 50% per module
+                HEAT_FREEZE_RESISTANCE = 2, -- 2x per module resistance to freezing (immune to freezing at 2 fire circuits)
+                MUSIC_MAXFOLLOWERS = 10, -- 10 max followers per module
+
+                RADAR_ZAPDRONERANGE = 5,
+                RADAR_SCOUTDRONERANGE = 100,
+                RADAR_WX78_SCANNER_SCANDIST = .5, -- how close the scanner needs to be
+                RADAR_WX78_SCANNER_PLAYER_PROX = .75, -- how close the player needs to be.
+
+                -- wx78_circuitry_betabuffs_2
+                TASER_MAXBUILDUP = 100,
+                TASER_BUILDUP_GAIN_RATE = 5,
+                TASER_BUILDUP_DRAIN_RATE_BASE = -6,
+                TASER_BUILDUP_DRAIN_BUFFER_TIME = 4,
+                TASER_BUILDUP_DAMAGE = 50, -- Remember that electric damage and wetness mult apply to this.
+                TASER_BUILDUP_RADIUS = 2,
+                TASER_EFFECT_BASE_TIME = 14,
+                TASER_EFFECT_VAR_TIME = 2,
+                TASER_EFFECT_DURATION_BASE_TIME = 1.5,
+                TASER_EFFECT_DURATION_VAR_TIME = 0.5,
+
+                TASER_BUILDUP_GAIN_RATE_MULT_PER_MODULE = 1/3,
+                TASER_BUILDUP_DRAIN_RATE_ADD_PER_MODULE = 1, -- lower base drain rate with each taser module
+                TASER_BUILDUP_RADIUS_PER_MODULE = 1,
+                -- wx78_circuitry_gammabuffs_1
+                -- wx78_circuitry_gammabuffs_2
+                -- wx78_extrabody_1
+                BACKUPBODY_WORK_REQUIRED = 3,
+                -- wx78_extrabody_2
+                -- wx78_extrabody_3
+                -- wx78_remotebodyswap
+                REMOTEBODYSWAP_DETECTION_RADIUS = 20,
+				MAPSCOUTSELECT_DETECTION_RADIUS = 10,
+                -- wx78_scoutdrone_1
+                SCOUTDRONE_MAX_COUNT = 2,
+                SCOUTDRONE_SPEED = 3,
+                SCOUTDRONE_RANGE = 200,
+                -- wx78_scoutdrone_2
+                SCOUTDRONE_RANGE_BONUS = 300,
+                -- wx78_deliverydrone_1
+                DELIVERYDRONE_SPEED = 30,
+                -- wx78_deliverydrone_2
+                -- wx78_zapdrone_1
+                ZAPDRONE_SPEED = 7,
+				ZAPDRONE_DAMAGE = 30,
+				ZAPDRONE_INSULATED_DAMAGE_MULT = 0.5,
+				ZAPDRONE_AGGRO_RANGE = 15,
+				ZAPDRONE_USES = 100,
+				ZAPDRONE_USE_PER_ATTACK_1 = 2,
+				ZAPDRONE_RANGE_1 = 15,
+                -- wx78_zapdrone_2
+				ZAPDRONE_USE_PER_ATTACK_2 = 1,
+				ZAPDRONE_RANGE_2 = 30,
+
+                -- wx78_allegiance_lunar
+                ALLEGIANCE_LUNAR_RESIST = 0.9,
+                ALLEGIANCE_VS_SHADOW_BONUS = 1.1,
+                POSSESSEDBODY_TARGET_DIST = 10,
+
+                POSSESSEDBODY_LUNAR_RESIST = 0.9,
+                POSSESSEDBODY_VS_SHADOW_BONUS = 1.1,
+                POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.5,
+                POSSESSEDBODY_DAMAGE_MULT = 0.5,
+                POSSESSEDBODY_PLANAR_DAMAGE_MULT = 0.5,
+                POSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.25,
+
+                PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.25,
+                PLANARPOSSESSEDBODY_DAMAGE_MULT = 0.5,
+                PLANARPOSSESSEDBODY_PLANAR_DAMAGE_MULT = 1,
+                PLANARPOSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.5,
+
+                -- wx78_allegiance_shadow
+                ALLEGIANCE_SHADOW_RESIST = 0.9,
+                ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
+                -- SOCKETQUALITY.LOW
+                HARVEST_PASSIVE_TICK_PERIOD = 1,
+                HARVEST_RADIUS = 6,
+                HARVEST_TRAVEL_SPEED = 4,
+                HARVEST_MAX_TENDRILS = 3,
+                -- SOCKETQUALITY.MEDIUM
+                SHADOWHEART_PASSIVE_TICK_PERIOD = 0.5,
+                SHADOWHEART_DEBUFF_RADIUS = 4,
+                SHADOWHEART_DEBUFF_TIME = 30,
+                SHADOWHEART_DAMAGEMULT = 1.25,
+                SHADOWHEART_WORK_NEEDED = 2,
+                SHADOWHEART_SPAWN_PERIOD = seg_time * 4,
+                SHADOWHEART_SPAWN_VARIANCE = seg_time,
+                SHADOWHEART_SPAWN_DENSITY_RANGE = 5, -- Should be <= HARVEST_RADIUS above.
+                SHADOWHEART_SPAWN_DENSITY_MAX = 4,
+                -- SOCKETQUALITY.HIGH
+                MIMICHEART_SPAWN_PERIOD = seg_time * 6,
+                MIMICHEART_SPAWN_VARIANCE = seg_time * 2,
+                MIMICHEART_SPAWN_DENSITY_RANGE = 8,
+                MIMICHEART_SPAWN_DENSITY_MAX = 2,
+            }
         },
 
         WILSON_BEARD_BITS ={
@@ -8095,6 +8217,7 @@ function Tune(overrides)
         SALTLICK_IMPROVED_MAX_LICKS = 480, -- 30 days @ 8 beefalo licks per day (self / (SALTLICK_DURATION * SALTLICK_BEEFALO_USES))
 
         BOATLEAK_PLUG_WETNESS = 1,
+        BOATLEAK_PLUG_WETNESS_INVENTORYITEM = 5,
 
         BOAT_LEAK_PLUGGED_TIME = 20,
         BOAT_LEAK_PLUGGED_TIME_VARIANCE = 5,
@@ -9059,8 +9182,6 @@ function Tune(overrides)
 		HERMITCRAB_HOTSPRING_HAPPY_SOAK_TIME = 60,
 
         MOONSTORM_SPARKCHARGE_DEFAULT = 0.1,
-        NIGHTSTICK_SPARKCHARGE = 0.25,
-        NIGHTSTICK_BATTERYCHARGE = 1.0,
 
         WINTERSURPRISE_SPAWN_DELAY = total_day_time * 2,
         WINTERSURPRISE_SPAWN_DELAY_VARIANCE = total_day_time * 1,
@@ -9222,6 +9343,58 @@ function Tune(overrides)
         MONKEY_FOLLOW_PLAYER_CHANCE = 0.15,
         MONKEY_FOLLOW_PLAYER_WITH_BANANA_CHANCE = 0.6,
         --
+
+        -- Meta 6
+
+        WX78_INITIAL_MAXCHARGELEVEL = 6,
+        WX78_MAXCHARGELEVEL_SKILL = 7,
+
+        WX78_CHARGE_SMALL = 1,
+        WX78_CHARGE_MED = 3,
+        WX78_CHARGE_LARGE = 6,
+
+        WX78_MODULE_CONSUMPTION = 1,
+
+        WX78_MUSIC_RANGE = 12,
+
+        WX78_LIGHT_RADIUS_PER_MODULE = 1.25,
+
+        WX78_WATER_THRESHOLD_ADD = 5,
+
+        WX78_RADAR_EXTRA_VIEW_DIST = 5,
+
+        WX78_SCREECH_RANGE = 12,
+        WX78_SCREECH_PANIC_TIME = 8,
+        WX78_SCREECH_TIME = 2,
+        WX78_SCREECH_TIME_VAR = FRAMES * 10,
+        WX78_SCREECH_COOLDOWN = 20,
+
+        WX78_DIGESTION_SPOILED_NEEDED = 5, -- number needed to produce the brick.
+
+        WX78_SHIELDING_ARMOR = 0.2, -- 80%
+        WX78_SHIELDING_COOLDOWN = 20,
+        WX78_SHIELDING_TOTAL_DAMAGE = 100, -- we can take 100 damage before getting knocked out the state.
+        WX78_SHIELDING_MIN_TIME_COOLDOWN = 5, -- Minimum number of time we can be in the state before going off cooldown.
+        -- WX78_SHIELDING_COOLDOWN = 30,
+
+		WX78_SPIN_AOE_DIMINISHING = 0.5,
+		WX78_SPIN_EFFICIENCY_DECAY = 0.5,
+		WX78_SPIN_EFFICIENCY_DECAY_2 = 0, --0 mult means only 1 target costs usage per swing
+		WX78_SPIN_PICK_EFFICIENCY = 0.2, --base mult for picking
+		WX78_SPIN_RUNSPEED_MULT = 0.6, --mult of current runspeed (including any speed boosts)
+		WX78_SPIN_SLIPPERY = 6,
+		WX78_SPIN_RADIUS = 2.1,
+		WX78_SPIN_START_RANGE = 3, --for attacks, start wind-up a bit early
+		WX78_SPIN_TIME_TO_DIZZY = 8,
+		WX78_SPIN_TIME_TO_DIZZY_2 = 12,
+		WX78_SPIN_DIZZY_RECOVER_TIME = 4,
+
+        WX78_FOODBRICK_FERTILIZE = day_time*0.75,
+        WX78_FOODBRICK_SOILCYCLES = 8,
+        WX78_FOODBRICK_WITHEREDCYCLES = 0.5,
+
+		CLOCKWORK_MAX_FOLLOWING = 2, --per type
+		CLOCKWORK_MAX_FOLLOWING_CHESSFRIEND = 3,
     }
 
     TUNING_MODIFIERS = {}

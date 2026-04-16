@@ -23,6 +23,9 @@ return{
             NOTMERM = "It seems that piscean bipeds only heed the call of their own kind.",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "It is the property of the automaton.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "One domestic creature is enough for me.",
 			TICOON = "Having two trackers at once could possibly confuse them.",
             BUSY_STATION = "Oh, botheration.",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "As I thought, I'm unable to glean any information from it.",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "I don't believe the locals would take kindly to that.",
             NOTSOULJARHANDLER = "Best not interfere.",
             RESTRICTED = "It's not for me, I'm afraid.",
+            NOTAROBOT = "It is the property of the automaton.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "It would be rude of me to tamper with it.",
             NOTSOULJARHANDLER = "Best not interfere.",
             RESTRICTED = "It's not for me, I'm afraid.",
+            NOTAROBOT = "It is the property of the automaton.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -417,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -429,6 +454,8 @@ return{
 			NOT_MINE = "It does not belong to me.",
 
 			CANNOT_FIX_DRONE = "It is simply irreparable.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -641,7 +668,7 @@ return{
     ANNOUNCE_HUNT_START_FORK = "I suspect whatever lies at the end of this trail will be formidable.",
     ANNOUNCE_HUNT_SUCCESSFUL_FORK = "It seems I've managed to track the creature without alerting it.",
     ANNOUNCE_HUNT_WRONG_FORK = "Oh dear... I have the most peculiar sensation that I'm being observed.",
-    ANNOUNCE_HUNT_AVOID_FORK = "This trail will likely yeild less dangerous results.",
+    ANNOUNCE_HUNT_AVOID_FORK = "This trail will likely yield less dangerous results.",
 	ANNOUNCE_INV_FULL = "I can't carry anything more.",
 	ANNOUNCE_KNOCKEDOUT = "Oof, that's one way to get some rest, I suppose.",
 	ANNOUNCE_LOWRESEARCH = "Not a great resource, but there were useful bits.",
@@ -1200,6 +1227,14 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "It seems the mechanical knights are indisposed at the moment.",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "This stubborn piece refuses to follow me.",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -2810,7 +2845,11 @@ return{
         ROCKS = "A handful of assorted rocks.",
         ROOK = "A clockwork castle.",
         ROPE = "A short length of strong hemp rope.",
-        ROTTENEGG = "How unappetizing.",
+        ROTTENEGG =
+        {
+            GENERIC = "How unappetizing.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "In the wild this might have produced more queens.",
         JELLYBEAN = "Sweets, emulsified with beeswax.",
         SADDLE_BASIC = "A crude device for equestrianism.",
@@ -2912,7 +2951,11 @@ return{
 			GENERIC = "It appears to be of the warrior caste.",
 			SLEEPING = "A well deserved rest, no doubt.",
 		},
-		SPOILED_FOOD = "It is heavy with bacteria.",
+        SPOILED_FOOD =
+        {
+            GENERIC = "It is heavy with bacteria.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "That was an underhanded trick!",
@@ -4074,7 +4117,11 @@ return{
         FISHMEAT_COOKED = "Beautifully grilled.",
         FISHMEAT_SMALL = "Fish flesh.",
         FISHMEAT_SMALL_COOKED = "A small bit of nourishment.",
-		SPOILED_FISH = "That fish matter is becoming a biohazard.",
+		SPOILED_FISH =
+        {
+            GENERIC = "That fish matter is becoming a biohazard.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "A clever contraption to keep seafood fresh.",
         POCKET_SCALE = "I'm always prepared to weigh in.",
@@ -6021,6 +6068,45 @@ return{
 
         YOTH_KNIGHTSTICK = "It simply confers greater swiftness upon one's steps.",
         YOTH_CHAIR_ROCKING_ITEM = "It is a rocking horse, of the sort commonly found in children's nurseries.", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "We are indebted to this intrepid little scout.",
+		WX78_DRONE_DELIVERY = "The automaton deomonstrates an unusual attachment to its belongings.",
+		WX78_DRONE_ZAP = "It permits the automaton to engage its foes from a distance.",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "Through signal transmission, the automaton may maneuver the aerial device and discharge electrical shocks.",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_STACKSIZE = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_DIGESTION = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_SCREECH = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_LIGHT2 = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_SHIELDING = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_SPIN = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+--fallback to speech_wilson.lua 			NOPOWER = "only_used_by_wx78", -- Held but can't open due to wx charge level too low
+            GENERIC = "Once a repository whose capacity challenged the very laws of physics.", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "The automaton has reconstituted spoiled food matter into a compact edible brick.",
+            GENERIC = "The nutrient brick is inedible in its desicated form.",
+        },
+
+        WX78_POSSESSEDBODY = "It's a straightforward instance of spectral machina possession, nothing more.",
+
+        WX78_GESTALTTRAPPER = "It's been reconfigured to permit direct transfer of the entity into the chassis.",
+
+        SHADOW_HEART_VEIN = "This is dark magic indeed.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

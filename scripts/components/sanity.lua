@@ -498,7 +498,7 @@ function Sanity:Recalc(dt)
 		dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
 	end
 
-    local moisture_delta = self.no_moisture_penalty and 0 or easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
+    local moisture_delta = (self.inst.components.moisture == nil or self.no_moisture_penalty) and 0 or easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
 
     local light_sanity_drain = LIGHT_SANITY_DRAINS[self.mode]
 	local light_delta = 0
@@ -547,7 +547,7 @@ function Sanity:Recalc(dt)
         end
     end
 
-    local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
+    local mount = self.inst.components.rider and self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
     if mount ~= nil and mount.components.sanityaura ~= nil then
         local aura_val = mount.components.sanityaura:GetAura(self.inst)
 		aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self:GetAuraMultipliers() or aura_val)

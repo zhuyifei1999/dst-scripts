@@ -25,6 +25,13 @@ local actionhandlers = {}
 local events =
 {
     CommonHandlers.OnLocomote(false, true),
+    CommonHandlers.OnPossessChassis(),
+
+	EventHandler("gestaltcapturable_targeted", function(inst)
+		if inst.sg:HasStateTag("moving") then
+			inst.sg:GoToState("walk_stop")
+		end
+	end),
 }
 
 --------------------------------------------------------------------------------------------------------------
@@ -52,9 +59,11 @@ local states =
             inst.AnimState:PlayAnimation("spawn")
             inst.Physics:SetMotorVelOverride(4, 0, 0)
             inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_vocalization")
+            inst.components.gestaltcapturable:SetEnabled(false)
         end,
 
         onexit = function(inst)
+            inst.components.gestaltcapturable:SetEnabled(true)
             inst.Physics:ClearMotorVelOverride()
             inst.Physics:Stop()
         end,
@@ -79,9 +88,15 @@ local states =
 			end
         end,
 
+        onexit = function(inst)
+            -- Shouldn't enter here?
+            inst.components.gestaltcapturable:SetEnabled(true)
+        end,
+
         timeline =
         {
 			FrameEvent(25, function(inst)
+                inst.components.gestaltcapturable:SetEnabled(false)
 				inst.persists = false
 
                 -- lunarthrall_plant_gestalt handler.
@@ -123,9 +138,15 @@ local states =
 			inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_infest")
 		end,
 
+        onexit = function(inst)
+            -- Shouldn't enter here?
+            inst.components.gestaltcapturable:SetEnabled(true)
+        end,
+
 		timeline =
 		{
 			FrameEvent(19, function(inst)
+                inst.components.gestaltcapturable:SetEnabled(false)
 				inst.persists = false
 
 				-- lunarthrall_plant_gestalt handler.
@@ -190,20 +211,23 @@ local function SpawnTrail(inst)
 end
 
 CommonStates.AddWalkStates(states,
+{
+    starttimeline =
     {
-        starttimeline =
-        {
-            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_vocalization") end),
-        },
-        walktimeline =
-        {
-            TimeEvent(0*FRAMES, SpawnTrail),
-        },
+        FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_vocalization") end),
     },
-    nil,
-    nil,
-    true
-)
+    walktimeline =
+    {
+        FrameEvent(0, SpawnTrail),
+    },
+}, nil, nil, true)
+
+CommonStates.AddPossessChassisState(states, "infest_corpse_small", 19,
+{
+    onenter = function(inst)
+        inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_infest")
+    end,
+})
 
 --------------------------------------------------------------------------------------------------------------
 

@@ -23,6 +23,9 @@ return{
             NOTMERM = "Scaley friend, help!",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "Only for robot friend.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "Already have Care Friend",
 			TICOON = "Already have friend",
             BUSY_STATION = "Like waiting!",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "Shy?",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "Nope. Not mine",
             NOTSOULJARHANDLER = "Don't touch soul friends",
             RESTRICTED = "Nope",
+            NOTAROBOT = "Only for robot friend.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "Not mine",
             NOTSOULJARHANDLER = "Don't touch soul friends",
             RESTRICTED = "Nope",
+            NOTAROBOT = "Only for robot friend.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -417,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -429,6 +454,8 @@ return{
 			NOT_MINE = "Not mine",
 
 			CANNOT_FIX_DRONE = "Bye robot friend",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -1204,6 +1231,14 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Neigh machine busy busy?",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Why friend not follow?",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -2814,7 +2849,11 @@ return{
         ROCKS = "Rocks",
         ROOK = "Rock machine",
         ROPE = "Friends made string!",
-        ROTTENEGG = "Smells good!",
+        ROTTENEGG =
+        {
+            GENERIC = "Smells good!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Bloopy belly stuff",
         JELLYBEAN = "Mmmmm!",
         SADDLE_BASIC = "Shaggy Buddy Sitting Thing",
@@ -2916,7 +2955,11 @@ return{
 			GENERIC = "Angry Leggy Bug",
 			SLEEPING = "Sleepytime",
 		},
-		SPOILED_FOOD = "Not good for belly",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Not good for belly",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Ohh! Table friend!",
@@ -4078,7 +4121,11 @@ return{
         FISHMEAT_COOKED = "Watch for bones",
         FISHMEAT_SMALL = "Wee Glub Glub",
         FISHMEAT_SMALL_COOKED = "Cute little belly stuff",
-		SPOILED_FISH = "Smells good. Mmmmm...",
+		SPOILED_FISH =
+        {
+            GENERIC = "Smells good. Mmmmm...",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "Glub Glubs go in there",
         POCKET_SCALE = "Weigh thing",
@@ -6025,6 +6072,45 @@ return{
 
         YOTH_KNIGHTSTICK = "Make faster friend",
         YOTH_CHAIR_ROCKING_ITEM = "Rocking friend!", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "Thanks, brave friend!",
+		WX78_DRONE_DELIVERY = "Helpful friend",
+		WX78_DRONE_ZAP = "Flying zapper friend",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "Only robot friend play",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "Beep boops",
+        WX78MODULE_STACKSIZE = "Beep boops",
+        WX78MODULE_DIGESTION = "Beep boops",
+        WX78MODULE_SCREECH = "Beep boops",
+        WX78MODULE_LIGHT2 = "Beep boops",
+        WX78MODULE_SHIELDING = "Beep boops",
+        WX78MODULE_SPIN = "Beep boops",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+--fallback to speech_wilson.lua 			NOPOWER = "only_used_by_wx78", -- Held but can't open due to wx charge level too low
+            GENERIC = "Robot friend dropped", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "Food from robot friend!",
+            GENERIC = "Too hard!",
+        },
+
+        WX78_POSSESSEDBODY = "Not robot friend?",
+
+        WX78_GESTALTTRAPPER = "Make more robot friend",
+
+        SHADOW_HEART_VEIN = "Cold friend gift?",
     },
 
     DESCRIBE_GENERIC = "Friend?",

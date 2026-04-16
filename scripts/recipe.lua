@@ -150,6 +150,7 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer_or_more_data
 	self.dropitem      = more_data.dropitem
 
 	self.actionstr     = more_data.actionstr
+    self.recipedisplaynamefn = more_data.recipedisplaynamefn
 	self.hint_msg      = more_data.hint_msg
 	self.force_hint    = more_data.force_hint -- show locked recipe (i.e. missing +1 tech level) even if we are "nounlock"
 
@@ -160,6 +161,12 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer_or_more_data
     if self.limitedamount then
         if TheSim then -- updateprefabs guard
             DeclareLimitedCraftingRecipe(self.name)
+        end
+    end
+    self.getlimitedrecipecount = more_data.getlimitedrecipecount -- NOTES(JBK): Only use this for recipes the client and server both know the limit to outside of crafting stations.
+    if self.getlimitedrecipecount then
+        if TheSim then -- updateprefabs guard
+            table.insert(EXTERNALLY_HANDLED_LIMITED_RECIPES, self.name)
         end
     end
 

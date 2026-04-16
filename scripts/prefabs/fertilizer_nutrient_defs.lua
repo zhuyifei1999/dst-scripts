@@ -19,9 +19,12 @@ FERTILIZER_DEFS.treegrowthsolution = {nutrients = TUNING.TREEGROWTH_NUTRIENTS}
 
 FERTILIZER_DEFS.mosquitofertilizer = {nutrients = TUNING.MOSQUITOFERTILIZER_NUTRIENTS}
 
+FERTILIZER_DEFS.wx78_foodbrick = {nutrients = TUNING.WX78_FOODBRICK_NUTRIENTS}
+
 FERTILIZER_DEFS.soil_amender_low.inventoryimage = "soil_amender.tex"
 FERTILIZER_DEFS.soil_amender_med.inventoryimage = "soil_amender_stale.tex"
 FERTILIZER_DEFS.soil_amender_high.inventoryimage = "soil_amender_spoiled.tex"
+FERTILIZER_DEFS.wx78_foodbrick.inventoryimage = "wx78_foodbrick_wet.tex"
 
 FERTILIZER_DEFS.soil_amender_low.name = "SOIL_AMENDER_FRESH"
 FERTILIZER_DEFS.soil_amender_med.name = "SOIL_AMENDER_STALE"
@@ -70,6 +73,7 @@ local sort_order =
 	"treegrowthsolution",
 
 	"mosquitofertilizer",
+	"wx78_foodbrick",
 }
 
 

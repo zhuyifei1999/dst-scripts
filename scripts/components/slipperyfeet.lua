@@ -115,7 +115,7 @@ function SlipperyFeet:GetSlipperyAndNearbyEnts()
 end
 
 local function OnNewState(inst)
-	inst.components.slipperyfeet:SetAccumulating_Internal(inst.sg:HasStateTag("running") and not inst.sg:HasStateTag("noslip"))
+	inst.components.slipperyfeet:SetAccumulating_Internal(inst.sg:HasAnyStateTag("running", "spinning") and not inst.sg:HasStateTag("noslip"))
 end
 
 function SlipperyFeet:Start_Internal()
@@ -170,6 +170,9 @@ end
 
 function SlipperyFeet:CalcAccumulatingSpeed()
 	local speed = self.inst.Physics:GetMotorSpeed()
+	if self.inst.sg:HasStateTag("spinning") then
+		speed = math.max(speed / TUNING.WX78_SPIN_RUNSPEED_MULT, TUNING.WX78_SPIN_SLIPPERY)
+	end
 	return speed * speed / TUNING.WILSON_RUN_SPEED --curved
 end
 

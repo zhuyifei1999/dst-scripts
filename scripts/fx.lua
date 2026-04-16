@@ -2649,7 +2649,7 @@ local fx =
         end,
     },
 
-    {
+	{	--Deprecated
         name = "wx78_heat_steam",
         bank = "wx_fx",
         build = "wx_fx",
@@ -3854,6 +3854,28 @@ local fx =
 		build = "vault_portal_fx",
 		anim = "activate",
 	},
+    {
+        name = "wx78_possessed_shadow",
+        bank = "wx78_possessed_shadow",
+        build = "wx78_possessed_shadow",
+        anim = "shadow_attack",
+        sound = "rifts2/thrall_wings/flap_walk",
+        eightfaced = true,
+        fn = function(inst)
+            inst.AnimState:SetMultColour(1, 1, 1, .5)
+        end,
+    },
+    {
+        name = "wx78_possessed_shadow_hitfx",
+        bank = "merm_shadow_fx",
+        build = "merm_shadow_fx",
+        anim = "spawn_poof",
+        sound = "meta4/shadow_merm/buff_pst",
+        fn = function(inst)
+            inst.AnimState:SetFinalOffset(1)
+            inst.AnimState:SetMultColour(1, 1, 1, .5)
+        end,
+    },
 }
 
 for cratersteamindex = 1, 4 do
@@ -3968,7 +3990,48 @@ for i, size in ipairs(FX_SIZES) do
     end
 end
 
+local WX78_SHIELD_ANIMS =
+{
+    "full",
+    "half",
+    "full_to_half",
+    "half_to_full",
+    "full_to_empty",
+    "half_to_empty",
+}
+local WX_SHIELD_COLOUR = { 243 / 255, 187 / 255, 6 / 255 } -- NOTES(OMAR): Keep in sync with widgets/healthbadge.lua:WX_SHIELD_COLOUR
+local function Wx78ShieldFn(inst)
+    inst.AnimState:SetFinalOffset(1)
+    inst.AnimState:SetMultColour(WX_SHIELD_COLOUR[1], WX_SHIELD_COLOUR[2], WX_SHIELD_COLOUR[3], 1)
+end
+
+local function Wx78ShieldSetNoParent(inst)
+    if inst.entity:GetParent() ~= nil then
+        inst.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        inst.entity:SetParent(nil)
+    end
+end
+
+local DELAY_SHIELDFX_SET_NO_PARENT = 11 * FRAMES
+local function Wx78ShieldBreakFn(inst)
+    Wx78ShieldFn(inst)
+    inst:DoTaskInTime(DELAY_SHIELDFX_SET_NO_PARENT, Wx78ShieldSetNoParent)
+end
+
+for i, anim in ipairs(WX78_SHIELD_ANIMS) do
+    table.insert(fx, {
+        name = "wx78_shield_"..anim,
+        bank = "wx78_shield_fx",
+        build = "wx78_shield_fx",
+        anim = anim,
+        nofaced = true,
+        -- sound = "rifts5/hermit_island/whirlpool_up_s",
+        fn = ((anim == "full_to_empty" or anim == "half_to_empty") and Wx78ShieldBreakFn or Wx78ShieldFn),
+    })
+end
+
 FinalOffset1 = nil
 FinalOffset2 = nil
+FinalOffset3 = nil
 
 return fx

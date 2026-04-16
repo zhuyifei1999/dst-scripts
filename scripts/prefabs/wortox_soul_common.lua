@@ -72,7 +72,7 @@ local function SoulDamageTest(inst, ent, owner)
         if owner.components.combat == nil then
             return false
         end
-        if owner.components.combat:TargetHasFriendlyLeader(ent) or not owner.components.combat:CanTarget(ent) then
+		if owner.components.combat:IsAlly(ent) or not owner.components.combat:CanTarget(ent) then
             return false
         end
     end

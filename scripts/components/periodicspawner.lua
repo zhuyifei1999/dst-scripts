@@ -80,6 +80,10 @@ function PeriodicSpawner:SetIgnoreFlotsamGenerator(ignores)
     self.ignoreflotsamgenerator = ignores
 end
 
+function PeriodicSpawner:SetDensityFilterFn(fn)
+    self.densityfilterfn = fn
+end
+
 ----------------------------------------------------------------------------------------
 
 function PeriodicSpawner:Start(timeoverride)
@@ -143,7 +147,7 @@ function PeriodicSpawner:TrySpawn(prefab)
         local count = 0
 
         for _, nearby_ent in ipairs(ents) do
-            if nearby_ent.prefab == prefab then
+            if nearby_ent.prefab == prefab or (self.densityfilterfn and self.densityfilterfn(self.inst, nearby_ent)) then
                 --can't spawn if anything within "spacing"
                 --optimized to skip distance checks when we already
                 --know that FindEntities radius is within "spacing"

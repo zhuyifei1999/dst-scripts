@@ -353,14 +353,18 @@ local HATGUARD_COMBAT_CANTHAVE_TAGS = { "INLIMBO", "structure", "wall", "compani
 local function hatguard_find_attack_victim(inst)
     local hitrange = 0.75
     if inst._focustarget then
-        return inst._focustarget:IsValid() and inst:GetDistanceSqToInst(inst._focustarget) < hitrange * hitrange and inst._focustarget or nil
+		return inst._focustarget:IsValid() and inst:IsNear(inst._focustarget, hitrange) and inst._focustarget or nil
     end
+
+	local leader = inst.components.follower:GetLeader() or inst
 
     local x, y, z = inst.Transform:GetWorldPosition()
 	local ents = TheSim:FindEntities(x, y, z, hitrange, HATGUARD_COMBAT_MUSHAVE_TAGS, HATGUARD_COMBAT_CANTHAVE_TAGS)
 	for _, target in ipairs(ents) do
-		if (target.components.health ~= nil and not target.components.health:IsDead())
-			and (target.components.combat ~= nil and not inst.components.combat:TargetHasFriendlyLeader(target) and inst.components.combat:CanTarget(target)) then
+		if not target.components.health:IsDead() and
+			not leader.components.combat:IsAlly(target) and
+			inst.components.combat:CanTarget(target)
+		then
 			return target
 		end
 	end

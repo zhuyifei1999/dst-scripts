@@ -5261,6 +5261,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 127,
 	},
+	body_wx78_ancient =
+	{
+		type = "body",
+		skin_tags = { "ANCIENT", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 180,
+	},
 	body_wx78_cook =
 	{
 		type = "body",
@@ -7106,6 +7116,16 @@ CLOTHING =
 		feet_cuff_size = 5,
 		marketable = true,
 		release_group = 7,
+	},
+	feet_wx78_ancient =
+	{
+		type = "feet",
+		skin_tags = { "ANCIENT", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 2,
+		release_group = 180,
 	},
 	feet_wx78_gladiator =
 	{
@@ -8982,6 +9002,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 115,
+	},
+	hand_wx78_ancient =
+	{
+		type = "hand",
+		skin_tags = { "ANCIENT", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 180,
 	},
 	hand_wx78_gladiator =
 	{

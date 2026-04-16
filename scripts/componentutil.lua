@@ -1118,6 +1118,68 @@ function GetActionPassableTestFn(inst)
 	return GetActionPassableTestFnAt(inst.Transform:GetWorldPosition())
 end
 
+-------
+-- Flying checks for restrictions.
+
+function IsFlyingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
+    local map = TheWorld.Map
+
+    if map:IsWagPunkArenaBarrierUp() then
+        if map:IsPointInWagPunkArena(fx, fy, fz) then
+            return map:IsPointInWagPunkArena(tx, ty, tz)
+        end
+    end
+
+    if map:IsPointInOrAdjacentToAnyVault(fx, fy, fz) or map:IsPointInOrAdjacentToAnyVault(tx, ty, tz) then
+        return false
+    end
+
+    return true
+end
+
+function IsFlyingPermittedFromPoint(fx, fy, fz)
+    local map = TheWorld.Map
+
+    if map:IsPointInOrAdjacentToAnyVault(fx, fy, fz) then
+        return false
+    end
+
+    return true
+end
+
+-------
+-- Teleporting checks for restrictions.
+
+function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
+    local map = TheWorld.Map
+
+    if map:IsWagPunkArenaBarrierUp() then
+        if map:IsPointInWagPunkArena(fx, fy, fz) ~= map:IsPointInWagPunkArena(tx, ty, tz) then
+            return false
+        end
+    end
+
+    if map:IsPointInAnyVault(tx, ty, tz) then
+        return false
+    end
+
+    return true
+end
+
+function IsTeleportLinkingPermittedFromPoint(fx, fy, fz)
+    local map = TheWorld.Map
+
+    if map:IsPointInWagPunkArenaAndBarrierIsUp(fx, fy, fz) then
+        return false
+    end
+
+    if map:IsPointInAnyVault(fx, fy, fz) then
+        return false
+    end
+
+    return true
+end
+
 --------------------------------------------------------------------------
 
 --Mutation stuff
@@ -1728,6 +1790,7 @@ function CreatingJoustingData(inst)
 end
 
 --------------------------------------------------------------------------
+-- Luck.
 
 local TWOTHIRDS = 2 / 3
 
@@ -1905,3 +1968,88 @@ function TryLuckRoll(inst, chance, formula) -- inst can be optional.
     --
     return roll <= chance
 end
+
+--------------------------------------------------------------------------
+-- socketable and useabletargeteditem
+local function UseableTargetedItem_ValidTarget_SocketHolder(inst, target, doer, ...)
+    local socketable = inst.components.socketable
+    local socketholder = target.components.socketholder
+    if socketable and socketholder then
+        return socketholder:CanTryToSocket(inst, doer)
+    end
+    if inst._UseableTargetedItem_ValidTarget_SocketHolder then
+        return inst:_UseableTargetedItem_ValidTarget_SocketHolder(inst, target, doer, ...)
+    end
+end
+
+function MakeItemSocketable_Client(inst, socketname)
+    local socketable = inst.components.socketable or inst:AddComponent("socketable")
+    socketable:SetSocketName(socketname)
+
+    if not inst._UseableTargetedItem_ValidTarget_SocketHolder then
+        inst._UseableTargetedItem_ValidTarget_SocketHolder = inst.UseableTargetedItem_ValidTarget
+        inst.UseableTargetedItem_ValidTarget = UseableTargetedItem_ValidTarget_SocketHolder
+    end
+end
+
+local function OnPotentialSocketHolderUsed(inst, target, doer, ...)
+    local socketable = inst.components.socketable
+    local socketholder = target.components.socketholder
+    if socketable and socketholder then
+        local success, failreason = socketholder:TryToSocket(inst, doer)
+        if success ~= nil then
+            return success, failreason
+        end
+    end
+
+    local useabletargeteditem = inst.components.useabletargeteditem
+    if useabletargeteditem and useabletargeteditem._onusefn_socketholder then
+        return useabletargeteditem._onusefn_socketholder(inst, target, doer, ...)
+    end
+
+    return nil
+end
+
+function MakeItemSocketable_Server(inst)
+	local useabletargeteditem = inst.components.useabletargeteditem or inst:AddComponent("useabletargeteditem")
+    useabletargeteditem._onusefn_socketholder = useabletargeteditem.onusefn
+	useabletargeteditem:SetOnUseFn(OnPotentialSocketHolderUsed)
+end
+
+--------------------------------------------------------------------------
+-- socketholder
+
+function MakeInstSocketHolder_Client(inst, socketnames)
+    local socketholder = inst.components.socketholder or inst:AddComponent("socketholder")
+    local socketnames_type = type(socketnames)
+    if socketnames_type == "table" then
+        socketholder:SetMaxSockets(#socketnames)
+        for socketposition, socketname in ipairs(socketnames) do
+            socketholder:SetSocketPositionName(socketposition, socketname)
+        end
+    elseif socketnames_type == "string" then
+        socketholder:SetMaxSockets(1)
+        socketholder:SetSocketPositionName(1, socketnames)
+    else --if socketnames_type == "number" then
+        socketholder:SetMaxSockets(socketnames)
+    end
+end
+
+--------------------------------------------------------------------------
+-- Mimics. Search term: itemmimic:TurnEvil(
+
+function ShouldItemMimicBeRevealedFor(item, user)
+    if item == nil then
+        return false
+    end
+
+    local itemisamimic = item.components.itemmimic ~= nil
+    if user == nil then
+        return itemisamimic
+    end
+
+    local userprocsmimics = user.components.socket_shadow_mimicry == nil
+    return itemisamimic and userprocsmimics
+end
+
+--------------------------------------------------------------------------

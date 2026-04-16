@@ -120,6 +120,14 @@ function InventoryItem:CanOnlyGoInPocketOrPocketContainers()
     return self.classified ~= nil and self.classified.canonlygoinpocketorpocketcontainers:value()
 end
 
+function InventoryItem:SetIsLockedInSlot(locked)
+	self.classified.islockedinslot:set(locked)
+end
+
+function InventoryItem:IsLockedInSlot()
+	return self.classified ~= nil and self.classified.islockedinslot:value()
+end
+
 function InventoryItem:SetImage(imagename)
     self.classified.image:set(imagename ~= nil and (imagename..".tex") or 0)
 end
@@ -391,11 +399,26 @@ function InventoryItem:SetWalkSpeedMult(walkspeedmult)
     self.classified.walkspeedmult:set(x)
 end
 
+-- Keep logic in sync with Equippable::GetWalkSpeedMult()
 function InventoryItem:GetWalkSpeedMult()
     if self.inst.components.equippable ~= nil then
         return self.inst.components.equippable:GetWalkSpeedMult()
     elseif self.classified ~= nil then
-        return self.classified.walkspeedmult:value() / 100
+        local equippable = self.inst.replica.equippable
+        local speed = self.classified.walkspeedmult:value() / 100
+
+        if equippable and equippable:IsEquipped() then -- In case this was called without equippable??
+            if speed < 1 and ThePlayer:HasTag("vigorbuff") then
+                speed = math.min(1, speed + 0.25)
+            end
+
+            local speedmodifierfn = ThePlayer.inventory_EquippableWalkSpeedMultModifier
+            if speedmodifierfn ~= nil then
+                speed = speedmodifierfn(ThePlayer, speed, self.inst)
+            end
+        end
+
+        return speed
     else
         return 1
     end

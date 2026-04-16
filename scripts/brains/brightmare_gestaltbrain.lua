@@ -2,6 +2,8 @@ require "behaviours/follow"
 require "behaviours/wander"
 require "behaviours/standstill"
 
+local BrainCommon = require("brains/braincommon")
+
 local BRIGHTMARE_AVOID_DIST = 2
 local BRIGHTMARE_AVOID_STOP = 4
 
@@ -44,8 +46,16 @@ local function onrunaway(target, inst)
 	return true
 end
 
+--------------------------------------------------------------------------
+
+local WANDER_TIMES = { minwaittime = 0, randwaittime = 0 }
+
+local UPDATE_RATE = 0.1
 function GestaltBrain:OnStart()
-    local root = PriorityNode({
+	local possess_chassis_node = BrainCommon.PossessChassisNode(self, UPDATE_RATE)
+
+    local root =
+	PriorityNode({
 		WhileNode(function() return not self.inst.sg:HasStateTag("jumping") end, "AttackAndWander",
 			PriorityNode({
 				WhileNode( function() return ShouldRelocate(self.inst) end, "relocate",
@@ -59,30 +69,29 @@ function GestaltBrain:OnStart()
 				WhileNode( function() return self.inst.behaviour_level == 1 end, "level1",
 					PriorityNode({
 						RunAway(self.inst, "player", L1_AVOID_PLAYER_DIST, L1_AVOID_PLAYER_STOP),
-					}, 0.1)),
+					}, UPDATE_RATE)),
 
 				WhileNode( function() return self.inst.behaviour_level == 2 end, "level2",
 					PriorityNode({
+						possess_chassis_node,
 						WhileNode( function() return self.inst.components.combat.target ~= nil end, "aggressive",
-							SequenceNode{
-								ActionNode(function() self.inst.components.locomotor:Stop() end),
-								StandAndAttack(self.inst, nil, L3_ATTACK_CHASE_TIME),
-							}),
+							StandAndAttack(self.inst, nil, L3_ATTACK_CHASE_TIME)),
 						IfNode(function() return self.inst.components.combat:InCooldown() end, "combat_pst",
 							RunAway(self.inst, "player", L2_AVOID_PLAYER_DIST, L2_AVOID_PLAYER_STOP)),
-					}, 0.1)),
+					}, UPDATE_RATE)),
 
 				WhileNode( function() return self.inst.behaviour_level == 3 end, "level3",
 					PriorityNode({
+						possess_chassis_node,
 						ChaseAndAttack(self.inst, L3_ATTACK_CHASE_TIME, L3_ATTACK_CHASE_DIST, nil, nil, true),
 						IfNode(function() return self.inst.components.combat:InCooldown() end, "combat_pst",
 							RunAway(self.inst, "player", L2_AVOID_PLAYER_DIST, L2_AVOID_PLAYER_STOP)),
-					}, 0.1)),
+					}, UPDATE_RATE)),
 
 				RunAway(self.inst, "brightmare", BRIGHTMARE_AVOID_DIST, BRIGHTMARE_AVOID_STOP),
-				Wander(self.inst, nil, nil, { minwaittime = 0, randwaittime = 0 }),
-			}, 0.1)),
-		}, 0.1)
+				Wander(self.inst, nil, nil, WANDER_TIMES),
+			}, UPDATE_RATE)),
+		}, UPDATE_RATE)
 
     self.bt = BT(self.inst, root)
 end

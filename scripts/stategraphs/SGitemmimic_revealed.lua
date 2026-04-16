@@ -138,8 +138,12 @@ local states =
 				-- If we still have a target, and we successfully copy it, we can be removed.
 				-- Otherwise, we just land normally and behave like nothing happened.
 				local target = inst.sg.statemem.target
-				if target and TheWorld.components.shadowthrall_mimics and target:IsValid()
-						and TheWorld.components.shadowthrall_mimics.SpawnMimicFor(target) then
+                local success, mimic
+                if target and TheWorld.components.shadowthrall_mimics and target:IsValid() then
+                    success, mimic = TheWorld.components.shadowthrall_mimics.SpawnMimicFor(target)
+                end
+                if success then
+                    mimic.components.itemmimic:SetNoLoot(inst:GetNoLoot())
 					SpawnPrefab("itemmimic_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
 					inst:Remove()
 				else

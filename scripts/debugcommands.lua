@@ -2246,6 +2246,8 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "turf"
     elseif t:HasTag("backpack") then
         subcat = "backpack"
+    elseif t.components.upgrademodule then -- has to be above container
+        subcat = "upgrademodule"
     elseif t:HasTag("chest") or Scrapbook_IsOnCraftingFilter("CONTAINERS", t.prefab) then
         subcat = "container"
     elseif t:HasTag("battlesong") then
@@ -2292,8 +2294,6 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "ornament"
     elseif string.find(t.prefab, "trinket") then
         subcat = "trinket"
-    elseif t.components.upgrademodule then
-        subcat = "upgrademodule"
     elseif t:HasTag("halloween_ornament") then
         subcat = "halloweenornament"
     elseif t:HasTag("spider") then
@@ -4450,4 +4450,44 @@ function d_getmigrationpopulation(migrator_type)
     if migrationpopulations[migrator_type] then
         return migrationpopulations[migrator_type].populations
     end
+end
+
+function d_hidehovertext()
+	local controls = ThePlayer and ThePlayer.HUD and ThePlayer.HUD.controls
+	local hover = controls and controls.hover
+	if hover then
+		hover.forcehide = true
+		hover:Hide()
+
+		--in case we are unforcehidden, like coming out of mapscreen
+		if not hover._d_forcehide then
+			hover._d_forcehide = true
+			local _onshow = hover.OnShow
+			hover.OnShow = function(hover)
+				_onshow(hover)
+				hover.forcehide = true
+				hover:Hide()
+			end
+		end
+	end
+	if controls then
+		if controls.playeractionhint then
+			controls.playeractionhint.text:Hide()
+		end
+		if controls.playeractionhint_itemhighlight then
+			controls.playeractionhint_itemhighlight.text:Hide()
+		end
+		if controls.attackhint then
+			controls.attackhint.text:Hide()
+		end
+		if controls.groundactionhint then
+			controls.groundactionhint.text:Hide()
+		end
+	end
+end
+
+function d_notalking()
+	for _, v in ipairs(AllPlayers) do
+		v.components.talker:IgnoreAll("d_notalking")
+	end
 end

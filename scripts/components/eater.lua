@@ -130,11 +130,8 @@ function Eater:SetStrongStomach(is_strong)
     if is_strong then
         self.inst:AddTag("strongstomach")
         self.strongstomach = true
-    else
-        if self.inst:HasTag("strongstomach") then
-            self.inst:RemoveTag("strongstomach")
-        end
-
+    elseif self.strongstomach then
+        self.inst:RemoveTag("strongstomach")
         self.strongstomach = false
     end
 end
@@ -143,11 +140,8 @@ function Eater:SetCanEatRawMeat(can_eat)
     if can_eat then
         self.inst:AddTag("eatsrawmeat")
         self.eatsrawmeat = true
-    else
-        if self.inst:HasTag("eatsrawmeat") then
-            self.inst:RemoveTag("eatsrawmeat")
-        end
-
+    elseif self.eatsrawmeat then
+        self.inst:RemoveTag("eatsrawmeat")
         self.eatsrawmeat = false
     end
 end
@@ -156,11 +150,8 @@ function Eater:SetIgnoresSpoilage(ignores)
     if ignores then
         self.inst:AddTag("ignoresspoilage")
         self.ignoresspoilage = true
-    else
-        if self.inst:HasTag("ignoresspoilage") then
-            self.inst:RemoveTag("ignoresspoilage")
-        end
-
+    elseif self.ignoresspoilage then
+        self.inst:RemoveTag("ignoresspoilage")
         self.ignoresspoilage = false
     end
 end
@@ -169,13 +160,39 @@ function Eater:SetRefusesSpoiledFood(refuses)
     if refuses then
         self.inst:AddTag("nospoiledfood")
         self.nospoiledfood = true
-    else
-        if self.inst:HasTag("nospoiledfood") then
-            self.inst:RemoveTag("nospoiledfood")
-        end
-        
+    elseif self.nospoiledfood then
+        self.inst:RemoveTag("nospoiledfood")
         self.nospoiledfood = false
     end
+end
+
+function Eater:SetSpoiledProcessor(processor, allspoiled)
+    if processor then
+        self.inst:AddTag("spoiledprocessor")
+        self.spoiledprocessor = true
+        if allspoiled then -- perishables in spoiled state, instead of just rot.
+            self.inst:AddTag("allspoiledprocessor")
+            self.allspoiledprocessor = true
+        else
+            self.inst:RemoveTag("allspoiledprocessor")
+            self.allspoiledprocessor = false
+        end
+    elseif self.spoiledprocessor then
+        self.inst:RemoveTag("spoiledprocessor")
+        self.spoiledprocessor = false
+        self.inst:RemoveTag("allspoiledprocessor")
+        self.allspoiledprocessor = false
+    end
+end
+
+function Eater:IsSpoiledProcessor()
+    return self.spoiledprocessor
+end
+
+function Eater:CanProcessSpoiledItem(food)
+    return self:IsSpoiledProcessor() and
+        (food.components.edible:IsSpoiledFood() or
+        (self.allspoiledprocessor and food.components.perishable and food.components.perishable:IsSpoiled()))
 end
 
 function Eater:SetOnEatFn(fn)
@@ -184,7 +201,7 @@ end
 
 function Eater:DoFoodEffects(food)
     return not ((self.strongstomach and food:HasTag("monstermeat")) or
-                (self.eatsrawmeat and food:HasTag("rawmeat")) or 
+                (self.eatsrawmeat and food:HasTag("rawmeat")) or
                 (self.inst.components.foodaffinity and self.inst.components.foodaffinity:HasPrefabAffinity(food)))
 end
 
@@ -334,6 +351,21 @@ end
 
 function Eater:CanEat(food)
     return self:TestFood(food, self.caneat)
+end
+
+function Eater:IsTryingToFeedMe(inst)
+	local target
+    local act = inst:GetBufferedAction()
+	if act then
+		target = act.target
+		act = act.action
+	elseif inst.components.playercontroller then
+		act, target = inst.components.playercontroller:GetRemoteInteraction()
+	end
+	return target == self.inst
+		and (	act == ACTIONS.FEED or
+				act == ACTIONS.FEEDPLAYER
+			)
 end
 
 return Eater

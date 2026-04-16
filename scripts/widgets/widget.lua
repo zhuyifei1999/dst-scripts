@@ -394,6 +394,10 @@ function Widget:SetScale(pos, y, z)
     end
 end
 
+function Widget:HasCallback(event)
+	return self.callbacks[event] ~= nil
+end
+
 function Widget:HookCallback(event, fn)
     if self.callbacks[event] then
         self.inst:RemoveEventCallback(event, self.callbacks[event])

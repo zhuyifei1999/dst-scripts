@@ -12,7 +12,7 @@ function containers.widgetsetup(container, prefab, data)
         for k, v in pairs(t) do
             container[k] = v
         end
-        container:SetNumSlots(container.widget.slotpos ~= nil and #container.widget.slotpos or 0)
+		container:SetNumSlots(container.widget.numslots or (container.widget.slotpos and #container.widget.slotpos or 0))
     end
 end
 
@@ -689,10 +689,7 @@ local LIGHT_TAGS = { "lightbattery", "spore", "lightcontainer" }
 params.yots_lantern_post = {
     widget =
     {
-        slotpos =
-        {
-             Vector3(-2, 18, 0),
-        },
+        slotpos = { Vector3(0, 0, 0), },
         animbank = "ui_chest_1x1",
         animbuild = "ui_chest_1x1",
         pos = Vector3(0, 160, 0),
@@ -1804,14 +1801,14 @@ params.alterguardianhat =
         slotbg = {},
         animbank = "ui_alterguardianhat_1x6",
         animbuild = "ui_alterguardianhat_1x6",
-        pos = Vector3(106, 150, 0),
+		pos = Vector3(106, 10, 0),
     },
     acceptsstacks = false,
     type = "hand_inv",
     excludefromcrafting = true,
 }
 
-local AGHAT_SLOTSTART = 95
+local AGHAT_SLOTSTART = 72 * 5 - 22
 local AGHAT_SLOTDIFF = 72
 local SLOT_BG = { image = "spore_slot.tex", atlas = "images/hud2.xml" }
 for i = 0, 4 do
@@ -2126,6 +2123,161 @@ function params.slingshotammo_container.itemtestfn(container, item, slot)
 end
 
 --------------------------------------------------------------------------
+--[[ wx78_backupbody ]]
+--------------------------------------------------------------------------
+
+local WX78_BACKUPBODY_POS = Vector3(0, 280, 0)
+
+params.wx78_backupbody = {
+    widget = {
+        slotpos = {},
+        animbank = "ui_wx78_backupbody_5x3",
+        animbuild = "ui_wx78_backupbody_5x3",
+		pos = WX78_BACKUPBODY_POS,
+        side_align_tip = 160,
+        opensound = "WX_rework/module_side/open",
+        closesound = "WX_rework/module_side/close",
+    },
+    type = "chest",
+}
+
+function params.wx78_backupbody.itemtestfn(container, item, slot)
+    return not item:HasTag("irreplaceable")
+end
+
+for y = 2, 0, -1 do
+    for x = 0, 4, 1 do
+        table.insert(params.wx78_backupbody.widget.slotpos, Vector3(80 * x - 80 * 2, 80 * y - 80 * 2 - 42.5, 0))
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ wx78_drone_delivery ]]
+--------------------------------------------------------------------------
+
+params.wx78_drone_delivery =
+{
+	widget =
+	{
+		slotpos = {},
+		animbank = "ui_wx_deliverydrone_3x2",
+		animbuild = "ui_wx_deliverydrone_3x2",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+	},
+	type = "chest",
+}
+
+for y = 1, 0, -1 do
+	for x = 0, 2 do
+		table.insert(params.wx78_drone_delivery.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 120, 0))
+	end
+end
+
+params.wx78_drone_delivery_small =
+{
+	widget =
+	{
+		slotpos = {},
+		animbank = "ui_wx_deliverydrone_3x1",
+		animbuild = "ui_wx_deliverydrone_3x1",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+	},
+	type = "chest",
+}
+
+for x = 0, 2 do
+	table.insert(params.wx78_drone_delivery_small.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 0, 0))
+end
+
+--------------------------------------------------------------------------
+--[[ wx78_inventorycontainer ]]
+--------------------------------------------------------------------------
+
+local WX78_INVENTORY_CONTAINER_OFFSET = Vector3(0, 100, 0)
+
+local WX78_INVENTORY_CONTAINER_SLOTPOS = {}
+for x = 0, 4, 1 do
+	table.insert(WX78_INVENTORY_CONTAINER_SLOTPOS, { Vector3(80 * x - 80 * 2, -340, 0) })
+end
+
+local function wx78_inventorycontainer_isinbackupbody(container, doer)
+	local inventoryitem = container.replica.inventoryitem
+	return not (inventoryitem and inventoryitem:IsHeldBy(doer))
+end
+
+local function wx78_inventorycontainer_getcolumn(container)
+	local parent = container.entity:GetParent()
+	local _container = parent and parent.replica.container
+	if _container then
+		for slot, v in pairs(_container:GetItems()) do
+			if v == container then
+				return ((slot - 1) % 5) + 1
+			end
+		end
+	end
+	return 5
+end
+
+params.wx78_inventorycontainer =
+{
+    widget =
+    {
+		slotpos = { Vector3(0, 0, 0) },
+		slotposfn = function(container, doer)
+			return wx78_inventorycontainer_isinbackupbody(container, doer)
+				and WX78_INVENTORY_CONTAINER_SLOTPOS[wx78_inventorycontainer_getcolumn(container)]
+				or nil
+		end,
+		--numslots = 1, --required if we don't have slotpos table
+		slotscalefn = function(container, doer)
+			return wx78_inventorycontainer_isinbackupbody(container, doer) and 0.85 or nil
+		end,
+		slothighlightscalefn = function(container, doer)
+			return wx78_inventorycontainer_isinbackupbody(container, doer) and 1.08 or nil
+		end,
+        animbank = "ui_wx78_inventorycontainer_1x1",
+        animbuild = "ui_wx78_inventorycontainer_1x1",
+		animfn = function(container, doer, anim)
+			return wx78_inventorycontainer_isinbackupbody(container, doer)
+				and (anim..tostring(wx78_inventorycontainer_getcolumn(container)))
+				or nil
+		end,
+		--
+		pos = WX78_INVENTORY_CONTAINER_OFFSET,
+		posfn = function(container, doer)
+			if wx78_inventorycontainer_isinbackupbody(container, doer) then
+				return WX78_BACKUPBODY_POS
+			end
+
+			-- TODO is this the best way of doing this?
+			for k, v in pairs(doer.HUD.controls.inv.inv) do
+				if v.tile and v.tile.item == container then
+					return v:GetPosition() + WX78_INVENTORY_CONTAINER_OFFSET
+				end
+			end
+		end,
+		--Override the widget sound, which is heard only by the client
+		opensound = "balatro/balatro_cabinet/cards_flip_HUD",
+		closesound = "balatro/balatro_cabinet/cards_flip_HUD",
+		--
+		bottom_align_tip_fn = function(container, doer)
+			return wx78_inventorycontainer_isinbackupbody(container, doer) and -90 or nil
+		end,
+		top_align_tip_fn = function(container, doer)
+			return not wx78_inventorycontainer_isinbackupbody(container, doer) and 70 or nil
+		end,
+		top_align_tip = 70, --backward compatibility, fn versions would have higher priority now
+    },
+	type = "inv",
+	typefn = function(container, doer)
+		return wx78_inventorycontainer_isinbackupbody(container, doer) and "chest_addon" or nil
+	end,
+    -- excludefromcrafting = true,
+}
+
+--------------------------------------------------------------------------
 --[[ quagmire_pot ]]
 --------------------------------------------------------------------------
 
@@ -2279,7 +2431,7 @@ end
 --------------------------------------------------------------------------
 
 for k, v in pairs(params) do
-    containers.MAXITEMSLOTS = math.max(containers.MAXITEMSLOTS, v.widget.slotpos ~= nil and #v.widget.slotpos or 0)
+	containers.MAXITEMSLOTS = math.max(containers.MAXITEMSLOTS, v.widget.numslots or (v.widget.slotpos and #v.widget.slotpos or 0))
 end
 
 --------------------------------------------------------------------------

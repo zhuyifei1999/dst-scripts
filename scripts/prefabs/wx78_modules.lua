@@ -7,9 +7,12 @@ local assets =
     Asset("SCRIPT", "scripts/wx78_moduledefs.lua"),
 }
 
-local function on_module_removed(inst)
-    if inst.components.finiteuses ~= nil then
-        inst.components.finiteuses:Use()
+local function on_module_removed(inst, owner)
+    if inst.components.finiteuses ~= nil and not owner.components.upgrademoduleowner:IsSwapping() then
+        local use = owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betterunplug")
+            and TUNING.SKILLS.WX78.HALF_MODULE_CONSUMPTION
+            or TUNING.WX78_MODULE_CONSUMPTION
+        inst.components.finiteuses:Use(use)
     end
 end
 
@@ -21,6 +24,10 @@ local function MakeModule(data)
         end
     end
 
+
+    local CHIP_BANK = data.overridebank or "chips"
+    local CHIP_BUILD = data.overridebuild or "wx_chips"
+    local FLOATER_SCALE = (data.slots == 1 and 0.75) or 1.0
     local function fn()
         local inst = CreateEntity()
 
@@ -30,21 +37,22 @@ local function MakeModule(data)
 
         MakeInventoryPhysics(inst)
 
-        inst.AnimState:SetBank("chips")
-        inst.AnimState:SetBuild("wx_chips")
+        inst.AnimState:SetBank(CHIP_BANK)
+        inst.AnimState:SetBuild(CHIP_BUILD)
         inst.AnimState:PlayAnimation(data.name)
         inst.scrapbook_anim = data.name
 
         if data.slots > 4 then
             MakeInventoryFloatable(inst, "med", 0.1, 0.75)
         else
-            MakeInventoryFloatable(inst, nil, 0.1, (data.slots == 1 and 0.75) or 1.0)
+            MakeInventoryFloatable(inst, nil, 0.1, FLOATER_SCALE)
         end
 
         --------------------------------------------------------------------------
         -- For client-side access to information that should not be mutated
         inst._netid = data.module_netid
         inst._slots = data.slots
+        inst._type = data.type
 
         inst.entity:SetPristine()
         if not TheWorld.ismastersim then
@@ -60,15 +68,25 @@ local function MakeModule(data)
         --------------------------------------------------------------------------
         inst:AddComponent("upgrademodule")
         inst.components.upgrademodule:SetRequiredSlots(data.slots)
+        inst.components.upgrademodule:SetType(data.type)
         inst.components.upgrademodule.onactivatedfn = data.activatefn
         inst.components.upgrademodule.ondeactivatedfn = data.deactivatefn
-        inst.components.upgrademodule.onremovedfromownerfn = on_module_removed
+		inst.components.upgrademodule.onaddedtoownerfn = data.addedtoownerfn
+		inst.components.upgrademodule.onremovedfromownerfn =
+			data.removedfromownerfn and
+			function(inst, wx)
+				data.removedfromownerfn(inst, wx)
+				on_module_removed(inst, wx)
+			end or
+			on_module_removed
 
         --------------------------------------------------------------------------
         inst:AddComponent("finiteuses")
         inst.components.finiteuses:SetMaxUses(TUNING.WX78_MODULE_USES)
         inst.components.finiteuses:SetUses(TUNING.WX78_MODULE_USES)
         inst.components.finiteuses:SetOnFinished(inst.Remove)
+
+        MakeHauntableLaunch(inst)
 
         return inst
     end

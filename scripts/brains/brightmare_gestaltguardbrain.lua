@@ -3,11 +3,7 @@ require "behaviours/wander"
 require "behaviours/standstill"
 require "behaviours/faceentity"
 
-local BRIGHTMARE_AVOID_DIST = 2
-local BRIGHTMARE_AVOID_STOP = 4
-
-local MAX_CHASE_TIME = 10
-local MAX_CHASE_DIST = 20
+local BrainCommon = require("brains/braincommon")
 
 local ATTACK_CHASE_TIME = 5
 
@@ -43,6 +39,7 @@ local function KeepFacingTarget(inst, target)
 	return GetFacingTarget(inst) == target
 end
 
+local UPDATE_RATE = 0.1
 function GestaltGuardBrain:OnStart()
     local root = PriorityNode({
 		WhileNode(function() return not self.inst.sg:HasStateTag("jumping") end, "",
@@ -58,10 +55,12 @@ function GestaltGuardBrain:OnStart()
 					}
 				),
 
+				BrainCommon.PossessChassisNode(self, UPDATE_RATE),
+
 				FaceEntity(self.inst, GetFacingTarget, KeepFacingTarget),
 				Wander(self.inst, nil, nil, WANDER_TIMES),
-			}, 0.1)),
-		}, 0.1)
+			}, UPDATE_RATE)),
+		}, UPDATE_RATE)
 
     self.bt = BT(self.inst, root)
 end

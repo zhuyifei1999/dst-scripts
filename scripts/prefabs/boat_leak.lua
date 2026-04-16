@@ -151,6 +151,8 @@ local function FindLeakBlocker(inst, dt)
                 inst._wettargets[ent] = true
                 moisture:AddRateBonus(inst, TUNING.BOATLEAK_PLUG_WETNESS)
             end
+        elseif ent.components.inventoryitem ~= nil then
+            ent.components.inventoryitem:AddMoisture(TUNING.BOATLEAK_PLUG_WETNESS_INVENTORYITEM * dt)
         end
 
         heavyitem = heavyitem or ent.components.floater == nil

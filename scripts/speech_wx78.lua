@@ -23,6 +23,9 @@ return{
             NOTMERM = "INSUBORDINATE FISHBEASTS",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "not_used_by_wx78",
+            NOTMYBACKUP = "DENIED. UNAUTHORIZED USER",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "I ALREADY HAVE AN ORGANIC MINION",
 			TICOON = "THE MAXIMUM LIMIT HAS ALREADY BEEN REACHED",
             BUSY_STATION = "YOU EXPECT ME TO WAIT?",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "not_used_by_wx78",
+            DOER_DOESNT_HAVE_SKILL = "INVALID CREDENTIALS",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "ACCESS DENIED. DON'T WANT ANYWAY",
             NOTSOULJARHANDLER = "IT IS FULL OF FILTHY SOULS",
             RESTRICTED = "ACCESS DENIED",
+            NOTAROBOT = "not_used_by_wx78",
+            NOTMYBACKUP = "DENIED. UNAUTHORIZED USER",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "MAKE MY MINION DO IT",
             NOTSOULJARHANDLER = "IT IS FULL OF FILTHY SOULS",
             RESTRICTED = "ACCESS DENIED",
+            NOTAROBOT = "not_used_by_wx78",
+            NOTMYBACKUP = "DENIED. UNAUTHORIZED USER",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
 		},
+		STARTMAPDELIVER =
+		{
+			EMPTY = "ERROR. NO ITEMS TO DELIVER",
+			INUSE = "BEING ACCESSED BY ANOTHER USER",
+			NOSKILL_DRONE = "INVALID CREDENTIALS", 
+		},
+        SWAPBODIES_MAP =
+        {
+            NOTARGET = "COMMUNICATION FAILURE. TARGET NO LONGER EXISTS",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -417,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+            BADPOSITION = "ERROR: LOCATION INVALID",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -429,6 +454,8 @@ return{
 			NOT_MINE = "NOT EVEN WORTH STEALING",
 
 			CANNOT_FIX_DRONE = "REST IN PIECES",
+
+            GESTALT_TOO_POWERFUL = "ENTITY POWER LEVEL EXCEEDS MAXIMUM CONTAINMENT THRESHOLD",
         },
 		USEKLAUSSACKKEY =
         {
@@ -1200,6 +1227,14 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "UNITS CURRENTLY UNAVAILABLE? HOW DARE THEY!",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "UNIT ON STANDBY",
+
+    -- wx specific
+    ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "STUPID CAT",
+    ANNOUNCE_WX_TASER_BUILDUP = "YOUR ATTACKS ARE ELECTRIFYING ME!", -- Wx is building up charge when getting hit, nearing EMP blast
+    ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "MAXIMUM POWER REACHED!", -- Wx is fully charged and about to release it. Take cover!
+    ANNOUNCE_WX_TASER_POSTEXPLOSION = "INVIGORATING!", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -2810,7 +2845,11 @@ return{
         ROCKS = "FOR REFINING INTO HIGH TECHNOLOGY",
         ROOK = "ROOK AUTOMATON",
         ROPE = "IT IS LESS USEFUL THAN IT APPEARS",
-        ROTTENEGG = "I AM GLAD I CANNOT SMELL",
+        ROTTENEGG =
+        {
+            GENERIC = "I AM GLAD I CANNOT SMELL",
+            CAN_PROCESS = "MY SUPERIOR CIRCUITRY WILL PROCESS THIS FAILED CHILD INTO NUTRIENTS",
+        },
         ROYAL_JELLY = "I WILL HAVE THE POWER OF BEES",
         JELLYBEAN = "TEMPORARY UPGRADE COMPONENTS",
         SADDLE_BASIC = "SELF ESTEEM RISING",
@@ -2912,7 +2951,11 @@ return{
 			GENERIC = "HEIGHTENED THREAT DETECTED",
 			SLEEPING = "THREAT SUSPENDED",
 		},
-		SPOILED_FOOD = "EVEN I CANNOT PROCESS THAT",
+        SPOILED_FOOD =
+        {
+            GENERIC = "EVEN I CANNOT PROCESS THAT",
+            CAN_PROCESS = "NOW IT CAN BE PROCESSED",
+        },
         STAGEHAND =
         {
 			AWAKE = "FIVE DIGITS OF TERROR",
@@ -4074,7 +4117,11 @@ return{
         FISHMEAT_COOKED = "MISSING ADDON... CHIPS",
         FISHMEAT_SMALL = "SWIMMING MEAT SWIMS NO MORE",
         FISHMEAT_SMALL_COOKED = "CITRUS SPRITZING REQUIRED",
-		SPOILED_FISH = "ALL LIFE DIES AND THEN SMELLS",
+		SPOILED_FISH =
+        {
+            GENERIC = "ALL LIFE DIES AND THEN SMELLS",
+            CAN_PROCESS = "STEP ASIDE ORGANICS. ONLY I CAN PROCESS THIS INTO SUSTENANCE",
+        },
 
 		FISH_BOX = "THE DISGUSTING CREATURES WILL PUTRIFY SLOWER IN THERE",
         POCKET_SCALE = "HELLO MY POCKET-SIZED BRETHREN",
@@ -6021,6 +6068,45 @@ return{
 
         YOTH_KNIGHTSTICK = "STRIDE AUGMENTATION DEVICE",
         YOTH_CHAIR_ROCKING_ITEM = "OSCILLATION UNIT", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "TRY NOT TO GET LOST AGAIN, SCOTT",
+		WX78_DRONE_DELIVERY = "TRUSTY OLD DREW",
+		WX78_DRONE_ZAP = "GET 'EM, JULES",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "INVALID CREDENTIALS",
+			CANUSE = "SO MUCH TO ZAP, SO LITTLE TIME",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "SCOTT WILL LOVE THIS",
+        WX78MODULE_STACKSIZE = "I SHALL POSSESS INFINITY",
+        WX78MODULE_DIGESTION = "THE FLESHLINGS CAN NEVER SAY I WAS NOT A GENEROUS OVERLORD",
+        WX78MODULE_SCREECH = "SPECIAL BROADCAST SYSTEM",
+        WX78MODULE_LIGHT2 = "BASK IN MY GLOW, ORGANICS!",
+        WX78MODULE_SHIELDING = "MY BEST DEFENSE IS ME!",
+        WX78MODULE_SPIN = "WELCOME TO MY DEATH CYCLONE, ORGANICS!",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "BOUNDLESS SPACE", -- Held, and working as a container
+			NOPOWER = "ACCESS DENIED. INSUFFICIENT POWER", -- Held but can't open due to wx charge level too low
+            GENERIC = "RECOVERY MODE", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "READY FOR REDIGESTION",
+            GENERIC = "TOO DENSE FOR PROCESSING. MISSING INPUT",
+        },
+
+        WX78_POSSESSEDBODY = "YOU'RE PERFECT",
+
+        WX78_GESTALTTRAPPER = "ONLY A WORTHY ENTITY MAY OCCUPY MY PHYSICAL FORM",
+
+        SHADOW_HEART_VEIN = "GROSS. BUT ACCEPTABLE LEVELS OF USEFULNESS",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

@@ -168,13 +168,9 @@ end
 
 function MapRevealable:OnRemoveFromEntity()
     self:Stop()
-    local toremove = {}
-    for k, v in pairs(self.revealsources) do
-        table.insert(toremove, k)
-    end
-    for i, v in ipairs(toremove) do
-        self:RemoveRevealSource(v)
-    end
+	for k in pairs(self.revealsources) do
+		self:RemoveRevealSource(k)
+	end
 end
 
 return MapRevealable

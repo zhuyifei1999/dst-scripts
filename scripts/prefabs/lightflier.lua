@@ -391,6 +391,21 @@ local function OnEntityWake(inst)
     end
 end
 
+local function OnEntity_Init(inst)
+    -- Called once after the inst is initialized.
+    inst.SoundEmitter:PlaySound("grotto/creatures/light_bug/fly_LP", "loop")
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
+end
+local function OnEntitySleep_Init(inst)
+    OnEntity_Init(inst)
+    inst:OnEntitySleep()
+end
+local function OnEntityWake_Init(inst)
+    OnEntity_Init(inst)
+    inst:OnEntityWake()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -509,13 +524,11 @@ local function fn()
     MakeFeedableSmallLivestock(inst, TUNING.LIGHTFLIER.STARVE_TIME, OnPutInInventory, OnDropped)
 
     inst.incineratesound = "grotto/creatures/light_bug/death"
-    
-    inst.SoundEmitter:PlaySound("grotto/creatures/light_bug/fly_LP", "loop")
 
     inst.EnableBuzz = EnableBuzz
 
-    inst.OnEntitySleep = OnEntitySleep
-    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep_Init
+    inst.OnEntityWake = OnEntityWake_Init
 
     return inst
 end

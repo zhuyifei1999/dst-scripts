@@ -1282,6 +1282,7 @@ function Combat:IsAlly(guy)
     return self.inst.replica.combat:IsAlly(guy)
 end
 
+--V2C: *deprecated* use similar functions IsAlly/CanBeAlly instead
 function Combat:TargetHasFriendlyLeader(target)
     return self.inst.replica.combat:TargetHasFriendlyLeader(target)
 end

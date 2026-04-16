@@ -808,10 +808,13 @@ local states =
 				DoArcAttack(inst, 1, TUNING.BEARGER_MELEE_RANGE, nil, nil, nil, inst.sg.statemem.targets)
 			end),
 			FrameEvent(33, function(inst)
-				DoArcAttack(inst, 1, TUNING.BEARGER_MELEE_RANGE, nil, nil, nil, inst.sg.statemem.targets)
+				--cache in case we leave state during AOE hits
+				local targets = inst.sg.statemem.targets
+				local original_target = inst.sg.statemem.original_target
+				DoArcAttack(inst, 1, TUNING.BEARGER_MELEE_RANGE, nil, nil, nil, targets)
 				DestroyStuff(inst, 1, TUNING.BEARGER_MELEE_RANGE)
-				if next(inst.sg.statemem.targets) == nil then
-					inst:PushEvent("onmissother", { target = inst.sg.statemem.original_target }) --for ChaseAndAttack
+				if next(targets) == nil then
+					inst:PushEvent("onmissother", { target = original_target }) --for ChaseAndAttack
 				end
 			end),
 			FrameEvent(47, function(inst)
@@ -877,11 +880,14 @@ local states =
 				DoComboArcAttack(inst, inst.sg.statemem.targets)
 			end),
 			FrameEvent(33, function(inst)
-				DoComboArcAttack(inst, inst.sg.statemem.targets)
+				--cache in case we leave state during AOE hits
+				local targets = inst.sg.statemem.targets
+				local original_target = inst.sg.statemem.original_target
+				DoComboArcAttack(inst, targets)
 				DoComboArcWork(inst)
 				ToggleOnCharacterCollisions(inst)
-				if next(inst.sg.statemem.targets) == nil then
-					inst:PushEvent("onmissother", { target = inst.sg.statemem.original_target }) --for ChaseAndAttack
+				if next(targets) == nil then
+					inst:PushEvent("onmissother", { target = original_target }) --for ChaseAndAttack
 				end
 			end),
 			FrameEvent(34, function(inst) inst.Physics:SetMotorVelOverride(6, 0, 0) end),
@@ -973,11 +979,14 @@ local states =
 				DoComboArcAttack(inst, inst.sg.statemem.targets)
 			end),
 			FrameEvent(29, function(inst)
-				DoComboArcAttack(inst, inst.sg.statemem.targets)
+				--cache in case we leave state during AOE hits
+				local targets = inst.sg.statemem.targets
+				local original_target = inst.sg.statemem.original_target
+				DoComboArcAttack(inst, targets)
 				DoComboArcWork(inst)
 				ToggleOnCharacterCollisions(inst)
-				if next(inst.sg.statemem.targets) == nil then
-					inst:PushEvent("onmissother", { target = inst.sg.statemem.original_target }) --for ChaseAndAttack
+				if next(targets) == nil then
+					inst:PushEvent("onmissother", { target = original_target }) --for ChaseAndAttack
 				end
 			end),
 			FrameEvent(30, function(inst) inst.Physics:SetMotorVelOverride(6, 0, 0) end),
@@ -1068,11 +1077,14 @@ local states =
 				DoComboArcAttack(inst, inst.sg.statemem.targets)
 			end),
 			FrameEvent(29, function(inst)
-				DoComboArcAttack(inst, inst.sg.statemem.targets)
+				--cache in case we leave state during AOE hits
+				local targets = inst.sg.statemem.targets
+				local original_target = inst.sg.statemem.original_target
+				DoComboArcAttack(inst, targets)
 				DoComboArcWork(inst)
 				ToggleOnCharacterCollisions(inst)
-				if next(inst.sg.statemem.targets) == nil then
-					inst:PushEvent("onmissother", { target = inst.sg.statemem.original_target }) --for ChaseAndAttack
+				if next(targets) == nil then
+					inst:PushEvent("onmissother", { target = original_target }) --for ChaseAndAttack
 				end
 			end),
 			FrameEvent(30, function(inst) inst.Physics:SetMotorVelOverride(6, 0, 0) end),

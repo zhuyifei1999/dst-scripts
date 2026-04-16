@@ -126,6 +126,11 @@ local function fertilizerresearchfn(inst)
     return inst:GetFertilizerKey()
 end
 
+local function GetStatus(inst, viewer)
+    return (viewer.components.eater ~= nil and viewer.components.eater:IsSpoiledProcessor()) and "CAN_PROCESS"
+        or nil
+end
+
 local function rottenfn()
     local inst = CreateEntity()
 
@@ -140,12 +145,15 @@ local function rottenfn()
     inst.AnimState:PlayAnimation("rotten")
 
     inst:AddTag("icebox_valid")
+    inst:AddTag("show_spoiled")
     inst:AddTag("cattoy")
 
     MakeInventoryFloatable(inst, "small", 0.25)
     MakeDeployableFertilizerPristine(inst)
 
     inst:AddTag("fertilizerresearchable")
+    --spoiledfood (from edible component) added to pristine state for optimization
+    inst:AddTag("spoiledfood")
 
     inst.GetFertilizerKey = GetFertilizerKey
 
@@ -165,6 +173,8 @@ local function rottenfn()
     inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.rottenegg.nutrients)
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
+
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("stackable")
@@ -181,6 +191,7 @@ local function rottenfn()
     inst:AddComponent("tradable")
 
     inst:AddComponent("edible")
+    inst.components.edible:SetForceSpoiledFood(true)
     inst.components.edible.healthvalue = TUNING.SPOILED_HEALTH
     inst.components.edible.hungervalue = TUNING.SPOILED_HUNGER
 

@@ -86,7 +86,8 @@ local PlayerController = Class(function(self, inst)
     --remote control variables
     self.remote_vector = Vector3()
 	self.remote_predict_dir = nil
-	self.remote_predict_stop_tick = nil
+	self.remote_predict_stop_tick = nil --used when server detected no more movement (NOTE: could be client running up against obstacle)
+	self.remote_predict_stop_notified = nil --server received explicit notification that client has stopped moving
 	self.client_last_predict_walk = { tick = nil, direct = false }
     self.remote_controls = {}
 	self.remote_predicting = false
@@ -423,7 +424,7 @@ function PlayerController:GetMapTarget(act)
         return nil
     end
 
-    local maptarget = act.target or act.invobject or nil
+    local maptarget = (not act.action.map_only and act.target) or act.invobject or nil
     if maptarget == nil then
         return nil
     end
@@ -440,39 +441,49 @@ function PlayerController:GetMapTarget(act)
 end
 
 function PlayerController:PullUpMap(maptarget, forced_actiondef)
-	-- NOTES(JBK): This is assuming inst is the local client on call with a check to self.inst.HUD not being nil.
-	if self.inst.HUD:IsCraftingOpen() then
-		self.inst.HUD:CloseCrafting()
-	end
-	if self.inst.HUD:IsSpellWheelOpen() then
-		self.inst.HUD:CloseSpellWheel()
-	end
-	if self.inst.HUD:IsControllerInventoryOpen() then
-		self.inst.HUD:CloseControllerInventory()
-	end
-	-- Pull up map now.
-	if not self.inst.HUD:IsMapScreenOpen() then
-		self.inst.HUD.controls:ToggleMap()
-		if self.inst.HUD:IsMapScreenOpen() then -- Just in case.
-			local mapscreen = TheFrontEnd:GetActiveScreen()
-			mapscreen._hack_ignore_held_controls = 0.1
-			mapscreen._hack_ignore_ups_for = {}
-			mapscreen.maptarget = maptarget
-            if forced_actiondef and forced_actiondef.map_only then
-                mapscreen.forced_actiondef = forced_actiondef
+    if self.inst.replica.inventory then
+        local activeitem = self.inst.replica.inventory:GetActiveItem()
+        if activeitem then
+            self.inst.replica.inventory:ReturnActiveItem()
+            if not self.inst.replica.inventory:IsHolding(activeitem) then
+                return
             end
-			local min_dist = maptarget.map_remap_min_dist
-			if min_dist then
-				min_dist = min_dist + 0.1 -- Padding for floating point precision.
-				local x, y, z = self.inst.Transform:GetWorldPosition()
-				local rotation = self.inst.Transform:GetRotation() * DEGREES
-				local wx, wz = x + math.cos(rotation) * min_dist, z - math.sin(rotation) * min_dist -- Z offset is negative to desired from Transform coordinates.
-				self.inst.HUD.controls:FocusMapOnWorldPosition(mapscreen, wx, wz)
-			end
-			-- Do not have to take into account max_dist because the map automatically centers on the player when opened.
-			mapscreen:ProcessStaticDecorations()
-		end
-	end
+        end
+    end
+    -- NOTES(JBK): This is assuming inst is the local client on call with a check to self.inst.HUD not being nil.
+    if self.inst.HUD:IsCraftingOpen() then
+        self.inst.HUD:CloseCrafting()
+    end
+    if self.inst.HUD:IsSpellWheelOpen() then
+        self.inst.HUD:CloseSpellWheel()
+    end
+    if self.inst.HUD:IsControllerInventoryOpen() then
+        self.inst.HUD:CloseControllerInventory()
+    end
+    -- Pull up map now.
+    if not self.inst.HUD:IsMapScreenOpen() then
+        self.skip_inherentmapaction = true -- Hack flag to get around the OnUpdate(0) PushScreen does before we can set the maptarget.
+        self.inst.HUD.controls:ToggleMap()
+        self.skip_inherentmapaction = nil
+        if self.inst.HUD:IsMapScreenOpen() then -- Just in case.
+            local mapscreen = TheFrontEnd:GetActiveScreen()
+            mapscreen._hack_ignore_held_controls = 0.1
+            mapscreen._hack_ignore_ups_for = {}
+			mapscreen:SetNewMapTarget(maptarget, forced_actiondef and forced_actiondef.map_only and forced_actiondef)
+            if maptarget then
+                local min_dist = maptarget.map_remap_min_dist
+                if min_dist then
+                    min_dist = min_dist + 0.1 -- Padding for floating point precision.
+                    local x, y, z = self.inst.Transform:GetWorldPosition()
+                    local rotation = self.inst.Transform:GetRotation() * DEGREES
+                    local wx, wz = x + math.cos(rotation) * min_dist, z - math.sin(rotation) * min_dist -- Z offset is negative to desired from Transform coordinates.
+                    self.inst.HUD.controls:FocusMapOnWorldPosition(mapscreen, wx, wz)
+                end
+            end
+            -- Do not have to take into account max_dist because the map automatically centers on the player when opened.
+            mapscreen:ProcessStaticDecorations()
+        end
+    end
 end
 
 -- returns: enable/disable, "a hud element is up, but still allow for limited gameplay to happen"
@@ -483,6 +494,7 @@ function PlayerController:IsEnabled()
 		return false,
 			(self.inst.HUD:IsCraftingOpen() and TheFrontEnd.textProcessorWidget == nil) or
 			self.inst.HUD:IsSpellWheelOpen() or
+			self.inst.HUD:IsUpgradeModuleWidgetInputFocus() or
 			(self.command_wheel_allows_gameplay and self.inst.HUD:IsCommandWheelOpen())
     end
     return true
@@ -850,12 +862,18 @@ function PlayerController:DoControllerActionButton()
     end
 
     if act == nil then
+		--Still need to let the server know our controller action button is down
+		if self.remote_controls[CONTROL_CONTROLLER_ACTION] == nil then
+			self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+			SendRPCToServer(RPC.ControllerActionButton)
+		end
         return
     end
 
     local maptarget = self:GetMapTarget(act)
     if maptarget ~= nil then
-		self:PullUpMap(maptarget)
+        local forced_actiondef = act.action.map_only and act.action or nil
+		self:PullUpMap(maptarget, forced_actiondef)
         return
     end
 
@@ -869,8 +887,8 @@ function PlayerController:DoControllerActionButton()
 			end
         elseif self:CanLocomote() then
             act.preview_cb = function()
-                self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
                 local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
+				self.remote_controls[CONTROL_CONTROLLER_ACTION] = not isreleased and 0 or nil
                 SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.local_pt.x, act.pos.local_pt.z, act.rotation ~= 0 and act.rotation or nil, isreleased, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
             end
         end
@@ -880,24 +898,38 @@ function PlayerController:DoControllerActionButton()
 				self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
 				SendRPCToServer(RPC.ControllerActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, nil, act.action.canforce, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil, isspecial, spellbook, spell_id)
 			end
-        elseif self:CanLocomote() then
-            act.preview_cb = function()
-                self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
-                local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
-				SendRPCToServer(RPC.ControllerActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, isreleased, nil, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil, isspecial, spellbook, spell_id)
-            end
+		else
+			--Still need to let the server know our controller action button is down
+			if self.remote_controls[CONTROL_CONTROLLER_ACTION] == nil then
+				self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+				SendRPCToServer(RPC.ControllerActionButton)
+			end
+			if self:CanLocomote() then
+				act.preview_cb = function()
+					local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
+					self.remote_controls[CONTROL_CONTROLLER_ACTION] = not isreleased and 0 or nil
+					SendRPCToServer(RPC.ControllerActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, isreleased, nil, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil, isspecial, spellbook, spell_id)
+				end
+			end
         end
     elseif self.locomotor == nil then
 		act.non_preview_cb = function()
 			self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
 			SendRPCToServer(RPC.ControllerActionButton, act.action.code, obj, nil, act.action.canforce, act.action.mod_name)
 		end
-    elseif self:CanLocomote() then
-        act.preview_cb = function()
-            self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
-            local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
-            SendRPCToServer(RPC.ControllerActionButton, act.action.code, obj, isreleased, nil, act.action.mod_name)
-        end
+	else
+		--Still need to let the server know our controller action button is down
+		if self.remote_controls[CONTROL_CONTROLLER_ACTION] == nil then
+			self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+			SendRPCToServer(RPC.ControllerActionButton)
+		end
+		if self:CanLocomote() then
+			act.preview_cb = function()
+				local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
+				self.remote_controls[CONTROL_CONTROLLER_ACTION] = not isreleased and 0 or nil
+				SendRPCToServer(RPC.ControllerActionButton, act.action.code, obj, isreleased, nil, act.action.mod_name)
+			end
+		end
     end
 
 	self:DoAction(act, spellbook)
@@ -908,6 +940,12 @@ function PlayerController:OnRemoteControllerActionButton(actioncode, target, isr
         self.inst.components.combat:SetTarget(nil)
 
         self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+
+		if actioncode == nil then
+			assert(isreleased == nil) --actioncode nil means all params must be nil
+			return
+		end
+
         self:ClearControlMods()
         SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self:GetSceneItemControllerAction(target)
@@ -1077,6 +1115,11 @@ function PlayerController:DoControllerAltActionButton()
 					obj = self.inst
 					act = BufferedAction(obj, obj, ACTIONS.DISMOUNT)
 				else
+					--Still need to let the server know our controller alt action button is down
+					if self.remote_controls[CONTROL_CONTROLLER_ALTACTION] == nil then
+						self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+						SendRPCToServer(RPC.ControllerAltActionButton)
+					end
 					return
 				end
 			end
@@ -1089,7 +1132,8 @@ function PlayerController:DoControllerAltActionButton()
 
     local maptarget = self:GetMapTarget(act)
     if maptarget ~= nil then
-		self:PullUpMap(maptarget)
+        local forced_actiondef = act.action.map_only and act.action or nil
+		self:PullUpMap(maptarget, forced_actiondef)
         return
     end
 
@@ -1101,24 +1145,38 @@ function PlayerController:DoControllerAltActionButton()
 				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
 				SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, nil, act.action.canforce, act.action.mod_name)
 			end
-        elseif self:CanLocomote() then
-            act.preview_cb = function()
-                self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
-                local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
-                SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, isreleased, nil, act.action.mod_name)
-            end
+		else
+			--Still need to let the server know our controller alt action button is down
+			if self.remote_controls[CONTROL_CONTROLLER_ALTACTION] == nil then
+				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+				SendRPCToServer(RPC.ControllerAltActionButton)
+			end
+			if self:CanLocomote() then
+				act.preview_cb = function()
+					local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
+					self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = not isreleased and 0 or nil
+					SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, isreleased, nil, act.action.mod_name)
+				end
+			end
         end
     elseif self.locomotor == nil then
 		act.non_preview_cb = function()
 			self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
 			SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, nil, act.action.canforce, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
 		end
-    elseif self:CanLocomote() then
-        act.preview_cb = function()
-            self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
-            local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
-            SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, isreleased, nil, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
-        end
+	else
+		--Still need to let the server know our controller alt action button is down
+		if self.remote_controls[CONTROL_CONTROLLER_ALTACTION] == nil then
+			self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+			SendRPCToServer(RPC.ControllerAltActionButton)
+		end
+		if self:CanLocomote() then
+			act.preview_cb = function()
+				local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
+				self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = not isreleased and 0 or nil
+				SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, isreleased, nil, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
+			end
+		end
     end
 
     self:DoAction(act)
@@ -1129,6 +1187,12 @@ function PlayerController:OnRemoteControllerAltActionButton(actioncode, target, 
         self.inst.components.combat:SetTarget(nil)
 
         self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+
+		if actioncode == nil then
+			assert(isreleased == nil) --actioncode nil means all params must be nil
+			return
+		end
+
         self:ClearControlMods()
         SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self:GetSceneItemControllerAction(target)
@@ -1208,9 +1272,21 @@ function PlayerController:OnRemoteControllerAltActionButtonPoint(actioncode, pos
 end
 
 function PlayerController:DoControllerAttackButton(target)
-	if target == nil and (self:IsAOETargeting() or self.inst:HasTag("sitting_on_chair")) then
-        return
-    elseif target ~= nil then
+	if target == nil then
+		if self:IsAOETargeting() or self.inst:HasTag("sitting_on_chair") then
+			return
+		elseif self:IsOverrideAttack() then
+			self.inst:PushEventImmediate("attackbutton")
+			--Need to let server know NOW, wheter we have prediciton or not.
+			if not self.ismastersim and self.remote_controls[CONTROL_CONTROLLER_ATTACK] == nil then
+				self.remote_controls[CONTROL_CONTROLLER_ATTACK] = 0
+				SendRPCToServer(RPC.ControllerAttackButton, true)
+			end
+			return
+		end
+	end
+
+	if target then
         --Don't want to spam the controller attack button when retargetting
         if not self.ismastersim and (self.remote_controls[CONTROL_CONTROLLER_ATTACK] or 0) > 0 then
             return
@@ -1235,7 +1311,7 @@ function PlayerController:DoControllerAttackButton(target)
             if target == self.inst.replica.combat:GetTarget() then
                 --Still need to let the server know our controller attack button is down
                 if not self.ismastersim and
-                    self.locomotor == nil and
+					--self.locomotor == nil and
                     self.remote_controls[CONTROL_CONTROLLER_ATTACK] == nil then
                     self.remote_controls[CONTROL_CONTROLLER_ATTACK] = 0
                     SendRPCToServer(RPC.ControllerAttackButton, true)
@@ -1248,15 +1324,23 @@ function PlayerController:DoControllerAttackButton(target)
         --V2C: controller attacks still happen even with no valid target
 		if target == nil then
 			--exceptions:
-			if self.directwalking or
+			local no_air_attack =
+				self.directwalking or
 				self.inst:HasAnyTag("playerghost", "weregoose") or
 				(self.classified and self.classified.inmightygym:value() > 0) or
 				GetGameModeProperty("no_air_attack")
-			then
-				return
+
+			if not no_air_attack then
+				local inventory = self.inst.replica.inventory
+				no_air_attack = inventory:IsHeavyLifting() or inventory:IsFloaterHeld()
 			end
-			local inventory = self.inst.replica.inventory
-			if inventory:IsHeavyLifting() or inventory:IsFloaterHeld() then
+
+			if no_air_attack then
+				--Still need to let the server know our controller attack button is down
+				if not self.ismastersim and self.remote_controls[CONTROL_CONTROLLER_ATTACK] == nil then
+					self.remote_controls[CONTROL_CONTROLLER_ATTACK] = 0
+					SendRPCToServer(RPC.ControllerAttackButton, true)
+				end
 				return
 			end
 		end
@@ -1271,12 +1355,19 @@ function PlayerController:DoControllerAttackButton(target)
 			self.remote_controls[CONTROL_CONTROLLER_ATTACK] = BUTTON_REPEAT_COOLDOWN
 			SendRPCToServer(RPC.ControllerAttackButton, target, nil, act.action.canforce)
 		end
-    elseif self:CanLocomote() then
-        act.preview_cb = function()
-            self.remote_controls[CONTROL_CONTROLLER_ATTACK] = BUTTON_REPEAT_COOLDOWN
-            local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ATTACK)
-            SendRPCToServer(RPC.ControllerAttackButton, target, isreleased)
-        end
+	else
+		--Still need to let the server know our controller attack button is down
+		if self.remote_controls[CONTROL_CONTROLLER_ATTACK] == nil then
+			self.remote_controls[CONTROL_CONTROLLER_ATTACK] = BUTTON_REPEAT_COOLDOWN
+			SendRPCToServer(RPC.ControllerAttackButton, true)
+		end
+		if self:CanLocomote() then
+			act.preview_cb = function()
+				local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ATTACK)
+				self.remote_controls[CONTROL_CONTROLLER_ATTACK] = not isreleased and BUTTON_REPEAT_COOLDOWN or nil
+				SendRPCToServer(RPC.ControllerAttackButton, target, isreleased)
+			end
+		end
     end
 
     self:DoAction(act)
@@ -1290,6 +1381,9 @@ function PlayerController:OnRemoteControllerAttackButton(target, isreleased, nof
         if target == true then
             --Special case, just flagging the button as down
 			--self.remote_controls[CONTROL_CONTROLLER_ATTACK] = 0
+			if self:IsOverrideAttack() then
+				self.inst:PushEventImmediate("attackbutton")
+			end
         elseif not noforce then
 			if self.inst.sg:HasStateTag(self.remote_authority and self.remote_predicting and "abouttoattack" or "attack") then
                 self.inst.sg.statemem.chainattack_cb = function()
@@ -1319,7 +1413,13 @@ function PlayerController:OnRemoteControllerAttackButton(target, isreleased, nof
 end
 
 function PlayerController:DoControllerDropItemFromInvTile(item, single)
-    self.inst.replica.inventory:DropItemFromInvTile(item, single)
+	if item and item.replica.inventoryitem and
+		(	not item.replica.inventoryitem:IsLockedInSlot() or
+			(single and inventoryitem.replica.stackable and inventoryitem.replica.stackable:IsStack())
+		)
+	then
+		self.inst.replica.inventory:DropItemFromInvTile(item, single)
+	end
 end
 
 function PlayerController:DoControllerInspectItemFromInvTile(item)
@@ -1353,9 +1453,10 @@ function PlayerController:DoControllerUseItemOnSceneFromInvTile(item)
         item = self:GetCursorInventoryObject()
         if item == nil then self.actionrepeatfunction = nil return end
     end
-    if item.replica.inventoryitem ~= nil and not item.replica.inventoryitem:IsGrandOwner(self.inst) then
+	local inventoryitem = item.replica.inventoryitem
+	if inventoryitem and not inventoryitem:IsGrandOwner(self.inst) then
         local slot, container = self:GetCursorInventorySlotAndContainer()
-        if slot ~= nil and container ~= nil then
+		if slot and container and not inventoryitem:IsLockedInSlot() then
             container:MoveItemFromAllOfSlot(slot, self.inst)
         end
     else
@@ -1364,7 +1465,8 @@ function PlayerController:DoControllerUseItemOnSceneFromInvTile(item)
 end
 
 function PlayerController:RotLeft(speed)
-    if not TheCamera:CanControl() then
+	--V2C: exception for drone cam: zoom disabled, but rotate allowed
+	if not (TheCamera:CanControl() or self.inst:HasTag("using_drone_remote")) then
         return
     end
     local rotamount = 45 ---90-- TheWorld:HasTag("cave") and 22.5 or 45
@@ -1382,7 +1484,8 @@ function PlayerController:RotLeft(speed)
 end
 
 function PlayerController:RotRight(speed)
-    if not TheCamera:CanControl() then
+	--V2C: exception for drone cam: zoom disabled, but rotate allowed
+	if not (TheCamera:CanControl() or self.inst:HasTag("using_drone_remote")) then
         return
     end
     local rotamount = 45 --90--TheWorld:HasTag("cave") and 22.5 or 45
@@ -1400,7 +1503,13 @@ function PlayerController:RotRight(speed)
 end
 
 function PlayerController:GetHoverTextOverride()
-    return self.placer_recipe ~= nil and (STRINGS.UI.HUD.BUILD.." "..(STRINGS.NAMES[string.upper(self.placer_recipe.product or self.placer_recipe.name)] or STRINGS.UI.HUD.HERE)) or nil
+    if self.placer_recipe then
+        local name = self.placer_recipe.recipedisplaynamefn and self.placer_recipe:recipedisplaynamefn(self.inst)
+            or STRINGS.NAMES[string.upper(self.placer_recipe.product or self.placer_recipe.name)]
+            or STRINGS.UI.HUD.HERE
+        return string.format("%s %s", STRINGS.UI.HUD.BUILD, name)
+    end
+    return nil
 end
 
 function PlayerController:CancelPlacement(cache)
@@ -1765,14 +1874,23 @@ function PlayerController:DoAttackButton(retarget, isleftmouse)
     --    return
     --end
 
+	if not isleftmouse and self:IsOverrideAttack() then
+		self.inst:PushEventImmediate("attackbutton")
+		--Need to let server know NOW, wheter we have prediciton or not.
+		if not self.ismastersim and self.remote_controls[CONTROL_ATTACK] == nil then
+			self:RemoteAttackButton()
+		end
+		return
+	end
+
 	local control = isleftmouse and CONTROL_PRIMARY or CONTROL_ATTACK
 	local force_attack = TheInput:IsControlPressed(CONTROL_FORCE_ATTACK)
-    local target = self:GetAttackTarget(force_attack, retarget, retarget ~= self:GetCombatTarget())
+	local target = self:GetAttackTarget(force_attack, retarget, retarget ~= self:GetCombatTarget())
 
     if target == nil then
         --Still need to let the server know our attack button is down
         if not self.ismastersim and
-            self.locomotor == nil and
+			--self.locomotor == nil and
 			self.remote_controls[control] == nil
 		then
 			self:RemoteAttackButton(nil, nil, isleftmouse)
@@ -1788,14 +1906,20 @@ function PlayerController:DoAttackButton(retarget, isleftmouse)
 			ACTIONS.ATTACK.pre_action_cb(BufferedAction(self.inst, target, ACTIONS.ATTACK))
 		end
 		self:RemoteAttackButton(target, force_attack, isleftmouse)
-    elseif self:CanLocomote() then
-        local buffaction = BufferedAction(self.inst, target, ACTIONS.ATTACK)
-        buffaction.preview_cb = function()
-			local isreleased = not TheInput:IsControlPressed(control)
-			self:RemoteAttackButton(target, force_attack, isleftmouse, isreleased)
-        end
-        self.locomotor:PreviewAction(buffaction, true)
-    end
+	else
+		--Still need to let the server know our attack button is down
+		if self.remote_controls[control] == nil then
+			self:RemoteAttackButton(nil, nil, isleftmouse)
+		end
+		if self:CanLocomote() then
+			local buffaction = BufferedAction(self.inst, target, ACTIONS.ATTACK)
+			buffaction.preview_cb = function()
+				local isreleased = not TheInput:IsControlPressed(control)
+				self:RemoteAttackButton(target, force_attack, isleftmouse, isreleased)
+			end
+			self.locomotor:PreviewAction(buffaction, true)
+		end
+	end
 end
 
 --V2C: isreleased at the end because added a lot later
@@ -1803,7 +1927,8 @@ function PlayerController:OnRemoteAttackButton(target, force_attack, noforce, is
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         --Check if target is valid, otherwise make
         --it nil so that we still attack and miss.
-		self.remote_controls[isleftmouse and CONTROL_PRIMARY or CONTROL_ATTACK] = 0
+		local control = isleftmouse and CONTROL_PRIMARY or CONTROL_ATTACK
+		self.remote_controls[control] = 0
         if target ~= nil and not noforce then
 			if self.inst.sg:HasStateTag(self.remote_authority and self.remote_predicting and "abouttoattack" or "attack") then
                 self.inst.sg.statemem.chainattack_cb = function()
@@ -1818,17 +1943,19 @@ function PlayerController:OnRemoteAttackButton(target, force_attack, noforce, is
             target = target ~= nil and self:GetAttackTarget(force_attack, target) or nil
             if target ~= nil then
                 self.attack_buffer = BufferedAction(self.inst, target, ACTIONS.ATTACK)
+			elseif not isleftmouse and self:IsOverrideAttack() then
+				self.inst:PushEventImmediate("attackbutton")
             end
         end
 		if isreleased then
-			self.remote_controls[CONTROL_ATTACK] = nil
+			self.remote_controls[control] = nil
 		end
     end
 end
 
 --V2C: isreleased at the end because added a lot later
 function PlayerController:RemoteAttackButton(target, force_attack, isleftmouse, isreleased)
-	self.remote_controls[isleftmouse and CONTROL_PRIMARY or CONTROL_ATTACK] = target and BUTTON_REPEAT_COOLDOWN or 0
+	self.remote_controls[isleftmouse and CONTROL_PRIMARY or CONTROL_ATTACK] = not isreleased and (target and BUTTON_REPEAT_COOLDOWN or 0) or nil
     if self.locomotor ~= nil then
 		SendRPCToServer(RPC.AttackButton, target, force_attack, nil, isleftmouse, isreleased)
     elseif target ~= nil then
@@ -1836,6 +1963,19 @@ function PlayerController:RemoteAttackButton(target, force_attack, isleftmouse, 
     else
 		SendRPCToServer(RPC.AttackButton, nil, nil, nil, isleftmouse, isreleased)
     end
+end
+
+function PlayerController:SetIsOverrideAttack(val)
+	if self.ismastersim then
+		self.classified.isoverrideattack:set(val)
+	end
+end
+
+function PlayerController:IsOverrideAttack()
+	if self.inst.sg then
+		return self.inst.sg:HasStateTag("overrideattack")
+	end
+	return self.classified ~= nil and self.classified.isoverrideattack:value()
 end
 
 local function ValidateHaunt(target)
@@ -2593,6 +2733,8 @@ function PlayerController:OnUpdate(dt)
             --Other than HUD blocking, we would've been enabled otherwise
             if not self:IsBusy() then
                 self:DoPredictWalking(dt)
+			else
+				self:ClearRemotePredictData(true)
             end
         end
 
@@ -2855,8 +2997,7 @@ function PlayerController:OnUpdate(dt)
 			end
 		elseif self.ismastersim and self.inst:HasTag("nopredict") and self.remote_vector.y >= 3 then
 			self.remote_vector.y = 0
-			self.remote_predict_dir = nil
-			self.remote_predict_stop_tick = nil
+			self:ClearRemotePredictData()
 		end
 
 		self:CooldownHeldAction(dt)
@@ -2892,6 +3033,8 @@ function PlayerController:OnUpdate(dt)
 	if isbusy then
 		self:DoClientBusyOverrideLocomote()
 		self.recent_bufferedaction.act = nil
+		self:ClearRemotePredictData(true)
+		self:DoDirectStopWalking()
 	elseif self:DoPredictWalking(dt)
 		or self:DoDragWalking(dt)
 		then
@@ -3527,8 +3670,20 @@ function PlayerController:ResetRemoteController()
     if next(self.remote_controls) ~= nil then
         self.remote_controls = {}
     end
+	self:ClearRemotePredictData()
+end
+
+function PlayerController:ClearRemotePredictData(force_reset_timer)
 	self.remote_predict_dir = nil
 	self.remote_predict_stop_tick = nil
+	if self.remote_predict_stop_notified then
+		self.remote_predict_stop_notified = nil
+		if self.locomotor then
+			self.locomotor:CancelPredictMoveTimer()
+		end
+	elseif force_reset_timer and self.locomotor then
+		self.locomotor:CancelPredictMoveTimer()
+	end
 end
 
 local function ConvertPlatformRelativeToAbsoluteXZ(vec, platform)
@@ -3584,8 +3739,7 @@ function PlayerController:OnRemoteDirectWalking(x, z)
         self.remote_vector.y = 1
         self.remote_vector.z = z
 		self.remote_vector.platform = nil
-		self.remote_predict_dir = nil
-		self.remote_predict_stop_tick = nil
+		self:ClearRemotePredictData()
     end
 end
 
@@ -3595,24 +3749,43 @@ function PlayerController:OnRemoteDragWalking(x, z)
         self.remote_vector.y = 2
         self.remote_vector.z = z
 		self.remote_vector.platform = nil
-		self.remote_predict_dir = nil
-		self.remote_predict_stop_tick = nil
+		self:ClearRemotePredictData()
     end
 end
 
-function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking, isstart, platform, overridemovetime)
+function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking, isstart, platform, overridemovetime, isstop)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
-        self.remote_vector.x = x
-        self.remote_vector.y = isdirectwalking and 3 or 4
-        self.remote_vector.z = z
-		self.remote_vector.platform = platform
-		self.remote_predict_dir = nil
-		self.remote_predict_stop_tick = nil
-        if isstart then
-            self.locomotor:RestartPredictMoveTimer()
-		elseif overridemovetime then
-			self.locomotor:OverridePredictTimer(GetTime() - overridemovetime)
-        end
+		if x then
+			self.remote_vector.x = x
+			self.remote_vector.y = isdirectwalking and 3 or 4
+			self.remote_vector.z = z
+			self.remote_vector.platform = platform
+			self.remote_predict_dir = nil
+			self.remote_predict_stop_tick = nil
+			self.remote_predict_stop_notified = isstop
+			if isstart then
+				self.locomotor:RestartPredictMoveTimer()
+			elseif overridemovetime then
+				self.locomotor:OverridePredictTimer(GetTime() - overridemovetime)
+			end
+		else
+			--guaranteed either isstart or isstop (or both)
+			--overridemovetime optional
+			--everything else nil
+			if isstart then
+				self.locomotor:RestartPredictMoveTimer()
+			elseif overridemovetime then
+				self.locomotor:OverridePredictTimer(GetTime() - overridemovetime)
+			end
+			if not isstop then
+				self.remote_predict_stop_notified = nil
+			elseif self.remote_predict_stop_tick or self:GetRemotePredictPosition() then
+				self.remote_predict_stop_notified = true
+			else
+				self.remote_predict_stop_notified = nil
+				self.locomotor:CancelPredictMoveTimer()
+			end
+		end
     end
 end
 
@@ -3622,7 +3795,7 @@ function PlayerController:OnRemotePredictOverrideLocomote(dir)
 			self.classified.busyremoteoverridelocomote:value() or
 			self.classified.busyremoteoverridelocomoteclick:value()
 		then
-			if self.inst.sg:HasStateTag("canrotate") then
+			if dir and self.inst.sg:HasStateTag("canrotate") then
 				self.locomotor:SetMoveDir(dir)
 			end
 			self.inst:PushEvent("locomote", { dir = dir, remoteoverridelocomote = true })
@@ -3680,24 +3853,21 @@ function PlayerController:OnRemoteStartHop(x, z, platform)
     end
 
     self.remote_vector.y = 6
-	self.remote_predict_dir = nil
-	self.remote_predict_stop_tick = nil
+	self:ClearRemotePredictData()
 	self.locomotor:StartHopping(x,z,platform)
 end
 
 function PlayerController:OnRemoteStopWalking()
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_vector.y = 0
-		self.remote_predict_dir = nil
-		self.remote_predict_stop_tick = nil
+		self:ClearRemotePredictData()
     end
 end
 
 function PlayerController:OnRemoteStopHopping()
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_vector.y = 0
-		self.remote_predict_dir = nil
-		self.remote_predict_stop_tick = nil
+		self:ClearRemotePredictData()
     end
 end
 
@@ -3720,20 +3890,22 @@ function PlayerController:RemoteDragWalking(x, z)
     end
 end
 
-function PlayerController:RemotePredictWalking(x, z, isstart, overridemovetime, overridedirect)
+function PlayerController:RemotePredictWalking(x, z, isstart, overridemovetime, overridedirect, isstop)
 	local y = (overridedirect or self.directwalking) and 3 or 4
     if self.remote_vector.x ~= x or self.remote_vector.z ~= z or (self.remote_vector.y ~= y and self.remote_vector.y ~= 0) then
 		local platform, pos_x, pos_z = self:GetPlatformRelativePosition(x, z)
-		SendRPCToServer(RPC.PredictWalking, pos_x, pos_z, self.directwalking, isstart, platform, platform ~= nil, overridemovetime)
+		SendRPCToServer(RPC.PredictWalking, pos_x, pos_z, self.directwalking, isstart, platform, platform ~= nil, overridemovetime, isstop)
         self.remote_vector.x = x
         self.remote_vector.y = y
         self.remote_vector.z = z
         self.predictionsent = true
+	elseif isstart or isstop then
+		SendRPCToServer(RPC.PredictWalking, nil, nil, nil, isstart, nil, nil, overridemovetime, isstop)
     end
 end
 
-function PlayerController:RemotePredictOverrideLocomote(dir)
-	SendRPCToServer(RPC.PredictOverrideLocomote, dir or self.inst.Transform:GetRotation())
+function PlayerController:RemotePredictOverrideLocomote(dir, autodir)
+	SendRPCToServer(RPC.PredictOverrideLocomote, dir or (autodir ~= false and self.inst.Transform:GetRotation()) or nil)
 end
 
 function PlayerController:RemoteStopWalking()
@@ -3774,8 +3946,15 @@ function PlayerController:DoClientBusyOverrideLocomote()
 		self.classified.busyremoteoverridelocomote:value()
 	then
 		local dir = GetWorldControllerVector()
+		local tick = GetTick()
 		if dir then
+			self._last_busy_override_locomote_tick = tick
 			self:RemotePredictOverrideLocomote(math.atan2(-dir.z, dir.x) * RADIANS)
+		else
+			if self._last_busy_override_locomote_tick == tick - 1 then
+				self:RemotePredictOverrideLocomote(nil, false)
+			end
+			self._last_busy_override_locomote_tick = nil
 		end
 	end
 end
@@ -3814,8 +3993,7 @@ function PlayerController:DoPredictWalking(dt)
                 self.predictwalking = false
                 if distancetotargetsq <= stopdistancesq then
                     self.remote_vector.y = 0
-					self.remote_predict_dir = nil
-					self.remote_predict_stop_tick = nil
+					self:ClearRemotePredictData()
                 end
                 return true
             end
@@ -3886,13 +4064,14 @@ function PlayerController:DoPredictWalking(dt)
 
             return true
 		elseif self.remote_predict_stop_tick then
-			if self.inst.sg:HasAnyStateTag("idle", "floating") then
-				local x1, z1 = self:GetRemotePredictStopXZ()
-				if x1 and self.inst:GetDistanceSqToPoint(x1, 0, z1) <= PREDICT_STOP_ERROR_DISTANCE_SQ then
+			local x1, z1 = self:GetRemotePredictStopXZ()
+			if x1 then
+				if self.inst.sg:HasAnyStateTag("idle", "floating") and self.inst:GetDistanceSqToPoint(x1, 0, z1) <= PREDICT_STOP_ERROR_DISTANCE_SQ then
 					--FIXME(JBK): Boat handling.
 					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
 					self.inst.Transform:SetPosition(x1, 0, z1)
 				end
+				self:ClearRemotePredictData()
 			end
 			self.remote_predict_stop_tick = nil
         end
@@ -3908,7 +4087,7 @@ function PlayerController:DoPredictWalking(dt)
 				self.client_last_predict_walk.tick + 1 == GetTick()
 			then
 				local x, y, z = self.inst.Transform:GetPredictionPosition()
-				self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0, self.locomotor:PopOverrideTimeMoving(), self.client_last_predict_walk.direct)
+				self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0, self.locomotor:PopOverrideTimeMoving(), self.client_last_predict_walk.direct, true)
 			end
 			self.client_last_predict_walk.tick = nil
         end
@@ -3916,7 +4095,9 @@ function PlayerController:DoPredictWalking(dt)
 end
 
 function PlayerController:DoDragWalking(dt)
-    if self:IsLocalOrRemoteHopping() then return end
+	if self:IsLocalOrRemoteHopping() or (self.inst.sg and self.inst.sg:HasStateTag("nodragwalk")) then
+		return
+	end
     local pt = nil
     if self.locomotor == nil or self:CanLocomote() then
         if self.handler == nil then
@@ -4204,12 +4385,31 @@ function PlayerController:DoDirectWalking(dt)
     end
 end
 
+--for non-predicting clients, stopping during busy states
+function PlayerController:DoDirectStopWalking()
+	if not self.ismastersim and
+		(self.directwalking or self.dragwalking) and
+		self.locomotor == nil and
+		self.handler and
+		GetWorldControllerVector() == nil
+	then
+		self.recent_bufferedaction.act = nil
+		self.directwalking = false
+		self.dragwalking = false
+		self.predictwalking = false
+		self:CooldownRemoteController()
+		self:RemoteStopWalking()
+	end
+end
+
 --------------------------------------------------------------------------
 local ROT_REPEAT = .25
 local ZOOM_REPEAT = .1
 
 function PlayerController:DoCameraControl()
-    if not TheCamera:CanControl() then
+	local canzoom = TheCamera:CanControl()
+	--V2C: exception for drone cam: zoom disabled, but rotate allowed
+	if not (canzoom or self.inst:HasTag("using_drone_remote")) then
         return
     end
 
@@ -4239,7 +4439,7 @@ function PlayerController:DoCameraControl()
 				self:RotLeft(speed)
 			end
 			self.lastrottime = time
-		elseif absydir > deadzone then
+		elseif canzoom and absydir > deadzone then
 			local delta = Remap(math.min(1, absydir), deadzone, 1, 0, 0.65)
 			TheCamera:ContinuousZoomDelta(ydir > 0 and -delta or delta)
 			self.lastzoomtime = time
@@ -4258,7 +4458,7 @@ function PlayerController:DoCameraControl()
         end
     end
 
-	if self.lastzoomtime == nil or time - self.lastzoomtime > ZOOM_REPEAT then
+	if canzoom and (self.lastzoomtime == nil or time - self.lastzoomtime > ZOOM_REPEAT) then
 		if TheInput:IsControlPressed(CONTROL_ZOOM_IN) then
 			if not self.zoomin_same_as_scrollup or (self.inst.HUD ~= nil and self.inst.HUD.controls ~= nil and not self.inst.HUD.controls.craftingmenu.focus) then
 				TheCamera:ZoomIn()
@@ -4435,6 +4635,7 @@ function PlayerController:DoActionAutoEquip(buffaction)
 		buffaction.action ~= ACTIONS.DEPLOY_FLOATING and
         buffaction.action ~= ACTIONS.CONSTRUCT and
 		buffaction.action ~= ACTIONS.ADDCOMPOSTABLE and
+        buffaction.action ~= ACTIONS.EQUIPONBODY and
 		(buffaction.action ~= ACTIONS.TOSS or not equippable.inst:HasTag("keep_equip_toss")) and
 		buffaction.action ~= ACTIONS.DECORATESNOWMAN
 	then
@@ -4553,7 +4754,8 @@ function PlayerController:OnLeftClick(down)
 
     local maptarget = self:GetMapTarget(act)
     if maptarget ~= nil then
-		self:PullUpMap(maptarget)
+        local forced_actiondef = act.action.map_only and act.action or nil
+		self:PullUpMap(maptarget, forced_actiondef)
         return
     end
 
@@ -4618,12 +4820,19 @@ function PlayerController:OnLeftClick(down)
 				self.remote_controls[CONTROL_PRIMARY] = 0
 				SendRPCToServer(RPC.LeftClick, act.action.code, pos_x, pos_z, mouseover, nil, controlmods, act.action.canforce, act.action.mod_name, platform, platform ~= nil, spellbook, spell_id)
 			end
-        elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
-            act.preview_cb = function()
-                self.remote_controls[CONTROL_PRIMARY] = 0
-                local isreleased = not TheInput:IsControlPressed(CONTROL_PRIMARY)
-                SendRPCToServer(RPC.LeftClick, act.action.code, pos_x, pos_z, mouseover, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil, spellbook, spell_id)
-            end
+		else
+			--Still need to let the server know LMB is down
+			if self.remote_controls[CONTROL_PRIMARY] == nil then
+				self.remote_controls[CONTROL_PRIMARY] = 0
+				SendRPCToServer(RPC.LeftClick)
+			end
+			if act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+				act.preview_cb = function()
+					local isreleased = not TheInput:IsControlPressed(CONTROL_PRIMARY)
+					self.remote_controls[CONTROL_PRIMARY] = not isreleased and 0 or nil
+					SendRPCToServer(RPC.LeftClick, act.action.code, pos_x, pos_z, mouseover, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil, spellbook, spell_id)
+				end
+			end
         end
     end
 
@@ -4647,6 +4856,12 @@ function PlayerController:OnRemoteLeftClick(actioncode, position, target, isrele
         self.inst.components.combat:SetTarget(nil)
 
         self.remote_controls[CONTROL_PRIMARY] = 0
+
+		if actioncode == nil then
+			assert(isreleased == nil) --actioncode nil means all params must be nil
+			return
+		end
+
         self:DecodeControlMods(controlmodscode)
         SetClientRequestedAction(actioncode, mod_name)
 		local lmb, rmb
@@ -4770,9 +4985,15 @@ function PlayerController:OnRightClick(down)
 			if self:TryAOETargeting() or self:TryAOECharging(nil, false) then
 				return
 			end
+			--Still need to let the server know RMB is down
+			if self.remote_controls[CONTROL_SECONDARY] == nil then
+				self.remote_controls[CONTROL_SECONDARY] = 0
+				SendRPCToServer(RPC.RightClick)
+			end
 		end
     elseif maptarget ~= nil then
-		self:PullUpMap(maptarget)
+        local forced_actiondef = act.action.map_only and act.action or nil
+		self:PullUpMap(maptarget, forced_actiondef)
         return
     else
         if self.reticule ~= nil and self.reticule.reticule ~= nil then
@@ -4810,11 +5031,18 @@ function PlayerController:OnRightClick(down)
 					self.remote_controls[CONTROL_SECONDARY] = 0
 					SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, nil, controlmods, act.action.canforce, act.action.mod_name, platform, platform ~= nil)
 				end
-            elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
-                act.preview_cb = function()
-                    self.remote_controls[CONTROL_SECONDARY] = 0
-                    local isreleased = not TheInput:IsControlPressed(CONTROL_SECONDARY)
-                    SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil)
+			else
+				--Still need to let the server know RMB is down
+				if self.remote_controls[CONTROL_SECONDARY] == nil then
+					self.remote_controls[CONTROL_SECONDARY] = 0
+					SendRPCToServer(RPC.RightClick)
+				end
+				if act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+					act.preview_cb = function()
+						local isreleased = not TheInput:IsControlPressed(CONTROL_SECONDARY)
+						self.remote_controls[CONTROL_SECONDARY] = not isreleased and 0 or nil
+						SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil)
+					end
                 end
             end
         end
@@ -4825,6 +5053,12 @@ end
 function PlayerController:OnRemoteRightClick(actioncode, position, target, rotation, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_SECONDARY] = 0
+
+		if actioncode == nil then
+			assert(isreleased == nil) --actioncode nil means all params must be nil
+			return
+		end
+
         self:DecodeControlMods(controlmodscode)
         SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
@@ -4854,31 +5088,108 @@ function PlayerController:RemapMapAction(act, position)
     if act then
         local px, py, pz = position:Get()
         if act.action.map_only then
-            if act.action.maponly_checkvalidpos_fn == nil or act.action.maponly_checkvalidpos_fn(act) then
+            if act.action.maponly_checkvalidpos_fn then
+                local valid, reason, act_posx, act_posz, mapent = act.action.maponly_checkvalidpos_fn(act)
+                if not valid then
+                    return nil
+                end
+                if act_posx then
+                    px, py, pz = act_posx, 0, act_posz
+                end
+            end
+            if TheWorld.Map:IsOceanTileAtPoint(px, py, pz) or TheWorld.Map:IsVisualGroundAtPoint(px, py, pz) or act.action.map_works_on_impassable and TheWorld.Map:IsImpassableTileAtPoint(px, py, pz) then
                 if act.action.map_works_on_unexplored or self.inst:CanSeePointOnMiniMap(px, py, pz) then
                     act_remap = act
                 end
             end
         elseif ACTIONS_MAP_REMAP[act.action.code] then
-            if act.action.map_works_on_unexplored or
-                self.inst:CanSeePointOnMiniMap(px, py, pz) or
-                act.invobject and act.invobject:HasTag("mapaction_works_on_unexplored") then
-                act_remap = ACTIONS_MAP_REMAP[act.action.code](act, Vector3(px, py, pz))
+            if TheWorld.Map:IsOceanTileAtPoint(px, py, pz) or TheWorld.Map:IsVisualGroundAtPoint(px, py, pz) or act.action.map_works_on_impassable and TheWorld.Map:IsImpassableTileAtPoint(px, py, pz) then
+                if act.action.map_works_on_unexplored or
+                    self.inst:CanSeePointOnMiniMap(px, py, pz) or
+                    act.invobject and act.invobject:HasTag("mapaction_works_on_unexplored") then
+                    act_remap = ACTIONS_MAP_REMAP[act.action.code](act, Vector3(px, py, pz))
+                end
             end
         end
     end
     return act_remap
 end
 
+local function _calc_mapaction_dsq(inst, action, position)
+	if action.maponly_checkvalidpos_fn then
+		local valid, reason, act_posx, act_posz, mapent = action.maponly_checkvalidpos_fn(BufferedAction(inst, nil, action, nil, position))
+		if valid then
+			return math2d.DistSq(act_posx, act_posz, position.x, position.z)
+		end
+	end
+	return math.huge
+end
+
 function PlayerController:GetMapActions(position, maptarget, actiondef)
     -- NOTES(JBK): In order to not interface with the playercontroller too harshly and keep that isolated from this system here
     --             it is better to get what the player could do at their location as a quick check to make sure the actions done
     --             here will not interfere with actions done without the map up.
+
+    self.inst.checkingmapactions = true -- NOTES(JBK): Workaround flag to not add function argument changes for this task and lets things opt-in to special handling.
+    self.inst.checkingmapactions_pos = position
+
     local LMBaction, RMBaction = nil, nil
     local forced_lmbact, forced_rmbact
-    if actiondef and actiondef.map_only then
+    if not actiondef and not maptarget and not self.skip_inherentmapaction then
+        -- Special case for map only actions that only exist in the map itself we use the pointspecialactionsfn to have highest priority with the right click action only.
+		local actions = self.inst.components.playeractionpicker:GetPointSpecialActions(position, nil, true)
+
+		--NOTE: -playeractionpicker sorted by priorty
+		--      -we're picking again to find the closest one out of the top priority map actions.
+		local mapactions --collect all unique map actions
+		local ba --find the closest top priority map action
+		local ba_mindsq
+		local ba_end = false
+		for _, v in ipairs(actions) do
+			if v.action.map_only then
+				if mapactions then
+					mapactions[v.action] = true
+				else
+					mapactions = { [v.action] = true }
+				end
+				if not ba_end then
+					local dsq
+					if v.action.maponly_checkvalidpos_fn then
+						local valid, reason, act_posx, act_posz, mapent = v.action.maponly_checkvalidpos_fn(v)
+						dsq = valid and math2d.DistSq(act_posx, act_posz, position.x, position.z) or math.huge
+					else
+						dsq = math.huge
+					end
+					if ba == nil or dsq < ba_mindsq then
+						ba = v
+						ba_mindsq = dsq
+					end
+				end
+			else
+				ba_end = true
+			end
+		end
+
+		if ba then
+            if ba.action.rmb then
+                forced_rmbact = ba
+            else
+                forced_lmbact = ba
+            end
+        end
+        if self.inst.HUD and self.inst.HUD:IsMapScreenOpen() then
+            local mapscreen = TheFrontEnd:GetActiveScreen()
+			mapscreen:SetInherentMapActions(mapactions)
+        end
+    elseif actiondef and actiondef.map_only then
         -- NOTES(JBK): Unless the action itself is a map_only action then let us say it is fine and force it as highest priority.
-        local ba = BufferedAction(self.inst, maptarget, actiondef, nil, position)
+        local invobject
+        if maptarget and maptarget.components.inventoryitem and maptarget.components.inventoryitem:GetGrandOwner() == self.inst then
+            invobject = maptarget
+            maptarget = nil
+        end
+
+        local ba = BufferedAction(self.inst, maptarget, actiondef, invobject, position)
         if actiondef.rmb then
             forced_rmbact = ba
         else
@@ -4888,8 +5199,6 @@ function PlayerController:GetMapActions(position, maptarget, actiondef)
 
     local pos = self.inst:GetPosition()
 
-    self.inst.checkingmapactions = true -- NOTES(JBK): Workaround flag to not add function argument changes for this task and lets things opt-in to special handling.
-    self.inst.checkingmapactions_pos = position
     local action_maptarget = maptarget and maptarget:IsValid() and not maptarget:HasTag("INLIMBO") and maptarget or nil -- NOTES(JBK): Workaround passing the maptarget entity if it is out of scope for world actions.
 
     local lmbact = forced_lmbact or self.inst.components.playeractionpicker:GetLeftClickActions(pos, action_maptarget)[1]
@@ -4931,10 +5240,9 @@ function PlayerController:OnMapAction(actioncode, position, maptarget, mod_name)
     else
         act = ACTIONS_BY_ACTION_CODE[actioncode]
     end
-    if act == nil or not act.map_action then
+    if act == nil or not (act.map_action or act.map_only) then
         return
     end
-    act.target = maptarget -- Optional.
 
 	local LMBaction, RMBaction = self:GetMapActions(position, maptarget, act)
     if self.ismastersim then
@@ -5439,6 +5747,17 @@ local CREATURE_INTERACTIONS =
 	[ACTIONS.MUTATE_SPIDER] = true,
 }
 
+-- Special logic for WX so possessed bodies can follow in sync.
+local WX78_INTERACTIONS =
+{
+    [ACTIONS.ATTACK] = true,
+    [ACTIONS.CHOP] = true,
+    [ACTIONS.MINE] = true,
+    [ACTIONS.DIG] = true,
+    [ACTIONS.TILL] = true,
+    [ACTIONS.FEEDPLAYER] = true,
+}
+
 function PlayerController:OnRemoteInteractionTarget(actioncode, target)
 	self.remoteinteractionaction = ACTIONS_BY_ACTION_CODE[actioncode]
 	self.remoteinteractiontarget = target
@@ -5469,11 +5788,11 @@ function PlayerController:OnLocomotorBufferedAction(act)
 		dir = GetWorldControllerVector()
 
 		local actioncode, target
-		if not self.ismastersim and
-			CREATURE_INTERACTIONS[act.action] and
-			act.target and
-			act.target:IsValid() and
-			act.target:HasTag("locomotor")
+		if not self.ismastersim and act.target and act.target:IsValid() and
+        (
+            (CREATURE_INTERACTIONS[act.action] and act.target:HasTag("locomotor")) or
+            (WX78_INTERACTIONS[act.action] and self.inst.wx78_classified ~= nil)
+        )
 		then
 			actioncode = act.action.code
 			target = act.target

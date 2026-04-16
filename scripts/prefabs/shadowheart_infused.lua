@@ -1,3 +1,5 @@
+local WX78Common = require("prefabs/wx78_common")
+
 local assets =
 {
     Asset("ANIM", "anim/shadowheart_infused.zip"),
@@ -100,6 +102,8 @@ local function fn()
     inst:AddTag("canbetrapped")
     inst:AddTag("shadowheart")
 
+    MakeItemSocketable_Client(inst, "socket_shadow")
+
     inst.Transform:SetFourFaced()
 
     if not TheNet:IsDedicated() then
@@ -111,6 +115,9 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    WX78Common.MakeItemSocketable(inst)
+    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.HIGH)
 
     inst.scrapbook_anim = "scrapbook"
 

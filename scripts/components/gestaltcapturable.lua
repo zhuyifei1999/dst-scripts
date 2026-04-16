@@ -6,6 +6,7 @@ end
 local GestaltCapturable = Class(function(self, inst)
 	self.inst = inst
 	self.level = 1
+	self.isplanar = nil
 	self.enabled = true
 	self.targeters = {}
 	self.ontargetedfn = nil
@@ -37,6 +38,14 @@ end
 
 function GestaltCapturable:GetLevel()
 	return self.level
+end
+
+function GestaltCapturable:SetIsPlanar(bool)
+	self.isplanar = bool or nil
+end
+
+function GestaltCapturable:GetIsPlanar()
+	return self.isplanar
 end
 
 function GestaltCapturable:SetOnCapturedFn(fn)

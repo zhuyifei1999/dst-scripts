@@ -122,13 +122,22 @@ function Equippable:Unequip(owner)
     self.inst:PushEvent("unequipped", { owner = owner })
 end
 
+-- Keep logic in sync with inventoryitem_replica::GetWalkSpeedMult()
 function Equippable:GetWalkSpeedMult()
 
     local speed = self.walkspeedmult or 1.0
 
     local owner = self.inst.components.inventoryitem and self.inst.components.inventoryitem.owner
-    if speed < 1 and self.isequipped and owner and owner:HasTag("vigorbuff") then
-        speed = math.min(1, speed + 0.25)
+
+    if owner and self.isequipped then
+        if speed < 1 and owner:HasTag("vigorbuff") then
+            speed = math.min(1, speed + 0.25)
+        end
+
+        local speedmodifierfn = owner.inventory_EquippableWalkSpeedMultModifier
+        if speedmodifierfn ~= nil then
+            speed = speedmodifierfn(owner, speed, self.inst)
+        end
     end
 
     return speed
@@ -136,7 +145,7 @@ end
 
 --V2C: reminder to update replica version as well XD
 function Equippable:IsRestricted(target)
-	if not target:HasTag("player") then
+	if not target:HasAnyTag("player", "possessedbody") then
 		--restricted tags and links only apply to players
 		return false
 	end

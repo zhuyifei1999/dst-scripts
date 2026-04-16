@@ -14,7 +14,7 @@ AddLevel(LEVELTYPE.LAVAARENA, {
         background_node_range = {0,1},
     })
 
--- older depreciated AddLevel up here --
+-- older deprecated AddLevel up here --
 
 AddWorldGenLevel(LEVELTYPE.LAVAARENA, {
     id = "LAVAARENA",

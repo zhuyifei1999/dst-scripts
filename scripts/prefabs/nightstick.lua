@@ -104,12 +104,17 @@ local function onattack(inst, attacker, target)
     SpawnElectricHitSparks(attacker, target, true)
 end
 
-local function OnBatteryUsed(inst, battery)
-    if inst.components.fueled:IsFull() then
+local function CalcBatteryChargeMult(inst, battery)
+	local pct = inst.components.fueled:GetPercent()
+	return math.clamp(1 - pct, 0, 1)
+end
+
+local function OnBatteryUsed(inst, battery, mult)
+	if mult <= 0 or inst.components.fueled:IsFull() then
         return false, "CHARGE_FULL"
     end
 
-    local newpercent = math.clamp(inst.components.fueled:GetPercent() + TUNING.NIGHTSTICK_BATTERYCHARGE, 0, 1)
+	local newpercent = math.clamp(inst.components.fueled:GetPercent() + mult, 0, 1)
     inst.components.fueled:SetPercent(newpercent)
     SpawnElectricHitSparks(inst, battery, true)
 
@@ -132,11 +137,8 @@ local function fn()
 
     inst:AddTag("wildfireprotected")
 
-    --batteryuser (from batteryuser component) added to pristine state for optimization
-    --inst:AddTag("batteryuser") -- FIXME(JBK): WF: Uncomment this up when strings.
-
-    --moonsparkchargeable (from moonsparkchargeable component) added to pristine state for optimization
-    inst:AddTag("moonsparkchargeable")
+	--batteryuser (from batteryuser component) added to pristine state for optimization
+	inst:AddTag("batteryuser")
 
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
@@ -181,11 +183,10 @@ local function fn()
     inst.components.fueled:SetDepletedFn(inst.Remove)
     inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
-    inst:AddComponent("moonsparkchargeable")
-    inst.components.moonsparkchargeable:SetFueledPercent(TUNING.NIGHTSTICK_SPARKCHARGE)
-
-    --inst:AddComponent("batteryuser") -- FIXME(JBK): WF: Uncomment this up when strings.
-    --inst.components.batteryuser.onbatteryused = OnBatteryUsed -- FIXME(JBK): WF: Uncomment this up when strings.
+	inst:AddComponent("batteryuser")
+	inst.components.batteryuser:SetChargeMultFn(CalcBatteryChargeMult)
+	inst.components.batteryuser:SetOnBatteryUsedFn(OnBatteryUsed)
+	inst.components.batteryuser:SetAllowPartialCharge(true)
 
     MakeHauntableLaunch(inst)
 

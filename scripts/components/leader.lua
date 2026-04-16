@@ -1,3 +1,5 @@
+local SourceModifierList = require("util/sourcemodifierlist")
+
 local function OnNewCombatTarget(inst, data)
     inst.components.leader:OnNewTarget(data.target)
 end
@@ -32,6 +34,9 @@ function Leader:OnRemoveFromEntity()
     self.inst:RemoveEventCallback("attacked", OnAttacked)
     self.inst:RemoveEventCallback("death", OnDeath)
     self:RemoveAllFollowers()
+    if self.roll_call_sources then
+		self.roll_call_sources:Reset()
+	end
 end
 
 function Leader:SetForceLeash()
@@ -57,8 +62,12 @@ function Leader:OnAttacked(attacker)
     end
 end
 
+function Leader:GetNumFollowers() -- Use this instead of CountFollowers(nil)
+    return self.numfollowers
+end
+
 function Leader:CountFollowers(tag)
-    if tag == nil then
+    if tag == nil then -- Kept for previous behaviour
         return self.numfollowers
     end
 
@@ -94,6 +103,22 @@ function Leader:GetFollowersByTag(tag)
     end
 
     return followers
+end
+
+function Leader:SetIsRollCaller(source, boolval)
+    if not self.roll_call_sources then
+        self.roll_call_sources = SourceModifierList(self.inst, false, SourceModifierList.boolean)
+    end
+
+    self.roll_call_sources:SetModifier(source, boolval)
+end
+
+function Leader:IsRollCalling()
+    if self.inst.components.leaderrollcall and self.inst.components.leaderrollcall:IsEnabled() then
+        return true
+    end
+
+    return self.roll_call_sources and self.roll_call_sources:Get() or false
 end
 
 function Leader:IsTargetedByFollowers(target)

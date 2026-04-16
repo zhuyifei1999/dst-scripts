@@ -335,9 +335,9 @@ Recipe2("wormwood_berrybush2",			{Ingredient(CHARACTER_INGREDIENT.HEALTH, 10), I
 Recipe2("wormwood_juicyberrybush",		{Ingredient(CHARACTER_INGREDIENT.HEALTH, 10), Ingredient("spoiled_food", 3), Ingredient("berries", 8)},			TECH.NONE,	{builder_skill="wormwood_juicyberrybushcrafting", product="dug_berrybush_juicy", sg_state="form_juicy",  actionstr="GROW", allowautopick = true, no_deconstruction=true, description="wormwood_juicyberrybush"})
 Recipe2("wormwood_reeds", 				{Ingredient(CHARACTER_INGREDIENT.HEALTH, 15), Ingredient("cave_banana", 1 ), Ingredient("cutreeds", 4)},		TECH.NONE,	{builder_skill="wormwood_reedscrafting",          product="dug_monkeytail",      sg_state="form_monkey", actionstr="GROW", allowautopick = true, no_deconstruction=true, description="wormwood_reeds"})
 Recipe2("wormwood_lureplant", 			{Ingredient(CHARACTER_INGREDIENT.HEALTH, 25), Ingredient("compostwrap", 2 ), Ingredient("plantmeat", 5)},		TECH.NONE,	{builder_skill="wormwood_lureplantbulbcrafting",  product="lureplantbulb",       sg_state="form_bulb",   actionstr="GROW", allowautopick = true, no_deconstruction=true, description="wormwood_lureplantbulb"})
-Recipe2("wormwood_carrat",				{Ingredient(CHARACTER_INGREDIENT.HEALTH, 5),  Ingredient("carrot", 1)},											TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_mutations_1", product="wormwood_mutantproxy_carrat",      sg_state="spawn_mutated_creature", actionstr="TRANSFORM", no_deconstruction=true, dropitem=true, nameoverride = "carrat", description="wormwood_carrat", canbuild = function(inst, builder) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wormwood_carrat")), "HASPET" end}) -- FIXME(JBK): "HASPET" to its own thing.
-Recipe2("wormwood_lightflier",			{Ingredient(CHARACTER_INGREDIENT.HEALTH, 10), Ingredient("lightbulb", 1)},										TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_mutations_2", product="wormwood_mutantproxy_lightflier",  sg_state="spawn_mutated_creature", actionstr="TRANSFORM", no_deconstruction=true, dropitem=true, nameoverride = "lightflier", description="wormwood_lightflier", canbuild = function(inst, builder) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wormwood_lightflier")), "HASPET" end})
-Recipe2("wormwood_fruitdragon",			{Ingredient(CHARACTER_INGREDIENT.HEALTH, 25), Ingredient("dragonfruit", 1)},									TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_mutations_3", product="wormwood_mutantproxy_fruitdragon", sg_state="spawn_mutated_creature", actionstr="TRANSFORM", no_deconstruction=true, dropitem=true, nameoverride = "fruitdragon", description="wormwood_fruitdragon", canbuild = function(inst, builder) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wormwood_fruitdragon")), "HASPET" end})
+Recipe2("wormwood_carrat",				{Ingredient(CHARACTER_INGREDIENT.HEALTH, 5),  Ingredient("carrot", 1)},											TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_mutations_1", product="wormwood_mutantproxy_carrat",      sg_state="spawn_mutated_creature", actionstr="TRANSFORM", no_deconstruction=true, dropitem=true, nameoverride = "carrat", description="wormwood_carrat", canbuild = function(recipe, builder, pt, rotation, station, skin) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wormwood_carrat")), "HASPET" end}) -- FIXME(JBK): "HASPET" to its own thing.
+Recipe2("wormwood_lightflier",			{Ingredient(CHARACTER_INGREDIENT.HEALTH, 10), Ingredient("lightbulb", 1)},										TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_mutations_2", product="wormwood_mutantproxy_lightflier",  sg_state="spawn_mutated_creature", actionstr="TRANSFORM", no_deconstruction=true, dropitem=true, nameoverride = "lightflier", description="wormwood_lightflier", canbuild = function(recipe, builder, pt, rotation, station, skin) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wormwood_lightflier")), "HASPET" end})
+Recipe2("wormwood_fruitdragon",			{Ingredient(CHARACTER_INGREDIENT.HEALTH, 25), Ingredient("dragonfruit", 1)},									TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_mutations_3", product="wormwood_mutantproxy_fruitdragon", sg_state="spawn_mutated_creature", actionstr="TRANSFORM", no_deconstruction=true, dropitem=true, nameoverride = "fruitdragon", description="wormwood_fruitdragon", canbuild = function(recipe, builder, pt, rotation, station, skin) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wormwood_fruitdragon")), "HASPET" end})
 Recipe2("armor_lunarplant_husk",		{Ingredient("armor_lunarplant", 1), Ingredient("armor_bramble", 1)},											TECH.NONE,	{builder_skill="wormwood_allegiance_lunar_plant_gear_1"})
 
 -- Wortox
@@ -404,7 +404,7 @@ Recipe2("healingsalve",						{Ingredient("ash", 2), Ingredient("rocks", 1), Ingr
 -- NOTES(JBK): The healingsalve_acid recipe must keep slurtleslime as an ingredient for side effect of passifying Snurtle and Slurtle.
 -- Marble is used for the mortar and pestle. Nitre for the resistance.
 Recipe2("healingsalve_acid",				{Ingredient("healingsalve", 1), Ingredient("nitre", 1), Ingredient("marble", 1), Ingredient("slurtleslime", 1)},					TECH.SCIENCE_TWO)
-Recipe2("tillweedsalve",					{Ingredient("tillweed", 4), Ingredient("petals", 4), Ingredient("charcoal", 1)}, 						TECH.SCIENCE_TWO)
+Recipe2("tillweedsalve",					{Ingredient("tillweed", 1), Ingredient("petals", 1), Ingredient("charcoal", 1)}, 						TECH.SCIENCE_ONE)
 Recipe2("bandage",							{Ingredient("papyrus", 1), Ingredient("honey", 2)},														TECH.SCIENCE_TWO)
 Recipe2("reviver",							{Ingredient("cutgrass", 3), Ingredient("spidergland", 1), Ingredient(CHARACTER_INGREDIENT.HEALTH, 40)},	TECH.NONE)
 Recipe2("lifeinjector",						{Ingredient("spoiled_food", 8), Ingredient("nitre", 2), Ingredient("stinger",1)},						TECH.SCIENCE_TWO)
@@ -735,24 +735,47 @@ Recipe2("vaultrelic_bowl",					{Ingredient("thulecite_pieces", 1), Ingredient("c
 Recipe2("vaultrelic_vase",					{Ingredient("thulecite_pieces", 1), Ingredient("moonrocknugget", 1)},									TECH.LOST,					{no_deconstruction=vaultrelic_nodecon})
 Recipe2("vaultrelic_planter",				{Ingredient("cutstone", 1)},																			TECH.LOST,					{no_deconstruction=vaultrelic_nodecon})
 
--- WX78 Items
+-- [[ WX-78 Items ]] --
+Recipe2("wx78_moduleremover",				{Ingredient("twigs", 2), Ingredient("flint", 2)},															TECH.NONE,					{builder_tag="upgrademoduleowner"})
+Recipe2("wx78_scanner_item",				{Ingredient("transistor", 1), Ingredient("silk", 1)},														TECH.NONE,					{builder_tag="upgrademoduleowner"})
+
+-- Alpha Circuits
 Recipe2("wx78module_maxhealth",				{Ingredient("scandata", 2), Ingredient("spidergland", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_maxhealth2",			{Ingredient("scandata", 4), Ingredient("spidergland", 2), Ingredient("wx78module_maxhealth", 1)},			TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_maxhunger1",			{Ingredient("scandata", 2), Ingredient("houndstooth", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_maxhunger",				{Ingredient("scandata", 3), Ingredient("slurper_pelt", 1), Ingredient("wx78module_maxhunger1", 1)},			TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_maxsanity1",			{Ingredient("scandata", 1), Ingredient("petals", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_maxsanity",				{Ingredient("scandata", 3), Ingredient("nightmarefuel", 1), Ingredient("wx78module_maxsanity1", 1)},		TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_bee",					{Ingredient("scandata", 8), Ingredient("royal_jelly", 1), Ingredient("wx78module_maxsanity", 1)},			TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+
+-- Beta Circuits
+
 Recipe2("wx78module_music",					{Ingredient("scandata", 4), Ingredient("singingshell_octave3", 1, nil, nil, "singingshell_octave3_3.tex")},	TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78module_maxhunger1",			{Ingredient("scandata", 2), Ingredient("houndstooth", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78module_maxhunger",				{Ingredient("scandata", 3), Ingredient("slurper_pelt", 1), Ingredient("wx78module_maxhunger1", 1)},			TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_movespeed",				{Ingredient("scandata", 2), Ingredient("rabbit", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_movespeed2",			{Ingredient("scandata", 6), Ingredient("gears", 1), Ingredient("wx78module_movespeed", 1)},					TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_heat",					{Ingredient("scandata", 4), Ingredient("redgem", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_cold",					{Ingredient("scandata", 4), Ingredient("bluegem", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_taser",					{Ingredient("scandata", 5), Ingredient("goatmilk", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78module_nightvision",			{Ingredient("scandata", 4), Ingredient("mole", 1), Ingredient("fireflies", 1)},								TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78module_light",					{Ingredient("scandata", 6), Ingredient("lightbulb", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
-Recipe2("wx78_moduleremover",				{Ingredient("twigs", 2), Ingredient("rocks", 2)},															TECH.NONE,					{builder_tag="upgrademoduleowner"})
-Recipe2("wx78_scanner_item",				{Ingredient("transistor", 1), Ingredient("silk", 1)},														TECH.NONE,					{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_nightvision",			{Ingredient("scandata", 4), Ingredient("mole", 1), Ingredient("wx78module_light", 1)},						TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_light",					{Ingredient("scandata", 2), Ingredient("lightbulb", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_radar",					{Ingredient("scandata", 2), Ingredient("compass", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_light2",				{Ingredient("scandata", 6), Ingredient("fireflies", 1), Ingredient("wx78module_light", 1)},					TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_stacksize",				{Ingredient("scandata", 8), Ingredient("moonglass_charged", 1)},											TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+
+-- Gamma Circuits
+
+Recipe2("wx78module_digestion",				{Ingredient("scandata", 2), Ingredient("coontail", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_screech",				{Ingredient("scandata", 4), Ingredient("batnose", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_shielding",				{Ingredient("scandata", 4), Ingredient("slurtlehat", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+Recipe2("wx78module_spin",					{Ingredient("scandata", 6), Ingredient("goose_feather", 1)},												TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
+
+-- WX-78 skill tree items
+Recipe2("wx78_backupbody",					{Ingredient("gears", 1), Ingredient("redgem", 1)},															TECH.NONE,	{placer="wx78_backupbody_placer", min_spacing=1, builder_skill="wx78_extrabody_1", getlimitedrecipecount=function(recipe, builder) return builder.wx78_classified and builder.wx78_classified:GetNumFreeBackupBodies() or 0 end, recipedisplaynamefn=function(recipe, builder) return builder.wx78_classified and (builder.wx78_classified:GetNumFreeBackupBodies() > 0) and subfmt(STRINGS.NAMES.WX78_BACKUPBODY_FMT, { name = builder:GetDisplayName() }) or nil end})
+Recipe2("wx78_drone_scout",					{Ingredient("transistor", 1), Ingredient("compass", 1)},													TECH.NONE,	{builder_skill="wx78_scoutdrone_1", getlimitedrecipecount=function(recipe, builder) return builder.wx78_classified and builder.wx78_classified:GetNumFreeScoutingDrones() or 0 end, canbuild=function(recipe, builder, pt, rotation, station, skin) return (builder.wx78_classified and builder.wx78_classified:GetNumFreeScoutingDrones() or 0) > 0 and IsFlyingPermittedFromPoint(builder.Transform:GetWorldPosition()) end})
+Recipe2("wx78_drone_delivery_item",			{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", builder_skill="wx78_deliverydrone_2"})
+Recipe2("wx78_drone_delivery_small_item",	{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", description="wx78_drone_delivery_item", builder_skill="wx78_deliverydrone_1", no_builder_skill="wx78_deliverydrone_2"})
+Recipe2("wx78_drone_zap_remote",			{Ingredient("scandata", 10), Ingredient("transistor", 1), Ingredient("wagpunk_bits", 8)},					TECH.NONE,	{nameoverride="wx78_drone_zap", builder_skill="wx78_zapdrone_1"})
+Recipe2("wx78_gestalttrapper",				{Ingredient("scandata", 12), Ingredient("wagpunk_bits", 2)},												TECH.NONE,	{builder_skill="wx78_allegiance_lunar"})
 
 ------------------------------- CRAFTING STATIONS -------------------------------
 
@@ -998,8 +1021,8 @@ Recipe2("stone_stool",									{Ingredient("cutstone", 1), Ingredient("rope", 2)
 Recipe2("stone_table_round",							{Ingredient("cutstone", 3), Ingredient("rope", 2)},																TECH.CARPENTRY_THREE,		{placer="stone_table_round_placer",  station_tag="carpentry_station", min_spacing=1.75})
 Recipe2("stone_table_square",							{Ingredient("cutstone", 3), Ingredient("rope", 2)},																TECH.CARPENTRY_THREE,		{placer="stone_table_square_placer", station_tag="carpentry_station", min_spacing=1.75})
 
-Recipe2("boards_bunch",									{Ingredient("log", 20)}, 																						TECH.CARPENTRY_TWO, 		{nounlock = true, sg_state="give", product="boards",   description="boards_bunch",   image="boards_bunch.tex", numtogive=5, no_deconstruction=true, station_tag="carpentry_station", canbuild = function(recipe, builder, pt, rotation, station) return station == nil or not station.AnimState:IsCurrentAnimation("use"), "BUSY_STATION" end})
-Recipe2("cutstone_bunch",								{Ingredient("rocks", 15)}, 																						TECH.CARPENTRY_THREE, 		{nounlock = true, sg_state="give", product="cutstone", description="cutstone_bunch", image="cutstone_bunch.tex", numtogive=5, no_deconstruction=true, station_tag="carpentry_station", canbuild = function(recipe, builder, pt, rotation, station) return station == nil or not station.AnimState:IsCurrentAnimation("use"), "BUSY_STATION" end})
+Recipe2("boards_bunch",									{Ingredient("log", 20)}, 																						TECH.CARPENTRY_TWO, 		{nounlock = true, sg_state="give", product="boards",   description="boards_bunch",   image="boards_bunch.tex", numtogive=5, no_deconstruction=true, station_tag="carpentry_station", canbuild = function(recipe, builder, pt, rotation, station, skin) return station == nil or not station.AnimState:IsCurrentAnimation("use"), "BUSY_STATION" end})
+Recipe2("cutstone_bunch",								{Ingredient("rocks", 15)}, 																						TECH.CARPENTRY_THREE, 		{nounlock = true, sg_state="give", product="cutstone", description="cutstone_bunch", image="cutstone_bunch.tex", numtogive=5, no_deconstruction=true, station_tag="carpentry_station", canbuild = function(recipe, builder, pt, rotation, station, skin) return station == nil or not station.AnimState:IsCurrentAnimation("use"), "BUSY_STATION" end})
 
 Recipe2("phonograph",									{Ingredient("goldnugget", 3), Ingredient("transistor", 2), Ingredient("gears", 1)},								TECH.SCIENCE_TWO)
 Recipe2("record",										{Ingredient("batwing", 1), Ingredient("charcoal", 1)},															TECH.SCIENCE_TWO,			{image="record.tex"})
@@ -1081,7 +1104,7 @@ Recipe2("bodypillow_kelp",					{Ingredient("lucky_goldnugget", 3),Ingredient("si
 Recipe2("bodypillow_beefalowool",			{Ingredient("lucky_goldnugget", 4),Ingredient("silk", 2), Ingredient("beefalowool", 3)},				TECH.RABBITOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING"})
 Recipe2("bodypillow_steelwool",				{Ingredient("lucky_goldnugget", 6),Ingredient("silk", 2), Ingredient("steelwool", 2)},				    TECH.RABBITOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING"})
 
-Recipe2("ticoon_builder",					{Ingredient("lucky_goldnugget", 1)},																	TECH.CATCOONOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING", canbuild = function(inst, builder) return (builder.components.leader == nil or builder.components.leader:CountFollowers("ticoon") == 0), "TICOON" end})
+Recipe2("ticoon_builder",					{Ingredient("lucky_goldnugget", 1)},																	TECH.CATCOONOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING", canbuild = function(recipe, builder, pt, rotation, station, skin) return (builder.components.leader == nil or builder.components.leader:CountFollowers("ticoon") == 0), "TICOON" end})
 Recipe2("kitcoonden_kit",					{Ingredient("lucky_goldnugget", 1)},																	TECH.CATCOONOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING"})
 Recipe2("kitcoon_nametag",					{Ingredient("lucky_goldnugget", 6)},																	TECH.CATCOONOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING"})
 Recipe2("cattoy_mouse",                     {Ingredient("lucky_goldnugget", 6)},																	TECH.CATCOONOFFERING_THREE,	{nounlock=true, actionstr="PERDOFFERING"})
@@ -1473,6 +1496,8 @@ DeconstructRecipe("costume_princess_body",				{Ingredient("goldnugget", 6), Ingr
 DeconstructRecipe("yoth_knighthat",						{Ingredient("goldnugget", 4), Ingredient("feather_robin", 1)})
 DeconstructRecipe("armor_yoth_knight",					{Ingredient("goldnugget", 6), Ingredient("silk", 4)})
 
+DeconstructRecipe("wx78_drone_delivery",				{Ingredient("transistor", 1), Ingredient("boards", 3)})
+DeconstructRecipe("wx78_drone_delivery_small",			{Ingredient("transistor", 1), Ingredient("boards", 3)})
 
 require("recipes_filter")
 -- verify that all recipes are placed in at least one filter group

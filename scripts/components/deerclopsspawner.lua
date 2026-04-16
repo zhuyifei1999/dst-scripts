@@ -281,15 +281,15 @@ end
 --------------------------------------------------------------------------
 
 function self:SetAttacksPerWinter(attacks)
-    --depreciated
+    --deprecated
 end
 
 function self:OverrideAttacksPerSeason(name, num)
-    --depreciated
+    --deprecated
 end
 
 function self:OverrideAttackDuringOffSeason(name, bool)
-    --depreciated
+    --deprecated
 end
 
 function self:OnPostInit()

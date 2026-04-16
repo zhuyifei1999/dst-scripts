@@ -23,6 +23,9 @@ return{
             NOTMERM = "Florp?",
             NOKELP = "Needs more snacks.",
             HASMERMLEADER = "Glurgh. Gotta wait, other Mermfolk using it.",
+            NOTAROBOT = "Ironfolk only.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "Don't need 'nother pet, glort.",
 			TICOON = "Huh? You not right one!",
             BUSY_STATION = "Hate waiting game, florpt!",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "Glurph. You boring!",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "Unused_by_wurt",
             NOTSOULJARHANDLER = "Imp's.",
             RESTRICTED = "But why? Flort!",
+            NOTAROBOT = "Ironfolk only.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "Fancy cooking man can do it, florpt.",
             NOTSOULJARHANDLER = "Imp's.",
             RESTRICTED = "But why? Flort!",
+            NOTAROBOT = "Ironfolk only.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -417,6 +438,10 @@ return{
         {
 --fallback to speech_wilson.lua             BEDAZZLED = "only_used_by_webber",
         },
+        USEEQUIPPEDITEM =
+        {
+--fallback to speech_wilson.lua             BADPOSITION = "only_used_by_wx78",
+        },
         USEITEMON =
         {
             --GENERIC = "I can't use this on that!",
@@ -429,6 +454,8 @@ return{
 			NOT_MINE = "Florp! Why can't I has?",
 
 			CANNOT_FIX_DRONE = "Can't fix? Fine, florpt.",
+
+--fallback to speech_wilson.lua             GESTALT_TOO_POWERFUL = "only_used_by_wx78",
         },
 		USEKLAUSSACKKEY =
         {
@@ -1200,6 +1227,14 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Springy Ironfolk too busy? Florp!",
+	-- Post-YOTH
+	ANNOUNCE_MAX_CLOCKWORKS = "Florp! What your problem?",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -2810,7 +2845,11 @@ return{
         ROCKS = "Buncha rocks, florp.",
         ROOK = "Look mean...",
         ROPE = "For tying, florpt.",
-        ROTTENEGG = "Has good stink to it.",
+        ROTTENEGG =
+        {
+            GENERIC = "Has good stink to it.",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         ROYAL_JELLY = "Mmmmmmmm!",
         JELLYBEAN = "A good bean.",
         SADDLE_BASIC = "Hee-hee, has little horns on it!",
@@ -2912,7 +2951,11 @@ return{
 			GENERIC = "Spiderfolk warrior...",
 			SLEEPING = "It dreaming of spider things.",
 		},
-		SPOILED_FOOD = "Maybe it still good?",
+        SPOILED_FOOD =
+        {
+            GENERIC = "Maybe it still good?",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
         STAGEHAND =
         {
 			AWAKE = "Leeme alone, flort!!",
@@ -4074,7 +4117,11 @@ return{
         FISHMEAT_COOKED = "Won't eat it!",
         FISHMEAT_SMALL = "Was so little...",
         FISHMEAT_SMALL_COOKED = "Glurgh... who do such thing!",
-		SPOILED_FISH = "Someone not take care of fish pet!",
+		SPOILED_FISH =
+        {
+            GENERIC = "Someone not take care of fish pet!",
+--fallback to speech_wilson.lua             CAN_PROCESS = "only_used_by_wx78",
+        },
 
 		FISH_BOX = "This where scale-less keep fish pets, florp?",
         POCKET_SCALE = "Is funny measure thing.",
@@ -6021,6 +6068,45 @@ return{
 
         YOTH_KNIGHTSTICK = "Me fastest.",
         YOTH_CHAIR_ROCKING_ITEM = "Me build, me rock. Glurph!", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "Where you going?",
+		WX78_DRONE_DELIVERY = "Lemme see Ironfolk stuff.",
+		WX78_DRONE_ZAP = "Don't zap me, florp!",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "Ironfolk toy.",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "Crunchy.",
+        WX78MODULE_STACKSIZE = "Crunchy.",
+        WX78MODULE_DIGESTION = "Crunchy.",
+        WX78MODULE_SCREECH = "Crunchy.",
+        WX78MODULE_LIGHT2 = "Crunchy.",
+        WX78MODULE_SHIELDING = "Crunchy.",
+        WX78MODULE_SPIN = "Crunchy.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+--fallback to speech_wilson.lua 			NOPOWER = "only_used_by_wx78", -- Held but can't open due to wx charge level too low
+            GENERIC = "Stuff inside Ironfolk box?", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "Made inside Ironfolk? Florp!",
+            GENERIC = "So hard!",
+        },
+
+        WX78_POSSESSEDBODY = "Florp! Who inside Ironfolk?!",
+
+        WX78_GESTALTTRAPPER = "Weird Ironfolk stuff.",
+
+        SHADOW_HEART_VEIN = "Thanks, sad heart.",
     },
 
     DESCRIBE_GENERIC = "What that?",

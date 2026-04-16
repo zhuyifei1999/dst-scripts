@@ -67,7 +67,9 @@ local states =
             inst.Physics:Stop()
             inst.SoundEmitter:PlaySound("dontstarve/pig/oink")
 
-            if inst.components.follower:GetLeader() ~= nil and inst.components.follower:GetLoyaltyPercent() < 0.05 then
+            local leader = inst.components.follower:GetLeader()
+            local is_roll_called = leader ~= nil and leader.components.leader ~= nil and leader.components.leader:IsRollCalling() or nil
+            if leader ~= nil and inst.components.follower:GetLoyaltyPercent() < 0.05 and not is_roll_called then
                 inst.AnimState:PlayAnimation("hungry")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hungry")
             elseif inst:HasTag("guard") then
@@ -76,7 +78,7 @@ local states =
                 inst.AnimState:PlayAnimation("idle_scared")
             elseif inst.components.combat:HasTarget() then
                 inst.AnimState:PlayAnimation("idle_angry")
-            elseif inst.components.follower:GetLeader() ~= nil and inst.components.follower:GetLoyaltyPercent() > 0.3 then
+            elseif leader ~= nil and (inst.components.follower:GetLoyaltyPercent() > 0.3 or is_roll_called) then
                 inst.AnimState:PlayAnimation("idle_happy")
             else
                 inst.AnimState:PlayAnimation("idle_creepy")

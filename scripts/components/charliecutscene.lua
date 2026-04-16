@@ -32,15 +32,7 @@ local REVERT_COLOUR_TIME = 3.5
 local function CharlieCam_UpdateFn(dt, params, parent, dist_sq)
     ------ Start Default Focal Point Update Function -------
 
-    local tpos = params.target:GetPosition()
-    local ppos = parent:GetPosition()
-
-    local range = params.maxrange - params.minrange
-    local offs = tpos - ppos
-    if dist_sq > params.minrange * params.minrange then
-        offs = offs * (range ~= 0 and ((params.maxrange - math.sqrt(dist_sq)) / range))
-    end
-
+	local offs = FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
     offs.y = offs.y + 1
     TheCamera:SetOffset(offs)
 

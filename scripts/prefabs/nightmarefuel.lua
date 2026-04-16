@@ -1,3 +1,5 @@
+local WX78Common = require("prefabs/wx78_common")
+
 local assets =
 {
     Asset("ANIM", "anim/nightmarefuel.zip"),
@@ -23,11 +25,16 @@ local function fn()
 
     MakeInventoryFloatable(inst)
 
+    MakeItemSocketable_Client(inst, "socket_shadow")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    WX78Common.MakeItemSocketable(inst)
+    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.LOW)
 
 	inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
