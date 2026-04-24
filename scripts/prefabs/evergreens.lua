@@ -139,12 +139,20 @@ local function dig_up_stump(inst, chopper)
     inst:Remove()
 end
 
+local function PlayChopSound(inst, chopper)
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound(
+            chopper ~= nil and chopper:HasTag("beaver") and
+            "dontstarve/characters/woodie/beaver_chop_tree" or
+            "dontstarve/wilson/use_axe_tree"
+        )
+    end
+end
+
 local function chop_down_burnt_tree(inst, chopper)
     inst:RemoveComponent("workable")
     inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
-    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
-    end
+    PlayChopSound(inst, chopper)
     inst.AnimState:PlayAnimation(inst.anims.chop_burnt)
     RemovePhysicsColliders(inst)
     inst:ListenForEvent("animover", inst.Remove)
@@ -381,12 +389,12 @@ end
 
 local LEIF_TAGS = { "leif" }
 local function chop_tree(inst, chopper, chopsleft, numchops)
-    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound(
-            chopper ~= nil and chopper:HasTag("beaver") and
-            "dontstarve/characters/woodie/beaver_chop_tree" or
-            "dontstarve/wilson/use_axe_tree"
-        )
+    PlayChopSound(inst, chopper)
+
+    local growth_stage = GetGrowthStages(inst)[inst.components.growable.stage]
+    local growth_stage_name = growth_stage ~= nil and growth_stage.name or nil
+    if growth_stage_name == "old" then -- Don't run rest of callback for old trees, it could be a less than 1 work.
+        return
     end
 
     inst.AnimState:PlayAnimation(inst.anims.chop)

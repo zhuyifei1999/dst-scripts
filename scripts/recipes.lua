@@ -764,6 +764,7 @@ Recipe2("wx78module_stacksize",				{Ingredient("scandata", 8), Ingredient("moong
 
 -- Gamma Circuits
 
+Recipe2("wx78module_chess",					{Ingredient("scandata", 3), Ingredient("gears", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_digestion",				{Ingredient("scandata", 2), Ingredient("coontail", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_screech",				{Ingredient("scandata", 4), Ingredient("batnose", 1)},														TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
 Recipe2("wx78module_shielding",				{Ingredient("scandata", 4), Ingredient("slurtlehat", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})
@@ -776,6 +777,8 @@ Recipe2("wx78_drone_delivery_item",			{Ingredient("transistor", 1), Ingredient("
 Recipe2("wx78_drone_delivery_small_item",	{Ingredient("transistor", 1), Ingredient("boards", 3)},														TECH.NONE,	{nameoverride="wx78_drone_delivery", description="wx78_drone_delivery_item", builder_skill="wx78_deliverydrone_1", no_builder_skill="wx78_deliverydrone_2"})
 Recipe2("wx78_drone_zap_remote",			{Ingredient("scandata", 10), Ingredient("transistor", 1), Ingredient("wagpunk_bits", 8)},					TECH.NONE,	{nameoverride="wx78_drone_zap", builder_skill="wx78_zapdrone_1"})
 Recipe2("wx78_gestalttrapper",				{Ingredient("scandata", 12), Ingredient("wagpunk_bits", 2)},												TECH.NONE,	{builder_skill="wx78_allegiance_lunar"})
+Recipe2("wx78_shadowdrone_harvester",		{Ingredient("transistor", 1), Ingredient("nightmarefuel", 1)}, 												TECH.LOST, 	{builder_skill="wx78_allegiance_shadow", builder_tag="upgrademoduleowner", no_deconstruction=true, canbuild = function(recipe, builder, pt, rotation, station, skin) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wx78_shadowdrone_harvester")), "TOOMANYSHADOWDRONE_HARVESTER" end, force_hint = true, hint_msg = "NEEDSROBOTSHADOWFUEL", getlimitedrecipecount=function(recipe, builder) return builder.wx78_classified and builder.wx78_classified:GetNumFreeShadowDrone_Harvesters() or 0 end})
+Recipe2("wx78_shadowdrone_debuffer",		{Ingredient("transistor", 1), Ingredient("nightmarefuel", 1)}, 												TECH.LOST, 	{builder_skill="wx78_allegiance_shadow", builder_tag="upgrademoduleowner", no_deconstruction=true, canbuild = function(recipe, builder, pt, rotation, station, skin) return (builder.components.petleash and not builder.components.petleash:IsFullForPrefab("wx78_shadowdrone_debuffer")), "TOOMANYSHADOWDRONE_DEBUFFER" end, force_hint = true, hint_msg = "NEEDSROBOTSHADOWHEART", getlimitedrecipecount=function(recipe, builder) return builder.wx78_classified and builder.wx78_classified:GetNumFreeShadowDrone_Debuffers() or 0 end})
 
 ------------------------------- CRAFTING STATIONS -------------------------------
 

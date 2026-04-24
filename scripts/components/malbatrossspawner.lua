@@ -68,7 +68,11 @@ local function TryBeginningMalbatrossSpawns()
             _worldsettingstimer:StartTimer(MALBATROSS_TIMERNAME, (_firstspawn and 0) or GetRandomWithVariance(TUNING.MALBATROSS_SPAWNDELAY_BASE, TUNING.MALBATROSS_SPAWNDELAY_RANDOM))
         end
 
-        _shuffled_shoals_for_spawning = _shuffled_shoals_for_spawning or shuffledKeys(_fishshoals)
+        -- Reshuffle if we don't have any shuffled shoals, or the number of fish shoals changed
+        if (_shuffled_shoals_for_spawning == nil)
+            or (#_shuffled_shoals_for_spawning ~= #_fishshoals) then
+            _shuffled_shoals_for_spawning = shuffledKeys(_fishshoals)
+        end
     end
 end
 
@@ -182,7 +186,11 @@ end
 --------------------------------------------------------------------------
 --[[ Save/Load ]]
 --------------------------------------------------------------------------
-
+--[[
+FIXME (Omar):
+The shuffled shoals should be saved. Otherwise you can save/reload at a shoal and switch up whether its a malbatross spawn or not at that shoal, which is strange behaviour
+Not bothering at this point as we're nearing beta wrap up and I don't want to potentially create any more bugs.
+]]
 function self:OnSave()
     local data = {
         _firstspawn = _firstspawn,

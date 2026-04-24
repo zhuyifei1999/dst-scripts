@@ -78,6 +78,8 @@ return {
 			TICOON = "I'm too invested in my own Ticoon to follow another one.",
             BUSY_STATION = "I'll have to wait.",
             TOOMANYBACKUPBODIES = "only_used_by_wx78",
+            TOOMANYSHADOWDRONE_HARVESTER = "only_used_by_wx78",
+            TOOMANYSHADOWDRONE_DEBUFFER = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -1238,13 +1240,15 @@ return {
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "They must be busy horsing around.",
 	-- Post-YOTH
-	ANNOUNCE_MAX_CLOCKWORKS = "Why won't it follow me?",--when befriending clockworks, only 2 of each kind will follow. max of  follow, WX has more.
+	ANNOUNCE_MAX_CLOCKWORKS = "Hm, I suppose it makes sense I can only have a pair of these.",
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+    ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6098,6 +6102,7 @@ return {
         WX78MODULE_LIGHT2 = "So much science packed into one tiny gizmo.",
         WX78MODULE_SHIELDING = "So much science packed into one tiny gizmo.",
         WX78MODULE_SPIN = "So much science packed into one tiny gizmo.",
+		WX78MODULE_CHESS = "So much science packed into one tiny gizmo.",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6112,11 +6117,21 @@ return {
             GENERIC = "It's too hard to eat.",
         },
 
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "Practical immortality through engineering!", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+            UNCLAIMED = "only_used_by_wx78", -- We are examining an unclaimed body.
+            VIEWERS_BODY = "only_used_by_wx78", -- We (WX) are examining our own body.
+        },
+
         WX78_POSSESSEDBODY = "You're not yourself lately!",
 
         WX78_GESTALTTRAPPER = "What possessed WX to do this?",
 
         SHADOW_HEART_VEIN = "A vein attempt to be useful.",
+
+        WX78_SHADOWDRONE_DEBUFFER = "It's a keen observer.",
+        WX78_SHADOWDRONE_HARVESTER = "A collector in WX's collection.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

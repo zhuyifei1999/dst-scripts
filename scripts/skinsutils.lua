@@ -1405,7 +1405,7 @@ function IsDefaultSkinOwned( item_key )
 end
 
 function IsDefaultSkin( item_key )
-    return IsDefaultClothing( item_key ) or IsDefaultBeefClothing( item_key ) or IsDefaultCharacterSkin( item_key )
+    return IsDefaultClothing( item_key ) or IsDefaultBeefClothing( item_key ) or IsDefaultMisc( item_key ) or IsDefaultCharacterSkin( item_key )
 end
 
 function IsPrefabSkinned( prefab )

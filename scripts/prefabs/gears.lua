@@ -7,8 +7,16 @@ local function ResetInUse(inst)
 	inst.components.useabletargeteditem:StopUsingItem()
 end
 
+local function CanDoerBefriendTarget(doer, target) --Client-safe!
+	return target:HasTag("befriendable_clockwork")
+		or (	doer.GetModuleTypeCount and
+				doer:GetModuleTypeCount("chess") > 0 and
+				target:HasTag("chess")
+			)
+end
+
 local function OnUsedOnChess(inst, target, doer)
-	if target.TryBefriendChess and target:HasTag("befriendable_clockwork") and target:TryBefriendChess(doer) then
+	if target.TryBefriendChess and CanDoerBefriendTarget(doer, target) and target:TryBefriendChess(doer) then
 		if target.components.health then
 			target.components.health:SetPercent(1)
 		end
@@ -26,7 +34,7 @@ local function OnUsedOnChess(inst, target, doer)
 end
 
 local function UseableTargetedItem_ValidTarget(inst, target, doer)
-	if not target:HasTag("befriendable_clockwork") then
+	if not CanDoerBefriendTarget(doer, target) then
 		return false
 	end
 	local follower = target.replica.follower

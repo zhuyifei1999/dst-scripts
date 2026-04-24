@@ -1046,7 +1046,7 @@ local function MakeWarg(data)
         MakeLargeFreezableCharacter(inst)
 
 		inst:SetStateGraph("SGwarg")
-		if is_clay and is_gingerbread then
+		if is_clay or is_gingerbread then
 			inst.sg.mem.noelectrocute = true
 		end
         if is_clay or is_mutated then

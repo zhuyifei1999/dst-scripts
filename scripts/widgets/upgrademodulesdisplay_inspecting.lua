@@ -7,6 +7,7 @@ local GetModuleDefinitionFromNetID = require("wx78_moduledefs").GetModuleDefinit
 local easing = require("easing")
 
 local TIMEOUT = 2 --network calls
+local EXTENDED_SCALE_Y = 7/6
 
 -------------------------------------------------------------------------------------------------------
 
@@ -60,46 +61,69 @@ local function ShadowSlot_OnLoseFocus(self, ...)
 	self.parent.parent:OnShadowSlotLoseFocus()
 end
 
+local function DoHeartBeat(inst)
+	TheFrontEnd:GetSound():PlaySound("dontstarve/sanity/shadow_heart")
+	inst.beattask = inst:DoTaskInTime(0.75 + math.random() * 0.75, DoHeartBeat)
+end
+
+local function ShadowSlotItem_StartBeatingHeart(self)
+	if self.inst.beattask == nil then
+		self.inst.beattask = self.inst:DoTaskInTime(0.75 + math.random() * 0.75, DoHeartBeat)
+	end
+end
+
+local function ShadowSlotItem_StopBeatingHeart(self)
+	if self.inst.beattask then
+		self.inst.beattask:Cancel()
+		self.inst.beattask = nil
+	end
+end
+
 local SOCKETQUALITY_TO_ANIMS = {
-    ["socket_shadow"] = {
+    [SOCKETNAMES.SHADOW] = {
         [SOCKETQUALITY.NONE] = {},
 		[SOCKETQUALITY.LOW] =
 		{
-			bank = "status_wx_chest",
-			build = "status_wx_chest",
-			animation = "nightmare_fuel_chip_idle",
+			bank = "status_wx_chest_shadow",
+			build = "status_wx_chest_shadow",
+			plug_anim = "nightmare_fuel_chip_plug",
+			idle_anim = "nightmare_fuel_chip_idle",
 			loops = true,
-			initfn = function(AnimState)
-				--AnimState:UsePointFiltering(true)
-				--AnimState:SetMultColour(1, 1, 1, 0.5)
-			end,
-			clearfn = function(AnimState)
-				--AnimState:UsePointFiltering(false)
-				--AnimState:SetMultColour(1, 1, 1, 1)
-			end,
+			--plug_sound = "xxx/yyy",
+			--unplug_sound = "xxx/yyy",
 		},
-		[SOCKETQUALITY.MEDIUM] = {
-			bank = "status_wx_chest",
-			build = "status_wx_chest",
-			animation = "shadow_heart_chip_idle",
-			loops = true,
-			initfn = function(AnimState)
-				AnimState:Hide("infused")
-			end,
-			clearfn = function(AnimState)
-				AnimState:Show("infused")
-			end,
-		},
-		[SOCKETQUALITY.HIGH] =
+		[SOCKETQUALITY.MEDIUM] =
 		{
-			bank = "status_wx_chest",
-			build = "status_wx_chest",
-			animation = "shadow_heart_chip_idle",
+			bank = "status_wx_chest_shadow",
+			build = "status_wx_chest_shadow",
+			plug_anim = "horror_fuel_chip_plug",
+			idle_anim = "horror_fuel_chip_idle",
 			loops = true,
-			initfn = function(AnimState)
-			end,
-			clearfn = function(AnimState)
-			end,
+			--plug_sound = "xxx/yyy",
+			--unplug_sound = "xxx/yyy",
+		},
+		[SOCKETQUALITY.HIGH] = {
+			bank = "status_wx_chest_shadow",
+			build = "status_wx_chest_shadow",
+			plug_anim = "shadow_heart_chip_plug",
+			idle_anim = "shadow_heart_chip_idle",
+			loops = true,
+			--plug_sound = "xxx/yyy",
+			--unplug_sound = "xxx/yyy",
+			initfn = ShadowSlotItem_StartBeatingHeart,
+			clearfn = ShadowSlotItem_StopBeatingHeart,
+		},
+		[SOCKETQUALITY.PERFECT] =
+		{
+			bank = "status_wx_chest_shadow",
+			build = "status_wx_chest_shadow",
+			plug_anim = "shadow_heart_infused_chip_plug",
+			idle_anim = "shadow_heart_infused_chip_idle",
+			loops = true,
+			--plug_sound = "xxx/yyy",
+			--unplug_sound = "xxx/yyy",
+			initfn = ShadowSlotItem_StartBeatingHeart,
+			clearfn = ShadowSlotItem_StopBeatingHeart,
 		},
     },
 }
@@ -136,24 +160,25 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
         elseif data.skill == "wx78_allegiance_shadow" then
             self.has_shadow_affinity = owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow")
             if not self.has_shadow_affinity then
-                self.bg_shadow:UnhookCallback("animover")
-                self.bg_shadow:GetAnimState():Show("affinity_shadow")
-                self.shadow_slot:Hide()
-                self.bg_shadow:GetAnimState():PlayAnimation("affinity_close")
-                self.bg_shadow:HookCallback("animover", function(ui_inst)
-                    self.bg_shadow:GetAnimState():Hide("affinity_shadow")
-                    self.bg_shadow:UnhookCallback("animover")
+				self.bg_bars:UnhookCallback("animover")
+				self.bg_bars:GetAnimState():Show("affinity_shadow")
+				self.shadow_slot:Hide()
+				self.bg_bars:GetAnimState():PlayAnimation("affinity_close")
+				self.bg_bars:GetAnimState():PushAnimation("chest_idle", false)
+				self.bg_bars:HookCallback("animover", function(ui_inst)
+					self.bg_bars:UnhookCallback("animover")
+					self.bg_bars:GetAnimState():Hide("affinity_shadow")
                 end)
             else
-                self.bg_shadow:UnhookCallback("animover")
-                self.bg_shadow:GetAnimState():Show("affinity_shadow")
-                self.bg_shadow:GetAnimState():PlayAnimation("affinity_open")
-                self.bg_shadow:HookCallback("animover", function(ui_inst)
-                    self.shadow_slot:Show()
+				self.bg_bars:UnhookCallback("animover")
+				self.bg_bars:GetAnimState():Show("affinity_shadow")
+				self.bg_bars:GetAnimState():PlayAnimation("affinity_open")
+				self.bg_bars:GetAnimState():PushAnimation("chest_idle", false)
+				self.bg_bars:HookCallback("animover", function(ui_inst)
+					self.bg_bars:UnhookCallback("animover")
                     if self.shadow_slot_item_isvalid then
-                        self.shadow_slot_item:Show()
+						self.shadow_slot:Show()
                     end
-                    self.bg_shadow:UnhookCallback("animover")
                 end)
             end
             needsrefresh = true
@@ -163,30 +188,38 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
             self:RefocusChip()
         end
     end
-    local function UpdateShadowSocketItem(owner, socketposition)
+	local function UpdateShadowSocketItem(owner, socketposition, nosound)
 		self:CancelAsyncTimeout()
 
         local wasvalid = self.shadow_slot_item_isvalid
         self.shadow_slot_item_isvalid = nil
         local socketholder = owner.components.socketholder
         if socketholder then
-            if socketholder:IsSocketNameForPosition("socket_shadow", socketposition) then
+            if socketholder:IsSocketNameForPosition(SOCKETNAMES.SHADOW, socketposition) then
                 local socketquality = owner.components.socketholder:GetQualityForPosition(socketposition)
-                local animdata = SOCKETQUALITY_TO_ANIMS["socket_shadow"][socketquality]
-                if animdata and animdata.bank and animdata.build and animdata.animation then
+                local animdata = SOCKETQUALITY_TO_ANIMS[SOCKETNAMES.SHADOW][socketquality]
+				if animdata and animdata.bank and animdata.build and animdata.idle_anim then
                     self.shadow_slot_item_isvalid = true
 					if self.shadow_slot_item_oldanimdata and self.shadow_slot_item_oldanimdata.clearfn then
-						self.shadow_slot_item_oldanimdata.clearfn(self.shadow_slot_item:GetAnimState())
-                    end
+						self.shadow_slot_item_oldanimdata.clearfn(self)
+					end
                     self.shadow_slot_item_oldanimdata = animdata
                     self.shadow_slot_item:GetAnimState():SetBank(animdata.bank)
                     self.shadow_slot_item:GetAnimState():SetBuild(animdata.build)
-                    self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.animation, animdata.loops)
+					if animdata.plug_anim then
+						self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.plug_anim)
+						self.shadow_slot_item:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops)
+					else
+						self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.idle_anim, animdata.loops)
+					end
+					if not nosound and animdata.plug_sound then
+						TheFrontEnd:GetSound():PlaySound(animdata.plug_sound)
+					end
 					if animdata.initfn then
-						animdata.initfn(self.shadow_slot_item:GetAnimState())
+						animdata.initfn(self)
 					end
                     self.shadow_slot_item:GetAnimState():Hide("focus")
-                    self.shadow_slot_item:Show()
+					self.shadow_slot:Show()
                     if not wasvalid then
                         self:DoFocusHookups()
 						if not self:IsBusy() then
@@ -197,7 +230,16 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
             end
         end
         if wasvalid and not self.shadow_slot_item_isvalid then
-            self.shadow_slot_item:Hide()
+			if self.shadow_slot_item_oldanimdata then
+				if not nosound and self.shadow_slot_item_oldanimdata.unplug_sound then
+					TheFrontEnd:GetSound():PlaySound(self.shadow_slot_item_oldanimdata.unplug_sound)
+				end
+				if self.shadow_slot_item_oldanimdata.clearfn then
+					self.shadow_slot_item_oldanimdata.clearfn(self)
+				end
+			end
+			self.shadow_slot_item_oldanimdata = nil
+			self.shadow_slot:Hide()
             self:DoFocusHookups()
 			if not self:IsBusy() then
 				self:RefocusChip(nil, nil, socketposition)
@@ -206,33 +248,21 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
     end
     self.inst:ListenForEvent("onactivateskill_client", OnUpdateSkill, owner)
     self.inst:ListenForEvent("ondeactivateskill_client", OnUpdateSkill, owner)
-	self.inst:ListenForEvent("onsocketeddirty1", function() UpdateShadowSocketItem(owner, 1) end, owner)
+	self.inst:ListenForEvent("onsocketeddirty1", function() UpdateShadowSocketItem(owner, 1, false) end, owner)
     --
 
     self.bg = self:AddChild(UIAnim())
     self.bg:GetAnimState():SetBank("status_wx_chest")
     self.bg:GetAnimState():SetBuild("status_wx_chest")
     self.bg:GetAnimState():PlayAnimation("chest_open")
-    self.bg:GetAnimState():PushAnimation("chest_idle")
+	self.bg:GetAnimState():PushAnimation("chest_idle", false)
     self.bg:GetAnimState():AnimateWhilePaused(false)
     self.bg:GetAnimState():Hide("bars")
-    self.bg:GetAnimState():Hide("shadow")
     self.bg:GetAnimState():Hide("bars_extended")
-    self.bg:GetAnimState():Hide("shadow_extended")
-    self.bg:GetAnimState():Hide("affinity_shadow")
+	self.bg:GetAnimState():Hide("bg_extended")
+	self.bg:GetAnimState():Hide("affinity_shadow")
     self.bg:MoveToBack()
 
-    self.bg_shadow = self:AddChild(UIAnim())
-    self.bg_shadow:GetAnimState():SetBank("status_wx_chest")
-    self.bg_shadow:GetAnimState():SetBuild("status_wx_chest")
-    self.bg_shadow:GetAnimState():PlayAnimation("chest_open")
-    self.bg_shadow:GetAnimState():PushAnimation("chest_idle")
-    self.bg_shadow:GetAnimState():AnimateWhilePaused(false)
-    self.bg_shadow:GetAnimState():Hide("frame_bg")
-    self.bg_shadow:GetAnimState():Hide("bars_extended")
-    self.bg_shadow:GetAnimState():Hide("bars")
-    self.bg_shadow:GetAnimState():Hide("shadow_extended")
-    self.bg_shadow:SetClickable(false)
     self.shadow_slot = self.bg:AddChild(Image("images/ui.xml", "white.tex"))
     self.shadow_slot:SetTint(0, 0, 0, 0) -- This is used to normalize the click region to a rectangle only and keeps controller focus hookups.
     self.shadow_slot:SetPosition(-100, 175, 0)
@@ -242,34 +272,21 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
 	self.shadow_slot.OnGainFocus = ShadowSlot_OnGainFocus
 	self.shadow_slot.OnLoseFocus = ShadowSlot_OnLoseFocus
     self.shadow_slot_item = self.shadow_slot:AddChild(UIAnim())
-    self.shadow_slot_item:MoveToBack()
     self.shadow_slot_item:SetClickable(false)
     self.shadow_slot_item:GetAnimState():Hide("focus")
-    self.shadow_slot_item:Hide()
-    if not self.has_shadow_affinity then
-        self.bg_shadow:GetAnimState():Hide("affinity_shadow")
-    else
-        self.bg_shadow:UnhookCallback("animover")
-        self.bg_shadow:HookCallback("animover", function(ui_inst)
-            self.shadow_slot:Show()
-            if self.shadow_slot_item_isvalid then
-                self.shadow_slot_item:Show()
-            end
-            self.bg_shadow:UnhookCallback("animover")
-        end)
-    end
 
     self.bg_bars = self:AddChild(UIAnim())
     self.bg_bars:GetAnimState():SetBank("status_wx_chest")
     self.bg_bars:GetAnimState():SetBuild("status_wx_chest")
     self.bg_bars:GetAnimState():PlayAnimation("chest_open")
-    self.bg_bars:GetAnimState():PushAnimation("chest_idle")
+	self.bg_bars:GetAnimState():PushAnimation("chest_idle", false)
     self.bg_bars:GetAnimState():AnimateWhilePaused(false)
-    self.bg_bars:GetAnimState():Hide("frame_bg")
-    self.bg_bars:GetAnimState():Hide("shadow")
-    self.bg_bars:GetAnimState():Hide("shadow_extended")
+	self.bg_bars:GetAnimState():Hide("bg")
+	self.bg_bars:GetAnimState():Hide("bg_extended")
     self.bg_bars:GetAnimState():Hide("bars_extended")
-    self.bg_bars:GetAnimState():Hide("affinity_shadow")
+	if not self.has_shadow_affinity then
+		self.bg_bars:GetAnimState():Hide("affinity_shadow")
+	end
     self.bg_bars:MoveToFront()
 
     self.plugs = self:AddChild(UIAnim())
@@ -356,6 +373,27 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
     self.anim:GetAnimState():PushAnimation("energy1")
     self.anim:GetAnimState():AnimateWhilePaused(false)
 
+    self.energy_nightmare = self:AddChild(UIAnim()) -- timer bar for the nightmare energy buff
+    self.energy_nightmare:GetAnimState():SetBank("status_wx")
+    self.energy_nightmare:GetAnimState():SetBuild("status_wx")
+    self.energy_nightmare:GetAnimState():PlayAnimation("energy_nightmare")
+    self.energy_nightmare:GetAnimState():AnimateWhilePaused(false)
+    self.energy_nightmare:Hide()
+    self.energy_nightmare:SetPosition(152, -85)
+    self.energy_nightmare:SetScale(1.25, 1.25)
+
+    self.energy_nightmare_top = self.energy_nightmare:AddChild(UIAnim())
+    self.energy_nightmare_top:GetAnimState():SetBank("status_wx")
+    self.energy_nightmare_top:GetAnimState():SetBuild("status_wx")
+    self.energy_nightmare_top:GetAnimState():PlayAnimation("energy_nightmare_top", true)
+    self.energy_nightmare_top:GetAnimState():AnimateWhilePaused(false)
+
+    self.energy_nightmare_glow = self.energy_nightmare:AddChild(UIAnim())
+    self.energy_nightmare_glow:GetAnimState():SetBank("status_wx")
+    self.energy_nightmare_glow:GetAnimState():SetBuild("status_wx")
+    self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow", true)
+    self.energy_nightmare_glow:GetAnimState():AnimateWhilePaused(false)
+
     -- Hack :(, we need the mousehandler to render on top of everything else, so add it as a child to controls instead of self
     -- Otherwise, this widget handles mousehandler
     self.mousehandler = controls:AddChild(Widget())
@@ -383,8 +421,9 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
 	self.default_focus = self.chip_objectpools[0][1]
     self:DoFocusHookups()
 
+    self.inst:ListenForEvent("wx78_abilitycooldowns_update", function(_, data) self:UpdateAbilityCooldowns() end, owner)
 	self.inst:ListenForEvent("controller_removing_module", function(_, item) self:OnControllerStartRemovingModule(item) end, owner)
-	self.inst:ListenForEvent("newactiveitem", function() self:OnNewActiveItem() end, owner)
+	self.inst:ListenForEvent("newactiveitem", function(owner, data) self:OnNewActiveItem(true) end, owner)
 	if not TheInput:ControllerAttached() then
 		self:OnNewActiveItem()
 	elseif owner._controller_start_moduleremover then
@@ -402,10 +441,32 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
 		end
 	end, TheWorld)
 
+    self._overrideenergywithshadow = false
+    self:UpdateAbilityCooldowns()
     self:UpdateMaxEnergy(self.max_energy, self.max_energy)
 
-	UpdateShadowSocketItem(owner, 1)
+	UpdateShadowSocketItem(owner, 1, true)
 end)
+
+function UpgradeModulesDisplay_Inspecting:UpdateAbilityCooldowns()
+    local old_override = self._overrideenergywithshadow
+    self._overrideenergywithshadow = self.owner.components.wx78_abilitycooldowns:IsInCooldown("shadow_energy") or false
+    self:CheckUpdating()
+
+    if old_override ~= self._overrideenergywithshadow then
+        if self._overrideenergywithshadow then
+            self.energy_backing:Hide()
+            self.energy_blinking:Hide()
+            self.anim:Hide()
+            self.energy_nightmare:Show()
+        else
+            self.energy_backing:Show()
+            self.energy_blinking:Show()
+            self.anim:Show()
+            self.energy_nightmare:Hide()
+        end
+    end
+end
 
 function UpgradeModulesDisplay_Inspecting:IsBusy()
 	return self.busylocks > 0
@@ -489,14 +550,18 @@ end
 
 function UpgradeModulesDisplay_Inspecting:UpdateSlotCount()
     if self:IsExtended() then
-        self.bg_shadow:GetAnimState():Hide("shadow")
-        self.bg_shadow:GetAnimState():Show("shadow_extended")
+        self.energy_nightmare:SetScale(1.25, 1.25 * EXTENDED_SCALE_Y)
+        self.energy_nightmare:SetPosition(152, -72)
+		self.bg:GetAnimState():Hide("bg")
+		self.bg:GetAnimState():Show("bg_extended")
 
         self.bg_bars:GetAnimState():Hide("bars")
         self.bg_bars:GetAnimState():Show("bars_extended")
     else
-        self.bg_shadow:GetAnimState():Show("shadow")
-        self.bg_shadow:GetAnimState():Hide("shadow_extended")
+        self.energy_nightmare:SetScale(1.25, 1.25)
+        self.energy_nightmare:SetPosition(152, -85)
+		self.bg:GetAnimState():Show("bg")
+		self.bg:GetAnimState():Hide("bg_extended")
 
         self.bg_bars:GetAnimState():Show("bars")
         self.bg_bars:GetAnimState():Hide("bars_extended")
@@ -571,27 +636,35 @@ function UpgradeModulesDisplay_Inspecting:OnControllerStartRemovingModule(item, 
 	end
 end
 
-function UpgradeModulesDisplay_Inspecting:OnNewActiveItem()
+function UpgradeModulesDisplay_Inspecting:OnNewActiveItem(force_anim)
 	--NOTE: controllers do use "activeitem" system in the controller inverntory screen, so still need to check for controllers to block that
 	if not TheInput:ControllerAttached() then
 		local inventory = self.owner.replica.inventory
 		local item = inventory and inventory:GetActiveItem()
-		self:ToggleUsingModuleRemover(item and item:HasActionComponent("upgrademoduleremover") and item or nil)
+		self:ToggleUsingModuleRemover(item and item:HasActionComponent("upgrademoduleremover") and item or nil, force_anim)
 	else
 		--possible to reach here when clearing active item when switching to controllers from options screen
 		self:StopControllerRemovingModule()
 	end
 end
 
-function UpgradeModulesDisplay_Inspecting:ToggleUsingModuleRemover(item)
+function UpgradeModulesDisplay_Inspecting:ToggleUsingModuleRemover(item, force_anim)
 	if item then
-        if not self.is_using_module_remover then
+		if not self.is_using_module_remover or force_anim then
             self.moduleremover:GetAnimState():PlayAnimation("appear")
             self.moduleremover:GetAnimState():PushAnimation("idle", false)
 			self:UpdateModuleRemoverBuild(item)
         end
         self.moduleremover:Show()
-        self.moduleremover:UnhookCallback("animover")
+		if self.moduleremover:HasCallback("animover") then
+			self.moduleremover:UnhookCallback("animover")
+			self:RemoveBusyLock()
+			assert(self.moduleremover.animovertask == nil or BRANCH ~= "dev")
+		elseif self.moduleremover.animovertask then
+			self.moduleremover.animovertask:Cancel()
+			self.moduleremover.animovertask = nil
+			self:RemoveBusyLock()
+		end
         self.owner:PushEvent("sethovertilehidemodifier", { source = self.inst, hidden = true} )
 
         TheFrontEnd:GetSound():PlaySound("WX_rework/module_tray/toolclick")
@@ -618,10 +691,16 @@ function UpgradeModulesDisplay_Inspecting:ToggleUsingModuleRemover(item)
             self.moduleremover:GetAnimState():PlayAnimation("disappear")
 
 			if not self.moduleremover:HasCallback("animover") then
-				self:AddBusyLock()
+				if self.moduleremover.animovertask then
+					self.moduleremover.animovertask:Cancel()
+					self.moduleremover.animovertask = nil
+				else
+					self:AddBusyLock()
+				end
 			end
             self.moduleremover:HookCallback("animover", function(chip_ui_inst)
 				self.moduleremover:UnhookCallback("animover")
+				assert(self.moduleremover.animovertask == nil or BRANCH ~= "dev")
 				self:RemoveBusyLock()
                 self.controls:OverrideTooltipPos(nil)
                 self.controls.hover:ForceSettleTextPositionOnMove(nil)
@@ -1135,11 +1214,21 @@ function UpgradeModulesDisplay_Inspecting:UnplugShadowSlot()
 		self.moduleremover:GetAnimState():PushAnimation("idle", false)
 
 		if not self.moduleremover:HasCallback("animover") then
-			self:AddBusyLock()
+			if self.moduleremover.animovertask then
+				self.moduleremover.animovertask:Cancel()
+				self.moduleremover.animovertask = nil
+			else
+				self:AddBusyLock()
+			end
 		end
 		self.moduleremover:HookCallback("animover", function(ui_inst)
 			self.moduleremover:UnhookCallback("animover")
-			self.moduleremover.inst:DoTaskInTime(NO_UNPLUG_DELAY, function()
+			if self.moduleremover.animovertask then
+				self.moduleremover.animovertask:Cancel()
+				assert(BRANCH ~= "dev")
+			end
+			self.moduleremover.animovertask = self.moduleremover.inst:DoTaskInTime(NO_UNPLUG_DELAY, function()
+				self.moduleremover.animovertask = nil
 				if self:RemoveBusyLock() then
 					self:RefocusChip(nil, nil, 1)
 				end
@@ -1150,7 +1239,7 @@ function UpgradeModulesDisplay_Inspecting:UnplugShadowSlot()
 		self:OverrideModuleRemoverPositionAndSpeed(pos.x, pos.y, 0.3)
 
 		local socketholder = self.owner.components.socketholder --exists on clients
-		if socketholder and socketholder:IsSocketNameForPosition("socket_shadow", 1) then
+		if socketholder and socketholder:IsSocketNameForPosition(SOCKETNAMES.SHADOW, 1) then
 			self:StartAsyncTimeout()
 			socketholder:TryToUnsocket(1)
 		end
@@ -1167,11 +1256,21 @@ function UpgradeModulesDisplay_Inspecting:UnplugModule(moduletype, moduleindex)
         self.moduleremover:GetAnimState():PushAnimation("idle", false)
 
 		if not self.moduleremover:HasCallback("animover") then
-			self:AddBusyLock()
+			if self.moduleremover.animovertask then
+				self.moduleremover.animovertask:Cancel()
+				self.moduleremover.animovertask = nil
+			else
+				self:AddBusyLock()
+			end
 		end
         self.moduleremover:HookCallback("animover", function(ui_inst)
 			self.moduleremover:UnhookCallback("animover")
-            self.moduleremover.inst:DoTaskInTime(NO_UNPLUG_DELAY, function()
+			if self.moduleremover.animovertask then
+				self.moduleremover.animovertask:Cancel()
+				assert(BRANCH ~= "dev")
+			end
+			self.moduleremover.animovertask = self.moduleremover.inst:DoTaskInTime(NO_UNPLUG_DELAY, function()
+				self.moduleremover.animovertask = nil
 				if self:RemoveBusyLock() then
 					self:RefocusChip(moduletype, moduleindex)
 				end
@@ -1474,15 +1573,20 @@ function UpgradeModulesDisplay_Inspecting:UpdateModuleRemoverPosition(x, y)
         0)
 end
 
+function UpgradeModulesDisplay_Inspecting:CheckUpdating()
+    if self._overridemoduleremoverspeed or self._overridetargetpos or self._overrideenergywithshadow then
+        self:StartUpdating()
+    else
+        self:StopUpdating()
+    end
+end
+
 function UpgradeModulesDisplay_Inspecting:OverrideModuleRemoverPositionAndSpeed(x, y, speed)
     self._overridetargetpos = (x ~= nil and y ~= nil and Vector3(x, y)) or nil
 	self._overridemoduleremoverspeed = (self._overridetargetpos or not TheInput:ControllerAttached()) and speed or nil
 
-    if self._overridemoduleremoverspeed or self._overridetargetpos then
-        self:StartUpdating()
-    else
-        self:StopUpdating()
-
+    self:CheckUpdating()
+    if not self._overridemoduleremoverspeed and not self._overridetargetpos then
 		--likely reached here from unplugging last module
 		if self.is_using_module_remover and TheInput:ControllerAttached() then
 			self:StopControllerRemovingModule()
@@ -1506,22 +1610,33 @@ function UpgradeModulesDisplay_Inspecting:FollowMouseConstrained()
     end
 end
 
+local ENERGY_NIGHTMARE_TOP_MAX_Y = 55
+local ENERGY_NIGHTMARE_TOP_MIN_Y = -60
 local BACK_TO_MOUSE_DIST_SQ = 5 * 5
 function UpgradeModulesDisplay_Inspecting:OnUpdate(dt)
-    local isoverriden = self._overridetargetpos ~= nil
-    local pos = self._overridetargetpos or TheInput:GetScreenPosition()
-    local k = self._overridemoduleremoverspeed
-    self._targetpos.x = pos.x * k + self._targetpos.x * (1 - k)
-    self._targetpos.y = pos.y * k + self._targetpos.y * (1 - k)
-    self:UpdateModuleRemoverPosition(self._targetpos.x, self._targetpos.y)
+    if self._overrideenergywithshadow then
+        local ability_cooldown_percent = self.owner.components.wx78_abilitycooldowns:GetAbilityCooldownPercent("shadow_energy")
+        local perc = 1 - (ability_cooldown_percent or 0)
+        self.energy_nightmare:GetAnimState():SetPercent("energy_nightmare", perc)
+        self.energy_nightmare_top:SetPosition(0, Lerp(ENERGY_NIGHTMARE_TOP_MAX_Y, ENERGY_NIGHTMARE_TOP_MIN_Y, perc))
+    end
 
-    if not isoverriden then -- target pos isn't overriden but speed still is, so we're returning control back once we get to mouse
-		if TheInput:ControllerAttached() then
-			self:StopControllerRemovingModule()
-		elseif DistXYSq(self._targetpos, pos) <= BACK_TO_MOUSE_DIST_SQ then
-            self:OverrideModuleRemoverPositionAndSpeed(nil, nil, nil)
-        else -- Ramp up speed, so you can't just have it chase the mouse.
-            self._overridemoduleremoverspeed = self._overridemoduleremoverspeed + (dt / 2)
+    if self._overridemoduleremoverspeed or self._overridetargetpos then
+        local isoverriden = self._overridetargetpos ~= nil
+        local pos = self._overridetargetpos or TheInput:GetScreenPosition()
+        local k = self._overridemoduleremoverspeed
+        self._targetpos.x = pos.x * k + self._targetpos.x * (1 - k)
+        self._targetpos.y = pos.y * k + self._targetpos.y * (1 - k)
+        self:UpdateModuleRemoverPosition(self._targetpos.x, self._targetpos.y)
+
+        if not isoverriden then -- target pos isn't overriden but speed still is, so we're returning control back once we get to mouse
+	    	if TheInput:ControllerAttached() then
+	    		self:StopControllerRemovingModule()
+	    	elseif DistXYSq(self._targetpos, pos) <= BACK_TO_MOUSE_DIST_SQ then
+                self:OverrideModuleRemoverPositionAndSpeed(nil, nil, nil)
+            else -- Ramp up speed, so you can't just have it chase the mouse.
+                self._overridemoduleremoverspeed = self._overridemoduleremoverspeed + (dt / 2)
+            end
         end
     end
 end

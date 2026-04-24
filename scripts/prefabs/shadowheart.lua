@@ -44,7 +44,7 @@ local function fn()
 
     inst:AddTag("shadowheart")
 
-    MakeItemSocketable_Client(inst, "socket_shadow")
+    MakeItemSocketable_Client(inst, SOCKETNAMES.SHADOW)
 
     inst.entity:SetPristine()
 
@@ -53,7 +53,7 @@ local function fn()
     end
 
     WX78Common.MakeItemSocketable(inst)
-    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.MEDIUM)
+    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.HIGH)
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)

@@ -19,7 +19,7 @@ local function fn()
     inst.pickupsound = "metal"
 
     MakeInventoryFloatable(inst, "small", 0.07, 1.2)
-    MakeItemSocketable_Client(inst, "socket_gestalttrapper")
+    MakeItemSocketable_Client(inst, SOCKETNAMES.GESTALTTRAPPER)
 
     inst.entity:SetPristine()
 

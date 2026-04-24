@@ -68,6 +68,8 @@ return{
 			TICOON = "THE MAXIMUM LIMIT HAS ALREADY BEEN REACHED",
             BUSY_STATION = "YOU EXPECT ME TO WAIT?",
             TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
+            TOOMANYSHADOWDRONE_HARVESTER = "DENIED. MAXIMUM NUMBER OF AUTO-GRABBERS REACHED",
+            TOOMANYSHADOWDRONE_DEBUFFER = "DENIED. MAXIMUM NUMBER OF EXPLOITERATORS REACHED",
         },
         CARNIVALGAME_FEED =
         {
@@ -1235,6 +1237,8 @@ return{
     ANNOUNCE_WX_TASER_BUILDUP = "YOUR ATTACKS ARE ELECTRIFYING ME!", -- Wx is building up charge when getting hit, nearing EMP blast
     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "MAXIMUM POWER REACHED!", -- Wx is fully charged and about to release it. Take cover!
     ANNOUNCE_WX_TASER_POSTEXPLOSION = "INVIGORATING!", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+    ANNOUNCE_WX_NIGHTMARECHARGE = "FOREIGN MATTER DETECTED. POWER SYSTEMS OVERRIDE ENGAGED", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "OVERRIDE RESOLVED. POWER LEVELS RESTORED", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6088,6 +6092,7 @@ return{
         WX78MODULE_LIGHT2 = "BASK IN MY GLOW, ORGANICS!",
         WX78MODULE_SHIELDING = "MY BEST DEFENSE IS ME!",
         WX78MODULE_SPIN = "WELCOME TO MY DEATH CYCLONE, ORGANICS!",
+		WX78MODULE_CHESS = "CHECKMATE, FLESHLINGS!",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6102,11 +6107,21 @@ return{
             GENERIC = "TOO DENSE FOR PROCESSING. MISSING INPUT",
         },
 
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "ARE YOU THERE, %s? YOU'RE SUCH A GOOD LISTENER", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+            UNCLAIMED = "NICE HARDWARE", -- We are examining an unclaimed body.
+            VIEWERS_BODY = "PATHETIC FLESHLINGS, BOUND TO THEIR ORGANIC FORM", -- We (WX) are examining our own body.
+        },
+
         WX78_POSSESSEDBODY = "YOU'RE PERFECT",
 
         WX78_GESTALTTRAPPER = "ONLY A WORTHY ENTITY MAY OCCUPY MY PHYSICAL FORM",
 
         SHADOW_HEART_VEIN = "GROSS. BUT ACCEPTABLE LEVELS OF USEFULNESS",
+
+        WX78_SHADOWDRONE_DEBUFFER = "YES, VICKY! TELL ME THEIR SECRETS!",
+        WX78_SHADOWDRONE_HARVESTER = "THE WORLD IS MINE, GARY. ALL MINE",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

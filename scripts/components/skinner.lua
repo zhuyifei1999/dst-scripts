@@ -480,10 +480,6 @@ function Skinner:SetupNonPlayerData()
 	self:SetSkinMode("NO_BASE")
 end
 
-function Skinner:IsNonPlayer()
-	return self.skin_name == "NON_PLAYER"
-end
-
 function Skinner:SetSkinName(skin_name, skip_beard_setup, skip_skins_set)
     if skin_name == "" then
         skin_name = self.inst.prefab.."_none"
@@ -616,6 +612,11 @@ function Skinner:CopySkinsFromPlayer(player, nocurses)
     SetSkinsOnAnim(onto.AnimState, player.prefab, base_skin, skins, monkey_curse, skin_mode, player.prefab)
 
     -- Save it to the internal table to save later.
+	self.copiedplayer_data =
+	{
+		prefab = player.prefab,
+		userid = player.userid,
+	}
     self.skin_name = skins.base
     self.clothing.body = skins.body
     self.clothing.hand = skins.hand
@@ -625,8 +626,96 @@ function Skinner:CopySkinsFromPlayer(player, nocurses)
     self.skintype = skin_mode
 end
 
+function Skinner:SwapCopiedPlayerSkins(copiedplayer, nocurses) -- e.g. between backup chassis and possessed chassis, neither of which are players themselves
+	local copiedskinner = copiedplayer.components.skinner
+	if not copiedskinner then
+		return
+	end
+
+	-- NOTES(OMAR): This assumes things! I think?
+	local ourskins = self:GetClothing()
+	local theirskins = copiedskinner:GetClothing()
+
+	local ourcopiedplayerdata = self:GetCopiedPlayerData()
+	local theircopiedplayerdata = copiedskinner:GetCopiedPlayerData()
+
+	-- Grab skins and validate with AnimState.
+	if ourcopiedplayerdata ~= nil then
+		copiedplayer.AnimState:AssignItemSkins(ourcopiedplayerdata.userid, ourskins.base or "", ourskins.body or "", ourskins.hand or "", ourskins.legs or "", ourskins.feet or "")
+	end
+
+	if theircopiedplayerdata ~= nil then
+		self.inst.AnimState:AssignItemSkins(theircopiedplayerdata.userid, theirskins.base or "", theirskins.body or "", theirskins.hand or "", theirskins.legs or "", theirskins.feet or "")
+	end
+
+    -- Grab details used to apply.
+    local ourmonkey_curse = nil
+    local theirmonkey_curse = nil
+    if not nocurses then
+        ourmonkey_curse = self:GetMonkeyCurse()
+        theirmonkey_curse = copiedskinner:GetMonkeyCurse()
+    end
+    local ourskin_mode = self:GetSkinMode()
+    local theirskin_mode = copiedskinner:GetSkinMode()
+	local ourplayerprefab = ourcopiedplayerdata ~= nil and ourcopiedplayerdata.prefab
+	local theirplayerprefab = theircopiedplayerdata ~= nil and theircopiedplayerdata.prefab
+
+    -- For legacy mod support, this part is like this.
+    local ourskindata = GetSkinData(ourskins.base)
+    local ourbase_skin = ourplayerprefab --.. "_none"
+    if ourskindata.skins ~= nil then
+        ourbase_skin = ourskindata.skins[ourskin_mode] or ourbase_skin
+    end
+
+   	local theirskindata = GetSkinData(theirskins.base)
+    local theirbase_skin = theirplayerprefab --.. "_none"
+    if theirskindata.skins ~= nil then
+        theirbase_skin = theirskindata.skins[theirskin_mode] or theirbase_skin
+    end
+
+    -- Paste it and hope nothing has went wrong.
+    SetSkinsOnAnim(self.inst.AnimState, theirplayerprefab, theirbase_skin, theirskins, theirmonkey_curse, theirskin_mode, theirplayerprefab)
+    SetSkinsOnAnim(copiedplayer.AnimState, ourplayerprefab, ourbase_skin, ourskins, ourmonkey_curse, ourskin_mode, ourplayerprefab)
+
+    -- Save it to the internal table to save later.
+	if theircopiedplayerdata ~= nil then
+		self.copiedplayer_data =
+		{
+			prefab = theirplayerprefab,
+			userid = theircopiedplayerdata.userid,
+		}
+	end
+    self.skin_name = theirskins.base
+    self.clothing.body = theirskins.body
+    self.clothing.hand = theirskins.hand
+    self.clothing.legs = theirskins.legs
+    self.clothing.feet = theirskins.feet
+    self.monkey_curse = theirmonkey_curse
+    self.skintype = theirskin_mode
+
+	if ourcopiedplayerdata ~= nil then
+		copiedskinner.copiedplayer_data =
+		{
+			prefab = ourplayerprefab,
+			userid = ourcopiedplayerdata.userid,
+		}
+	end
+
+    copiedskinner.skin_name = ourskins.base
+    copiedskinner.clothing.body = ourskins.body
+    copiedskinner.clothing.hand = ourskins.hand
+    copiedskinner.clothing.legs = ourskins.legs
+    copiedskinner.clothing.feet = ourskins.feet
+    copiedskinner.monkey_curse = ourmonkey_curse
+    copiedskinner.skintype = ourskin_mode
+end
+
+function Skinner:GetCopiedPlayerData()
+	return self.copiedplayer_data
+end
+
 function Skinner:OnSave()
-	return {skin_name = self.skin_name, clothing = self.clothing, monkey_curse = self.monkey_curse, skin_mode = self.skintype}
+	return {skin_name = self.skin_name, clothing = self.clothing, monkey_curse = self.monkey_curse, skin_mode = self.skintype, copiedplayer_data = self.copiedplayer_data}
 end
 
 function Skinner:OnLoad(data)
@@ -636,6 +725,10 @@ function Skinner:OnLoad(data)
     --     because the user is not actually logged in at that time.
 
     self.monkey_curse = data.monkey_curse
+
+	if data.copiedplayer_data ~= nil then
+		self.copiedplayer_data = data.copiedplayer_data
+	end
 
     if data.clothing ~= nil then
         self.clothing = data.clothing

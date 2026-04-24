@@ -19,9 +19,10 @@ local IceOver = Class(Widget, function(self, owner)
     self.alpha_min = 1
     self.alpha_min_target = 1
 
-    self.inst:ListenForEvent("temperaturedelta", function() self:OnIceChange() end, self.owner)
+	local _on_ice_change = function() self:OnIceChange() end
+    self.inst:ListenForEvent("temperaturedelta", _on_ice_change, self.owner)
+    self.inst:ListenForEvent("updateiceover", _on_ice_change, self.owner) -- from ice overlay block setter
 end)
-
 
 function IceOver:OnIceChange()
 
@@ -41,23 +42,26 @@ function IceOver:OnIceChange()
 		"dontstarve/winter/freeze_3rd",
 		"dontstarve/winter/freeze_4th",
 	}
-	--local all_down_thresh = {8, 3, -2, -7}
 
+	local is_blocked = self.owner.IsFreezingEffectBlocked and self.owner:IsFreezingEffectBlocked()
 	local isup = false
-    while all_up_thresh[self.laststep + 1] ~= nil and
-        temp < all_up_thresh[self.laststep + 1] and
-        self.laststep < num_steps and
-        (temp < 5 or TheWorld.state.iswinter or GetLocalTemperature(self.owner) < 5) do
 
-        self.laststep = self.laststep + 1
-        isup = true
-    end
+	if not is_blocked then
+    	while all_up_thresh[self.laststep + 1] ~= nil and
+    	    temp < all_up_thresh[self.laststep + 1] and
+    	    self.laststep < num_steps and
+    	    (temp < 5 or TheWorld.state.iswinter or GetLocalTemperature(self.owner) < 5) do
+
+    	    self.laststep = self.laststep + 1
+    	    isup = true
+    	end
+	end
 
     if isup then
         TheFrontEnd:GetSound():PlaySound(freeze_sounds[self.laststep])
     else
         while all_up_thresh[self.laststep] ~= nil and
-            temp > all_up_thresh[self.laststep] and
+            (temp > all_up_thresh[self.laststep] or is_blocked) and
             self.laststep > 0 do
 
             self.laststep = self.laststep - 1

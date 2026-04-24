@@ -554,7 +554,12 @@ end
 
 function Health:CanFadeOut()
     -- Intentional lack of IsValid().
-    return not self.nofadeout and not EntityHasCorpse(self.inst)
+    return not self.nofadeout and not self.is_corpsing
+end
+
+local function OnCorpsingEntitySleep(inst) -- Go instantly to corpse state
+    inst.sg:GoToState("corpse")
+    inst:PushEventImmediate("forcecorpsereplace")
 end
 
 function Health:SetVal(val, cause, afflicter)
@@ -595,6 +600,12 @@ function Health:SetVal(val, cause, afflicter)
             self.inst:AddTag("NOCLICK")
             self.inst.persists = false
             self.inst.erode_task = self.inst:DoTaskInTime(self.destroytime or 2, ErodeAway)
+        elseif self.is_corpsing then
+            if self.inst:IsAsleep() then
+                OnCorpsingEntitySleep(self.inst)
+            else
+                self.inst:ListenForEvent("entitysleep", OnCorpsingEntitySleep)
+            end
         end
     end
 end

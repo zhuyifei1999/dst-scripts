@@ -44,6 +44,7 @@ local UpgradeModuleOwner = Class(function(self, inst)
 
     self.charge_level = 0
     self.max_charge = TUNING.WX78_INITIAL_MAXCHARGELEVEL
+    self.overridefullcharge = false
 
     self.inspecting = false -- Inspecting our modules
     self.inspecter = nil -- The inspecter
@@ -108,7 +109,7 @@ function UpgradeModuleOwner:GetModuleTypeCount(moduletype)
     local count = 0
 
     for bartype, modules in pairs(self.module_bars) do
-        local remaining_charge = self.charge_level
+        local remaining_charge = self:GetChargeLevel()
         for _, moduleent in ipairs(modules) do
             remaining_charge = remaining_charge - moduleent.components.upgrademodule.slots
             if remaining_charge < 0 then
@@ -172,7 +173,7 @@ end
 
 function UpgradeModuleOwner:UpdateActivatedModules(isloading)
     for bartype, modules in pairs(self.module_bars) do
-        local remaining_charge = self.charge_level
+        local remaining_charge = self:GetChargeLevel()
         for _, module in ipairs(modules) do
             remaining_charge = remaining_charge - module.components.upgrademodule.slots
             if remaining_charge < 0 then
@@ -319,10 +320,10 @@ function UpgradeModuleOwner:SetMaxCharge(max_charge) -- This determines circuit 
 end
 
 function UpgradeModuleOwner:SetChargeLevel(new_level)
-    local old_level = self.charge_level
+    local old_level = self:GetChargeLevel()
     self.charge_level = math.clamp(new_level, 0, self.max_charge)
 
-    if old_level ~= self.charge_level then
+    if old_level ~= self:GetChargeLevel() then
         self:UpdateActivatedModules()
     end
 end
@@ -333,20 +334,29 @@ end
 UpgradeModuleOwner.AddCharge = UpgradeModuleOwner.DoDeltaCharge -- backwards compat
 
 function UpgradeModuleOwner:IsChargeMaxed()
-    return self.charge_level == self.max_charge
+    return self:GetChargeLevel() == self.max_charge
 end
 UpgradeModuleOwner.ChargeIsMaxed = UpgradeModuleOwner.IsChargeMaxed -- backwards compat
 
 function UpgradeModuleOwner:IsChargeEmpty()
-    return self.charge_level == 0
+    return self:GetChargeLevel() == 0
 end
 
 function UpgradeModuleOwner:GetChargeLevel()
-    return self.charge_level
+    return self.overridefullcharge and self:GetMaxChargeLevel() or self.charge_level
 end
 
 function UpgradeModuleOwner:GetMaxChargeLevel()
     return self.max_charge
+end
+
+function UpgradeModuleOwner:SetOverrideFullCharge(boolval)
+    local oldoverride = self.overridefullcharge
+    self.overridefullcharge = boolval or false
+
+    if oldoverride ~= self.overridefullcharge then
+        self:UpdateActivatedModules()
+    end
 end
 -------------------------------------------------------------------------------------
 

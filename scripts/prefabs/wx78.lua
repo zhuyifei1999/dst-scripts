@@ -35,7 +35,6 @@ local prefabs = JoinArrays({
     "wx78_abilitycooldown",
     "wx78_backupbody",
     "wx78_possessedbody",
-    "wx78_possessed_shadow_hitfx",
 }, WX78Common.DEPENDENCIES.prefabs)
 
 local WX78ModuleDefinitionFile = require("wx78_moduledefs")
@@ -141,9 +140,6 @@ local CHARGEREGEN_TIMERNAME = "chargeregenupdate"
 local MOISTURETRACK_TIMERNAME = "moisturetrackingupdate"
 local HUNGERDRAIN_TIMERNAME = "hungerdraintick"
 
-local SCREECHCOOLDOWN_TIMERNAME = "wxscreechcooldown"
-local SHIELDINGCOOLDOWN_TIMERNAME = "wxshieldingcooldown"
-
 ----------------------------------------------------------------------------------------
 
 local function GetChargeRegenTime(inst)
@@ -154,8 +150,18 @@ local function GetChargeRegenTime(inst)
     return TUNING.WX78_CHARGE_REGENTIME / mult
 end
 
+local function OnSkillTreeInitialized_StartChargeRegenTimer(inst)
+    if not inst.components.timer:TimerExists(CHARGEREGEN_TIMERNAME) then
+        inst.components.timer:StartTimer(CHARGEREGEN_TIMERNAME, inst:GetChargeRegenTime())
+    end
+end
+
 local function StartChargeRegenTimer(inst)
-    inst.components.timer:StartTimer(CHARGEREGEN_TIMERNAME, inst:GetChargeRegenTime())
+	if inst._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY then
+		inst.components.timer:StartTimer(CHARGEREGEN_TIMERNAME, inst:GetChargeRegenTime())
+	else
+		inst:ListenForEvent("ms_skilltreeinitialized", OnSkillTreeInitialized_StartChargeRegenTimer)
+	end
 end
 
 ----------------------------------------------------------------------------------------
@@ -371,47 +377,7 @@ local function OnDeath(inst)
     inst.components.timer:StopTimer(HUNGERDRAIN_TIMERNAME)
     inst.components.timer:StopTimer(CHARGEREGEN_TIMERNAME)
 
-    if inst._gears_eaten > 0 then
-        local dropgears = math.random(math.floor(inst._gears_eaten / 3), math.ceil(inst._gears_eaten / 2))
-        local x, y, z = inst.Transform:GetWorldPosition()
-        for i = 1, dropgears do
-            local gear = SpawnPrefab("gears")
-            if gear ~= nil then
-                if gear.Physics ~= nil then
-                    local speed = 2 + math.random()
-                    local angle = math.random() * TWOPI
-                    gear.Physics:Teleport(x, y + 1, z)
-                    gear.Physics:SetVel(speed * math.cos(angle), speed * 3, speed * math.sin(angle))
-                else
-                    gear.Transform:SetPosition(x, y, z)
-                end
-
-                if gear.components.propagator ~= nil then
-                    gear.components.propagator:Delay(5)
-                end
-            end
-        end
-
-        inst._gears_eaten = 0
-    end
-end
-
-----------------------------------------------------------------------------------------
-
-local function OnEat(inst, food)
-    local edible = food.components.edible
-    if edible~= nil then
-        if edible.foodtype == FOODTYPE.GEARS then
-            inst._gears_eaten = inst._gears_eaten + 1
-
-            inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/levelup")
-        end
-
-        local charge_amount = edible.chargevalue
-        if charge_amount ~= nil and charge_amount ~= 0 then
-            inst.components.upgrademoduleowner:DoDeltaCharge(charge_amount)
-        end
-    end
+    WX78Common.DropEatenGears(inst)
 end
 
 ----------------------------------------------------------------------------------------
@@ -567,14 +533,29 @@ end
 
 ----------------------------------------------------------------------------------------
 
-local function CustomCombatDamage(inst, target)
-	local debuff = target:GetDebuff("wx78_shadow_heart_debuff")
-    if not debuff then
+local function CustomCombatDamage(inst, target, weapon, multiplier, mount)
+    if mount then
         return 1
     end
-    local fx = SpawnPrefab("wx78_possessed_shadow_hitfx") -- FIXME(JBK): WX: This would be best as a net_event on the buff inst with the buff being networked.
-    fx.entity:SetParent(target.entity)
-    return TUNING.SKILLS.WX78.SHADOWHEART_DAMAGEMULT
+
+    local debuffers = inst.components.petleash:GetPetsWithPrefab("wx78_shadowdrone_debuffer")
+    if not debuffers then
+        return 1
+    end
+
+    local debuffingcount = 0
+    for _, debuffer in ipairs(debuffers) do
+        if debuffer.target:value() == target and debuffer.applyingdebuff:value() then
+            debuffingcount = debuffingcount + 1
+            debuffer:ApplyUse()
+        end
+    end
+
+    if debuffingcount == 0 then
+        return 1
+    end
+
+    return 1 + TUNING.SKILLS.WX78.SHADOWDRONE_DAMAGEMULT_PER_DRONE * debuffingcount
 end
 
 ----------------------------------------------------------------------------------------
@@ -615,9 +596,13 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function CanSpawnBackupBody(inst) -- For death logic, so we know not to become parasited by void masque
+    return (inst.wx78_classified and inst.wx78_classified:GetNumFreeBackupBodies() or 0) > 0
+end
+
 local function TryToSpawnBackupBody(inst)
     inst.wx78_backupbody_save = nil
-    if (inst.wx78_classified and inst.wx78_classified:GetNumFreeBackupBodies() or 0) > 0 then
+    if CanSpawnBackupBody(inst) then
         local x, y, z = inst.Transform:GetWorldPosition()
         local body = SpawnPrefab("wx78_backupbody")
         body._hide_body_skinfx = true
@@ -775,14 +760,13 @@ local function master_postinit(inst)
     inst.components.hunger:SetMax(TUNING.WX78_HUNGER)
     inst.components.sanity:SetMax(TUNING.WX78_SANITY)
     ----------------------------------------------------------------
-    inst._gears_eaten = 0
     inst._moisture_steps = 0
 
     ----------------------------------------------------------------
     if inst.components.eater ~= nil then
         inst.components.eater:SetIgnoresSpoilage(true)
         inst.components.eater:SetCanEatGears()
-        inst.components.eater:SetOnEatFn(OnEat)
+        inst.components.eater:SetOnEatFn(WX78Common.OnEat)
     end
 
     ----------------------------------------------------------------
@@ -849,6 +833,7 @@ local function master_postinit(inst)
 
     ----------------------------------------------------------------
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.CanSpawnBackupBody = CanSpawnBackupBody
     inst.TryToSpawnBackupBody = TryToSpawnBackupBody
 
     ----------------------------------------------------------------

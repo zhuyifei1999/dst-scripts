@@ -1809,6 +1809,9 @@ local states =
 
 			local ignoreblock = inst.sg.statemem.ignoreblock
 			local hit, blocked = DoAOEAttack(inst, 1, 2, nil, 1, nil, inst.sg.statemem.targets, not ignoreblock, ignoreblock)
+			if inst.sg.currentstate.name ~= "tackle_loop" then
+				return
+			end
 			if blocked then
 				inst.sg.statemem.hit = nil
 				inst.sg:GoToState("tackle_collide") --this state assumes hit

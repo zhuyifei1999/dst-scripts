@@ -8,9 +8,9 @@ local MapRevealable = Class(function(self, inst)
     self.icon = nil
     self.task = nil
     self.revealsources = {}
-    self._onremovesource = function(source)
-        self:RemoveRevealSource(source)
-    end
+	self.privatesources = {}
+	self._onremovesource = function(source) self:RemoveRevealSource(source) end
+	self._onremoveprivatesource = function(source) self:RemovePrivateSource(source) end
 
     self:Start(math.random() * self.refreshperiod)
 end)
@@ -67,8 +67,7 @@ end
 function MapRevealable:AddRevealSource(source, restriction)
     if self.revealsources[source] == nil then
         self.revealsources[source] = { restriction = restriction }
-        if type(source) == "table" and source.entity ~= nil then
-            self.revealsources[source].isentity = true
+		if EntityScript.is_instance(source) then
             self.inst:ListenForEvent("onremove", self._onremovesource, source)
         end
         self:RefreshRevealSources()
@@ -80,7 +79,7 @@ end
 
 function MapRevealable:RemoveRevealSource(source)
     if self.revealsources[source] ~= nil then
-        if self.revealsources[source].isentity then
+		if EntityScript.is_instance(source) then
             self.inst:RemoveEventCallback("onremove", self._onremovesource, source)
         end
         self.revealsources[source] = nil
@@ -88,11 +87,37 @@ function MapRevealable:RemoveRevealSource(source)
     end
 end
 
+function MapRevealable:AddPrivateSource(source)
+	if self.privatesources[source] == nil then
+		self.privatesources[source] = {}
+		self.inst:ListenForEvent("onremove", self._onremoveprivatesource, source)
+		self:RefreshRevealSources()
+	end
+end
+
+function MapRevealable:RemovePrivateSource(source)
+	local v = self.privatesources[source]
+	if v then
+		self.inst:RemoveEventCallback("onremove", self._onremoveprivatesource, source)
+		if v.icon then
+			v.icon:Remove()
+		end
+		self.privatesources[source] = nil
+		self:RefreshRevealSources()
+	end
+end
+
 function MapRevealable:RefreshRevealSources()
     if next(self.revealsources) == nil then
         self:StopRevealing()
+		if next(self.privatesources) then
+			self:StartPrivateRevealing()
+		else
+			self:StopPrivateRevealing()
+		end
         return
     end
+	self:StopPrivateRevealing()
     local restriction
     for k, v in pairs(self.revealsources) do
         if v.restriction == nil then
@@ -130,13 +155,78 @@ function MapRevealable:StopRevealing()
     end
 end
 
+function MapRevealable:StartPrivateRevealing()
+	for k, v in pairs(self.privatesources) do
+		if v.icon == nil then
+			v.icon = SpawnPrefab(self.iconprefab)
+			if self.icontag then
+				v.icon:AddTag(self.icontag)
+			end
+			if self.iconpriority then
+				v.icon.MiniMapEntity:SetPriority(self.iconpriority)
+			end
+			if self.oniconcreatedfn then -- Keep before TrackEntity but after anything else used to setup the prefab.
+				self.oniconcreatedfn(self.inst, v.icon)
+			end
+			--use userid tag as restriction so clients don't see unsharded hosts' icons, and vice versa
+			v.icon:TrackEntity(self.inst, "player_"..k.userid, self.iconname)
+			if v.icon.Network then
+				v.icon.Network:SetClassifiedTarget(k)
+			end
+		end
+	end
+end
+
+function MapRevealable:StopPrivateRevealing()
+	for k, v in pairs(self.privatesources) do
+		if v.icon then
+			v.icon:Remove()
+			v.icon = nil
+		end
+	end
+end
+
 local MAPREVEALER_TAGS = {"maprevealer"}
 function MapRevealable:Refresh()
     if self.task ~= nil then
-        if GetClosestInstWithTag(MAPREVEALER_TAGS, self.inst, PLAYER_REVEAL_RADIUS) ~= nil then
-            self:AddRevealSource("maprevealer")
-        else
+		local newps, ispublic
+		local x, y, z = self.inst.Transform:GetWorldPosition()
+		for _, v in ipairs(TheSim:FindEntities(x, y, z, PLAYER_REVEAL_RADIUS, nil, nil, MAPREVEALER_TAGS)) do
+			if v ~= self.inst then
+				local privateowner = v.components.maprevealer:GetPrivateOwner()
+				if privateowner then
+					if privateowner.isplayer and privateowner ~= self.inst and privateowner ~= v and privateowner:IsValid() then
+						newps = newps or {}
+						newps[privateowner] = true
+					end
+				else
+					ispublic = true
+					for k in pairs(self.privatesources) do
+						self:RemovePrivateSource(k)
+					end
+					self:AddRevealSource("maprevealer")
+					break
+				end
+			end
+		end
+		if not ispublic then
             self:RemoveRevealSource("maprevealer")
+			if newps then
+				for k in pairs(self.privatesources) do
+					if newps[k] then
+						newps[k] = nil
+					else
+						self:RemovePrivateSource(k)
+					end
+				end
+				for k in pairs(newps) do
+					self:AddPrivateSource(k)
+				end
+			else
+				for k in pairs(self.privatesources) do
+					self:RemovePrivateSource(k)
+				end
+            end
         end
     end
     if self.onrefreshfn ~= nil then
@@ -154,11 +244,14 @@ end
 
 function MapRevealable:Start(delay)
     if self.task == nil then
-        self.task = self.inst:DoPeriodicTask(self.refreshperiod, Refresh, delay, self)
+		self.task = self.inst:DoPeriodicTask(self.refreshperiod, Refresh, delay or 0, self)
     end
 end
 
 function MapRevealable:Stop()
+	for k in pairs(self.privatesources) do
+		self:RemovePrivateSource(k)
+	end
     self:RemoveRevealSource("maprevealer")
     if self.task ~= nil then
         self.task:Cancel()

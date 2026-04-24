@@ -459,7 +459,7 @@ local function IgnoreThis(sometarget, ignorethese, leader, worker)
     ignorethese[sometarget].task = leader:DoTaskInTime(5, Unignore, sometarget, ignorethese)
 end
 
-local function PickUpAction(inst, pickup_range, pickup_range_local, furthestfirst, positionoverride, ignorethese, wholestacks, allowpickables, custom_pickup_filter)
+local function PickUpAction(inst, pickup_range, pickup_range_local, furthestfirst, positionoverride, ignorethese, wholestacks, allowpickables, custom_pickup_filter, itemoverridefn)
     local activeitem = inst.components.inventory:GetActiveItem()
     if activeitem ~= nil then
         inst.components.inventory:DropItem(activeitem, true, true)
@@ -485,24 +485,26 @@ local function PickUpAction(inst, pickup_range, pickup_range_local, furthestfirs
     end
 
     local leader = GetLeader(inst)
-    if leader == nil or leader.components.trader == nil then -- Trader component is needed for ACTIONS.GIVEALLTOPLAYER
+    if leader == nil then
         return nil
     end
 
-    if leader.components.inventory == nil or not leader.components.inventory:IsOpenedBy(leader) then -- Inventory existing and it being opened so the action can work.
-        return nil
-    end
-
-    if not leader:HasTag("player") then -- Stop things from trying to help non-players due to trader mechanics.
+    local container = leader.components.inventory or leader.components.container
+    if container == nil or (leader.components.inventory and not container:IsOpenedBy(leader)) then -- Inventory existing and it being opened so the action can work.
         return nil
     end
 
     local item, pickable
-    if pickup_range_local ~= nil then
-        item, pickable = FindPickupableItem(leader, pickup_range_local, furthestfirst, inst:GetPosition(), ignorethese, onlytheseprefabs, allowpickables, inst, custom_pickup_filter)
-    end
-    if item == nil then
-        item, pickable = FindPickupableItem(leader, pickup_range, furthestfirst, positionoverride, ignorethese, onlytheseprefabs, allowpickables, inst, custom_pickup_filter)
+    if itemoverridefn then
+        item = itemoverridefn(inst, leader)
+        pickable = item and item:HasTag("pickable") or nil
+    else
+        if pickup_range_local ~= nil then
+            item, pickable = FindPickupableItem(leader, pickup_range_local, furthestfirst, inst:GetPosition(), ignorethese, onlytheseprefabs, allowpickables, inst, custom_pickup_filter)
+        end
+        if item == nil then
+            item, pickable = FindPickupableItem(leader, pickup_range, furthestfirst, positionoverride, ignorethese, onlytheseprefabs, allowpickables, inst, custom_pickup_filter)
+        end
     end
     if item == nil then
         return nil
@@ -517,17 +519,34 @@ end
 
 local function GiveAction(inst)
     local leader = GetLeader(inst)
-    local inventory = leader and leader.components.inventory or nil
+    local container = leader and (leader.components.inventory or leader.components.container) or nil
     local item = inst.components.inventory:GetFirstItemInAnySlot() or inst.components.inventory:GetActiveItem() -- This is intentionally backwards to give the bigger stacks first.
-    if leader == nil or inventory == nil or item == nil then
+    if leader == nil or item == nil then
         return nil
     end
 
-    if not inventory:IsOpenedBy(leader) or inventory:CanAcceptCount(item, 1) <= 0 then
+    if container == nil or (leader.components.inventory and not container:IsOpenedBy(leader)) then -- Inventory existing and it being opened so the action can work.
         return nil
     end
 
-    return BufferedAction(inst, leader, ACTIONS.GIVEALLTOPLAYER, item)
+    if container:CanAcceptCount(item, 1) <= 0 then
+        return nil
+    end
+
+    local action
+    if leader.isplayer then
+        action = ACTIONS.GIVEALLTOPLAYER
+    elseif leader.components.trader then
+        action = ACTIONS.GIVE
+    elseif leader.components.container then
+        action = ACTIONS.STORE
+    end
+
+    if not action then
+        return nil
+    end
+
+    return BufferedAction(inst, leader, action, item)
 end
 
 local function DropAction(inst)
@@ -556,9 +575,19 @@ local function NodeAssistLeaderPickUps(self, parameters)
     local wholestacks = parameters.wholestacks
     local allowpickables = parameters.allowpickables
     local custom_pickup_filter = parameters.custom_pickup_filter
+    local itemoverridefn = parameters.itemoverridefn
 
     local function CustomPickUpAction(inst)
-        return PickUpAction(inst, pickup_range, pickup_range_local, furthestfirst, positionoverridefn ~= nil and positionoverridefn(inst) or positionoverride, ignorethese, wholestacks, allowpickables, custom_pickup_filter)
+        local ba = PickUpAction(inst, pickup_range, pickup_range_local, furthestfirst, positionoverridefn ~= nil and positionoverridefn(inst) or positionoverride, ignorethese, wholestacks, allowpickables, custom_pickup_filter, itemoverridefn)
+        if ba then
+            ba:AddFailAction(function()
+                inst:PushEvent("braincommon_pickup_failed", ba)
+            end)
+            ba:AddSuccessAction(function()
+                inst:PushEvent("braincommon_pickup_success", ba)
+            end)
+        end
+        return ba
     end
 
 	local give_cond_fn = give_range_sq ~= nil and

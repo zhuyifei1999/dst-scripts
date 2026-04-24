@@ -11,6 +11,7 @@ local Wx78_AbilityCooldowns = Class(function(self, inst)
 			print("Wx78_AbilityCooldowns::_onremovecd: missing abilityname \""..(cd.dbg_abilityname or tostring(abilityname)).."\"")
 		else
 			self.cooldowns[abilityname] = nil
+			self.inst:PushEvent("wx78_abilitycooldowns_update", { abilityname = abilityname })
 		end
 	end
 end)
@@ -39,6 +40,7 @@ function Wx78_AbilityCooldowns:RegisterAbilityCooldown(cd)
 		print("Wx78_AbilityCooldowns::RegisterAbilityCooldown: duplicate abilityname \""..(cd.dbg_abilityname or tostring(abilityname)).."\"")
 	else
 		self.cooldowns[abilityname] = cd
+		self.inst:PushEvent("wx78_abilitycooldowns_update", { abilityname = abilityname })
 		self.inst:ListenForEvent("onremove", self._onremovecd, cd)
 	end
 end

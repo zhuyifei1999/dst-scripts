@@ -68,6 +68,8 @@ return{
 			TICOON = "I hath already found a guide.",
             BUSY_STATION = "It is not my time yet.",
 --fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_HARVESTER = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_DEBUFFER = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -1235,6 +1237,8 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+--fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+--fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6088,6 +6092,7 @@ return{
         WX78MODULE_LIGHT2 = "These boons shall empower our metal warrior.",
         WX78MODULE_SHIELDING = "These boons shall empower our metal warrior.",
         WX78MODULE_SPIN = "These boons shall empower our metal warrior.",
+		WX78MODULE_CHESS = "These boons shall empower our metal warrior.",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6102,11 +6107,21 @@ return{
             GENERIC = "Even Mjolnir could not crack this foul brick!",
         },
 
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "Like a new suit of armor, the metal warrior may simply don a fresh body!", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+--fallback to speech_wilson.lua             UNCLAIMED = "only_used_by_wx78", -- We are examining an unclaimed body.
+--fallback to speech_wilson.lua             VIEWERS_BODY = "only_used_by_wx78", -- We (WX) are examining our own body.
+        },
+
         WX78_POSSESSEDBODY = "The metal warrior is truly possessed!",
 
         WX78_GESTALTTRAPPER = "There is sorcery at work here.",
 
         SHADOW_HEART_VEIN = "Such gifts bear ill fortune.",
+
+        WX78_SHADOWDRONE_DEBUFFER = "'Tis a spy for the metal warrior.",
+        WX78_SHADOWDRONE_HARVESTER = "The metal warrior's little plunderer.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

@@ -220,7 +220,6 @@ end
 
 local HARVEST_MUSTTAGS  = {"pickable"}
 local HARVEST_CANTTAGS  = {"INLIMBO", "FX"}
-local HARVEST_ONEOFTAGS = {"plant", "lichen", "oceanvine", "kelp"}
 
 local function DoScythe(inst, target, doer)
     inst:SayRandomLine(STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest, doer)
@@ -232,7 +231,7 @@ local function DoScythe(inst, target, doer)
         local doer_rotation = doer.Transform:GetRotation()
 
         local harvestedcount = 0
-        local ents = TheSim:FindEntities(x, y, z, TUNING.VOIDCLOTH_SCYTHE_HARVEST_RADIUS, HARVEST_MUSTTAGS, HARVEST_CANTTAGS, HARVEST_ONEOFTAGS)
+        local ents = TheSim:FindEntities(x, y, z, TUNING.VOIDCLOTH_SCYTHE_HARVEST_RADIUS, HARVEST_MUSTTAGS, HARVEST_CANTTAGS, HARVESTABLE_PLANT_TARGET_TAGS)
         for _, ent in pairs(ents) do
             if ent:IsValid() and ent.components.pickable ~= nil then
                 if inst:IsEntityInFront(ent, doer_rotation, doer_pos) then

@@ -2045,6 +2045,7 @@ local PREFABS =
     ["wx78module_screech"] = true,
     ["wx78module_spin"] = true,
     ["wx78module_shielding"] = true,
+	["wx78module_chess"] = true,
 
     ["wx78_backupbody_inventory"] = true,
 

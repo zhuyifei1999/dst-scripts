@@ -1267,7 +1267,7 @@ local RPC_HANDLERS =
 		end
 	end,
 
-	InteractionTarget = function(player, action, target)
+	InteractionTarget = function(player, action, target, x, z)
 		if not (optnumber(action) and
 				optentity(target))
 		then
@@ -1276,7 +1276,17 @@ local RPC_HANDLERS =
 		end
 		local playercontroller = player.components.playercontroller
 		if playercontroller then
-			playercontroller:OnRemoteInteractionTarget(action, target)
+            local pos
+			if x then
+				-- local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
+				if not IsPointInRange(player, x, z) then
+					print("Interaction Target out of range")
+					return
+                else
+                    pos = Vector3(x, 0, z)
+				end
+			end
+			playercontroller:OnRemoteInteractionTarget(action, target, pos)
 		end
 	end,
 
@@ -1342,7 +1352,7 @@ local RPC_HANDLERS =
 					print("Shadow socket inaccessible")
 					return
 				end
-				if socketholder:IsSocketNameForPosition("socket_shadow", modulebartype_or_socketposition) then
+				if socketholder:IsSocketNameForPosition(SOCKETNAMES.SHADOW, modulebartype_or_socketposition) then
 					socketholder:TryToUnsocket(modulebartype_or_socketposition)
 				else
 					print("Shadow socket [%i] not found", modulebartype_or_socketposition)

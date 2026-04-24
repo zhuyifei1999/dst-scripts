@@ -324,7 +324,7 @@ local function OnUsedOnChassis(inst, target, doer)
 	end
 
 	if target.TryToSpawnPossessedBody ~= nil and target:HasTag("possessable_chassis") then
-		target:TryToSpawnPossessedBody(inst.isplanar)
+		target:TryToSpawnPossessedBody(inst.isplanar, true)
 		inst:Remove()
 		return true
 	end

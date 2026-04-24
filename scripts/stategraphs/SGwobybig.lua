@@ -34,8 +34,7 @@ local events=
 
 	EventHandler("showrack", function(inst)
 		if not (inst.components.rideable:IsBeingRidden() or
-				inst.sg:HasStateTag("jumping") or
-				inst.sg:HasStateTag("nointerrupt") or
+				inst.sg:HasAnyStateTag("jumping", "nointerrupt") or
 				inst.sg.currentstate.name == "transform")
 		then
 			inst.sg:GoToState("rack_appear")
@@ -61,7 +60,11 @@ local events=
         end
     end),
 
-    SGCritterEvents.OnEat(),
+    EventHandler("oneat", function(inst)
+        if inst.sg.currentstate.name ~= "transform" then
+            inst.sg:GoToState("eat")
+        end
+    end),
 }
 
 local states=
@@ -319,6 +322,11 @@ local states=
 
 		onexit = function(inst)
 			--Interrupted???
+            inst.persists = true
+            inst:RemoveTag("NOCLICK")
+            inst.transforming = false
+            inst.components.rideable.canride = true
+            inst.DynamicShadow:SetSize(5, 2)
 			if inst.pet_hunger_classified then
 				inst.pet_hunger_classified:SetFlagBit(0, true) --big woby
 			end

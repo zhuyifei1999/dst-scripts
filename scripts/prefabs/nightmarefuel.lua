@@ -5,6 +5,37 @@ local assets =
     Asset("ANIM", "anim/nightmarefuel.zip"),
 }
 
+local function ResetInUse(inst)
+	inst.components.useabletargeteditem:StopUsingItem()
+end
+
+local WX78_BUFF_DATA = { duration = TUNING.SKILLS.WX78.SHADOWFUEL_DEBUFF_TIME }
+local function OnUseAsWX78(inst, target, doer)
+    if target.components.upgrademoduleowner then
+        target:AddDebuff("wx78_shadow_fuel_debuff", "wx78_shadow_fuel_debuff", WX78_BUFF_DATA)
+		inst.components.stackable:Get():Remove()
+		if inst:IsValid() then
+			--We don't need to lock this item as "inuse"
+			inst:DoStaticTaskInTime(0, ResetInUse)
+		end
+        return true
+    end
+end
+
+local function ValidTargetToConsumeAsWX78(inst, target, doer)
+    -- wx
+    if target ~= nil then
+        local socketholder = target.components.socketholder
+        return socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
+            and target == doer
+    end
+end
+
+local function GetUseItemOnVerb(inst, target, doer)
+    return ValidTargetToConsumeAsWX78(inst, doer, doer) and "CONSUME"
+        or nil
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -25,13 +56,21 @@ local function fn()
 
     MakeInventoryFloatable(inst)
 
-    MakeItemSocketable_Client(inst, "socket_shadow")
+    -- before MakeItemSocketable_Client (it handles hooking)
+    inst.UseableTargetedItem_ValidTarget = ValidTargetToConsumeAsWX78
+    MakeItemSocketable_Client(inst, SOCKETNAMES.SHADOW)
+
+    inst.GetUseItemOnVerb = GetUseItemOnVerb
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    -- before WX78Common.MakeItemSocketable (it handles hooking)
+    inst:AddComponent("useabletargeteditem")
+    inst.components.useabletargeteditem:SetOnUseFn(OnUseAsWX78)
 
     WX78Common.MakeItemSocketable(inst)
     inst.components.socketable:SetSocketQuality(SOCKETQUALITY.LOW)

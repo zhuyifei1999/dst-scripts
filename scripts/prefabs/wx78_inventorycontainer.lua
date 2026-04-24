@@ -95,6 +95,8 @@ local function SetPowered(inst, powered)
 end
 
 local function ValidateOnLoad(inst)
+	inst:RemoveComponent("updatelooper")
+
 	local owner = inst.components.inventoryitem.owner
 	if owner == nil then
 		return --valid!
@@ -106,6 +108,10 @@ local function ValidateOnLoad(inst)
 	local minslot = inventory:GetNumSlots() - (maxcount - 1)
 	local slot = inventory:GetItemSlot(inst)
 	if slot and slot >= minslot then
+		--now check for powered
+		maxcount = owner._stacksize_active_modules or 0
+		minslot = inventory:GetNumSlots() - (maxcount - 1)
+		inst:SetPowered(slot >= minslot)
 		return --valid!
 	end
 
@@ -116,7 +122,8 @@ local function ValidateOnLoad(inst)
 end
 
 local function OnLoad(inst)--, data, ents)
-	inst:DoTaskInTime(0, ValidateOnLoad)
+	inst:AddComponent("updatelooper")
+	inst.components.updatelooper:AddPostUpdateFn(ValidateOnLoad)
 end
 
 local function GetStatus(inst)--, viewer)

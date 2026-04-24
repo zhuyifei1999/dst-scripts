@@ -398,7 +398,7 @@ local actionhandlers =
 				if inst.GetModuleTypeCount and
 					inst:GetModuleTypeCount("spin") > 0 and
 					not action.target:HasAnyTag("quickpick", "quickrummage") and
-					action.target:HasAnyTag(SGWX78Common.WX_SPIN_PICKABLE_TAGS)
+					action.target:HasAnyTag(HARVESTABLE_PLANT_TARGET_TAGS)
 				then
 					--wx skill
 					local inventory = inst.replica.inventory
@@ -835,7 +835,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.USEITEMON, function(inst, action)
 		if action.invobject == nil then
 			return "dolongaction"
-		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == "socket_shadow" then
+		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == SOCKETNAMES.SHADOW then
 			--socketable and socketholder components are available on client
 			local target = action.target or (action.invobject:HasTag("useabletargateditem_canselftarget") and action.doer or nil)
 			if target == action.doer and target.components.socketholder then

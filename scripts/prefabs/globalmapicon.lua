@@ -158,8 +158,19 @@ local function gclass_OnCancelMapTarget(inst)
 	gclass_RefreshIcon(inst)
 end
 
-local function gclass_or_revealable_TrackEntity(inst, target)
+local function gclass_or_revealable_TrackEntity(inst, target, restriction)--, icon, noupdate)
 	inst._target = target
+
+	--used for private map revealer to hide client reveals from unsharded host.
+	--clients can just ignore this, since these are already network classified.
+	if restriction then
+		inst._restriction = restriction
+		if inst.icon and not (ThePlayer and ThePlayer:HasTag(restriction)) then
+			inst.icon:Remove()
+			inst.icon = nil
+		end
+	end
+
 	inst:ListenForEvent("onremove", function() inst:Remove() end, target)
 
 	inst:AddComponent("updatelooper")
@@ -172,6 +183,9 @@ local function gclass_Init(inst)
 	inst.iconfar = gclass_or_revealable_CreateIcon(true, true, inst.icondata, inst.selected)
 	inst.iconnear.entity:SetParent(inst.entity)
 	inst.iconfar.entity:SetParent(inst.entity)
+	if inst.icondata.fogrevealer then
+		inst.iconfar.MiniMapEntity:SetIsFogRevealer(true)
+	end
 end
 
 local function gclass_SetClassifiedOwner(inst, owner)
@@ -199,7 +213,10 @@ local function revealable_Init(inst)
 	inst.OnEntityWake = nil
 
 	--owner CANNOT see this, since they have gclass instead.
-	if not (inst.owner:value() and inst.owner:value().HUD) then
+	--restriction only needed to apply on unsharded host, hence ThePlayer.
+	if not (inst.owner:value() and inst.owner:value().HUD) and
+		(inst._restriction == nil or (ThePlayer and ThePlayer:HasTag(inst._restriction)))
+	then
 		if inst.icon == nil then
 			inst.icon = gclass_or_revealable_CreateIcon(false, inst.isproxy:value(), inst.icondata)
 			inst.icon.entity:SetParent(inst.entity)
@@ -247,6 +264,7 @@ function MakeGlobalTrackingIcons(name, data)
 		selectedicon = data.icondata.selectedicon,
 		priority = data.icondata.priority,
 		selectedpriority = data.icondata.selectedpriority,
+		fogrevealer = data.icondata.fogrevealer,
 	} or {
 		icon = name,
 	}
@@ -270,7 +288,7 @@ function MakeGlobalTrackingIcons(name, data)
 		Asset("MINIMAP_IMAGE", revealable_icondata)
 	} or nil
 
-	if revealable_icondata ~= icondata.icon or icondata.selectedicon or icondata.selectedpriority then
+	if revealable_icondata ~= icondata.icon or icondata.selectedicon or icondata.selectedpriority or icondata.fogrevealer then
 		revealable_icondata =
 		{
 			icon = revealable_icondata,

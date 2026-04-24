@@ -190,6 +190,7 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
             if math2d.DistSq(x, z, inst._x, inst._z) >= 16 then
                 inst._x, inst._z = x, z
                 owner.player_classified.MapExplorer:RevealArea(x, 0, z)
+				inst.components.maprevealer:RestartPrivateRevealCooldown()
             end
         end
     else
@@ -226,6 +227,7 @@ end
 local function OnTracked(inst, tracker)
 	inst.persists = false
 	inst.components.globaltrackingicon:StartTracking(tracker)
+	inst.components.maprevealer:SetPrivateOwner(tracker)
 	if inst.sg:HasStateTag("idle") then
 		--respawned, not new built
 		inst.components.spawnfader:FadeIn()
@@ -235,6 +237,7 @@ end
 local function OnUntracked(inst, tracker)
 	inst.persists = true
 	inst.components.globaltrackingicon:StartTracking(nil)
+	inst.components.maprevealer:SetPrivateOwner(inst)
 end
 
 local function OnTrackerDespawn(inst, tracker)
@@ -312,6 +315,9 @@ local function fn()
 	inst:AddComponent("globaltrackingicon")
 	inst.components.globaltrackingicon:StartTracking(nil, "wx78_drone_scout")
 
+	inst:AddComponent("maprevealer")
+	inst.components.maprevealer:SetPrivateOwner(inst)
+
 	inst:SetStateGraph("SGwx78_drone_scout")
 
 	inst:ListenForEvent("onbuilt", OnBuilt)
@@ -330,7 +336,7 @@ local function GetDroneRange(inst, owner)
 	local range = TUNING.SKILLS.WX78.SCOUTDRONE_RANGE
 
 	if owner and owner.components.skilltreeupdater ~= nil then
-		if owner.components.skilltreeupdater:IsActivated("wx78_scoutdrone_2") then
+		if owner.components.skilltreeupdater:IsActivated("wx78_extradronerange") then
 			range = range + TUNING.SKILLS.WX78.SCOUTDRONE_RANGE_BONUS
 		end
 
@@ -352,6 +358,7 @@ local globalicon, revealableicon =
 			globalicon = "wx78_drone_scout_global",
 			selectedicon = "wx78_drone_scout_selected",
 			selectedpriority = MINIMAP_DECORATION_PRIORITY,
+			fogrevealer = true,
 		},
 		global_common_postinit = function(inst)
 			inst:SetPrefabNameOverride("wx78_drone_scout")

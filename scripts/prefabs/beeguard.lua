@@ -139,7 +139,8 @@ local FRIENDLYBEES_PVP = nil
 local BEE_STUCK_MUST = { "_combat" }
 local function RetargetFn(inst)
     if inst:IsFriendly() then
-        if inst:GetQueen() == nil then -- NOTES(JBK): A friendly bee must wait for its queen to take action.
+        local queen = inst:GetQueen()
+        if queen == nil then -- NOTES(JBK): A friendly bee must wait for its queen to take action.
             return nil
         end
         local pvpon = TheNet:GetPVPEnabled()
@@ -159,9 +160,11 @@ local function RetargetFn(inst)
             FRIENDLYBEES_MUST, FRIENDLYBEES_CANT, FRIENDLYBEES_MUST_ONE
         )
 
-        local queen = inst:GetQueen()
         for _, v in ipairs(ents) do
-            if v ~= queen then
+            if v ~= queen
+                and inst.components.combat:CanTarget(v)
+                and not inst.components.combat:IsAlly(v)
+            then
                 return v
             end
         end

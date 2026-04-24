@@ -83,6 +83,7 @@ function Tackler:CheckCollision(ignores)
                         and not v.components.health:IsDead()
                         and self.inst.components.combat ~= nil
 						and self.inst.components.combat:CanTarget(v)
+                        and not self.inst.components.combat:IsAlly(v)
 						and not (self.inst.TargetForceAttackOnly ~= nil and self.inst:TargetForceAttackOnly(v))
 					then
                         if v:HasTag("structure") then
@@ -121,6 +122,7 @@ function Tackler:CheckCollision(ignores)
             v.inst.components.health ~= nil and
             not v.inst.components.health:IsDead() and
 			self.inst.components.combat:CanTarget(v.inst) and
+            not self.inst.components.combat:IsAlly(v.inst) and
 			not (self.inst.TargetForceAttackOnly ~= nil and self.inst:TargetForceAttackOnly(v.inst))
 		then
             if ignores ~= nil then

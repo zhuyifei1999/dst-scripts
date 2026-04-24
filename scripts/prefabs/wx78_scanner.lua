@@ -16,6 +16,7 @@ local scanner_prefabs =
 {
     "wx78_scanner_fx",
     "wx78_scanner_succeeded",
+	"globalmapiconunderfog",
 }
 
 local GetCreatureScanData = require("wx78_moduledefs").GetCreatureScanDataDefinition
@@ -31,11 +32,19 @@ local RING_FX =
 }
 
 local function GetScannerScanDistance(inst)
-    return TUNING.WX78_SCANNER_SCANDIST + (inst._radarboosters:value() * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_SCANDIST)
+    local numboost = inst._radarboosters:value()
+    if inst._hassignalbooster:value() then
+        numboost = numboost + TUNING.SKILLS.WX78.WX78_SCANNER_RANGE_BONUS
+    end
+    return TUNING.WX78_SCANNER_SCANDIST + (numboost * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_SCANDIST)
 end
 
 local function GetScannerPlayerProximityDistance(inst)
-    return TUNING.WX78_SCANNER_PLAYER_PROX + (inst._radarboosters:value() * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_PLAYER_PROX)
+    local numboost = inst._radarboosters:value()
+    if inst._hassignalbooster:value() then
+        numboost = numboost + TUNING.SKILLS.WX78.WX78_SCANNER_RANGE_BONUS
+    end
+    return TUNING.WX78_SCANNER_PLAYER_PROX + (numboost * TUNING.SKILLS.WX78.RADAR_WX78_SCANNER_PLAYER_PROX)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -174,11 +183,16 @@ end
 
 local function UpdateScannerRadarBoosters(inst)
     local owner = inst:OwnerFn()
-    if owner ~= nil and owner.GetModuleTypeCount ~= nil
-        and owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
-        inst._radarboosters:set(owner:GetModuleTypeCount("radar"))
-    else
-        inst._radarboosters:set(0)
+    if owner ~= nil then
+        if owner.components.skilltreeupdater ~= nil then
+            inst._hassignalbooster:set(owner.components.skilltreeupdater:IsActivated("wx78_extradronerange"))
+
+            if owner.GetModuleTypeCount ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
+                inst._radarboosters:set(owner:GetModuleTypeCount("radar"))
+            else
+                inst._radarboosters:set(0)
+            end
+        end
     end
     if inst.prox_range ~= nil then
         inst.prox_range:UpdateRadius(inst)
@@ -187,7 +201,9 @@ end
 
 local function OnChangedLeader(inst, new_leader, old_leader)
     if old_leader ~= nil then
-        inst:RemoveEventCallback("rangecircuitupdate", inst._oncircuitrefresh, old_leader)
+        inst:RemoveEventCallback("onactivateskill_server", inst._onrangerefresh, old_leader)
+        inst:RemoveEventCallback("ondeactivateskill_server", inst._onrangerefresh, old_leader)
+        inst:RemoveEventCallback("rangecircuitupdate", inst._onrangerefresh, old_leader)
     end
 
     if not inst._donescanning and new_leader == nil and old_leader ~= nil then
@@ -196,9 +212,11 @@ local function OnChangedLeader(inst, new_leader, old_leader)
     end
 
     if new_leader ~= nil then
-        inst:ListenForEvent("rangecircuitupdate", inst._oncircuitrefresh, new_leader)
-        UpdateScannerRadarBoosters(inst)
+        inst:ListenForEvent("onactivateskill_server", inst._onrangerefresh, new_leader)
+		inst:ListenForEvent("ondeactivateskill_server", inst._onrangerefresh, new_leader)
+        inst:ListenForEvent("rangecircuitupdate", inst._onrangerefresh, new_leader)
     end
+    UpdateScannerRadarBoosters(inst)
 end
 
 local function OnScannerDeployed(inst, pt, deployer)
@@ -653,6 +671,12 @@ local function OnRadarBoostersDirty(inst)
     end
 end
 
+local function OnSignalBoosterSkillDirty(inst)
+    if inst.prox_range ~= nil then
+        inst.prox_range:UpdateRadius(inst)
+    end
+end
+
 ---------------------------------------------------------------------------------------------------------------
 -- HELPER FUNCTIONS
 
@@ -710,7 +734,7 @@ end
 
 local function SpawnData(inst)
     local owner = inst.components.follower and inst.components.follower:GetLeader()
-    if owner and owner.components.dataanalyzer then
+    if owner and owner.components.dataanalyzer and inst._scanned_id then
         local amount = owner.components.dataanalyzer:SpendData(inst._scanned_id)
 
         if amount > 0 then
@@ -751,7 +775,7 @@ end
 local DELAY_COMPLAIN_CAT = 0.3
 local DELAY_COMPLAIN_CAT_VAR = 0.2
 local function OnPlayedFromCat(inst, doer, isairborne)
-    if inst.components.activatable:CanActivate() then -- Don't pass doer to bypass restriction of only wx deactivating
+    if inst.components.activatable.inactive and inst.components.activatable:CanActivate() then -- Don't pass doer to bypass restriction of only wx deactivating
         inst.components.activatable:DoActivate(doer)
 
         local wx = inst:OwnerFn()
@@ -830,6 +854,7 @@ end
 
 -------------------------------------------------------------------------------------------------------------------
 
+local PATHCAPS = { allowocean = true, ignorecreep = true, ignorewalls = true }
 local function scannerfn()
     local inst = CreateEntity()
 
@@ -853,6 +878,7 @@ local function scannerfn()
     inst:AddTag("NOBLOCK")
     inst:AddTag("scarytoprey")
     inst:AddTag("cattoyairborne")
+	inst:AddTag("flying")
 
     inst.AnimState:SetBank("scanner")
     inst.AnimState:SetBuild("wx_scanner")
@@ -864,13 +890,16 @@ local function scannerfn()
     inst.GetActivateVerb = GetActivateVerb
 
     inst._showringfx = net_tinybyte(inst.GUID, "showringfx", "showringfxdirty")
-    inst._radarboosters = net_float(inst.GUID, "radarboosters", "radarboostersdirty")
+    inst._radarboosters = GetIdealUnsignedNetVarForCount(MAX_CIRCUIT_SLOTS)(inst.GUID, "radarboosters", "radarboostersdirty")
+    inst._hassignalbooster = net_bool(inst.GUID, "hassignalbooster", "signalboosterdirty")
     if not TheNet:IsDedicated() then
         inst:ListenForEvent("showringfxdirty", OnShowRingFXDirty)
         inst:ListenForEvent("radarboostersdirty", OnRadarBoostersDirty)
+        inst:ListenForEvent("signalboosterdirty", OnSignalBoosterSkillDirty)
     end
     inst._showringfx:set_local(0)
     inst._radarboosters:set_local(0)
+    inst._hassignalbooster:set_local(false)
 
     inst.GetScannerScanDistance = GetScannerScanDistance
     inst.GetScannerPlayerProximityDistance = GetScannerPlayerProximityDistance
@@ -881,6 +910,9 @@ local function scannerfn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	inst:AddComponent("maprevealable")
+	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
 
     -------------------------------------------------------------------
     inst:AddComponent("entitytracker")
@@ -897,7 +929,7 @@ local function scannerfn()
     inst:AddComponent("locomotor")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.pathcaps = { allowocean = true, ignorecreep = true }
+    inst.components.locomotor.pathcaps = PATHCAPS
     inst.components.locomotor.walkspeed = 4.25
 
     -------------------------------------------------------------------
@@ -953,7 +985,7 @@ local function scannerfn()
         OnScanFailed(inst)
     end
 
-	inst._oncircuitrefresh = function(owner)
+	inst._onrangerefresh = function(owner)
 		UpdateScannerRadarBoosters(inst)
 	end
 

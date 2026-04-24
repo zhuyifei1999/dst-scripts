@@ -18,8 +18,8 @@ function Oar:Row(doer, pos)
 	local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
 	local row_dir_x, row_dir_z = VecUtil_Normalize(pos.x - doer_x, pos.z - doer_z)
 
-	if doer.components.playercontroller.isclientcontrollerattached then
-		local boat_x, boat_y, boat_z = boat_physics.inst.Transform:GetWorldPosition()
+	if doer.components.playercontroller ~= nil and doer.components.playercontroller.isclientcontrollerattached then
+		local boat_x, boat_y, boat_z = platform.Transform:GetWorldPosition()
 		row_dir_x, row_dir_z = VecUtil_Normalize(doer_x - boat_x, doer_z - boat_z)
 	end
 
@@ -45,6 +45,11 @@ function Oar:RowFail(doer)
             moisture:DoDelta(self.fail_wetness * (1 - waterproofness))
         end
     end
+	if doer.components.leader ~= nil then
+        for k in pairs(doer.components.leader.followers) do
+            k:PushEvent("leader_failed_row")
+        end
+	end
 
     return "BAD_TIMING" .. tostring(self.fail_idx)
 end

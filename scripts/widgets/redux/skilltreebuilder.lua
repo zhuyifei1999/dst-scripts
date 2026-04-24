@@ -17,6 +17,9 @@ local TILESIZE_INFOGRAPHIC_FRAME = TILESIZE_INFOGRAPHIC_CIRCLE * INFOGRAPHIC_RAT
 local LOCKSIZE = 24
 local SPACE = 5 
 
+local SKILL_BTN_CLICK_OFFSET = Vector3(0, -1, 0)
+local SKILL_BTN_SELECTED_CLICK_OFFSET = Vector3(0, 0, 0)
+
 local ATLAS = "images/skilltree.xml"
 local IMAGE_LOCKED = "locked.tex"
 local IMAGE_LOCKED_OVER = "locked_over.tex"
@@ -420,7 +423,9 @@ function SkillTreeBuilder:buildbuttons(panel, pos, data, offset, root)
 				self:RefreshTree()
 			end
 		end)
-	
+		skillbutton:SetOnLoseFocus(function()
+			self.dblclickt0 = nil
+		end)
 		skillbutton:SetOnClick(function()
 			if TheInput:ControllerAttached() then
 				if not self.selectedskill or not self.skillgraphics[self.selectedskill].status.activatable or not self.infopanel.activatebutton:IsVisible() then
@@ -435,9 +440,31 @@ function SkillTreeBuilder:buildbuttons(panel, pos, data, offset, root)
 		    	end
 		    	
 				self:LearnSkill(skilltreeupdater, self.target)
-			else
+			elseif self.selectedskill ~= skill then
 				self.selectedskill = skill
+				self.dblclickt0 = GetStaticTime()
 				self:RefreshTree()
+			else
+				if self.selectedskill ~= skill or not self.skillgraphics[skill].status.activatable or not self.infopanel.activatebutton:IsVisible() then
+					self.dblclickt0 = nil
+					return
+				end
+
+				local t = GetStaticTime()
+				if self.dblclickt0 == nil or t - self.dblclickt0 > DOUBLE_CLICK_TIMEOUT then
+					self.dblclickt0 = t
+					return
+				end
+				self.dblclickt0 = nil
+
+				local skilltreeupdater = nil
+				if self.fromfrontend then
+					skilltreeupdater = TheSkillTree
+				else
+					skilltreeupdater = ThePlayer and ThePlayer.components.skilltreeupdater or nil
+				end
+
+				self:LearnSkill(skilltreeupdater, self.target)
 			end
 		end)
 
@@ -465,13 +492,14 @@ function SkillTreeBuilder:buildbuttons(panel, pos, data, offset, root)
         else
             skillimage:ScaleToSize(TILESIZE_FRAME, TILESIZE_FRAME)
         end
+		skillimage:SetClickable(false)
 		skillimage:Hide()
 
 		local newpos = Vector3(subdata.pos[1],subdata.pos[2]+ offset,0)
 		skillbutton:SetPosition(newpos.x,newpos.y)
 		skillimage:SetPosition(newpos.x,newpos.y)
 
-        skillbutton.clickoffset = Vector3(0, -1, 0)
+		skillbutton.clickoffset = SKILL_BTN_CLICK_OFFSET
 
 		self.skillgraphics[skill] = {}
 		self.skillgraphics[skill].button = skillbutton
@@ -677,9 +705,11 @@ function SkillTreeBuilder:RefreshTree(skillschanged)
 	for skill,graphics in pairs(self.skillgraphics) do
 		graphics.button:Hide()
 		graphics.frame:Hide()
+		graphics.button.clickoffset = SKILL_BTN_CLICK_OFFSET
 
 		if self.selectedskill and self.selectedskill == skill and not TheInput:ControllerAttached() then
 			graphics.frame:Show()
+			graphics.button.clickoffset = SKILL_BTN_SELECTED_CLICK_OFFSET
 		end
 
 		if graphics.status.lock then
@@ -869,6 +899,7 @@ function SkillTreeBuilder:LearnSkill(skilltreeupdater, characterprefab)
 	    clickfx:GetAnimState():SetBuild("skills_activate")
 	    clickfx:GetAnimState():SetBank("skills_activate")
 	    clickfx:GetAnimState():PushAnimation("idle")
+		clickfx.inst:AddTag("NOCLICK")
 	    clickfx.inst:ListenForEvent("animover", function() clickfx:Kill() end)
 	    clickfx:SetPosition(pos.x,pos.y + 15)
 

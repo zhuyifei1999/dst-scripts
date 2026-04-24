@@ -210,7 +210,8 @@ local function TimeCheck(inst, targettime, lasttime)
 end
 
 local function ShouldKeepTarget(inst, target)
-    return inst:GetDistanceSqToInst(target) <= TUNING.WAGPUNK_MAXRANGE*TUNING.WAGPUNK_MAXRANGE
+    local range = GetArmorWagpunkRange(inst, inst.components.inventoryitem.owner)
+    return inst:GetDistanceSqToInst(target) <= range*range
 end
 
 local function OnBlocked(owner)

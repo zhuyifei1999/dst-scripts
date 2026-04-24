@@ -8,7 +8,7 @@ local function DoHeal(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local rangesq = TUNING.WORTOX_SOULHEAL_RANGE + (inst.soul_heal_range_modifier or 0)
     rangesq = rangesq * rangesq
-    for i, v in ipairs(AllPlayers) do
+    local function ProcessHealTarget(v)
         if not (v.components.health:IsDead() or v:HasTag("playerghost")) and
             v.entity:IsVisible() and
             v:GetDistanceSqToPoint(x, y, z) < rangesq then
@@ -23,6 +23,9 @@ local function DoHeal(inst)
                 sanitytargetscount = sanitytargetscount + 1
             end
         end
+    end
+    for i, v in ipairs(AllPlayers) do
+        ProcessHealTarget(v)
     end
     if healtargetscount > 0 then
         -- Healing adjustments are absolute from the releaser but can be debuffed by the receiver.

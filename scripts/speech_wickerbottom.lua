@@ -68,6 +68,8 @@ return{
 			TICOON = "Having two trackers at once could possibly confuse them.",
             BUSY_STATION = "Oh, botheration.",
 --fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_HARVESTER = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_DEBUFFER = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -1228,13 +1230,15 @@ return{
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "It seems the mechanical knights are indisposed at the moment.",
 	-- Post-YOTH
-	ANNOUNCE_MAX_CLOCKWORKS = "This stubborn piece refuses to follow me.",
+	ANNOUNCE_MAX_CLOCKWORKS = "Well, yes. The rules of chess are simple. One may have no more than a pair of these pieces.",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+--fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+--fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6088,6 +6092,7 @@ return{
         WX78MODULE_LIGHT2 = "They dislike organics, but don't seem opposed to taking inspiration from them.",
         WX78MODULE_SHIELDING = "They dislike organics, but don't seem opposed to taking inspiration from them.",
         WX78MODULE_SPIN = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+		WX78MODULE_CHESS = "They dislike organics, but don't seem opposed to taking inspiration from them.",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6099,7 +6104,14 @@ return{
         WX78_FOODBRICK =
         {
             WET = "The automaton has reconstituted spoiled food matter into a compact edible brick.",
-            GENERIC = "The nutrient brick is inedible in its desicated form.",
+            GENERIC = "The nutrient brick is inedible in its desiccated form.",
+        },
+
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "One of WX's backup chassis.", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+--fallback to speech_wilson.lua             UNCLAIMED = "only_used_by_wx78", -- We are examining an unclaimed body.
+--fallback to speech_wilson.lua             VIEWERS_BODY = "only_used_by_wx78", -- We (WX) are examining our own body.
         },
 
         WX78_POSSESSEDBODY = "It's a straightforward instance of spectral machina possession, nothing more.",
@@ -6107,6 +6119,9 @@ return{
         WX78_GESTALTTRAPPER = "It's been reconfigured to permit direct transfer of the entity into the chassis.",
 
         SHADOW_HEART_VEIN = "This is dark magic indeed.",
+
+        WX78_SHADOWDRONE_DEBUFFER = "It studies enemies, calibrating WX's attack parameters.",
+        WX78_SHADOWDRONE_HARVESTER = "It is a rather industrious little gatherer.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

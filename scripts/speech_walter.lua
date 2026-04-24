@@ -68,6 +68,8 @@ return{
 			TICOON = "One of these guys is enough to keep track of.",
             BUSY_STATION = "We have to wait, Woby!",
 --fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_HARVESTER = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_DEBUFFER = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -1270,13 +1272,15 @@ return{
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "They must be too busy to come now, Woby girl.",
 	-- Post-YOTH
-	ANNOUNCE_MAX_CLOCKWORKS = "It doesn't wanna come with us, Woby.",
+	ANNOUNCE_MAX_CLOCKWORKS = "Ha! Of course we only get a pair, Woby! They're chess pieces!",
 
     -- wx specific
 --fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+--fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+--fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6130,6 +6134,7 @@ return{
         WX78MODULE_LIGHT2 = "Robot guts! Neat!",
         WX78MODULE_SHIELDING = "Robot guts! Neat!",
         WX78MODULE_SPIN = "Robot guts! Neat!",
+		WX78MODULE_CHESS = "Robot guts! Neat!",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6144,11 +6149,21 @@ return{
             GENERIC = "It's harder than a stale dog biscuit, Woby!",
         },
 
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "That WX is full of surprises!", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+--fallback to speech_wilson.lua             UNCLAIMED = "only_used_by_wx78", -- We are examining an unclaimed body.
+--fallback to speech_wilson.lua             VIEWERS_BODY = "only_used_by_wx78", -- We (WX) are examining our own body.
+        },
+
         WX78_POSSESSEDBODY = "Is that a ghost in there, Woby! Amazing!",
 
         WX78_GESTALTTRAPPER = "This must do something reaaally neat, Woby.",
 
         SHADOW_HEART_VEIN = "Aw, it's so helpful!",
+
+        WX78_SHADOWDRONE_DEBUFFER = "Ooh, I think it studies the monsters!",
+        WX78_SHADOWDRONE_HARVESTER = "That sure is handy! Or should I say clawy! Get it, Wobes?",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

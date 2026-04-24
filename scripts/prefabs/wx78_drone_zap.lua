@@ -1,4 +1,5 @@
 local easing = require("easing")
+local WX78Common = require("prefabs/wx78_common")
 
 local assets =
 {
@@ -90,21 +91,13 @@ local function OnOwnerDirty(inst)
 	end
 end
 
-local MAXIMUM_ZAPDRONE_RANGE = 40 -- This is the max before we risk seeing entities pop in and out
+--not client-safe
+local function GetOwnerLeader(owner)
+	return owner.components.follower and owner.components.follower:GetLeader()
+end
+
 local function GetDroneRange(inst, owner) -- This is a common function, make sure code is safe for client and server.
-	local range = TUNING.SKILLS.WX78.ZAPDRONE_RANGE_1
-	if owner and owner.components.skilltreeupdater then
-		if owner.components.skilltreeupdater:IsActivated("wx78_zapdrone_2") then
-			range = TUNING.SKILLS.WX78.ZAPDRONE_RANGE_2
-		end
-
-		if owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1")
-			and owner.GetModuleTypeCount then
-			range = range + owner:GetModuleTypeCount("radar") * TUNING.SKILLS.WX78.RADAR_ZAPDRONERANGE
-		end
-	end
-
-	return math.min(MAXIMUM_ZAPDRONE_RANGE, range)
+	return WX78Common.CalcDroneZapRange(owner or inst)
 end
 
 local function UpdateDroneRange(inst, owner)
@@ -274,10 +267,14 @@ local function OnUse(inst, doer)
 		local x, y, z = inst.Transform:GetWorldPosition()
 		inst.drone.Transform:SetPosition(x, 1.5, z)
 		inst:ListenForEvent("ms_drone_zap_fired", function(drone)
+			local skill_doer = doer
+			if skill_doer then
+				skill_doer = GetOwnerLeader(skill_doer) or skill_doer
+			end
 			inst.components.finiteuses:Use(
-				doer and
-				doer.components.skilltreeupdater and
-				doer.components.skilltreeupdater:IsActivated("wx78_zapdrone_2") and
+				skill_doer and
+				skill_doer.components.skilltreeupdater and
+				skill_doer.components.skilltreeupdater:IsActivated("wx78_zapdrone_2") and
 				TUNING.SKILLS.WX78.ZAPDRONE_USE_PER_ATTACK_2 or
 				TUNING.SKILLS.WX78.ZAPDRONE_USE_PER_ATTACK_1)
 		end, inst.drone)
@@ -400,7 +397,8 @@ local function remotefn()
 	MakeHauntableLaunch(inst)
 
 	inst._onskillrefresh = function(owner)
-		local skilltreeupdater = owner and owner.components.skilltreeupdater
+		local skill_owner = owner and GetOwnerLeader(owner) or owner -- we could be a possessed body using it
+		local skilltreeupdater = skill_owner and skill_owner.components.skilltreeupdater
 		SetUseable(inst, skilltreeupdater ~= nil and skilltreeupdater:IsActivated("wx78_zapdrone_1"))
 		if inst.drone then
 			UpdateDroneRange(inst.drone, owner)

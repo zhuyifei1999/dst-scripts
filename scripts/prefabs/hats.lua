@@ -4438,8 +4438,9 @@ local function MakeHat(name)
         end
     end
 
-    fns.wagpunk_test = function(inst,target)
-        return inst:GetDistanceSqToInst(target) <= TUNING.WAGPUNK_MAXRANGE*TUNING.WAGPUNK_MAXRANGE
+    fns.wagpunk_test = function(inst, target)
+        local range = GetArmorWagpunkRange(inst, inst.components.inventoryitem.owner)
+        return inst:GetDistanceSqToInst(target) <= range*range
     end
 
     fns.wagpunk_onequip = function(inst, owner)
@@ -5586,6 +5587,10 @@ local function MakeHat(name)
         end
 
         if data.victim.sg == nil or not (data.victim.sg:HasState("parasite_revive") or data.victim.sg:HasState("death_hosted")) then
+            return
+        end
+        
+        if data.victim.was_shadowthrall_parasited or data.victim:HasTag("shadowthrall_parasite_hosted") then
             return
         end
 

@@ -115,6 +115,7 @@ local function fn()
     inst.pickupsound = "vegetation_firm" -- 'squidgy' when wet
 
     inst:AddTag("fertilizerresearchable")
+    inst:AddTag("canpourwateron")
 
     MakeInventoryFloatable(inst, "small", 0.07, 1.2)
     MakeDeployableFertilizerPristine(inst)

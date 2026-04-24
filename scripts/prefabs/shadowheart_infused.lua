@@ -102,7 +102,7 @@ local function fn()
     inst:AddTag("canbetrapped")
     inst:AddTag("shadowheart")
 
-    MakeItemSocketable_Client(inst, "socket_shadow")
+    MakeItemSocketable_Client(inst, SOCKETNAMES.SHADOW)
 
     inst.Transform:SetFourFaced()
 
@@ -117,7 +117,7 @@ local function fn()
     end
 
     WX78Common.MakeItemSocketable(inst)
-    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.HIGH)
+    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.PERFECT)
 
     inst.scrapbook_anim = "scrapbook"
 
