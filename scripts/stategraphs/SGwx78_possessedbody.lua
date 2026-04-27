@@ -1261,7 +1261,7 @@ local states =
                 inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/death_voice")
             end
 
-            if inst.components.sanity:GetPercent() == 0 then
+            if (inst.components.sanity:GetPercent() == 0) or inst._saved_health_on_sanity_death then
                 inst.sg.statemem.gestaltflee = true
                 inst.AnimState:Show("gestalt_flee")
             else

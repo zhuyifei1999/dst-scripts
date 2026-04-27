@@ -17,6 +17,8 @@ local prefabs =
 local easing = require("easing")
 local WagdroneCommon = require("prefabs/wagdrone_common")
 
+local PATHCAPS = { allowocean = true, ignorecreep = true, ignorewalls = true }
+
 --------------------------------------------------------------------------
 
 local function Target_OnUpdateFlicker(fx, dt)
@@ -250,6 +252,9 @@ local function fn()
 	--     -hack speed mult to prevent run_start from moving right away (see stategraph)
 	inst.components.locomotor.directdrive = true
 	inst.components.locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0)
+	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+	inst.components.locomotor:SetTriggersCreep(false)
+	inst.components.locomotor.pathcaps = PATHCAPS
 
 	WagdroneCommon.MakeHackable(inst)
 	WagdroneCommon.PreventTeleportFromArena(inst)

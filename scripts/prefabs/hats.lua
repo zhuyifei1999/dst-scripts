@@ -6727,7 +6727,7 @@ local function MakeHat(name)
 			"spoiled_food",
 		}
 		table.insert(assets, Asset("DYNAMIC_ATLAS", "images/pumpkinhat_face.xml"))
-		table.insert(assets, Asset("ASSET_PKGREF", "images/pumpkinhat_face.tex"))
+		table.insert(assets, Asset("PKGREF", "images/pumpkinhat_face.tex"))
     elseif name == "mask_princess" then
         fn = fns.princess
         prefabs = {

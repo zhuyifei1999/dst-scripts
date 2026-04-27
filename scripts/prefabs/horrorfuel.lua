@@ -165,15 +165,13 @@ end
 
 local function ValidTargetToConsumeAsWX78(inst, target, doer)
     -- wx
-    if target ~= nil then
-        local socketholder = target.components.socketholder
-        return socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
-            and target == doer
-    end
+    local socketholder = (target or doer).components.socketholder
+    return socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
+        and ( (target == doer) or target == nil )
 end
 
 local function GetUseItemOnVerb(inst, target, doer)
-    return ValidTargetToConsumeAsWX78(inst, doer, doer) and "CONSUME"
+    return ValidTargetToConsumeAsWX78(inst, target, doer) and "CONSUME"
         or nil
 end
 

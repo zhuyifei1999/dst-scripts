@@ -337,18 +337,34 @@ local NODE_ASSIST_SOAKIN_ACTION =
     shouldrun = true,
 }
 
+local SpDamageUtil = require("components/spdamageutil")
+local function IsValidZapRemote(inst, item)
+    return item:HasTag("wx_remotecontroller")
+        and item.components.equippable ~= nil
+        and not item.components.equippable:IsRestricted(inst)
+        and (item.components.finiteuses == nil or item.components.finiteuses:GetUses() > 0)
+end
+local function IsWeaponBetter(inst, weapon1, weapon2, target)
+    if weapon2 == nil or not weapon2.components.weapon then
+        return true
+    end
+
+    local itemdmg, itemspdmg = inst.components.combat:CalcDamage(target, weapon1)
+    local dmg, spdmg = inst.components.combat:CalcDamage(target, weapon2)
+
+    itemspdmg = itemspdmg and SpDamageUtil.CalcTotalDamage(itemspdmg) or 0
+    spdmg = spdmg and SpDamageUtil.CalcTotalDamage(spdmg) or 0
+
+    return (itemdmg + itemspdmg) > (dmg + spdmg)
+end
 local function EquipBestWeapon(inst, target)
     -- Prioritize zap drone!
     local heldweapon = GetTool(inst)
-    local zap_drone = inst.components.inventory:FindItem(function(item)
-        return item:HasTag("wx_remotecontroller")
-            and item.components.equippable ~= nil
-            and not item.components.equippable:IsRestricted(inst)
-    end)
-    if zap_drone and zap_drone ~= heldweapon and (heldweapon == nil or not heldweapon:HasTag("wx_remotecontroller")) then
+    local zap_drone = inst.components.inventory:FindItem(function(item) return IsValidZapRemote(inst, item) end)
+    if zap_drone and zap_drone ~= heldweapon and (heldweapon == nil or not IsValidZapRemote(inst, heldweapon)) then
         inst.components.inventory:Equip(zap_drone)
         return
-    elseif heldweapon and heldweapon:HasTag("wx_remotecontroller") then
+    elseif heldweapon and IsValidZapRemote(inst, heldweapon) then
         return
     end
 
@@ -356,16 +372,12 @@ local function EquipBestWeapon(inst, target)
     -- Not the best since it doesnt take into account damage multipliers, can be improved.
     local bestweapon
     inst.components.inventory:ForEachItem(function(item)
-        if (bestweapon == nil and item.components.weapon ~= nil) or
-            (bestweapon ~= nil and bestweapon.components.weapon ~= nil and item.components.weapon ~= nil
-            and item.components.weapon:GetDamage(inst, target) > bestweapon.components.weapon:GetDamage(inst, target)) then
+        if item.components.weapon ~= nil
+            and (bestweapon == nil or IsWeaponBetter(inst, item, bestweapon, target)) then
             bestweapon = item
         end
     end)
-    if bestweapon and bestweapon ~= heldweapon
-        and (heldweapon == nil or heldweapon.components.weapon == nil or (
-            bestweapon.components.weapon:GetDamage(inst, target) ~= heldweapon.components.weapon:GetDamage(inst, target)
-        )) then
+    if bestweapon and bestweapon ~= heldweapon and IsWeaponBetter(inst, bestweapon, heldweapon, target) then
         inst.components.inventory:Equip(bestweapon)
     end
 end
@@ -398,12 +410,13 @@ end
 local function EatFoodAction(inst)
     if not inst.sg:HasStateTag("busy") then
         -- We're well topped off, just return for optimization sake.
-        if inst.components.health:GetPercent() <= 0.9 or inst.components.hunger:GetPercent() <= 0.9 or inst.components.sanity:GetPercent() <= 0.9 then
+        local ishurt = inst.components.health:GetPercent() <= 0.9
+        if ishurt or inst.components.hunger:GetPercent() <= 0.9 or inst.components.sanity:GetPercent() <= 0.9 then
             local health = inst.components.health.currenthealth
             local hunger = inst.components.hunger.current
             local sanity = inst.components.sanity.current
 
-            local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.5 -- Some leniency for healing.
+            local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.1 -- Some leniency for healing.
             local maxhunger = inst.components.hunger.max
             local maxsanity = inst.components.sanity:GetMaxWithPenalty()
 
@@ -418,7 +431,8 @@ local function EatFoodAction(inst)
                     local itemhunger = edible:GetHunger(inst)
                     local itemsanity = edible:GetSanity(inst)
 
-                    if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth then
+                    if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth
+                        and ishurt then -- check if we're hurt, for the leniency added above
                         if besthealth == nil or (itemhealth > besthealth.components.edible:GetHealth(inst)) then
                             besthealth = item
                         end

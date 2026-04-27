@@ -167,7 +167,7 @@ local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         if data.attacker.components.leader ~= nil and
             data.attacker.components.leader:IsFollower(inst) then
-            inst.components.health:Kill()
+            inst:DoSanityDeath()
         end
     end
 end
@@ -307,9 +307,13 @@ local function OnSanityDelta(inst, data)
     -- #HACK _ignore_sanity_death is a hack flag to give us time to apply upgrade modules before we apply fresh spawn stats, otherwise
     -- sanity delta runs and we die on a 0 sanity chassis
     if data.newpercent == 0 and not inst.components.health:IsDead() and not inst._ignore_sanity_death then
-        inst._saved_health_on_sanity_death = inst.components.health.currenthealth
-        inst.components.health:Kill()
+        inst:DoSanityDeath()
     end
+end
+
+local function DoSanityDeath(inst)
+    inst._saved_health_on_sanity_death = inst.components.health.currenthealth
+    inst.components.health:Kill()
 end
 
 local function ArmorBroke(inst, data)
@@ -675,9 +679,8 @@ local function fn()
     upgrademoduleowner.onmoduleremoved = OnUpgradeModuleRemoved
     upgrademoduleowner.ononemodulepopped = OnOneUpgradeModulePopped
     upgrademoduleowner.onallmodulespopped = OnAllUpgradeModulesRemoved
-    -- upgrademoduleowner.canupgradefn = CanUseUpgradeModule
-    upgrademoduleowner:SetChargeLevel(3)
-    -- upgrademoduleowner:SetAutomaticModuleActivations(false)
+    upgrademoduleowner:SetChargeLevel(6)
+    upgrademoduleowner:SetOverrideFullCharge(true)
 
     linkeditem:SetOnSkillTreeInitializedFn(OnSkillTreeInitializedFn)
     linkeditem:SetOnOwnerInstCreatedFn(OnOwnerInstCreatedFn)
@@ -703,6 +706,7 @@ local function fn()
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
     inst.CheckZapUserStatesFrom = CheckZapUserStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.DoSanityDeath = DoSanityDeath
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
     inst.OnLoadPostPass = OnLoadPostPass

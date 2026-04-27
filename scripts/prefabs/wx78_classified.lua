@@ -272,12 +272,12 @@ local function GetMaxEnergy(inst)
 end
 
 local function GetEnergyLevel(inst)
-    return inst.currentenergylevel:value()
+    return inst.overridefullcharge:value() and inst.maxenergylevel:value() or inst.currentenergylevel:value()
 end
 
 local function OnEnergyLevelDirty(inst)
     if inst._parent ~= nil then
-        local energylevel = inst.currentenergylevel:value()
+        local energylevel = inst:GetEnergyLevel()
         local maxenergylevel = inst.maxenergylevel:value()
         local data =
         {
@@ -491,6 +491,7 @@ local function fn()
     inst.currentenergylevel = net_smallbyte(inst.GUID, "wx78.currentenergylevel", "upgrademoduleenergyupdate")
     inst.maxenergylevel = net_smallbyte(inst.GUID, "wx78.maxenergylevel", "upgrademoduleenergyupdate")
     inst.maxenergylevel:set(TUNING.WX78_INITIAL_MAXCHARGELEVEL)
+    inst.overridefullcharge = net_bool(inst.GUID, "wx78.overridefullcharge", "upgrademoduleenergyupdate")
 
     inst._oldupgrademodulebars = {}
     inst.upgrademodulebars = {}

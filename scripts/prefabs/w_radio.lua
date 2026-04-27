@@ -2,7 +2,7 @@ local assets =
 {
 	Asset("ANIM", "anim/w_radio.zip"),
 	Asset("DYNAMIC_ATLAS", "images/w_radio_parts.xml"),
-	Asset("ASSET_PKGREF", "images/w_radio_parts.tex"),
+	Asset("PKGREF", "images/w_radio_parts.tex"),
 }
 
 local prefabs =

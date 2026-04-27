@@ -261,7 +261,10 @@ local function wx78_drone_zap_FindTargets(inst, x, z, radius)
 end
 
 local function wx78_drone_zap_CheckTarget(inst, target)
-	return not (inst.caster and inst.caster.components.combat and inst.caster.components.combat:IsAlly(target))
+	return inst.caster == nil
+		or (	inst.caster:IsValid() and
+				not (inst.caster.components.combat and inst.caster.components.combat:IsAlly(target))
+			)
 end
 
 local function wx78_drone_zap_OnAttackedTarget(inst, target)

@@ -10,6 +10,8 @@ local prefabs =
 
 local brain = require("brains/wx78_shadowdrone_harvesterbrain")
 
+local PATHCAPS = { allowocean = true, ignorecreep = true, ignorewalls = true }
+
 local function CreateShadowFx()
 	local inst = CreateEntity()
 
@@ -70,11 +72,7 @@ local function TryToDropRecipeLoot(inst)
 end
 
 local function ApplyUse(inst)
-    inst.components.counter:Increment("interactions")
-    local uses = inst.components.counter:GetCount("interactions")
-    if uses >= TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_USE_LIMIT then
-        inst:PushEventImmediate("despawn")
-    end
+    inst.components.counter:Set("interactions", 1)
 end
 
 local function OnPlayedFromCat(inst, doer, isairborne)
@@ -145,6 +143,9 @@ local function fn()
     locomotor.runspeed = TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
     locomotor.directdrive = true -- using directdrive to bypass pathfinding
     locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0) -- hack speed mult to prevent run_start from moving right away (see stategraph)
+	locomotor:EnableGroundSpeedMultiplier(false)
+	locomotor:SetTriggersCreep(false)
+	locomotor.pathcaps = PATHCAPS
 
     inst:AddComponent("follower")
 

@@ -302,7 +302,7 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
     self.chip_slotsinuse = {}
     for i, v in pairs(CIRCUIT_BARS) do
         self.chip_objectpools[v] = {}
-        for i = 1, max_energy do
+        for i = 1, MAX_CIRCUIT_SLOTS do
             local chip_object = self:AddChild(UIAnim())
             chip_object:GetAnimState():SetBank("status_wx_chest")
             chip_object:GetAnimState():SetBuild("status_wx_chest")

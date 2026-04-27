@@ -167,7 +167,7 @@ end
 ----------------------------------------------------------------------------------------
 
 local function do_chargeregen_update(inst)
-    if not inst.components.upgrademoduleowner:IsChargeMaxed() then
+    if not inst.components.upgrademoduleowner:IsRealChargeMaxed() then
         inst.components.upgrademoduleowner:DoDeltaCharge(1)
     end
 end
@@ -176,7 +176,7 @@ local function OnUpgradeModuleChargeChanged(inst, data)
     -- The regen timer gets reset every time the energy level changes, whether it was by the regen timer or not.
     inst.components.timer:StopTimer(CHARGEREGEN_TIMERNAME)
 
-    if not inst.components.upgrademoduleowner:IsChargeMaxed() then
+    if not inst.components.upgrademoduleowner:IsRealChargeMaxed() then
         StartChargeRegenTimer(inst)
 
         -- If we just got put to 0 from a non-0 value, tell the player.
@@ -352,7 +352,7 @@ local function OnBecameRobot(inst)
     inst.Light:SetIntensity(.9)
     inst.Light:SetColour(235 / 255, 121 / 255, 12 / 255)
 
-    if not inst.components.upgrademoduleowner:IsChargeMaxed() then
+    if not inst.components.upgrademoduleowner:IsRealChargeMaxed() then
         StartChargeRegenTimer(inst)
     end
 end
@@ -466,7 +466,7 @@ end
 ----------------------------------------------------------------------------------------
 
 local function OnChargeFromBattery(inst, battery, mult)
-    if inst.components.upgrademoduleowner:IsChargeMaxed() then
+    if inst.components.upgrademoduleowner:IsRealChargeMaxed() then
         return false, "CHARGE_FULL"
     end
 
@@ -634,12 +634,6 @@ local function GetPointSpecialActions(inst, pos, useitem, right)
 	local actions = {}
 
     if right and useitem == nil then
-        if inst.components.playercontroller ~= nil and inst.components.playercontroller.isclientcontrollerattached then
-            if inst.CollectUpgradeModuleActions then
-                inst:CollectUpgradeModuleActions(actions)
-            end
-        end
-
         if inst.checkingmapactions then
 			if inst.components.skilltreeupdater then
 				if inst.components.skilltreeupdater:IsActivated("wx78_remotebodyswap") then
@@ -649,6 +643,12 @@ local function GetPointSpecialActions(inst, pos, useitem, right)
 					table.insert(actions, ACTIONS.MAPSCOUTSELECT_MAP)
 				end
 			end
+        else
+            if inst.components.playercontroller ~= nil and inst.components.playercontroller.isclientcontrollerattached then
+                if inst.CollectUpgradeModuleActions then
+                    inst:CollectUpgradeModuleActions(actions)
+                end
+            end
         end
     end
 

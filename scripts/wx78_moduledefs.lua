@@ -399,7 +399,7 @@ end
 
 local function update_temperature_overlays(wx) -- from both heat and cold circuits
     if wx.SetFreezingEffectBlockModifier ~= nil then
-        wx:SetFreezingEffectBlockModifier(wx, wx.components.temperature.maxtemp >= 0)
+        wx:SetFreezingEffectBlockModifier(wx, wx.components.temperature.mintemp >= 0)
     end
 
     if wx.SetOverheatingEffectBlockModifier ~= nil then

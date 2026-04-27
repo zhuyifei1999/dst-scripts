@@ -1269,7 +1269,9 @@ local RPC_HANDLERS =
 
 	InteractionTarget = function(player, action, target, x, z)
 		if not (optnumber(action) and
-				optentity(target))
+				optentity(target) and
+                optnumber(x) and
+                optnumber(z))
 		then
 			printinvalid("InteractionTarget", player)
 			return

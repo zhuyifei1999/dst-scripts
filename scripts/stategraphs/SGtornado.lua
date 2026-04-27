@@ -67,7 +67,7 @@ local function destroystuff(inst)
                 not v.components.health:IsDead() and
                 v.components.combat ~= nil and
                 v.components.combat:CanBeAttacked() and
-                (TheNet:GetPVPEnabled() or not (inst.WINDSTAFF_CASTER_ISPLAYER and v:HasTag("player"))) then
+                (TheNet:GetPVPEnabled() or not (inst.WINDSTAFF_CASTER_ISPLAYER and v:HasAnyTag("player", "possessedbody"))) then
                 local damage =
                     inst.WINDSTAFF_CASTER_ISPLAYER and
                     v:HasTag("player") and

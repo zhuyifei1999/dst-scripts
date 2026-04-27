@@ -7548,7 +7548,6 @@ function Tune(overrides)
                 -- drones
                 SHADOWDRONE_FOLLOW_RADIUS = 4,
                 SHADOWDRONE_HARVESTER_PASSIVE_TICK_PERIOD = 1.5,
-                SHADOWDRONE_HARVESTER_USE_LIMIT = 100,
                 --
                 SHADOWDRONE_HARVESTER_LIMIT = 2,
                 SHADOWDRONE_HARVESTER_SPEED = 6,
@@ -7563,16 +7562,15 @@ function Tune(overrides)
                 -- SOCKETQUALITY.MEDIUM == purehorror
                 -- SOCKETQUALITY.HIGH == shadowheart
                 -- drones
-                SHADOWDRONE_DEBUFFER_LIMIT = 2,
+                SHADOWDRONE_DEBUFFER_LIMIT = 3,
                 SHADOWDRONE_DEBUFFER_SPEED = 6,
 				SHADOWDRONE_DEBUFFER_SCAN_RANGE = 2.5,
 				SHADOWDRONE_DEBUFFER_SCAN_RANGE_MAX = 4,
-                SHADOWDRONE_DEBUFFER_USE_LIMIT = 200,
                 --
                 SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED = 4,
                 SHADOWDRONE_DEBUFFER_SPEED_BOOSTED = 8,
                 --
-                SHADOWDRONE_DAMAGEMULT_PER_DRONE = 0.05,
+                SHADOWDRONE_DAMAGEMULT_PER_DRONE = 0.06,
                 -- vein harvests
                 SHADOWHEART_WORK_NEEDED = 2,
                 SHADOWHEART_SPAWN_PERIOD = seg_time * 4,

@@ -189,7 +189,12 @@ local function TryToSpawnPossessedBody(inst, isplanar, freshspawn)
     possessedbody:PushEventImmediate("possessed")
 
     if freshspawn then
-        inst:ConfigureStats(inst:GetFreshStats())
+        local stats = inst:GetFreshStats()
+        stats.health = possessedbody.components.health:GetMaxWithPenalty()
+        stats.hunger = possessedbody.components.hunger.max
+        stats.sanity = possessedbody.components.sanity:GetMaxWithPenalty()
+
+        inst:ConfigureStats(stats)
         inst:ApplySavedStatsToDoer(possessedbody)
     end
     possessedbody._ignore_sanity_death = nil -- HACK, now that a fresh spawn may have given us stats, we can respect sanity death
@@ -458,6 +463,7 @@ local function OnActivateFn(inst, doer)
     if doer.components.skinner then
         if doer.isplayer then
             local skindata = deepcopy(inst.wx78_backupbody_inventory.components.skinner:OnSave())
+            skindata.monkey_curse = doer.components.skinner:GetMonkeyCurse()
             inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(doer, true)
             doer.components.skinner:OnLoad(skindata)
         else
@@ -733,6 +739,9 @@ local function RegisterGhostRezEvents(inst, doer)
         if inst.components.activatable:CanActivate(doer) then
             inst.components.upgrademoduleowner:SetChargeLevel(0)
             inst.components.activatable:DoActivate(doer)
+            if doer.components.skilltreeupdater ~= nil and doer.components.skilltreeupdater:IsActivated("wx78_ghostrevive_3") then
+                doer.components.health:SetPercent(1)
+            end
             inst:Remove()
         end
     end
@@ -777,6 +786,7 @@ end
 local function SetPossessedContainerState(inst)
     inst:AddTag("companion")
 
+    inst.components.upgrademoduleowner:SetAutomaticModuleActivations(true)
     inst.components.activatable.inactive = false
 
     inst:AddComponent("health")
@@ -891,6 +901,7 @@ local function fn()
     activatable.OnActivate = OnActivateFn
     activatable.quickaction = true
     activatable.forcerightclickaction = true
+    activatable.forcenopickupaction = true -- disables spacebar interaction
 
     inst:AddComponent("lootdropper")
     inst:AddComponent("timer")

@@ -2,7 +2,6 @@ require("behaviours/leash")
 local WX78_ShadowDrone_BrainCommon = require("brains/wx78_shadowdrone_braincommon")
 
 local DEBUFF_RANGE_FROM_LEADER = 16
-local DEBUFF_RANGE_FROM_LEADER_SQ = DEBUFF_RANGE_FROM_LEADER * DEBUFF_RANGE_FROM_LEADER
 local STOP_DEBUFF_DELAY = 3
 
 local WX78_ShadowDrone_DebufferBrain = Class(Brain, function(self, inst)
@@ -13,86 +12,39 @@ local function GetLeader(inst)
 	return inst.components.follower:GetLeader()
 end
 
-local function GetLeaderAction(inst)
+local function GetLeaderAction(leader) --NOTE: not inst!
     local target
-    local act = inst:GetBufferedAction() or inst.sg and inst.sg.statemem.action
+	local act = leader:GetBufferedAction() or leader.sg and leader.sg.statemem.action
     if act then
         return act.action, act.target
     end
 
-    if inst._lastspintime then
-        if inst.sg:HasStateTag("spinning") then
-            if GetTime() - inst._lastspintime < 1 then
-                return inst._lastspinaction, inst._lastspintarget
+	if leader._lastspintime then
+		if leader.sg:HasStateTag("spinning") then
+			if GetTime() - leader._lastspintime < 1 then
+				return leader._lastspinaction, leader._lastspintarget
             end
-        elseif inst:HasTag("using_drone_remote") then
-            return inst._lastspinaction, inst._lastspintarget
+		elseif leader:HasTag("using_drone_remote") then
+			return leader._lastspinaction, leader._lastspintarget
         end
     end
 
-    if inst.components.playercontroller then
-        return inst.components.playercontroller:GetRemoteInteraction()
+	if leader.components.playercontroller then
+		return leader.components.playercontroller:GetRemoteInteraction()
     end
 end
 
-local function IsLeaderAttacking(inst)
-    local leader = GetLeader(inst)
-    if not leader then
-        return false
-    end
-
-    if leader.components.rider and leader.components.rider:IsRiding() then
-        return false
-    end
+local function GetLeaderTarget(leader) --NOTE: not inst!
+	if leader.components.rider and leader.components.rider:IsRiding() then
+		return
+	end
 
     local leaderact, leadertarget = GetLeaderAction(leader)
     if leaderact == ACTIONS.ATTACK then
-        return true
-    end
+		return leadertarget
+	end
 
-    if leader.components.combat and leader.components.combat.target then
-        return true
-    end
-
-    return false
-end
-
-local function ShouldMoveAnyways(inst)
-    local leader = GetLeader(inst)
-    if not leader then
-        return false
-    end
-
-    local target = inst.target:value()
-    if not target then
-        return false
-    end
-
-    local distsq_leader_to_target = leader:GetDistanceSqToInst(target)
-    if distsq_leader_to_target > DEBUFF_RANGE_FROM_LEADER_SQ then
-        return true -- Out of range, go back to formation.
-    end
-
-    return false
-end
-
-local function SetTargetOnLeaderTarget(inst)
-    local leader = GetLeader(inst)
-    if not leader then
-        return
-    end
-
-    local leaderact, leadertarget = GetLeaderAction(leader)
-    local debufftarget
-    if leaderact == ACTIONS.ATTACK then
-        debufftarget = leadertarget
-    else
-        debufftarget = leader.components.combat and leader.components.combat.target
-    end
-
-    if debufftarget then
-        inst:SetTarget(debufftarget)
-    end
+	return leader.components.combat and leader.components.combat.target
 end
 
 local function GetScanTarget(inst)
@@ -100,6 +52,54 @@ local function GetScanTarget(inst)
 	if target and not (target.components.health and target.components.health:IsDead()) then
 		return target
 	end
+end
+
+local function ShouldScan(self)
+	local leader = GetLeader(self.inst)
+	if leader == nil then
+		self._last_debuff_time = nil
+		self.inst:ClearTarget()
+		return false
+	end
+
+	--check leader has current target
+	local leadertarget = GetLeaderTarget(leader)
+	if leadertarget then
+		self.inst:SetTarget(leadertarget)
+		local target = GetScanTarget(self.inst)
+		if target and leader:IsNear(target, DEBUFF_RANGE_FROM_LEADER) then
+			self._last_debuff_time = GetTime()
+			return true
+		end
+		self._last_debuff_time = nil
+		self.inst:ClearTarget()
+		return false
+	end
+
+	--check for keeping our last target
+	local target = GetScanTarget(self.inst)
+	if target and leader:IsNear(target, DEBUFF_RANGE_FROM_LEADER) then
+		if self._last_debuff_time then
+			-- Do not immediately stop debuffing when the player stops attacking or moves out of range.
+			if GetTime() - self._last_debuff_time < STOP_DEBUFF_DELAY then
+				return true
+			end
+			self._last_debuff_time = nil
+		end
+
+		if target.components.combat and
+			target.components.combat:HasTarget() and
+			leader.components.combat and
+			leader.components.combat:IsAlly(target.components.combat.target)
+		then
+			-- Keep target if they are still in combat with us.
+			return true
+		end
+	end
+
+	self._last_debuff_time = nil
+	self.inst:ClearTarget()
+	return false
 end
 
 --scan position is [scandist] away from target
@@ -144,26 +144,7 @@ function WX78_ShadowDrone_DebufferBrain:OnStart()
             end,
             "<busy state guard>",
             PriorityNode({
-                WhileNode(
-                    function()
-                        if IsLeaderAttacking(self.inst) and not ShouldMoveAnyways(self.inst) then
-                            SetTargetOnLeaderTarget(self.inst)
-                            if GetScanTarget(self.inst) then
-                                self._last_debuff_time = GetTime()
-                                return true
-                            end
-                        end
-                        if self._last_debuff_time then
-                            -- Do not immediately stop debuffing when the player stops attacking or moves out of range.
-                            if GetScanTarget(self.inst) and GetTime() - self._last_debuff_time < STOP_DEBUFF_DELAY then
-                                return true
-                            end
-                            self._last_debuff_time = nil
-                        end
-                        self.inst:ClearTarget()
-                        return false
-                    end,
-                    "is leader attacking",
+				WhileNode(function() return ShouldScan(self) end, "scanning",
                     PriorityNode({
                         FailIfSuccessDecorator(Leash(self.inst, GetScanPos, MinMaxLeashDist, MinMaxLeashDist, true)),
                         ActionNode(function()

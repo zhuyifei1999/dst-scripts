@@ -510,8 +510,8 @@ local function BuildSkillsData(SkillTreeFns)
 
                 if inst.components.leader ~= nil then
                     for k in pairs(inst.components.leader.followers) do
-                        if k:HasTag("possessedbody") then
-                            inst.components.leader:RemoveFollower(k)
+                        if k:HasTag("possessedbody") and k.DoSanityDeath then
+                            k:DoSanityDeath()
                         end
                     end
                 end

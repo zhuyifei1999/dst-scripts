@@ -120,11 +120,16 @@ local function OnChop(inst, chopper, chopsleft, numchops)
     inst.AnimState:PushAnimation("idle_" .. tostring(inst.variation), true)
 end
 
-local function SetVariation(inst, variation)
+local function SetVariation(inst, variation, load)
     inst.variation = variation or math.random(NUM_VARIATIONS)
     if inst.variation ~= 1 then
-        inst.AnimState:PlayAnimation("grow_" .. tostring(inst.variation), false)
-        inst.AnimState:PushAnimation("idle_" .. tostring(inst.variation), true)
+        if load then
+            inst.AnimState:PlayAnimation("idle_" .. tostring(inst.variation), true)
+            inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+        else
+            inst.AnimState:PlayAnimation("grow_" .. tostring(inst.variation), false)
+            inst.AnimState:PushAnimation("idle_" .. tostring(inst.variation), true)
+        end
     end
 end
 
@@ -149,13 +154,13 @@ local function OnSave(inst, data)
 end
 local function OnLoad(inst, data)
     if not data then
-        SetVariation(inst)
+        SetVariation(inst, nil, true)
         return
     end
     if data.vine_loot then
         SetupVineLoot(inst, data.vine_loot)
     end
-    SetVariation(inst, data.variation)
+    SetVariation(inst, data.variation, true)
 end
 
 local function fn()

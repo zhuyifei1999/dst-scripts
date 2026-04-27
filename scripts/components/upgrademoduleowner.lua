@@ -34,6 +34,12 @@ local function on_inspecting_changed(self, new_inspect, old_inspect)
     end
 end
 
+local function on_overridefullcharge_changed(self, new_fullcharge, old_fullcharge)
+    if self.inst.wx78_classified ~= nil then
+        self.inst.wx78_classified.overridefullcharge:set(new_fullcharge)
+    end
+end
+
 local UpgradeModuleOwner = Class(function(self, inst)
     self.inst = inst
 
@@ -62,6 +68,7 @@ nil,
     charge_level = on_charge_level_changed,
     max_charge = on_max_charge_changed,
     inspecting = on_inspecting_changed,
+    overridefullcharge = on_overridefullcharge_changed,
 })
 
 -- Remove Callbacks -----------------------------------------------------------------
@@ -186,7 +193,13 @@ function UpgradeModuleOwner:UpdateActivatedModules(isloading)
 end
 
 function UpgradeModuleOwner:SetAutomaticModuleActivations(enabled)
+    local old_auto = self.prevent_automatic_module_activations
+
     self.prevent_automatic_module_activations = not enabled or nil
+
+    if old_auto ~= self.prevent_automatic_module_activations then
+        self:UpdateActivatedModules()
+    end
 end
 
 -------------------------------------------------------------------------------------
@@ -333,6 +346,9 @@ function UpgradeModuleOwner:DoDeltaCharge(n)
 end
 UpgradeModuleOwner.AddCharge = UpgradeModuleOwner.DoDeltaCharge -- backwards compat
 
+function UpgradeModuleOwner:IsRealChargeMaxed() -- To not take into account override full charge
+    return self.charge_level == self.max_charge
+end
 function UpgradeModuleOwner:IsChargeMaxed()
     return self:GetChargeLevel() == self.max_charge
 end

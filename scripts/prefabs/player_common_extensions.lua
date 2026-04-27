@@ -381,9 +381,6 @@ local function DoActualRez(inst, source, item)
                 inst.sg:GoToState("gravestone_rebirth", source)
             end
         elseif source.prefab == "wx78_backupbody" then
-            if inst.components.skilltreeupdater:IsActivated("wx78_ghostrevive_3") then
-                inst.components.health:SetPercent(1)
-            end
             inst.sg:GoToState("respawn_wx_poweron")
         elseif source:HasTag("multiplayer_portal") then
             inst.components.health:DeltaPenalty(TUNING.PORTAL_HEALTH_PENALTY)

@@ -1552,13 +1552,14 @@ local actionhandlers =
 			return "dolongaction"
 		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == SOCKETNAMES.SHADOW then
 
+			local target = action.target or (action.invobject:HasTag("useabletargateditem_canselftarget") and action.doer or nil)
             local socketholder = inst.components.socketholder
-            if socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE) then
+            if socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
+                and target == action.doer then
                 return "eat"
             end
 
-			local target = action.target or (action.invobject:HasTag("useabletargateditem_canselftarget") and action.doer or nil)
-			if target == action.doer and target.components.socketholder then
+            if target == action.doer and target.components.socketholder then
 				if inst:HasTag("inspectingupgrademodules") then
 					inst.sg.statemem.stopremovingmodule = true
 					inst.sg.statemem.stoppluggingmodule = true
