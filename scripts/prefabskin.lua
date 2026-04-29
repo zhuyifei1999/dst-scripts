@@ -1208,6 +1208,21 @@ end
 wx78_drone_zap_remote_init_fn = wx78_drone_zap_init_fn
 wx78_drone_zap_remote_clear_fn = wx78_drone_zap_clear_fn
 
+
+wx78_shadowdrone_harvester_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "wx78_shadowdrone_harvester")
+end
+wx78_shadowdrone_harvester_clear_fn = function(inst)
+    basic_clear_fn(inst, "wx78_shadowdrone_harvester")
+end
+wx78_shadowdrone_debuffer_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "wx78_shadowdrone_debuffer")
+end
+wx78_shadowdrone_debuffer_clear_fn = function(inst)
+    basic_clear_fn(inst, "wx78_shadowdrone_debuffer")
+end
+
+
 wx78_moduleremover_init_fn = function(inst, build_name)
 	basic_init_fn(inst, build_name, "wx78_moduleremover")
 end

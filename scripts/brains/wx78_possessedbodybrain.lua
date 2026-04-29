@@ -554,7 +554,6 @@ local function GetTarget(inst)
 	return target and not IsEntityDead(target) and target or nil
 end
 
-
 local DROP_TARGET_KITE_DIST_SQ = 14 * 14
 local function LeaderInRangeOfTarget(inst)
     local leader = GetLeader(inst)
@@ -615,7 +614,6 @@ local function GetRunDist(inst, hunter)
         local dist = math.max(attack_range, math.min(leader_dist, MAX_KITE_DIST))
         if inst._lastdist == nil or (math.abs(inst._lastdist - dist) >= TOLERANCE_DIST) then
             inst._lastdist = dist
-            inst._lastruntime = GetTime()
             return dist
         else
             return inst._lastdist
@@ -650,7 +648,6 @@ end
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-local RUN_AFTER_KITE_DELAY = 1
 local UPDATE_RATE = 0.1
 local STOP_USING_DRONE_DELAY = 3
 function Wx78_PossessedBodyBrain:OnStart()
@@ -667,6 +664,10 @@ function Wx78_PossessedBodyBrain:OnStart()
 
 			WhileNode(
 				function()
+                    if not LeaderInRangeOfTarget(self.inst) then
+                        self._last_drone_time = nil
+                        return false
+                    end
 					if IsLeaderAttacking(self.inst) and not ShouldMoveAnyways(self.inst) then
 						self._last_drone_time = self.inst:HasTag("using_drone_remote") and GetTime() or nil
 						return true
@@ -680,7 +681,7 @@ function Wx78_PossessedBodyBrain:OnStart()
 					return false
 				end,
 				"is leader attacking",
-				ParallelNode{
+				ParallelNodeAny{
 					ConditionWaitNode(function()
 						SetTargetOnLeaderTarget(self.inst)
 						return false --abusing ConditionWaitNode as perma-running loop
@@ -732,7 +733,7 @@ function Wx78_PossessedBodyBrain:OnStart()
 
             SequenceNode{
                 ConditionWaitNode(function()
-                    return self.inst._lastruntime == nil or (GetTime() - self.inst._lastruntime > RUN_AFTER_KITE_DELAY)
+                    return (GetTarget(self.inst) == nil) or not LeaderInRangeOfTarget(self.inst)
                 end, "Wait after kiting"),
                 Follow(self.inst, GetLeader, FOLLOW_MIN_DIST, FOLLOW_TARGET_DIST, FOLLOW_MAX_DIST, true)
             },

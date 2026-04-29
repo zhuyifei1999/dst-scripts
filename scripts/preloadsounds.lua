@@ -169,6 +169,7 @@ local MainSounds =
 
     "WX_rework.fev",
     "WX_rework.fsb",
+	"WX_rework_music.fsb",
 
     "monkeyisland.fev",
     "monkeyisland.fsb",

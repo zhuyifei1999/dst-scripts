@@ -47,33 +47,69 @@ local function OnBuilt(inst, data)
 	end
 end
 
-local function OnApplyingDebuffDirty(inst)
-    -- FIXME(JBK): WX: SD: Debuff target non-networked classified fx onto the target if target is valid for the client otherwise reschedule if applying debuff is true in case of entity out of loading range.
+local function DoCancelDebuffTarget(inst, target)
+	inst.debufftargets[target] = nil
 end
 
-local function ClearTarget(inst)
-    local target = inst.target:value()
-    if target then
-        inst.target:set(nil)
-        inst:RemoveEventCallback("onremove", inst._cleartarget, target)
-        inst._cleartarget = nil
+local function StopTrackingDebuffTarget(inst, target)
+	if inst.debufftargets[target] == true then
+		inst.debufftargets[target] = inst:DoTaskInTime(2, DoCancelDebuffTarget, target)
+	end
+end
+
+local function StartTrackingDebuffTarget(inst, target)
+	if Periodic.is_instance(inst.debufftargets[target]) then
+		inst.debufftargets[target]:Cancel()
+	end
+	inst.debufftargets[target] = true
+end
+
+local function ClearScanTarget(inst)
+	if inst.target then
+		inst:RemoveEventCallback("onremove", inst._onscantargetremoved, inst.target)
+		inst._onscantargetremoved = nil
+		StopTrackingDebuffTarget(inst, inst.target)
+		inst.target = nil
     end
 end
 
-local function SetTarget(inst, target)
-    local oldtarget = inst.target:value()
-    if oldtarget == target then
+local function SetScanTarget(inst, target)
+	if inst.target == target then
         return
     end
 
-    inst:ClearTarget()
+	inst:ClearScanTarget()
+
     if target and target:IsValid() then
-        inst._cleartarget = function()
-            inst:ClearTarget()
-        end
-        inst.target:set(target)
-        inst:ListenForEvent("onremove", inst._cleartarget, target)
+		inst.target = target
+		inst._onscantargetremoved = function() inst:ClearScanTarget() end
+		inst:ListenForEvent("onremove", inst._onscantargetremoved, target)
+		if inst._scanning then
+			StartTrackingDebuffTarget(inst, target)
+		end
     end
+end
+
+local function GetScanTarget(inst)
+	return inst.target
+end
+
+local function OnStartScanning(inst)
+	inst._scanning = true
+	if inst.target then
+		StartTrackingDebuffTarget(inst, inst.target)
+	end
+end
+
+local function OnStopScanning(inst)
+	inst._scanning = nil
+	if inst.target then
+		StopTrackingDebuffTarget(inst, inst.target)
+	end
+end
+
+local function IsApplyingDebuffTo(inst, target)
+	return inst.debufftargets[target] ~= nil
 end
 
 local function TryToDropRecipeLoot(inst)
@@ -123,7 +159,7 @@ local function CalcScanRange(inst)
 		end
 	end
 
-	return TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_SCAN_RANGE + bonus * 0.5,
+	return TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_SCAN_RANGE + bonus / 3,
 		TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_SCAN_RANGE_MAX + bonus
 end
 
@@ -170,9 +206,6 @@ local function fn()
 	inst:AddTag("NOBLOCK")
 	inst:AddTag("shadow_aligned")
 
-    inst.applyingdebuff = net_bool(inst.GUID, "wx78_shadowdrone_debuffer.applyingdebuff", "applyingdebuffdirty")
-    inst.target = net_entity(inst.GUID, "wx78_shadowdrone_debuffer.target", "targetdirty")
-
 	if not TheNet:IsDedicated() then
 		local fx = CreateShadowFx()
 		fx.entity:SetParent(inst.entity)
@@ -182,9 +215,10 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        inst:ListenForEvent("applyingdebuffdirty", OnApplyingDebuffDirty)
         return inst
     end
+
+    inst.scrapbook_animoffsety = 100
 
 	inst:AddComponent("maprevealable")
 	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
@@ -192,7 +226,8 @@ local function fn()
     inst:AddComponent("inspectable")
 
     local locomotor = inst:AddComponent("locomotor")
-    locomotor.runspeed = TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_SPEED
+	locomotor.walkspeed = TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_WALKSPEED
+	locomotor.runspeed = TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_RUNSPEED
     locomotor.directdrive = true -- using directdrive to bypass pathfinding
     locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0) -- hack speed mult to prevent run_start from moving right away (see stategraph)
 	locomotor:EnableGroundSpeedMultiplier(false)
@@ -214,8 +249,15 @@ local function fn()
 
 	inst:ListenForEvent("onbuilt", OnBuilt)
 
-    inst.SetTarget = SetTarget
-    inst.ClearTarget = ClearTarget
+	inst.target = nil
+	inst.debufftargets = {}
+
+	inst.SetScanTarget = SetScanTarget
+	inst.ClearScanTarget = ClearScanTarget
+	inst.GetScanTarget = GetScanTarget
+	inst.OnStartScanning = OnStartScanning
+	inst.OnStopScanning = OnStopScanning
+	inst.IsApplyingDebuffTo = IsApplyingDebuffTo
     inst.TryToDropRecipeLoot = TryToDropRecipeLoot
     inst.ApplyUse = ApplyUse
 	inst.CalcScanRange = CalcScanRange

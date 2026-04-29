@@ -23,6 +23,7 @@ local SocketHolder = Class(function(self, inst)
             --[integer position] = [ConvertItemToSaveData output for inst],
         }
 
+        self.dropondeath = true
         self.inst:ListenForEvent("death", OnDeath)
     end
 end)
@@ -225,6 +226,20 @@ end
 
 
 -- Server interface
+
+function SocketHolder:EnableDropOnDeath()
+    if not self.dropondeath then
+        self.dropondeath = true
+        self.inst:ListenForEvent("death", OnDeath)
+    end
+end
+
+function SocketHolder:DisableDropOnDeath()
+    if self.dropondeath then
+        self.dropondeath = false
+        self.inst:RemoveEventCallback("death", OnDeath)
+    end
+end
 
 function SocketHolder:SetShouldAllowSocketableFn_SERVER(fn)
     self.shouldallowsocketablefn_SERVER = fn

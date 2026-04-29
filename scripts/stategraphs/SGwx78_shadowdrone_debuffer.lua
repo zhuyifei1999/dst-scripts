@@ -3,7 +3,17 @@ local easing = require("easing")
 
 local events =
 {
-	CommonHandlers.OnLocomote(true, false),
+	EventHandler("locomote", function(inst)
+		if inst.components.locomotor:WantsToMoveForward() then
+			if inst.sg:HasStateTag("quickmove") then
+				inst.sg:GoToState("run")
+			elseif not inst.sg:HasAnyStateTag("busy", "moving") then
+				inst.sg:GoToState("run_start")
+			end
+		elseif inst.sg:HasStateTag("moving") then
+			inst.sg:GoToState("run_stop")
+		end
+	end),
 	EventHandler("spawned", function(inst, data)
 		if not inst.sg:HasStateTag("busy") then
 			inst.sg:GoToState("spawndelay", data and data.delay or 0)
@@ -18,8 +28,8 @@ local events =
 		end
 	end),
 	EventHandler("ms_wx_shadowdrone_scan", function(inst)
-		if not inst.sg:HasStateTag("busy") then
-			local target = inst.target:value()
+		if not inst.sg:HasAnyStateTag("busy", "scanning") then
+			local target = inst:GetScanTarget()
 			if target then
 				inst.sg:GoToState("scan_start", target)
 			end
@@ -77,9 +87,9 @@ local states =
 
 				local socketquality = owner and owner.components.socketholder and owner.components.socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) or SOCKETQUALITY.LOW
 				inst.components.locomotor.runspeed =
-					socketquality == SOCKETQUALITY.MEDIUM and
-					TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_SPEED_BOOSTED or
-					TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_SPEED
+					socketquality == SOCKETQUALITY.PERFECT and
+					TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_RUNSPEED_BOOSTED or
+					TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_RUNSPEED
 
 				if owner then
 					local pos = owner:GetPosition()
@@ -193,7 +203,8 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop", nil, 0.6) end),
+			FrameEvent(9, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/missile_explode", nil, 0.3) end),
 
 			FrameEvent(8, function(inst)
 				inst:TryToDropRecipeLoot()
@@ -238,7 +249,9 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop") end),			
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop") end),			
+			FrameEvent(18, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk") end),	
+			FrameEvent(18, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),	
 		},
 
 		ontimeout = function(inst)
@@ -262,7 +275,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop") end),			
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/start") end),			
 		},
 
 		events =
@@ -372,16 +385,17 @@ local states =
 
 	State{
 		name = "scan_start",
-		tags = { "busy", "scanning" },
+		tags = { "scanning", "quickmove" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.Transform:SetEightFaced()
 			inst.AnimState:PlayAnimation("debuffscan_pre")
+			inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/scanning_LP", "scanloop")
 		end,
 
 		onupdate = function(inst, dt)
-			local target = inst.target:value()
+			local target = inst:GetScanTarget()
 			if target then
 				inst:ForceFacePoint(target.Transform:GetWorldPosition())
 			end
@@ -390,7 +404,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("???") end),
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/scanning_LP") end),
 		},
 
 		events =
@@ -406,27 +420,31 @@ local states =
 		onexit = function(inst)
 			if not inst.sg.statemem.scanning then
 				inst.Transform:SetFourFaced()
+				inst.SoundEmitter:KillSound("scanloop")
 			end
 		end,
 	},
 
 	State{
 		name = "scanning",
-		tags = { "busy", "scanning" },
+		tags = { "scanning", "quickmove" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.Transform:SetEightFaced()
 			inst.AnimState:PlayAnimation("debuffscan_loop", true)
+			if not inst.SoundEmitter:PlayingSound("scanloop") then
+				inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/scanning_LP", "scanloop")
+			end
 		end,
 
 		onupdate = function(inst, dt)
-			local target = inst.target:value()
+			local target = inst:GetScanTarget()
 			if target and not (target.components.health and target.components.health:IsDead()) then
 				local range, maxrange = inst:CalcScanRange()
 				if inst:IsNear(target, maxrange) then
 					inst:ForceFacePoint(target.Transform:GetWorldPosition())
-					inst.applyingdebuff:set(true)
+					inst:OnStartScanning()
 					return
 				end
 			end
@@ -441,32 +459,27 @@ local states =
 			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("???") end),
 		},
 
-		events =
-		{
-			EventHandler("locomote", function(inst, data)
-				if inst.components.locomotor:WantsToMoveForward() then
-					inst.sg.statemem.scanning = true
-					inst.sg:GoToState("scan_stop")
-				end
-			end),
-		},
-
 		onexit = function(inst)
 			if not inst.sg.statemem.scanning then
 				inst.Transform:SetFourFaced()
 			end
-			inst.applyingdebuff:set(false)
+			inst.SoundEmitter:KillSound("scanloop")
+			inst:OnStopScanning()
 		end,
 	},
 
 	State{
 		name = "scan_stop",
-		tags = { "busy" },
+		tags = { "quickmove" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.Transform:SetEightFaced()
 			inst.AnimState:PlayAnimation("debuffscan_pst")
+
+			if inst.brain then
+				inst.brain:ForceUpdate()
+			end
 		end,
 
 		timeline =

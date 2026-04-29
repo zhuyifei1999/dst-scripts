@@ -167,6 +167,7 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/stop") end),
+			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/missile_explode", nil, 0.3) end),
 
 			FrameEvent(9, function(inst)
 				inst.components.inventory:DropEverything()
@@ -214,7 +215,9 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop") end),			
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/stop") end),	
+			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk") end),	
+			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),	
 		},
 
 		ontimeout = function(inst)
@@ -238,7 +241,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/shadowdebuffer/stop") end),			
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/start") end),			
 		},
 
 		events =
@@ -279,6 +282,9 @@ local states =
 
 		timeline =
 		{
+			--#SFX
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/movement") end),
+
 			FrameEvent(3, function(inst)
 				inst.sg.statemem.speedk = 0
 			end),
@@ -327,6 +333,12 @@ local states =
 			inst.AnimState:PlayAnimation("run_pst")
 		end,
 
+		timeline =
+		{
+			--#SFX
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/movement") end),
+		},
+
 		events =
 		{
 			EventHandler("animover", function(inst)
@@ -350,12 +362,9 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/movement") end),
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet", nil, 0.6) end),
-			--FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("qol1/wagstaff_ruins/rummagepile_pst") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet", nil, 0.3) end),
 			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("balatro/balatro_cabinet/cards_flip") end),
-			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),
-			--FrameEvent(16, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/spot_light/move") end),
-			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
+			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet", nil, 0.3) end),
 
 			FrameEvent(13, function(inst)
 				inst:PerformBufferedAction()
@@ -385,12 +394,9 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/movement") end),
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
-			--FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("qol1/wagstaff_ruins/rummagepile_pst") end),
-			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet", nil, 0.5) end),
-			FrameEvent(18, function(inst) inst.SoundEmitter:PlaySound("qol1/wagstaff_ruins/rummagepile_pst", nil, 0.3) end),
+			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet", nil, 0.1) end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("balatro/balatro_cabinet/cards_flip") end),
-			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_med") end),
+			FrameEvent(23, function(inst) inst.SoundEmitter:PlaySound("WX_rework/harvester/movement") end),
 
 			FrameEvent(18, function(inst)
 				local success = inst:PerformBufferedAction()

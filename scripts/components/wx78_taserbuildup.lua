@@ -45,10 +45,14 @@ function Wx78_TaserBuildup:SetCurrentBuildup(value)
     self.current = math.clamp(value, 0, self.max)
 
     if self.current >= self.max and prev < self.max then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WX_TASER_ABOUTTOEXPLODE"))
+        if self.inst.components.talker ~= nil then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WX_TASER_ABOUTTOEXPLODE"))
+        end
         self:ReleaseBuildup()
     elseif self.current >= 50 and prev < 50 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WX_TASER_BUILDUP"))
+        if self.inst.components.talker ~= nil then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WX_TASER_BUILDUP"))
+        end
     end
 
     if (prev <= 0 and self.current > 0) then
@@ -161,7 +165,9 @@ function Wx78_TaserBuildup:DoShockExplosion()
         self.detonate_cb = nil
     end
 
-    self.inst:DoTaskInTime(1 + math.random() * 2, SayPostExplosionLine)
+    if self.inst.components.talker ~= nil then
+        self.inst:DoTaskInTime(1 + math.random() * 2, SayPostExplosionLine)
+    end
 end
 
 function Wx78_TaserBuildup:OnAttacked()

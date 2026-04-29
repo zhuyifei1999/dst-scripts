@@ -3019,7 +3019,7 @@ SOCKETNAMES = {
     SHADOW = "socket_shadow",
     GESTALTTRAPPER = "socket_gestalttrapper",
 }
-SOCKETQUALITY = {
+SOCKETQUALITY = { -- NOTES(JBK): Keep this value updated in export_accountitems.lua [EAITAB]
     NONE = 0,
     LOW = 1,
     MEDIUM = 2,

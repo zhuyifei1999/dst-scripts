@@ -2076,8 +2076,13 @@ end
 function GetArmorWagpunkRange(inst, owner)
     local range = TUNING.WAGPUNK_MAXRANGE
 
-    if owner and owner.GetModuleTypeCount and owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
-        range = range + owner:GetModuleTypeCount("radar") * TUNING.SKILLS.WX78.RADAR_WAGPUNKRANGE
+    if owner ~= nil then
+        local follower = owner.components.follower
+	    local leader = follower and follower:GetLeader() or owner
+
+        if owner.GetModuleTypeCount and leader.components.skilltreeupdater ~= nil and leader.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
+            range = range + owner:GetModuleTypeCount("radar") * TUNING.SKILLS.WX78.RADAR_WAGPUNKRANGE
+        end
     end
 
     return range

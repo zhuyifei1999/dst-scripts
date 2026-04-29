@@ -89,6 +89,7 @@ local assets =
 
     Asset("SOUNDPACKAGE", "sound/WX_rework.fev"),
     Asset("FILE", "sound/WX_rework.fsb"),
+    Asset("FILE", "sound/WX_rework_music.fsb"),
 
     Asset("SOUNDPACKAGE", "sound/monkeyisland.fev"),
     Asset("FILE", "sound/monkeyisland.fsb"),

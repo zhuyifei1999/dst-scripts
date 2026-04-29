@@ -6124,7 +6124,7 @@ return{
 
         SHADOW_HEART_VEIN = "From a heart that knows no peace.",
 
-        WX78_SHADOWDRONE_DEBUFFER = "What if they enemy is my own heart?",
+        WX78_SHADOWDRONE_DEBUFFER = "What if the enemy is my own heart?",
         WX78_SHADOWDRONE_HARVESTER = "When will it be enough?",
     },
 

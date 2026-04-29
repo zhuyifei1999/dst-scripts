@@ -2207,6 +2207,21 @@ local function Scrapbook_IsOnCraftingFilter(filter, entry)
     return table.contains(CRAFTING_FILTERS[string.upper(filter)].recipes, entry)
 end
 
+local IS_A_DRONE =
+{
+    wx78_scanner = true,
+    wx78_scanner_item = true,
+    wx78_drone_scout = true,
+    wx78_drone_delivery = true,
+    wx78_drone_delivery_small = true,
+    wx78_drone_zap = true,
+    wx78_drone_zap_remote = true,
+    wx78_shadowdrone_debuffer = true,
+    wx78_shadowdrone_harvester = true,
+    wagdrone_rolling = true,
+    wagdrone_flying = true,
+}
+
 local function Scrapbook_DefineSubCategory(t)
     local subcat = nil
 
@@ -2248,6 +2263,8 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "backpack"
     elseif t.components.upgrademodule then -- has to be above container
         subcat = "upgrademodule"
+    elseif IS_A_DRONE[t.prefab] then
+        subcat = "drone"
     elseif t:HasTag("chest") or Scrapbook_IsOnCraftingFilter("CONTAINERS", t.prefab) then
         subcat = "container"
     elseif t:HasTag("battlesong") then
@@ -2550,6 +2567,7 @@ end
 local SCRAPBOOK_IGNORE_UNLOCKABILITY =
 {
     worm_boss = true,
+    wx78_backupbody_inventory = true,
 }
 
 local SKIP_SPECIALINFO_CHECK =

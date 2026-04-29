@@ -95,22 +95,6 @@ local function COMMON_GetCanShieldCharge(inst)
     end
 end
 
--- Used for temp ground speed modifier, slow multiplier override, and equippable walk speed modifier
-local function COMMON_ModifySpeedMultiplier(inst, mult) --, item)
-    if inst.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_2") and mult < 1 then
-        -- 3 speed modules reduces a slow debuff to 25% of its original value.
-        local speed_mod_count = inst:GetModuleTypeCount("movespeed", "movespeed2")
-        local denominator = 4
-        local reclaim_speed_penalty = (1 - mult) / denominator
-        return math.min(mult + reclaim_speed_penalty * speed_mod_count, 1)
-    end
-    return mult
-end
-
-local function COMMON_ExtraConfigurePlayerLocomotor(inst)
-    inst.components.locomotor:SetTempGroundSpeedMultiplierModifier(inst.ModifySpeedMultiplier)
-end
-
 local function COMMON_StopUsingDrone(inst)
 	if inst.components.inventory then
 		local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -225,6 +209,12 @@ local function OnLoad(inst, data)
         if data._wx78_shield then
             inst.components.wx78_shield.currentshield = data._wx78_shield
         end
+    end
+    if not inst.is_snapshot_user_session then
+        local socketholder = inst.components.socketholder
+        socketholder.isloading = true -- HACK.
+        WX78Common.RefreshShadowSocketBuffs(inst, nil)
+        socketholder.isloading = nil -- HACK.
     end
 end
 
@@ -545,7 +535,7 @@ local function CustomCombatDamage(inst, target, weapon, multiplier, mount)
 
     local debuffingcount = 0
     for _, debuffer in ipairs(debuffers) do
-        if debuffer.target:value() == target and debuffer.applyingdebuff:value() then
+		if debuffer:IsApplyingDebuffTo(target) then
             debuffingcount = debuffingcount + 1
             debuffer:ApplyUse()
         end
@@ -732,9 +722,6 @@ local function common_postinit(inst)
     inst.GetCurrentShield = COMMON_GetCurrentShield
     inst.GetMaxShield = COMMON_GetMaxShield
     inst.GetCanShieldCharge = COMMON_GetCanShieldCharge
-    inst.ModifySpeedMultiplier = COMMON_ModifySpeedMultiplier -- Also used for locomotor:SetSlowMultiplier in wx78module_defs
-    inst.inventory_EquippableWalkSpeedMultModifier = COMMON_ModifySpeedMultiplier
-    inst.ExtraConfigurePlayerLocomotor = COMMON_ExtraConfigurePlayerLocomotor
     WX78Common.SetupUpgradeModuleOwnerInstanceFunctions(inst)
 	inst.StopUsingDrone = COMMON_StopUsingDrone
     inst.StopInspectingModules = COMMON_StopInspectingModules

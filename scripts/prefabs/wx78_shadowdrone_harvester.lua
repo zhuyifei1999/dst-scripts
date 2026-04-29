@@ -134,12 +134,15 @@ local function fn()
         return inst
     end
 
+    inst.scrapbook_animoffsety = 100
+
 	inst:AddComponent("maprevealable")
 	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
 
     inst:AddComponent("inspectable")
 
     local locomotor = inst:AddComponent("locomotor")
+	locomotor.walkspeed = TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
     locomotor.runspeed = TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
     locomotor.directdrive = true -- using directdrive to bypass pathfinding
     locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0) -- hack speed mult to prevent run_start from moving right away (see stategraph)

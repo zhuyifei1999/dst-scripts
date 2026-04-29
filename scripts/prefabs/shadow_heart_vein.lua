@@ -95,9 +95,7 @@ local function SetupVineLoot(inst, loots)
     end
 end
 
-local function OnChopDown(inst, chopper)
-    inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_wet_sharp")
-
+local function SpawnLoot(inst)
     if inst.vine_loot then
         if inst.vine_loot[1] ~= "EMPTY" then
             local pt = inst:GetPosition()
@@ -105,7 +103,12 @@ local function OnChopDown(inst, chopper)
             inst.components.lootdropper:SpawnLootPrefab(inst.vine_loot[1], pt)
         end
     end
+end
 
+local function OnChopDown(inst, chopper)
+    inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_wet_sharp")
+
+    inst:SpawnLoot()
     inst.persists = false
     inst.AnimState:PlayAnimation("fall_" .. tostring(inst.variation))
     inst:ListenForEvent("animover", inst.Remove)
@@ -134,6 +137,7 @@ local function SetVariation(inst, variation, load)
 end
 
 local function ScheduleForDelete(inst)
+    inst:SpawnLoot()
     if inst:IsAsleep() then
         inst:Remove()
     else
@@ -198,6 +202,7 @@ local function fn()
     workable:SetOnWorkCallback(OnChop)
     workable:SetOnFinishCallback(OnChopDown)
 
+    inst.SpawnLoot = SpawnLoot
     inst.ScheduleForDelete = ScheduleForDelete
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

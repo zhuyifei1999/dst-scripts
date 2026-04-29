@@ -455,15 +455,27 @@ function UpgradeModulesDisplay_Inspecting:UpdateAbilityCooldowns()
 
     if old_override ~= self._overrideenergywithshadow then
         if self._overrideenergywithshadow then
+            self.energy_nightmare_top:Show()
+            self.energy_nightmare:Hide()
+            self.energy_nightmare_glow:UnhookCallback("animover")
+            self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow", true)
             self.energy_backing:Hide()
             self.energy_blinking:Hide()
             self.anim:Hide()
             self.energy_nightmare:Show()
         else
+            self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow_pst")
+            self.energy_nightmare_glow:UnhookCallback("animover")
+            self.energy_nightmare_glow:HookCallback("animover", function()
+                self.energy_nightmare_top:Show()
+                self.energy_nightmare:Hide()
+                self.energy_nightmare_glow:UnhookCallback("animover")
+                self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow", true)
+            end)
             self.energy_backing:Show()
             self.energy_blinking:Show()
             self.anim:Show()
-            self.energy_nightmare:Hide()
+            self.energy_nightmare_top:Hide()
         end
     end
 end

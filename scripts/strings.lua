@@ -17809,6 +17809,7 @@ STRINGS.SCRAPBOOK = {
         SLINGSHOTAMMO = "Slingshot Round",
         SLINGSHOTPART = "Slingshot Part",
         GESTALT = "Gestalt",
+        DRONE = "Drone",
     },
 
     SANITYDESC ={
@@ -17945,7 +17946,7 @@ STRINGS.SCRAPBOOK = {
         BEEF_BELL = "Name and bond with one Beefalo at a time. Bonded Beefalo will follow the holder, even into caves and offline.",
         PLANTABLE_FERTILIZE = "This needs some fertilizing after planting.",
         SCANDATA = "Data is used to craft Circuits for WX-78.",
-        WX78SCANNER = "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished.",
+        WX78SCANNER = "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished.\n\nWX-78 gave this drone the name of Jimmy.",
         MOONEYE = "Always appears on the minimap, even in unexplored areas.",
         BOATPATCH = "Plugs leaks on boats.",
         LIFEINJECTOR = "Restores lost \"maximum health\".",
@@ -18511,6 +18512,8 @@ STRINGS.SCRAPBOOK = {
         WX78_DRONE_DELIVERY = "Stores 6 slots of items, and can be sent to explored areas of the map.\n\nWX-78 gave this drone the name of Drew.",
         WX78_DRONE_ZAP = "Strike terror into those pathetic organics with the Zaptrocuter.\n\nWX-78 gave this drone the name of Jules.",
         WX78_DRONE_SCOUT = "Explore unknown areas of the map with the Roto-Mapper.\n\nWX-78 gave this drone the name of Scott.",
+        WX78_SHADOWDRONE_DEBUFFER = "Crafted by WX-78 imbued with a dark heart, the Exploiterators will scan their target giving WX-78 extra damage on the opponent.\n\nWX-78 gave this drone the name of Vicky.",
+        WX78_SHADOWDRONE_HARVESTER = "Crafted by WX-78 imbued with a dark fuel, the Auto-Grabbers will harvest and pick along with WX-78 and bring them back to them.\n\nWX-78 gave this drone the name of Gary.",
 
         WX78_BACKUPBODY = "A backup chassis for WX-78 to store items, circuits. WX-78 can transfer their consciousness into the chassis.",
 

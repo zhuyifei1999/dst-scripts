@@ -48,7 +48,7 @@ local function GetLeaderTarget(leader) --NOTE: not inst!
 end
 
 local function GetScanTarget(inst)
-	local target = inst.target:value()
+	local target = inst:GetScanTarget()
 	if target and not (target.components.health and target.components.health:IsDead()) then
 		return target
 	end
@@ -58,21 +58,21 @@ local function ShouldScan(self)
 	local leader = GetLeader(self.inst)
 	if leader == nil then
 		self._last_debuff_time = nil
-		self.inst:ClearTarget()
+		self.inst:ClearScanTarget()
 		return false
 	end
 
 	--check leader has current target
 	local leadertarget = GetLeaderTarget(leader)
 	if leadertarget then
-		self.inst:SetTarget(leadertarget)
+		self.inst:SetScanTarget(leadertarget)
 		local target = GetScanTarget(self.inst)
 		if target and leader:IsNear(target, DEBUFF_RANGE_FROM_LEADER) then
 			self._last_debuff_time = GetTime()
 			return true
 		end
 		self._last_debuff_time = nil
-		self.inst:ClearTarget()
+		self.inst:ClearScanTarget()
 		return false
 	end
 
@@ -98,7 +98,7 @@ local function ShouldScan(self)
 	end
 
 	self._last_debuff_time = nil
-	self.inst:ClearTarget()
+	self.inst:ClearScanTarget()
 	return false
 end
 
@@ -150,12 +150,12 @@ function WX78_ShadowDrone_DebufferBrain:OnStart()
                         ActionNode(function()
                             self.inst:PushEventImmediate("ms_wx_shadowdrone_scan")
                         end),
-                    })),
+					}, 0.1)),
                 WX78_ShadowDrone_BrainCommon.FollowFormationNode(self.inst),
                 WX78_ShadowDrone_BrainCommon.WanderNode(self.inst),
-            }, .25)
+			}, 0.1)
         )
-    }, .25)
+	}, 0.1)
 
     self.bt = BT(self.inst, root)
 end

@@ -1135,12 +1135,40 @@ local function OnRemovedPet(inst, pet)
     end
 end
 
+local function FixupPetleashLimits(inst)
+    inst:RemoveEventCallback("entitysleep", FixupPetleashLimits)
+    inst:RemoveEventCallback("entitywake", FixupPetleashLimits)
+    WX78Common.RefreshShadowSocketBuffs(inst, nil)
+end
+
+-- Used for temp ground speed modifier, slow multiplier override, and equippable walk speed modifier
+local function COMMON_ModifySpeedMultiplier(inst, mult) --, item)
+    local follower = inst.components.follower
+    local leader = follower and follower:GetLeader() or inst
+    if (leader.components.skilltreeupdater ~= nil and leader.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_2")) and mult < 1 then
+        -- 3 speed modules reduces a slow debuff to 25% of its original value.
+        local speed_mod_count = inst:GetModuleTypeCount("movespeed", "movespeed2")
+        local denominator = 4
+        local reclaim_speed_penalty = (1 - mult) / denominator
+        return math.min(mult + reclaim_speed_penalty * speed_mod_count, 1)
+    end
+    return mult
+end
+
+local function COMMON_ExtraConfigurePlayerLocomotor(inst) -- Used for possessed body too.
+    inst.components.locomotor:SetTempGroundSpeedMultiplierModifier(inst.ModifySpeedMultiplier)
+end
+
 --------------------------------------------------------------------------
 -- Always LAST!
 local function Initialize_Common(inst)
     MakeInstSocketHolder_Client(inst, 1)
     local socketholder = inst.components.socketholder
     socketholder:SetShouldAllowSocketableFn_CLIENT(ShouldAllowSocketable_CLIENT)
+    if inst.isplayer then
+        --players handle socketholder dropping manually in their stategraph
+        socketholder:DisableDropOnDeath()
+    end
 
     if inst.AnimState then
         inst.AnimState:Hide("shad_veins")
@@ -1151,6 +1179,10 @@ local function Initialize_Common(inst)
         inst.AnimState:Hide("gestalt_die")
         inst.AnimState:Hide("gestalt_flee")
     end
+
+    inst.ModifySpeedMultiplier = COMMON_ModifySpeedMultiplier -- Also used for locomotor:SetSlowMultiplier in wx78module_defs
+    inst.inventory_EquippableWalkSpeedMultModifier = COMMON_ModifySpeedMultiplier
+    inst.ExtraConfigurePlayerLocomotor = COMMON_ExtraConfigurePlayerLocomotor
 end
 local function Initialize_Master(inst)
     inst._gears_eaten = 0
@@ -1190,6 +1222,13 @@ local function Initialize_Master(inst)
         end
         petleash:SetOnSpawnFn(OnSpawnPet)
         petleash:SetOnRemovedFn(OnRemovedPet)
+        -- NOTES(JBK): Set the max limit for each pet here for save and loading so it will fill the pets in the proper channels.
+        petleash:SetMaxPetsForPrefab("wx78_shadowdrone_harvester", TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT_BOOSTED)
+        petleash:SetMaxPetsForPrefab("wx78_shadowdrone_debuffer", TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED)
+        if not inst.isplayer then
+            inst:ListenForEvent("entitywake", FixupPetleashLimits)
+            inst:ListenForEvent("entitysleep", FixupPetleashLimits)
+        end
     end
 end
 WX78Common = {

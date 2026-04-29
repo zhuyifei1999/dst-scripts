@@ -149,8 +149,8 @@ local function ClearWX78ShieldingDefense(inst)
             inst.components.wx78_abilitycooldowns:RestartAbilityCooldown("shielding", TUNING.WX78_SHIELDING_COOLDOWN)
         end
 
-        if inst.sg.statemem.wxshieldingrestoremass ~= nil then
-            inst.Physics:SetMass(inst.sg.statemem.wxshieldingrestoremass)
+        if inst.sg.mem.wxshieldingrestoremass ~= nil then
+            inst.Physics:SetMass(inst.sg.mem.wxshieldingrestoremass)
 		end
 		if inst.sg.mem.wx78shieldtaunttask ~= nil then
 			inst.sg.mem.wx78shieldtaunttask:Cancel()
@@ -160,6 +160,15 @@ local function ClearWX78ShieldingDefense(inst)
         inst.sg.mem.wx78shieldingtime = nil
         inst.sg.mem.wx78shieldhit = nil
 	end
+end
+
+local function IsSkillActivated(wx, skill)
+	local skilltreeupdater = wx.components.skilltreeupdater
+    if skilltreeupdater == nil and wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        skilltreeupdater = leader and leader.components.skilltreeupdater
+    end
+    return skilltreeupdater and skilltreeupdater:IsActivated(skill)
 end
 
 SGWX78Common.AddWX78SpinStates = function(states)
@@ -173,8 +182,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 
             --V2C: HACK so the first loop doesn't skip a frame
             inst.AnimState:PushAnimation(
-                inst.components.skilltreeupdater and
-                inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") and
+                IsSkillActivated(inst, "wx78_circuitry_gammabuffs_2") and
                 "wx_spin_attack_loop" or
                 "wx_spin_attack_loop_slow")
 
@@ -267,8 +275,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 
 		onenter = function(inst, data)
 			local anim =
-				inst.components.skilltreeupdater and
-				inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2") and
+				IsSkillActivated(inst, "wx78_circuitry_gammabuffs_2") and
 				"wx_spin_attack_loop" or
 				"wx_spin_attack_loop_slow"
 
@@ -972,8 +979,7 @@ SGWX78Common.AddWX78ScreechStates = function(states)
         tags = { "doing", "busy" },
 
         onenter = function(inst)
-            local timeout = not (inst.components.skilltreeupdater
-                and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_1"))
+            local timeout = (not IsSkillActivated(inst, "wx78_circuitry_gammabuffs_1"))
                 and (TUNING.WX78_SCREECH_TIME + math.random() * TUNING.WX78_SCREECH_TIME_VAR)
                 or nil
             inst.sg.statemem.timeout = timeout

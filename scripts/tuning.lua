@@ -7473,7 +7473,7 @@ function Tune(overrides)
                 RADAR_WX78_SCANNER_PLAYER_PROX = .8, -- how close the player needs to be.
                 RADAR_WAGPUNKRANGE = 6,
                 SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_RADAR = 1,
-				RADAR_SHADOWDRONE_DEBUFFER_SCAN_RANGE = 0.1,
+				RADAR_SHADOWDRONE_DEBUFFER_SCAN_RANGE = 0.15,
 
                 -- wx78_circuitry_betabuffs_2
                 TASER_MAXBUILDUP = 100,
@@ -7508,7 +7508,7 @@ function Tune(overrides)
                 SCOUTDRONE_RANGE_BONUS = 300,
                 ZAPDRONE_RANGE_2 = 30,
                 SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_SKILLBOOST = 3, -- 3 radar boosts
-				SHADOWDRONE_DEBUFFER_SCAN_RANGE_SKILLBOOST = 0.3, -- 3 radar boosts
+				SHADOWDRONE_DEBUFFER_SCAN_RANGE_SKILLBOOST = 0.45, -- 3 radar boosts
                 -- wx78_deliverydrone_1
                 DELIVERYDRONE_SPEED = 30,
                 -- wx78_deliverydrone_2
@@ -7531,12 +7531,12 @@ function Tune(overrides)
 
                 POSSESSEDBODY_LUNAR_RESIST = 0.9,
                 POSSESSEDBODY_VS_SHADOW_BONUS = 1.1,
-                POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.5,
+                POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 2 / 3,
                 POSSESSEDBODY_DAMAGE_MULT = 0.5,
                 POSSESSEDBODY_PLANAR_DAMAGE_MULT = 0.5,
                 POSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.25,
 
-                PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.25,
+                PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 1 / 3,
                 PLANARPOSSESSEDBODY_DAMAGE_MULT = 0.5,
                 PLANARPOSSESSEDBODY_PLANAR_DAMAGE_MULT = 1,
                 PLANARPOSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.5,
@@ -7563,12 +7563,13 @@ function Tune(overrides)
                 -- SOCKETQUALITY.HIGH == shadowheart
                 -- drones
                 SHADOWDRONE_DEBUFFER_LIMIT = 3,
-                SHADOWDRONE_DEBUFFER_SPEED = 6,
-				SHADOWDRONE_DEBUFFER_SCAN_RANGE = 2.5,
-				SHADOWDRONE_DEBUFFER_SCAN_RANGE_MAX = 4,
+				SHADOWDRONE_DEBUFFER_WALKSPEED = 6,
+				SHADOWDRONE_DEBUFFER_RUNSPEED = 7,
+				SHADOWDRONE_DEBUFFER_SCAN_RANGE = 3,
+				SHADOWDRONE_DEBUFFER_SCAN_RANGE_MAX = 4.5,
                 --
                 SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED = 4,
-                SHADOWDRONE_DEBUFFER_SPEED_BOOSTED = 8,
+				SHADOWDRONE_DEBUFFER_RUNSPEED_BOOSTED = 8,
                 --
                 SHADOWDRONE_DAMAGEMULT_PER_DRONE = 0.06,
                 -- vein harvests

@@ -868,6 +868,8 @@ local function fn()
     inst.AttachClassified_wx78 = AttachClassified_wx78
     inst.DetachClassified_wx78 = DetachClassified_wx78
 
+    inst.scrapbook_proxy = "wx78_backupbody_inventory"
+
     WX78Common.Initialize_Common(inst)
     inst.entity:SetPristine()
 
@@ -955,13 +957,6 @@ local function fn()
     inst.ApplySavedStatsToDoer = ApplySavedStatsToDoer
 
     WX78Common.Initialize_Master(inst)
-
-    if POPULATING then
-        -- NOTES(JBK): Set the max limit for each pet here for save and loading so it will fill the pets in the proper channels.
-        local petleash = inst.components.petleash
-        petleash:SetMaxPetsForPrefab("wx78_shadowdrone_harvester", TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT_BOOSTED)
-        petleash:SetMaxPetsForPrefab("wx78_shadowdrone_debuffer", TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED)
-    end
 
     return inst
 end

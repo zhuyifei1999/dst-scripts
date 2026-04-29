@@ -52,18 +52,29 @@ end
 --
 
 local function IsSkillActivated(wx, skill)
-    return wx.components.skilltreeupdater and wx.components.skilltreeupdater:IsActivated(skill)
+    local skilltreeupdater = wx.components.skilltreeupdater
+    if skilltreeupdater == nil and wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        skilltreeupdater = leader and leader.components.skilltreeupdater
+    end
+    return skilltreeupdater and skilltreeupdater:IsActivated(skill)
 end
 
 local function Circuit_SetUpSkillCb(inst, wx, skillnames, activatecb, deactivatecb, isloading)
     local is_one_skill = type(skillnames) == "string"
-    if wx.components.skilltreeupdater then
+    local skilltreeupdater = wx.components.skilltreeupdater
+    if skilltreeupdater == nil and wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        skilltreeupdater = leader and leader.components.skilltreeupdater
+    end
+
+    if skilltreeupdater then
         local do_activate = false
         if is_one_skill then
-            do_activate = wx.components.skilltreeupdater:IsActivated(skillnames)
+            do_activate = skilltreeupdater:IsActivated(skillnames)
         else
             for skill in pairs(skillnames) do
-                if wx.components.skilltreeupdater:IsActivated(skill) then
+                if skilltreeupdater:IsActivated(skill) then
                     do_activate = true
                     break
                 end
@@ -88,8 +99,31 @@ local function Circuit_SetUpSkillCb(inst, wx, skillnames, activatecb, deactivate
             inst._circuit_skill_activated = nil
         end
     end
-    inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, wx)
-    inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+
+    if wx.isplayer then
+        inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, wx)
+        inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+    elseif wx.components.follower ~= nil then
+        inst._onleaderchanged_handler = function(_, data)
+            local oldleader = data.old
+            if oldleader ~= nil then
+                inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, oldleader)
+                inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, oldleader)
+            end
+
+            local newleader = data.new
+            if newleader ~= nil then
+                inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, newleader)
+                inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, newleader)
+            end
+        end
+        local leader = wx.components.follower:GetLeader()
+        if leader ~= nil then
+            inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, leader)
+            inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, leader)
+        end
+        inst:ListenForEvent("leaderchanged", inst._onleaderchanged_handler, wx)
+    end
 end
 
 local function Circuit_DestroySkillCb(inst, wx)
@@ -97,10 +131,20 @@ local function Circuit_DestroySkillCb(inst, wx)
         inst._ondeactivateskill_handler(wx, { force = true })
     end
 
-    inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, wx)
-    inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+    if wx.isplayer then
+        inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, wx)
+        inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+    elseif wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        if leader ~= nil then
+            inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, leader)
+            inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, leader)
+        end
+        inst:RemoveEventCallback("leaderchanged", inst._onleaderchanged_handler, wx)
+    end
     inst._onactivateskill_handler = nil
     inst._ondeactivateskill_handler = nil
+    inst._onleaderchanged_handler = nil
 end
 
 ---------------------------------------------------------------
@@ -795,20 +839,17 @@ local HUNGER_BUFF_SKILLS =
     ["wx78_circuitry_alphabuffs_1"] = true,
     ["wx78_circuitry_alphabuffs_2"] = true,
 }
-local function maxhunger_skill_activate(inst, wx, isloading)
-    if inst._hunger_skill_burnrate_modifiers ~= nil then
-        local index =
-            IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") and 2 or
-            IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1") and 1
-        if wx.components.hunger then
-            wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_skill_burnrate_modifiers[index])
-        end
-    end
-end
 
-local function maxhunger_skill_deactivate(inst, wx)
+local function maxhunger_skill_refresh(inst, wx, isloading)
     if wx.components.hunger then
-        wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_module_burnrate or 1)
+        if inst._hunger_skill_burnrate_modifiers ~= nil and (IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") or IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1")) then
+            local index =
+                IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") and 2 or
+                IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1") and 1
+            wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_skill_burnrate_modifiers[index])
+        else
+            wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_module_burnrate or 1)
+        end
     end
 end
 
@@ -834,7 +875,7 @@ local function maxhunger_activate(inst, wx, isloading)
     inst._hunger_module_burnrate = TUNING.WX78_MAXHUNGER_SLOWPERCENT
     inst._hunger_skill_burnrate_modifiers = MAXHUNGER_SKILL_BURNRATE_MODIFIERS
     maxhunger_change(inst, wx, TUNING.WX78_MAXHUNGER_BOOST, isloading)
-    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_activate, maxhunger_skill_deactivate, isloading)
+    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_refresh, maxhunger_skill_refresh, isloading)
 end
 
 local function maxhunger_deactivate(inst, wx)
@@ -1473,12 +1514,14 @@ AddCreatureScanDataDefinition("catcoon", "digestion", 2)
 ---------------------------------------------------------------
 
 local function spin_overriderange(wx, override)
-	wx.components.combat:SetRange(override or TUNING.DEFAULT_ATTACK_RANGE, wx.components.combat.hitrange)
+    if wx.components.combat then
+	    wx.components.combat:SetRange(override or TUNING.DEFAULT_ATTACK_RANGE, wx.components.combat.hitrange)
+    end
 end
 
 local function spin_checktool(wx, data)
 	if data == nil or data.eslot == EQUIPSLOTS.HANDS then
-		local item = wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		local item = wx.components.inventory and wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		spin_overriderange(wx, WX78Common.CanSpinUsingItem(item) and TUNING.WX78_SPIN_START_RANGE or nil)
 	end
 end

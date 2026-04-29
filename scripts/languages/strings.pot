@@ -151490,7 +151490,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
-msgid "What if they enemy is my own heart?"
+msgid "What if the enemy is my own heart?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
@@ -350720,7 +350720,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78SCANNER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78SCANNER"
-msgid "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished."
+msgid "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished.\n\nWX-78 gave this drone the name of Jimmy."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_BACKUPBODY
@@ -350756,6 +350756,16 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_GESTALTTRAPPER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_GESTALTTRAPPER"
 msgid "Install on a Backup Chassis to lure a gestalt over and possess it, for your very own spectrobotic minion!"
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Crafted by WX-78 imbued with a dark heart, the Exploiterators will scan their target giving WX-78 extra damage on the opponent.\n\nWX-78 gave this drone the name of Vicky."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_HARVESTER"
+msgid "Crafted by WX-78 imbued with a dark fuel, the Auto-Grabbers will harvest and pick along with WX-78 and bring them back to them.\n\nWX-78 gave this drone the name of Gary."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.YELLOWAMULET
@@ -350826,6 +350836,11 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SUBCATS.CRAFTINGSTATION
 msgctxt "STRINGS.SCRAPBOOK.SUBCATS.CRAFTINGSTATION"
 msgid "Crafting Station"
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SUBCATS.DRONE
+msgctxt "STRINGS.SCRAPBOOK.SUBCATS.DRONE"
+msgid "Drone"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SUBCATS.ELEMENT

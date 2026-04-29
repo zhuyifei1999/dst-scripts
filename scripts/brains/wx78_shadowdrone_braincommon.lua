@@ -42,7 +42,7 @@ WX78_ShadowDrone_BrainCommon.ShouldHoldFormation = ShouldHoldFormation
 WX78_ShadowDrone_BrainCommon.FollowFormationNode = function(inst)
     return WhileNode(function() return WX78_ShadowDrone_BrainCommon.ShouldHoldFormation(inst) end, "HoldFormation",
     PriorityNode({
-        NotDecorator(FailIfSuccessDecorator(Leash(inst, GetShadowDronePos, 0.5, 0.5, true))),
+		NotDecorator(FailIfSuccessDecorator(Leash(inst, GetShadowDronePos, 0.5, 0.5))),
     }, .5))
 end
 
@@ -51,7 +51,7 @@ end
 local MAX_WANDER_DIST = 8
 
 WX78_ShadowDrone_BrainCommon.WanderNode = function(inst)
-	return Wander(inst, WX78_ShadowDrone_BrainCommon.GetLeaderPos, MAX_WANDER_DIST, nil, nil, nil, nil, { should_run = true })
+	return Wander(inst, WX78_ShadowDrone_BrainCommon.GetLeaderPos, MAX_WANDER_DIST)
 end
 
 ---------------------------------------------------------------------------------------------------
