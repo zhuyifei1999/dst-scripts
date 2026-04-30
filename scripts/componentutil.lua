@@ -1129,6 +1129,21 @@ end
 -------
 -- Flying checks for restrictions.
 
+function IsFlyingPermittedFromPointToPoint_BypassVault(fx, fy, fz, tx, ty, tz)
+    -- Entities using this must have staysthroughvirtualrooms tag!
+    local map = TheWorld.Map
+
+    if map:IsWagPunkArenaBarrierUp() then
+        if map:IsPointInWagPunkArena(fx, fy, fz) then
+            return map:IsPointInWagPunkArena(tx, ty, tz)
+        end
+    end
+
+    -- No vault check.
+
+    return true
+end
+
 function IsFlyingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
     local map = TheWorld.Map
 

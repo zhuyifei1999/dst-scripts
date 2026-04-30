@@ -62,17 +62,104 @@ local function ShadowSlot_OnLoseFocus(self, ...)
 end
 
 local function DoHeartBeat(inst)
-	TheFrontEnd:GetSound():PlaySound("dontstarve/sanity/shadow_heart")
+	local self = inst.widget
+	self.shadow_slot_item:GetAnimState():PlayAnimation("shadow_heart_chip_beat")
+	local animdata = self.shadow_slot_item_oldanimdata
+	if animdata and animdata.idle_anim then
+		self.shadow_slot_item:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops or false)
+	end
+	TheFrontEnd:GetSound():PlaySound("dontstarve/sanity/shadow_heart_HUD")
 	inst.beattask = inst:DoTaskInTime(0.75 + math.random() * 0.75, DoHeartBeat)
 end
 
 local function ShadowSlotItem_StartBeatingHeart(self)
 	if self.inst.beattask == nil then
-		self.inst.beattask = self.inst:DoTaskInTime(0.75 + math.random() * 0.75, DoHeartBeat)
+		self.inst.beattask = self.inst:DoTaskInTime(0.2 + math.random() * 0.5, DoHeartBeat)
 	end
 end
 
 local function ShadowSlotItem_StopBeatingHeart(self)
+	if self.inst.beattask then
+		self.inst.beattask:Cancel()
+		self.inst.beattask = nil
+	end
+end
+
+local function DoHeartBeat_Infused(inst)
+	local self = inst.widget
+	self.shadow_slot_item:GetAnimState():PlayAnimation("shadow_heart_chip_beat")
+	if self.shadow_slot_item.heart then
+		self.shadow_slot_item.heart:GetAnimState():PlayAnimation("shadow_heart_chip_beat")
+	end
+	local animdata = self.shadow_slot_item_oldanimdata
+	if animdata and animdata.idle_anim then
+		self.shadow_slot_item:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops or false)
+		if self.shadow_slot_item.heart then
+			self.shadow_slot_item.heart:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops or false)
+		end
+	end
+	TheFrontEnd:GetSound():PlaySound("dontstarve/sanity/shadow_heart_HUD")
+	inst.beattask = inst:DoTaskInTime(0.75 + math.random() * 0.75, DoHeartBeat_Infused)
+end
+
+local function ShadowSlotItem_StartBeatingHeart_Infused(self)
+	self.shadow_slot_item:GetAnimState():Hide("plug")
+
+	if self.shadow_slot_item.fx == nil then
+		self.shadow_slot_item.fx = self.shadow_slot_item:AddChild(UIAnim())
+		self.shadow_slot_item.fx:SetClickable(false)
+		self.shadow_slot_item.fx:GetAnimState():SetBank("status_wx_chest_shadow")
+		self.shadow_slot_item.fx:GetAnimState():SetBuild("status_wx_chest_shadow")
+		self.shadow_slot_item.fx:GetAnimState():PlayAnimation("shadow_heart_infused_chip_fx", true)
+		self.shadow_slot_item.fx:GetAnimState():Hide("focus")
+		if self.shadow_slot_item.focuschildren == nil then
+			self.shadow_slot_item.focuschildren = { self.shadow_slot_item.fx }
+		else
+			table.insert(self.shadow_slot_item.focuschildren, self.shadow_slot_item.fx)
+		end
+	end
+
+	local animdata = self.shadow_slot_item_oldanimdata
+	if animdata and animdata.idle_anim then
+		if self.shadow_slot_item.heart == nil then
+			self.shadow_slot_item.heart = self.shadow_slot_item:AddChild(UIAnim())
+			self.shadow_slot_item.heart:SetClickable(false)
+			self.shadow_slot_item.heart:GetAnimState():SetBank("status_wx_chest_shadow")
+			self.shadow_slot_item.heart:GetAnimState():SetBuild("status_wx_chest_shadow")
+			self.shadow_slot_item.heart:GetAnimState():Hide("focus")
+		end
+		if animdata.plug_anim then
+			self.shadow_slot_item.heart:GetAnimState():PlayAnimation(animdata.plug_anim)
+			self.shadow_slot_item.heart:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops or false)
+		else
+			self.shadow_slot_item.heart:GetAnimState():PlayAnimation(animdata.idle_anim, animdata.loops)
+		end
+	end
+
+	if self.inst.beattask == nil then
+		self.inst.beattask = self.inst:DoTaskInTime(0.2 + math.random() * 0.5, DoHeartBeat_Infused)
+	end
+end
+
+local function ShadowSlotItem_StopBeatingHeart_Infused(self)
+	self.shadow_slot_item:GetAnimState():Show("plug")
+
+	if self.shadow_slot_item.fx then
+		if self.shadow_slot_item.focuschildren then
+			table.removearrayvalue(self.shadow_slot_item.focuschildren, self.shadow_slot_item.fx)
+			if #self.shadow_slot_item.focuschildren <= 0 then
+				self.shadow_slot_item.focuschildren = nil
+			end
+		end
+		self.shadow_slot_item.fx:Kill()
+		self.shadow_slot_item.fx = nil
+	end
+
+	if self.shadow_slot_item.heart then
+		self.shadow_slot_item.heart:Kill()
+		self.shadow_slot_item.heart = nil
+	end
+
 	if self.inst.beattask then
 		self.inst.beattask:Cancel()
 		self.inst.beattask = nil
@@ -89,8 +176,8 @@ local SOCKETQUALITY_TO_ANIMS = {
 			plug_anim = "nightmare_fuel_chip_plug",
 			idle_anim = "nightmare_fuel_chip_idle",
 			loops = true,
-			--plug_sound = "xxx/yyy",
-			--unplug_sound = "xxx/yyy",
+			plug_sound = "WX_rework/module_tray/shadowfuel_implant",
+			unplug_sound = "WX_rework/module_tray/shadow_unplug",
 		},
 		[SOCKETQUALITY.MEDIUM] =
 		{
@@ -99,17 +186,16 @@ local SOCKETQUALITY_TO_ANIMS = {
 			plug_anim = "horror_fuel_chip_plug",
 			idle_anim = "horror_fuel_chip_idle",
 			loops = true,
-			--plug_sound = "xxx/yyy",
-			--unplug_sound = "xxx/yyy",
+			plug_sound = "WX_rework/module_tray/shadowfuel_implant",
+			unplug_sound = "WX_rework/module_tray/shadow_unplug",
 		},
 		[SOCKETQUALITY.HIGH] = {
 			bank = "status_wx_chest_shadow",
 			build = "status_wx_chest_shadow",
 			plug_anim = "shadow_heart_chip_plug",
 			idle_anim = "shadow_heart_chip_idle",
-			loops = true,
-			--plug_sound = "xxx/yyy",
-			--unplug_sound = "xxx/yyy",
+			plug_sound = "WX_rework/module_tray/shadowheart_implant",
+			unplug_sound = "WX_rework/module_tray/shadow_unplug",
 			initfn = ShadowSlotItem_StartBeatingHeart,
 			clearfn = ShadowSlotItem_StopBeatingHeart,
 		},
@@ -118,12 +204,11 @@ local SOCKETQUALITY_TO_ANIMS = {
 			bank = "status_wx_chest_shadow",
 			build = "status_wx_chest_shadow",
 			plug_anim = "shadow_heart_infused_chip_plug",
-			idle_anim = "shadow_heart_infused_chip_idle",
-			loops = true,
-			--plug_sound = "xxx/yyy",
-			--unplug_sound = "xxx/yyy",
-			initfn = ShadowSlotItem_StartBeatingHeart,
-			clearfn = ShadowSlotItem_StopBeatingHeart,
+			idle_anim = "shadow_heart_chip_idle",
+			plug_sound = "WX_rework/module_tray/shadowheart2_implant",
+			unplug_sound = "WX_rework/module_tray/shadow_unplug",
+			initfn = ShadowSlotItem_StartBeatingHeart_Infused,
+			clearfn = ShadowSlotItem_StopBeatingHeart_Infused,
 		},
     },
 }
@@ -208,7 +293,7 @@ local UpgradeModulesDisplay_Inspecting = Class(Widget, function(self, owner, con
                     self.shadow_slot_item:GetAnimState():SetBuild(animdata.build)
 					if animdata.plug_anim then
 						self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.plug_anim)
-						self.shadow_slot_item:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops)
+						self.shadow_slot_item:GetAnimState():PushAnimation(animdata.idle_anim, animdata.loops or false)
 					else
 						self.shadow_slot_item:GetAnimState():PlayAnimation(animdata.idle_anim, animdata.loops)
 					end
@@ -1389,6 +1474,11 @@ function UpgradeModulesDisplay_Inspecting:SetShadowSlotFocus(focus)
 		self.shadow_slot:SetTooltip(STRINGS.UI.UPGRADEMODULEDISPLAY.UNSOCKET)
         if self.shadow_slot_item_isvalid then
             self.shadow_slot_item:GetAnimState():Show("focus")
+			if self.shadow_slot_item.focuschildren then
+				for _, v in ipairs(self.shadow_slot_item.focuschildren) do
+					v:GetAnimState():Show("focus")
+				end
+			end
         end
 	else
 		if not self:IsBusy() then
@@ -1410,6 +1500,11 @@ function UpgradeModulesDisplay_Inspecting:SetShadowSlotFocus(focus)
 		self.shadow_slot:SetTooltip(nil)
         if self.shadow_slot_item_isvalid then
             self.shadow_slot_item:GetAnimState():Hide("focus")
+			if self.shadow_slot_item.focuschildren then
+				for _, v in ipairs(self.shadow_slot_item.focuschildren) do
+					v:GetAnimState():Hide("focus")
+				end
+			end
         end
 	end
 end

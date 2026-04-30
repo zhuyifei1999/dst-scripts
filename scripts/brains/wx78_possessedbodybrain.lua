@@ -386,7 +386,7 @@ local function SetTargetOnLeaderTarget(inst)
     local leader = GetLeader(inst)
     if leader ~= nil then
         local leaderact, leadertarget = GetLeaderAction(leader)
-        if leaderact == ACTIONS.ATTACK then
+        if leaderact == ACTIONS.ATTACK and leadertarget ~= nil then
             inst.components.combat:SetTarget(leadertarget)
             EquipBestWeapon(inst, leadertarget)
         elseif leader.components.combat.target ~= nil then

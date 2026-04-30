@@ -105,6 +105,44 @@ end
 
 --------------------------------------------------------------------------
 
+local function EndPhysTask(inst)
+	inst._phystask = nil
+	inst.Physics:SetActive(false)
+end
+
+local function PreventStuckInObstacle(inst)
+	if inst._phystask then
+		inst._phystask:Cancel()
+		inst._phystask = nil
+	end
+	if not inst:IsAsleep() then
+		local x, _, z = inst.Transform:GetWorldPosition()
+		inst.Physics:SetActive(true)
+		inst.Physics:Teleport(x, 0, z)
+		inst._phystask = inst:DoTaskInTime(0.1, EndPhysTask)
+		inst._deferred_stuck_prevention = nil
+	else
+		inst._deferred_stuck_prevention = true
+	end
+end
+
+local function CancelStuckPrevention(inst)
+	inst._deferred_stuck_prevention = nil
+	if inst._phystask then
+		inst._phystask:Cancel()
+		inst._phystask = nil
+	end
+	inst.Physics:SetActive(false)
+end
+
+local function OnEntityWake(inst)
+	if inst._deferred_stuck_prevention then
+		PreventStuckInObstacle(inst)
+	end
+end
+
+--------------------------------------------------------------------------
+
 local function SetFlying(inst, flying)
 	if flying then
 		inst:RemoveTag("structure")
@@ -177,6 +215,7 @@ local function OnStartDelivery(inst, dest, doer)
 		return false
 	end
 	inst._sender = doer
+	CancelStuckPrevention(inst)
 	SetFlying(inst, true)
 	SetInteractable(inst, false)
 	ShowFlyingShadow(inst, true)
@@ -261,7 +300,7 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
 		end
         local x, _, z = inst.Transform:GetWorldPosition()
         local desiredx, desiredz = origin.x + k * dx, origin.z + k * dz
-        if IsFlyingPermittedFromPointToPoint(x, 0, z, desiredx, 0, desiredz) then
+        if IsFlyingPermittedFromPointToPoint_BypassVault(x, 0, z, desiredx, 0, desiredz) then
             inst.Transform:SetPosition(desiredx, 0, desiredz)
         else
             inst.components.mapdeliverable:Stop()
@@ -303,6 +342,7 @@ local function OnLanded(inst) --delivery, not floater stuff!
 end
 
 local function OnStopDelivery(inst)
+	PreventStuckInObstacle(inst)
 	ShowFlyingShadow(inst, true)
 	inst:Show()
 	inst.components.spawnfader:FadeIn()
@@ -515,6 +555,13 @@ local function MakeDrone(name, numcols, numrows, required_skill)
 		inst.entity:AddMiniMapEntity()
 		inst.entity:AddNetwork()
 
+		MakeInventoryPhysics(inst, 50, 1)
+		inst.Physics:SetActive(false)
+		inst.Physics:SetCollisionMask(
+			COLLISION.WORLD,
+			COLLISION.OBSTACLES,
+			COLLISION.SMALLOBSTACLES)
+
 		inst.MiniMapEntity:SetIcon(name..".png")
 
 		inst.AnimState:SetBank(name)
@@ -589,6 +636,7 @@ local function MakeDrone(name, numcols, numrows, required_skill)
 
 		inst.OnSave = OnSave
 		inst.OnLoad = OnLoad
+		inst.OnEntityWake = OnEntityWake
 		inst.OnLoadPostPass = OnLoadPostPass
 
 		return inst

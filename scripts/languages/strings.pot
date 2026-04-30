@@ -364383,6 +364383,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_hutch_costumep"
 msgid "It's a Hutch hatch, for your head!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.hat_ice_pengulls
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_ice_pengulls"
+msgid "The most dignified way to cool down."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.hat_ice_shark
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_ice_shark"
 msgid "You'll be so cool with this chiselled jaw."
@@ -369431,6 +369436,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_all
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_all"
 msgid "This Chest contains the WX-78 Pretty Dark Things Chest, and WX-78's complete set of Archaic skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_shadowdrones
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_shadowdrones"
+msgid "This Chest contains the following WX-78 skin items: Ominous Exploiterator, Elegant Exploiterator, Gloomy Auto-Grabber, and Opulent Auto-Grabber."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_masquerade
@@ -376406,6 +376416,26 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadow"
 msgid "This robot was evil before. Now they're double evil."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_gothic"
+msgid "It waits, watching for weakness."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_jewelbox"
+msgid "It silently appraises your enemy's flaws."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_gothic"
+msgid "It goes about its gathering with grim purpose."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_jewelbox"
+msgid "It's not entitlement if it already belongs to you."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowp
@@ -383898,6 +383928,11 @@ msgctxt "STRINGS.SKIN_NAMES.hat_hutch_costumep"
 msgid "Hutch Head Disguise"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.hat_ice_pengulls
+msgctxt "STRINGS.SKIN_NAMES.hat_ice_pengulls"
+msgid "Pengull Ice Cube"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.hat_ice_shark
 msgctxt "STRINGS.SKIN_NAMES.hat_ice_shark"
 msgid "Jawesome Ice Cube"
@@ -388946,6 +388981,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_all
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_all"
 msgid "WX-78 Pretty Dark Idolatry Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_shadowdrones
+msgctxt "STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_shadowdrones"
+msgid "WX-78 Pretty Dark Presence Chest"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.pack_wx78_masquerade
@@ -395923,6 +395963,26 @@ msgctxt "STRINGS.SKIN_NAMES.wx78_shadow"
 msgid "The Triumphant"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_gothic"
+msgid "Ominous Exploiterator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_jewelbox"
+msgid "Elegant Exploiterator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_gothic"
+msgid "Gloomy Auto-Grabber"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_jewelbox"
+msgid "Opulent Auto-Grabber"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wx78_shadowp
 msgctxt "STRINGS.SKIN_NAMES.wx78_shadowp"
 msgid "The Triumphant"
@@ -399626,6 +399686,16 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SCANNER
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SCANNER"
 msgid "Bio Scanalyzer"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEDEBUFFER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEDEBUFFER"
+msgid "Exploiterator"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEHARVESTER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEHARVESTER"
+msgid "Auto-Grabber"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.YELLOWSTAFF

@@ -946,9 +946,6 @@ local function MakeWarg(data)
 		else
 			inst.components.health:SetMaxHealth(TUNING.WARG_HEALTH)
 		end
-		if not is_clay and not is_mutated then
-			inst.components.health.nofadeout = true
-		end
 
         inst:AddComponent("sanityaura")
         inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE

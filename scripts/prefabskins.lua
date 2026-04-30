@@ -1017,6 +1017,7 @@ PREFAB_SKINS = {
 	},
 	icehat =
 	{
+		"hat_ice_pengulls",
 		"hat_ice_shark",
 	},
 	icepack =
@@ -2775,6 +2776,16 @@ PREFAB_SKINS = {
 		"wx78_scanner_succeeded_gothic",
 		"wx78_scanner_succeeded_jewelbox",
 		"wx78_scanner_succeeded_junky",
+	},
+	wx78_shadowdrone_debuffer =
+	{
+		"wx78_shadowdrone_debuffer_gothic",
+		"wx78_shadowdrone_debuffer_jewelbox",
+	},
+	wx78_shadowdrone_harvester =
+	{
+		"wx78_shadowdrone_harvester_gothic",
+		"wx78_shadowdrone_harvester_jewelbox",
 	},
 	yellowamulet =
 	{

@@ -187,7 +187,7 @@ local function fn()
 
 	inst.Transform:SetFourFaced()
 
-	inst.MiniMapEntity:SetIcon("wx78_shadowdrone_harvester.png")
+	inst.MiniMapEntity:SetIcon("wx78_shadowdrone_debuffer.png")
 	inst.MiniMapEntity:SetCanUseCache(false)
 
 	inst.DynamicShadow:SetSize(1.2, 0.75)

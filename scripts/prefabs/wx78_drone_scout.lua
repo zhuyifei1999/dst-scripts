@@ -158,7 +158,7 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
 	z = origin.z + k * dz
 	inst.Transform:SetPosition(x, y, z)
 
-	if not inst:IsAsleep() then
+	--if not inst:IsAsleep() then
 		local vx, vy, vz = inst.Physics:GetMotorVel()
 		if k1 > k then
 			--assert(FRAMES == 1 / 30)
@@ -167,7 +167,7 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
 		else
 			inst.Physics:SetMotorVel(0, vy, 0)
 		end
-	end
+	--end
 
 	--[[if t + 0.8 > len and inst.sg:HasStateTag("moving") then
 		inst.sg:GoToState("run_stop")
@@ -178,7 +178,7 @@ local function OnDeliveryProgress(inst, t, len, origin, dest)
         if not isscanning then
             SetScanning(inst, true)
             inst:Show()
-            if not inst.SoundEmitter:PlayingSound("idle") then
+			if not (inst.SoundEmitter:PlayingSound("idle") or inst:IsAsleep()) then
                 inst.SoundEmitter:PlaySound("rifts5/wagdrone_flying/idle", "idle")
             end
         end
@@ -204,10 +204,10 @@ end
 
 local function OnStopDelivery(inst, dest)
 	inst._x, inst._z = nil, nil
-	if not inst:IsAsleep() then
+	--if not inst:IsAsleep() then
 		local _, vy, _ = inst.Physics:GetMotorVel()
 		inst.Physics:SetMotorVel(0, vy, 0)
-	end
+	--end
 	--[[if inst.sg:HasStateTag("moving") then
 		inst.sg:GoToState("run_stop", inst.sg.statemem.t)
 	end]]

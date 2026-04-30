@@ -1,5 +1,59 @@
 require("stategraphs/commonstates")
 
+local function ResetSpeed(inst)
+	local owner = inst.components.follower:GetLeader()
+	local socketquality = owner and owner.components.socketholder and owner.components.socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) or SOCKETQUALITY.LOW
+	inst.components.locomotor.runspeed =
+		socketquality == SOCKETQUALITY.MEDIUM and
+		TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED_BOOSTED or
+		TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
+
+	inst.components.locomotor.walkspeed = TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
+end
+
+local function UpdateSpeed(inst)--, dt)
+	local owner = inst.components.follower:GetLeader()
+	local ownerspeed = owner and owner.components.locomotor and owner.components.locomotor:GetRunSpeed()
+
+	if inst.sg:HasStateTag("running") then
+		local socketquality = owner and owner.components.socketholder and owner.components.socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) or SOCKETQUALITY.LOW
+		local speed =
+			socketquality == SOCKETQUALITY.MEDIUM and
+			TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED_BOOSTED or
+			TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
+
+		local buffaction = inst:GetBufferedAction()
+		local target = buffaction and buffaction.target
+		if ownerspeed and target == owner then
+			if ownerspeed > speed then
+				local dsq = inst:GetDistanceSqToInst(owner)
+				local rsq = TUNING.SKILLS.WX78.SHADOWDRONE_FOLLOW_RADIUS
+				local rsq = rsq * rsq
+				speed = math.clamp(Remap(dsq, rsq, rsq * 9, speed, ownerspeed), speed, ownerspeed)
+			end
+			inst.components.locomotor.runspeed = inst.components.locomotor.runspeed * 0.9 + speed * 0.1
+		else
+			inst.components.locomotor.runspeed = speed
+		end
+	else
+		local speed = TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
+
+		if ownerspeed then
+			if ownerspeed ~= speed then
+				local minspeed = math.min(speed, ownerspeed)
+				local maxspeed = math.max(speed, ownerspeed)
+				local dsq = inst:GetDistanceSqToInst(owner)
+				local rsq = TUNING.SKILLS.WX78.SHADOWDRONE_FOLLOW_RADIUS
+				local rsq = rsq * rsq
+				speed = math.clamp(Remap(dsq, rsq, rsq * 9, minspeed, maxspeed), minspeed, maxspeed)
+			end
+			inst.components.locomotor.walkspeed = inst.components.locomotor.walkspeed * 0.9 + speed * 0.1
+		else
+			inst.components.locomotor.walkspeed = speed
+		end
+	end
+end
+
 local actionhandlers =
 {
 	ActionHandler(ACTIONS.PICK, "take"),
@@ -13,7 +67,27 @@ local actionhandlers =
 
 local events =
 {
-	CommonHandlers.OnLocomote(true, false),
+	EventHandler("locomote", function(inst)
+		if inst.components.locomotor:WantsToMoveForward() then
+			if inst.sg:HasStateTag("moving") then
+				if inst.components.locomotor:WantsToRun() then
+					if not inst.sg:HasStateTag("running") then
+						inst.sg:AddStateTag("running")
+						UpdateSpeed(inst)
+						inst.components.locomotor:RunForward()
+					end
+				elseif inst.sg:HasStateTag("running") then
+					inst.sg:RemoveStateTag("running")
+					UpdateSpeed(inst)
+					inst.components.locomotor:WalkForward()
+				end
+			elseif inst.sg:HasStateTag("idle") then
+				inst.sg:GoToState("run_start")
+			end
+		elseif inst.sg:HasStateTag("moving") then
+			inst.sg:GoToState("run_stop")
+		end
+	end),
 	EventHandler("spawned", function(inst, data)
 		if not inst.sg:HasStateTag("busy") then
 			inst.sg:GoToState("spawndelay", data and data.delay or 0)
@@ -44,9 +118,12 @@ local states =
 		name = "idle",
 		tags = { "idle", "canrotate" },
 
-		onenter = function(inst, t)
+		onenter = function(inst, randomize)
 			inst.components.locomotor:StopMoving()
 			inst.AnimState:PlayAnimation("idle_loop", true)
+			if randomize then
+				inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+			end
 			if not (inst.sg.mem.delaycattoytask or inst:HasTag("cattoyairborne")) then
 				inst:AddTag("cattoyairborne")
 			end
@@ -62,7 +139,9 @@ local states =
 			inst:Hide()
 			inst.DynamicShadow:Enable(false)
 			inst.Physics:SetActive(false)
-			if delay and delay > 0 then
+			if POPULATING then
+				inst.sg.statemem.instant = true
+			elseif delay and delay > 0 then
 				inst.sg.statemem.delay = true
 				inst.sg:SetTimeout(delay)
 			end
@@ -71,14 +150,9 @@ local states =
 		timeline =
 		{
 			FrameEvent(0, function(inst)
-				local owner = inst.components.follower and inst.components.follower:GetLeader()
+				ResetSpeed(inst)
 
-				local socketquality = owner and owner.components.socketholder and owner.components.socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) or SOCKETQUALITY.LOW
-				inst.components.locomotor.runspeed =
-					socketquality == SOCKETQUALITY.MEDIUM and
-					TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED_BOOSTED or
-					TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_SPEED
-
+				local owner = inst.components.follower:GetLeader()
 				if owner then
 					local pos = owner:GetPosition()
 					local offset = FindWalkableOffset(pos, math.random() * TWOPI, 3, 12, false, false, nil, false, true)
@@ -92,7 +166,9 @@ local states =
 					end
 				end
 
-				if not inst.sg.statemem.delay then
+				if inst.sg.statemem.instant then
+					inst.sg:GoToState("idle", true)
+				elseif not inst.sg.statemem.delay then
 					inst.sg:GoToState("spawned")
 				end
 			end),
@@ -144,7 +220,7 @@ local states =
 			inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("death")
 
-			local owner = inst.components.follower and inst.components.follower:GetLeader()
+			local owner = inst.components.follower:GetLeader()
             if owner then
                 if owner.components.petleash then
                     owner.components.petleash:DetachPet(inst)
@@ -256,11 +332,18 @@ local states =
 
 	State{
 		name = "run_start",
-		tags = { "moving", "running", "canrotate" },
+		tags = { "moving", "canrotate" },
 
 		onenter = function(inst)
 			inst.components.locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0)
-			inst.components.locomotor:RunForward()
+			if inst.components.locomotor:WantsToRun() then
+				inst.sg:AddStateTag("running")
+				UpdateSpeed(inst)
+				inst.components.locomotor:RunForward()
+			else
+				UpdateSpeed(inst)
+				inst.components.locomotor:WalkForward()
+			end
 			inst.AnimState:PlayAnimation("run_pre")
 		end,
 
@@ -278,6 +361,7 @@ local states =
 					inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "run_start")
 				end
 			end
+			UpdateSpeed(inst)
 		end,
 
 		timeline =
@@ -303,24 +387,33 @@ local states =
 		onexit = function(inst)
 			if not inst.sg.statemem.running then
 				inst.components.locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0)
+				ResetSpeed(inst)
 			end
 		end,
 	},
 
 	State{
 		name = "run",
-		tags = { "moving", "running", "canrotate" },
+		tags = { "moving", "canrotate" },
 
 		onenter = function(inst)
 			inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "run_start")
-			inst.components.locomotor:RunForward()
+			if inst.components.locomotor:WantsToRun() then
+				inst.sg:AddStateTag("running")
+				UpdateSpeed(inst)
+				inst.components.locomotor:RunForward()
+			else
+				UpdateSpeed(inst)
+				inst.components.locomotor:WalkForward()
+			end
 			inst.AnimState:PlayAnimation("run_loop", true)
 		end,
 
+		onupdate = UpdateSpeed,
+
 		onexit = function(inst)
-			if not inst.sg.statemem.running then
-				inst.components.locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0)
-			end
+			inst.components.locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0)
+			ResetSpeed(inst)
 		end,
 	},
 

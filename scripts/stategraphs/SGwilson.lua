@@ -3787,6 +3787,11 @@ local states =
                         if inst:HasTag("wonkey") and inst.userid and inst.userid ~= "" then -- NOTES(JBK): The userid check is here for c_spawn("wonkey") that would be bad if it died.
                             inst:ChangeFromMonkey()
                         else
+							if inst.sg.mem.wx_chassis_build then
+								inst.sg.mem.wx_chassis_build = nil
+								inst.AnimState:ClearOverrideBuild("wx_chassis")
+								inst.Transform:SetFourFaced()
+							end
                             inst:PushEvent("makeplayerghost", { skeleton = skeleton }) -- if we are not on valid ground then don't drop a skeleton
                         end
                     else

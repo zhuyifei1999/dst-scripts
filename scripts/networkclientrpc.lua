@@ -451,7 +451,10 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-			if x then
+			if not playercontroller.remote_predicting then
+				printinvalid("PredictWalking", player)
+				return
+			elseif x then
 				printinvalidplatform("PredictWalking", player, nil, x, z, platform, platform_relative)
 				local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 				if x1 and not IsPointInRange(player, x1, z1) then

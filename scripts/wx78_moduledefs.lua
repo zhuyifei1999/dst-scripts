@@ -903,7 +903,7 @@ local MAXHUNGER1_SKILL_BURNRATE_MODIFIERS = { TUNING.SKILLS.WX78.MAXHUNGER1_SLOW
 local function maxhunger1_activate(inst, wx, isloading)
     inst._hunger_skill_burnrate_modifiers = MAXHUNGER1_SKILL_BURNRATE_MODIFIERS
     maxhunger_change(inst, wx, TUNING.WX78_MAXHUNGER1_BOOST, isloading)
-    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_activate, maxhunger_skill_deactivate, isloading)
+    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_refresh, maxhunger_skill_refresh, isloading)
 end
 
 local function maxhunger1_deactivate(inst, wx)

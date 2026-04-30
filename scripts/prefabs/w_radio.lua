@@ -260,6 +260,7 @@ local function fn()
 	--furnituredecor (from furnituredecor component) added to pristine state for optimization
 	inst:AddTag("furnituredecor")
 
+	--groundonlymachine (from machine component) added to pristine state for optimization
 	inst:AddTag("groundonlymachine")
 
 	MakeInventoryFloatable(inst, "med", 0.45, { 1.25, 1.5, 1.25 })
@@ -288,6 +289,7 @@ local function fn()
 	inst.components.furnituredecor.ontakeofffurniture = OnTakeOffFurniture
 
 	inst:AddComponent("machine")
+	inst.components.machine:SetGroundOnlyMachine(true)
 	inst.components.machine.turnonfn = TurnOn
 	inst.components.machine.turnofffn = TurnOff
 	inst.components.machine.cooldowntime = 0

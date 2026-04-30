@@ -5707,20 +5707,32 @@ function PlayerController:OnRemoteBufferedAction()
 		if pt then
 			if pt.y < 5 and not self:IsBusy() then
 				--excludes self:IsLocalOrRemoteHopping() as well, ie. y ~= 6
-				local x, y, z = self.inst.Transform:GetWorldPosition()
+				local x, _, z = self.inst.Transform:GetWorldPosition()
 				local dx = pt.x - x
 				local dz = pt.z - z
-				if (dx ~= 0 or dz ~= 0) and (self.remote_authority or dx * dx + dz * dz <= PREDICT_STOP_ERROR_DISTANCE_SQ) then
-					local dir = math.atan2(-dz, dx) * RADIANS
-					if self.inst.sg:HasStateTag("canrotate") then
-						self.locomotor:SetMoveDir(dir)
+				if dx ~= 0 or dz ~= 0 then
+					local should_snap
+					if self.remote_authority then
+						should_snap = true
+					else
+						local max_dist = self.locomotor:GetRunSpeed() * FRAMES
+						should_snap =
+							dx * dx + dz * dz <= math.min(max_dist * max_dist, PREDICT_STOP_ERROR_DISTANCE_SQ) and
+							self.map:IsPassableAtPoint(pt:Get())
 					end
-					--Force us to interrupt and go to movement state immediately
-					self.inst.sg:HandleEvent("locomote", { dir = dir, force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
-					--FIXME(JBK): Boat handling.
-					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
-					self.locomotor:Stop()
-					self.inst.Transform:SetPosition(pt.x, 0, pt.z)
+
+					if should_snap then
+						local dir = math.atan2(-dz, dx) * RADIANS
+						if self.inst.sg:HasStateTag("canrotate") then
+							self.locomotor:SetMoveDir(dir)
+						end
+						--Force us to interrupt and go to movement state immediately
+						self.inst.sg:HandleEvent("locomote", { dir = dir, force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
+						--FIXME(JBK): Boat handling.
+						--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
+						self.locomotor:Stop()
+						self.inst.Transform:SetPosition(pt.x, 0, pt.z)
+					end
 				end
 			end
             self.remote_vector.y = 5
