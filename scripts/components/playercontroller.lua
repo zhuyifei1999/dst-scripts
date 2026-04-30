@@ -154,6 +154,7 @@ local PlayerController = Class(function(self, inst)
 
 	self.remoteinteractionaction = nil
 	self.remoteinteractiontarget = nil
+    self.remoteinteractionpos = nil
 
     if self.ismastersim then
         self.is_map_enabled = true
@@ -165,7 +166,7 @@ local PlayerController = Class(function(self, inst)
 		self._clearinteractiontarget = function()
 			--V2C: This is used by action Success/Fail callback, which doesn't know if player got removed.
 			if self == inst.components.playercontroller and inst:IsValid() then
-				self:RemoteInteractionTarget(nil, nil)
+				self:RemoteInteractionTarget(nil, nil, nil)
 			end
 		end
 		if self.classified == nil and inst.player_classified then
@@ -5706,20 +5707,32 @@ function PlayerController:OnRemoteBufferedAction()
 		if pt then
 			if pt.y < 5 and not self:IsBusy() then
 				--excludes self:IsLocalOrRemoteHopping() as well, ie. y ~= 6
-				local x, y, z = self.inst.Transform:GetWorldPosition()
+				local x, _, z = self.inst.Transform:GetWorldPosition()
 				local dx = pt.x - x
 				local dz = pt.z - z
-				if (dx ~= 0 or dz ~= 0) and (self.remote_authority or dx * dx + dz * dz <= PREDICT_STOP_ERROR_DISTANCE_SQ) then
-					local dir = math.atan2(-dz, dx) * RADIANS
-					if self.inst.sg:HasStateTag("canrotate") then
-						self.locomotor:SetMoveDir(dir)
+				if dx ~= 0 or dz ~= 0 then
+					local should_snap
+					if self.remote_authority then
+						should_snap = true
+					else
+						local max_dist = self.locomotor:GetRunSpeed() * FRAMES
+						should_snap =
+							dx * dx + dz * dz <= math.min(max_dist * max_dist, PREDICT_STOP_ERROR_DISTANCE_SQ) and
+							self.map:IsPassableAtPoint(pt:Get())
 					end
-					--Force us to interrupt and go to movement state immediately
-					self.inst.sg:HandleEvent("locomote", { dir = dir, force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
-					--FIXME(JBK): Boat handling.
-					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
-					self.locomotor:Stop()
-					self.inst.Transform:SetPosition(pt.x, 0, pt.z)
+
+					if should_snap then
+						local dir = math.atan2(-dz, dx) * RADIANS
+						if self.inst.sg:HasStateTag("canrotate") then
+							self.locomotor:SetMoveDir(dir)
+						end
+						--Force us to interrupt and go to movement state immediately
+						self.inst.sg:HandleEvent("locomote", { dir = dir, force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
+						--FIXME(JBK): Boat handling.
+						--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
+						self.locomotor:Stop()
+						self.inst.Transform:SetPosition(pt.x, 0, pt.z)
+					end
 				end
 			end
             self.remote_vector.y = 5
@@ -5756,24 +5769,39 @@ local WX78_INTERACTIONS =
     [ACTIONS.DIG] = true,
     [ACTIONS.TILL] = true,
     [ACTIONS.FEEDPLAYER] = true,
+    [ACTIONS.RUMMAGE] = true,
+    [ACTIONS.RAISE_ANCHOR] = true,
+    [ACTIONS.LOWER_SAIL_FAIL] = true,
+    [ACTIONS.LOWER_SAIL_BOOST] = true,
+    [ACTIONS.ROW] = true,
+    [ACTIONS.ROW_FAIL] = true,
+    [ACTIONS.ROW_CONTROLLER] = true,
+}
+local WX78_INTERACTION_POSITIONS = -- These ones we need the positions too
+{
+    [ACTIONS.ROW] = true,
+    [ACTIONS.ROW_FAIL] = true,
+    [ACTIONS.ROW_CONTROLLER] = true,
 }
 
-function PlayerController:OnRemoteInteractionTarget(actioncode, target)
+-- InteractionTarget naming scheme from when this was initially just used for action + target only
+function PlayerController:OnRemoteInteractionTarget(actioncode, target, position)
 	self.remoteinteractionaction = ACTIONS_BY_ACTION_CODE[actioncode]
 	self.remoteinteractiontarget = target
-	--print(string.format("[%s] <remote interact>: %s -> [%s]", tostring(self.inst), tostring(self.remoteinteractionaction and self.remoteinteractionaction.id or nil), tostring(target)))
+    self.remoteinteractionpos = position
 end
 
-function PlayerController:RemoteInteractionTarget(actioncode, target)
-	if self.remoteinteractionaction ~= actioncode or self.remoteinteractiontarget ~= target then
+function PlayerController:RemoteInteractionTarget(actioncode, target, position)
+    if self.remoteinteractionaction ~= actioncode or self.remoteinteractiontarget ~= target or self.remoteinteractionpos ~= position then
 		self.remoteinteractionaction = actioncode
 		self.remoteinteractiontarget = target
-		SendRPCToServer(RPC.InteractionTarget, actioncode, target)
+        self.remoteinteractionpos = position
+		SendRPCToServer(RPC.InteractionTarget, actioncode, target, position ~= nil and position.x or nil, position ~= nil and position.z or nil)
 	end
 end
 
 function PlayerController:GetRemoteInteraction()
-	return self.remoteinteractionaction, self.remoteinteractiontarget
+	return self.remoteinteractionaction, self.remoteinteractiontarget, self.remoteinteractionpos
 end
 
 function PlayerController:OnLocomotorBufferedAction(act)
@@ -5787,19 +5815,25 @@ function PlayerController:OnLocomotorBufferedAction(act)
 	else
 		dir = GetWorldControllerVector()
 
-		local actioncode, target
-		if not self.ismastersim and act.target and act.target:IsValid() and
-        (
-            (CREATURE_INTERACTIONS[act.action] and act.target:HasTag("locomotor")) or
-            (WX78_INTERACTIONS[act.action] and self.inst.wx78_classified ~= nil)
-        )
-		then
-			actioncode = act.action.code
-			target = act.target
-			act:AddSuccessAction(self._clearinteractiontarget)
-			act:AddFailAction(self._clearinteractiontarget)
-		end
-		self:RemoteInteractionTarget(actioncode, target)
+        local actioncode, target, position
+        if not self.ismastersim then
+            if (act.target and act.target:IsValid() and
+            (
+                (CREATURE_INTERACTIONS[act.action] and act.target:HasTag("locomotor")) or
+                (WX78_INTERACTIONS[act.action] and self.inst.wx78_classified ~= nil)
+            )) or (self.inst.wx78_classified ~= nil and WX78_INTERACTION_POSITIONS[act.action] and act:GetActionPoint())
+            then
+                actioncode = act.action.code
+			    target = act.target
+                if self.inst.wx78_classified ~= nil and WX78_INTERACTION_POSITIONS[act.action] then
+                    position = act:GetActionPoint()
+                end
+			    act:AddSuccessAction(self._clearinteractiontarget)
+			    act:AddFailAction(self._clearinteractiontarget)
+            end
+        end
+
+		self:RemoteInteractionTarget(actioncode, target, position)
 	end
 	if dir ~= nil then
 		self.recent_bufferedaction.act = act

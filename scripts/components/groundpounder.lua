@@ -118,7 +118,9 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage, pushplatfor
                             v2:IsValid() and
                             v2.components.health ~= nil and
                             not v2.components.health:IsDead() and
-                            self.inst.components.combat:CanTarget(v2) then
+                            self.inst.components.combat:CanTarget(v2) and
+							-- Ally checks only for player for now (Werebeaver skill)
+							(not self.inst.isplayer or not self.inst.components.combat:IsAlly(v2)) then
                             ents_hit[v2] = true
                             self.inst.components.combat:DoAttack(v2, nil, nil, nil, self.groundpounddamagemult)
                         end
@@ -218,12 +220,14 @@ function GroundPounder:DestroyRing(pt, radius, points, breakobjects, dodamage, p
 				if dodamage then
 					for i = i0, #ents do
 						local v2 = ents[i]
-						if v2 ~= self.inst and 
+						if v2 ~= self.inst and
 							not ents_hit[v2] and
 							v2:IsValid() and
 							v2.components.health ~= nil and
 							not v2.components.health:IsDead() and
-							self.inst.components.combat:CanTarget(v2) then
+							self.inst.components.combat:CanTarget(v2) and
+							-- Ally checks only for player for now (Werebeaver skill)
+							(not self.inst.isplayer or not self.inst.components.combat:IsAlly(v2)) then
 							ents_hit[v2] = true
 							self.inst.components.combat:DoAttack(v2, nil, nil, nil, self.groundpounddamagemult)
 						end

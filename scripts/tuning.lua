@@ -6592,8 +6592,10 @@ function Tune(overrides)
         WX78_COLD_ICEMOISTURE = 94, -- Kind of 95; the moisture badge presentation makes this work better.
         WX78_COLD_ICECOUNT = 2,
 
-        WX78_PERISH_COLDRATE = 0.75,
-        WX78_PERISH_HOTRATE = 1.25,
+        WX78_PERISH_COLDRATE = 0.75, -- Deprecated for WX78_PERISH_RATE_MODULELEAN.
+        WX78_PERISH_HOTRATE = 1.25, -- Deprecated for WX78_PERISH_RATE_MODULELEAN.
+
+        WX78_PERISH_RATE_MODULELEAN = 0.25,
 
         WX78_TASERDAMAGE = 20, -- This causes a chain stun to nearby targets when the primary target is damaged.
 
@@ -7456,7 +7458,7 @@ function Tune(overrides)
                 MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.70,
                 MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
                 MAXSANITY1_DAPPERNESS_MULT = 0.10,
-                MAXSANITY_DAPPERNESS_MULT = 0.25,
+                MAXSANITY_DAPPERNESS_MULT = 0.30,
                 BEE_SHIELD_REGEN_PER_SECOND = 0.25,
                 BEE_SHIELDPERCENT = 0.2, -- how much shield dependant on max health.
 
@@ -7467,8 +7469,11 @@ function Tune(overrides)
 
                 RADAR_ZAPDRONERANGE = 5,
                 RADAR_SCOUTDRONERANGE = 100,
-                RADAR_WX78_SCANNER_SCANDIST = .5, -- how close the scanner needs to be
-                RADAR_WX78_SCANNER_PLAYER_PROX = .75, -- how close the player needs to be.
+                RADAR_WX78_SCANNER_SCANDIST = .65, -- how close the scanner needs to be
+                RADAR_WX78_SCANNER_PLAYER_PROX = .8, -- how close the player needs to be.
+                RADAR_WAGPUNKRANGE = 6,
+                SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_RADAR = 1,
+				RADAR_SHADOWDRONE_DEBUFFER_SCAN_RANGE = 0.15,
 
                 -- wx78_circuitry_betabuffs_2
                 TASER_MAXBUILDUP = 100,
@@ -7498,8 +7503,12 @@ function Tune(overrides)
                 SCOUTDRONE_MAX_COUNT = 2,
                 SCOUTDRONE_SPEED = 3,
                 SCOUTDRONE_RANGE = 200,
-                -- wx78_scoutdrone_2
+                -- wx78_extradronerange
+                WX78_SCANNER_RANGE_BONUS = 3, -- This is equivalent to 3 radar boosters.
                 SCOUTDRONE_RANGE_BONUS = 300,
+                ZAPDRONE_RANGE_2 = 30,
+                SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_SKILLBOOST = 3, -- 3 radar boosts
+				SHADOWDRONE_DEBUFFER_SCAN_RANGE_SKILLBOOST = 0.45, -- 3 radar boosts
                 -- wx78_deliverydrone_1
                 DELIVERYDRONE_SPEED = 30,
                 -- wx78_deliverydrone_2
@@ -7508,12 +7517,12 @@ function Tune(overrides)
 				ZAPDRONE_DAMAGE = 30,
 				ZAPDRONE_INSULATED_DAMAGE_MULT = 0.5,
 				ZAPDRONE_AGGRO_RANGE = 15,
+				ZAPDRONE_SHARE_TARGET_RANGE = 20, --share target to possessed bodies if target was within this range to me
 				ZAPDRONE_USES = 100,
 				ZAPDRONE_USE_PER_ATTACK_1 = 2,
 				ZAPDRONE_RANGE_1 = 15,
                 -- wx78_zapdrone_2
 				ZAPDRONE_USE_PER_ATTACK_2 = 1,
-				ZAPDRONE_RANGE_2 = 30,
 
                 -- wx78_allegiance_lunar
                 ALLEGIANCE_LUNAR_RESIST = 0.9,
@@ -7522,12 +7531,12 @@ function Tune(overrides)
 
                 POSSESSEDBODY_LUNAR_RESIST = 0.9,
                 POSSESSEDBODY_VS_SHADOW_BONUS = 1.1,
-                POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.5,
+                POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 2 / 3,
                 POSSESSEDBODY_DAMAGE_MULT = 0.5,
                 POSSESSEDBODY_PLANAR_DAMAGE_MULT = 0.5,
                 POSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.25,
 
-                PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 0.25,
+                PLANARPOSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER = 1 / 3,
                 PLANARPOSSESSEDBODY_DAMAGE_MULT = 0.5,
                 PLANARPOSSESSEDBODY_PLANAR_DAMAGE_MULT = 1,
                 PLANARPOSSESSEDBODY_PLANAR_SHADOW_DAMAGE_MULT = 0.5,
@@ -7535,23 +7544,42 @@ function Tune(overrides)
                 -- wx78_allegiance_shadow
                 ALLEGIANCE_SHADOW_RESIST = 0.9,
                 ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
-                -- SOCKETQUALITY.LOW
-                HARVEST_PASSIVE_TICK_PERIOD = 1,
-                HARVEST_RADIUS = 6,
-                HARVEST_TRAVEL_SPEED = 4,
-                HARVEST_MAX_TENDRILS = 3,
-                -- SOCKETQUALITY.MEDIUM
-                SHADOWHEART_PASSIVE_TICK_PERIOD = 0.5,
-                SHADOWHEART_DEBUFF_RADIUS = 4,
-                SHADOWHEART_DEBUFF_TIME = 30,
-                SHADOWHEART_DAMAGEMULT = 1.25,
+                -- SOCKETQUALITY.LOW == nightmarefuel
+                -- drones
+                SHADOWDRONE_FOLLOW_RADIUS = 4,
+                SHADOWDRONE_HARVESTER_PASSIVE_TICK_PERIOD = 1.5,
+                --
+                SHADOWDRONE_HARVESTER_LIMIT = 2,
+                SHADOWDRONE_HARVESTER_SPEED = 6,
+                SHADOWDRONE_HARVESTER_FINDITEM_RADIUS = 6,
+                --
+                SHADOWDRONE_HARVESTER_SPEED_BOOSTED = 8,
+                SHADOWDRONE_HARVESTER_LIMIT_BOOSTED = 4,
+                SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_BOOSTED = 10,
+                --
+                SHADOWFUEL_DEBUFF_TIME = 20,
+                HORRORFUEL_DEBUFF_TIME = 60,
+                -- SOCKETQUALITY.MEDIUM == purehorror
+                -- SOCKETQUALITY.HIGH == shadowheart
+                -- drones
+                SHADOWDRONE_DEBUFFER_LIMIT = 3,
+				SHADOWDRONE_DEBUFFER_WALKSPEED = 6,
+				SHADOWDRONE_DEBUFFER_RUNSPEED = 7.5,
+				SHADOWDRONE_DEBUFFER_SCAN_RANGE = 3,
+				SHADOWDRONE_DEBUFFER_SCAN_RANGE_MAX = 4.5,
+                --
+                SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED = 4,
+				SHADOWDRONE_DEBUFFER_RUNSPEED_BOOSTED = 9,
+                --
+                SHADOWDRONE_DAMAGEMULT_PER_DRONE = 0.06,
+                -- vein harvests
                 SHADOWHEART_WORK_NEEDED = 2,
                 SHADOWHEART_SPAWN_PERIOD = seg_time * 4,
                 SHADOWHEART_SPAWN_VARIANCE = seg_time,
-                SHADOWHEART_SPAWN_DENSITY_RANGE = 5, -- Should be <= HARVEST_RADIUS above.
+                SHADOWHEART_SPAWN_DENSITY_RANGE = 6,
                 SHADOWHEART_SPAWN_DENSITY_MAX = 4,
-                -- SOCKETQUALITY.HIGH
-                MIMICHEART_SPAWN_PERIOD = seg_time * 6,
+                -- SOCKETQUALITY.PERFECT == mimicheart
+                MIMICHEART_SPAWN_PERIOD = total_day_time,
                 MIMICHEART_SPAWN_VARIANCE = seg_time * 2,
                 MIMICHEART_SPAWN_DENSITY_RANGE = 8,
                 MIMICHEART_SPAWN_DENSITY_MAX = 2,

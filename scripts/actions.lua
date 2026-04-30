@@ -993,6 +993,10 @@ local function CanOpenCharacterSpecificContainer(doer, target)
         return false, "NOTSOULJARHANDLER"
     end
     if target:HasTag("wx78_backupbody") then
+        if doer.components.follower and doer.components.follower:GetLeader() == target then -- Drone bypass.
+            return true
+        end
+
         if not doer.wx78_classified then
             return false, "NOTAROBOT"
         end
@@ -1029,6 +1033,15 @@ ACTIONS.RUMMAGE.fn = function(act)
 	if targ and targ.components.container == nil and targ == act.doer then
 		targ = targ.components.rider and targ.components.rider:GetMount() or nil
 	end
+
+    if targ and targ.components.container_transform ~= nil then
+        local success, reason = targ.components.container_transform:CanTransform(act.doer)
+        if not success then
+            return false, reason
+        else
+            targ = targ.components.container_transform:TryTransformToContainer()
+        end
+    end
 
     if targ ~= nil and targ.components.container ~= nil then
         if proxy ~= nil and proxy.components.container_proxy:IsOpenedBy(act.doer) then
@@ -1294,8 +1307,10 @@ ACTIONS.ROW_FAIL.fn = function(act)
     --Can't rely on return false to trigger action fail string because returning
     --false skips the finite uses callback and the oar won't lose durability
     local fail_string_id = oar.components.oar:RowFail(act.doer)
-    local fail_str = GetActionFailString(act.doer, "ROW_FAIL", fail_string_id)
-    act.doer.components.talker:Say(fail_str)
+    if act.doer.components.talker ~= nil then
+        local fail_str = GetActionFailString(act.doer, "ROW_FAIL", fail_string_id)
+        act.doer.components.talker:Say(fail_str)
+    end
     act.doer:PushEvent("working",{}) -- it's not actually doing work, but it can fall out of your hand when wet.
     return true
 end

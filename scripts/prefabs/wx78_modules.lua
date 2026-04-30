@@ -9,7 +9,10 @@ local assets =
 
 local function on_module_removed(inst, owner)
     if inst.components.finiteuses ~= nil and not owner.components.upgrademoduleowner:IsSwapping() then
-        local use = owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_circuitry_betterunplug")
+	    local follower = owner.components.follower
+	    local leader = follower and follower:GetLeader() or owner
+
+        local use = leader.components.skilltreeupdater ~= nil and leader.components.skilltreeupdater:IsActivated("wx78_circuitry_betterunplug")
             and TUNING.SKILLS.WX78.HALF_MODULE_CONSUMPTION
             or TUNING.WX78_MODULE_CONSUMPTION
         inst.components.finiteuses:Use(use)

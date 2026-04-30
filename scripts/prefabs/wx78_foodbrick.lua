@@ -12,7 +12,13 @@ local function MakeWet(inst)
     end
     inst.pickupsound = "squidgy"
     inst.components.inventoryitem:ChangeImageName("wx78_foodbrick_wet")
-    inst.components.perishable:StartPerishing()
+
+    local parent = inst.parent
+    if parent and parent.prefab == "gelblob_storage" then -- HACK :P
+        inst.components.perishable:StopPerishing()
+    else
+        inst.components.perishable:StartPerishing()
+    end
 
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_MEDSMALL
@@ -115,6 +121,7 @@ local function fn()
     inst.pickupsound = "vegetation_firm" -- 'squidgy' when wet
 
     inst:AddTag("fertilizerresearchable")
+    inst:AddTag("canpourwateron")
 
     MakeInventoryFloatable(inst, "small", 0.07, 1.2)
     MakeDeployableFertilizerPristine(inst)

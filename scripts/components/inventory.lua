@@ -174,7 +174,7 @@ function Inventory:SwapEquipment(other, equipslot_to_swap, force)
             end
 
             if ot_equipitem ~= nil then
-                if ot_equipitem.components.equippable and not ot_equipitem.components.equippable:IsRestricted(other) then
+                if ot_equipitem.components.equippable and not ot_equipitem.components.equippable:IsRestricted(self.inst) then
                     self:Equip(ot_equipitem)
                 else
                     self:GiveItem(ot_equipitem)

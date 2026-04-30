@@ -134,7 +134,7 @@ local function OnUpdateProximity(inst, fast)
 		if inst._suspend_radius and
 			inst._suspendedplayer == nil and
 			inst.size == "_big" and
-			v.isplayer and
+			(v.isplayer or v:HasTag("possessedbody")) and
 			v.sg and not v.sg:HasStateTag("suspended") and
 			not (v.components.rider and v.components.rider:IsRiding()) and
 			not v:HasTag("wereplayer") and

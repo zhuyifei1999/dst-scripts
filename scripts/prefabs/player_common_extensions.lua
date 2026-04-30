@@ -381,9 +381,6 @@ local function DoActualRez(inst, source, item)
                 inst.sg:GoToState("gravestone_rebirth", source)
             end
         elseif source.prefab == "wx78_backupbody" then
-            if inst.components.skilltreeupdater:IsActivated("wx78_ghostrevive_3") then
-                inst.components.health:SetPercent(1)
-            end
             inst.sg:GoToState("respawn_wx_poweron")
         elseif source:HasTag("multiplayer_portal") then
             inst.components.health:DeltaPenalty(TUNING.PORTAL_HEALTH_PENALTY)
@@ -423,6 +420,7 @@ local function DoActualRez(inst, source, item)
     inst.Light:Enable(false)
 
     MakeCharacterPhysics(inst, 75, .5)
+    inst.Physics:Stop() -- Resolve any physics movement from changing physics.
 
     CommonActualRez(inst)
 
@@ -1138,9 +1136,9 @@ local function UpdateScrapbook(inst)
     end
 end
 
-local function MapRevealable_OnIconCreatedFn(inst)
-    if inst.components.maprevealable and inst.components.maprevealable.icon and inst.components.maprevealable.icon.prefab == "globalmapiconnamed" then
-        inst.components.maprevealable.icon._target_displayname:set(inst:GetDisplayName())
+local function MapRevealable_OnIconCreatedFn(inst, icon)
+	if icon.prefab == "globalmapiconnamed" then
+		icon._target_displayname:set(inst:GetDisplayName())
     end
 end
 
@@ -1334,6 +1332,14 @@ local function SetupOverrideBuilds(inst)
     inst.AnimState:AddOverrideBuild("player_shadow_thrall_parasite")
 end
 
+local function SetupOverrideSymbols(inst)
+    inst.AnimState:OverrideSymbol("fx_wipe", "wilson_fx", "fx_wipe")
+    inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
+    inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
+    inst.AnimState:OverrideSymbol("snap_fx", "player_actions_fishing_ocean_new", "snap_fx")
+    inst.AnimState:OverrideSymbol("chalice_swap_comp", "chalice_swap", "chalice_swap_comp")
+end
+
 --------------------------------------------------------------------------
 
 return
@@ -1386,5 +1392,6 @@ return
 	FootstepOverrideFn			= FootstepOverrideFn,
 	FoleyOverrideFn				= FoleyOverrideFn,
     SetupBaseSymbolVisibility   = SetupBaseSymbolVisibility,
-    SetupOverrideBuilds = SetupOverrideBuilds,
+    SetupOverrideBuilds         = SetupOverrideBuilds,
+    SetupOverrideSymbols        = SetupOverrideSymbols,
 }

@@ -338,7 +338,7 @@ local function OnBathingPoolTick_PerOccupant(inst, occupant, dt)
     end
     if occupant.components.sanity then -- Update sanity rate in case it shifts.
         local rate = TUNING.HERMITHOTSPRING_SANITY_PER_SECOND
-        if TheWorld.Map:IsInLunacyArea(occupant.Transform:GetWorldPosition()) then
+        if TheWorld.Map:IsInLunacyArea(occupant.Transform:GetWorldPosition()) and not occupant:HasTag("possessedbody") then
             rate = -rate
         end
         occupant.components.sanity.externalmodifiers:SetModifier(inst, rate)
@@ -363,7 +363,8 @@ local function OnStartBeingOccupiedBy(inst, ent)
     end
     if ent.components.sanity then
         local rate = TUNING.HERMITHOTSPRING_SANITY_PER_SECOND
-        if TheWorld.Map:IsInLunacyArea(ent.Transform:GetWorldPosition()) then
+		-- possessed chassis always want high sanity
+        if TheWorld.Map:IsInLunacyArea(ent.Transform:GetWorldPosition()) and not ent:HasTag("possessedbody") then
             rate = -rate
         end
         ent.components.sanity.externalmodifiers:SetModifier(inst, rate)

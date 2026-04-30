@@ -251,7 +251,7 @@ function CraftingMenuDetails:UpdateNameString()
     local meta = self.data.meta
 
     local namestr = STRINGS.NAMES[string.upper(recipe.nameoverride or recipe.name)] or STRINGS.NAMES[string.upper(recipe.product)]
-    if meta.limitedamount then
+    if meta.limitedamount and meta.build_state ~= "hint" then
         namestr = subfmt(STRINGS.UI.CRAFTING.LIMITEDAMOUNTFMT, {name = namestr, number = meta.limitedamount})
     end
 

@@ -341,6 +341,8 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"wx78_drone_delivery_small_item",
 	"wx78_drone_zap_remote",
 	"wx78_gestalttrapper",
+    "wx78_shadowdrone_harvester",
+    "wx78_shadowdrone_debuffer",
 
 	"wx78module_maxhealth",
     "wx78module_maxhealth2",
@@ -363,6 +365,7 @@ CRAFTING_FILTERS.CHARACTER.recipes =
     "wx78module_stacksize",
 
 	"wx78module_digestion",
+	"wx78module_chess",
 	"wx78module_shielding",
     "wx78module_screech",
 	"wx78module_spin",

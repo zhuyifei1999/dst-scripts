@@ -457,11 +457,11 @@ function Builder:RemoveRecipe(recname)
 	self.inst.replica.builder:RemoveRecipe(recname)
 end
 
-function Builder:UnlockRecipe(recname)
+function Builder:UnlockRecipe(recname, nosanity)
     local recipe = GetValidRecipe(recname)
     if recipe ~= nil and not recipe.nounlock then
     --print("Unlocking: ", recname)
-        if self.inst.components.sanity ~= nil then
+        if self.inst.components.sanity ~= nil and not nosanity then
             self.inst.components.sanity:DoDelta(TUNING.SANITY_MED)
         end
         self:AddRecipe(recname)

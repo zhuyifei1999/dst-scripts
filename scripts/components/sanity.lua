@@ -315,6 +315,11 @@ function Sanity:SetMax(amount)
     self:DoDelta(0)
 end
 
+function Sanity:SetCurrent(amount)
+    self.current = amount
+    self:DoDelta(0)
+end
+
 function Sanity:GetMaxWithPenalty()
     return self.max - (self.max * self.penalty)
 end

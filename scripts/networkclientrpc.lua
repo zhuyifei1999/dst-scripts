@@ -451,7 +451,10 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-			if x then
+			if not playercontroller.remote_predicting then
+				printinvalid("PredictWalking", player)
+				return
+			elseif x then
 				printinvalidplatform("PredictWalking", player, nil, x, z, platform, platform_relative)
 				local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 				if x1 and not IsPointInRange(player, x1, z1) then
@@ -1267,16 +1270,28 @@ local RPC_HANDLERS =
 		end
 	end,
 
-	InteractionTarget = function(player, action, target)
+	InteractionTarget = function(player, action, target, x, z)
 		if not (optnumber(action) and
-				optentity(target))
+				optentity(target) and
+                optnumber(x) and
+                optnumber(z))
 		then
 			printinvalid("InteractionTarget", player)
 			return
 		end
 		local playercontroller = player.components.playercontroller
 		if playercontroller then
-			playercontroller:OnRemoteInteractionTarget(action, target)
+            local pos
+			if x then
+				-- local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
+				if not IsPointInRange(player, x, z) then
+					print("Interaction Target out of range")
+					return
+                else
+                    pos = Vector3(x, 0, z)
+				end
+			end
+			playercontroller:OnRemoteInteractionTarget(action, target, pos)
 		end
 	end,
 
@@ -1342,7 +1357,7 @@ local RPC_HANDLERS =
 					print("Shadow socket inaccessible")
 					return
 				end
-				if socketholder:IsSocketNameForPosition("socket_shadow", modulebartype_or_socketposition) then
+				if socketholder:IsSocketNameForPosition(SOCKETNAMES.SHADOW, modulebartype_or_socketposition) then
 					socketholder:TryToUnsocket(modulebartype_or_socketposition)
 				else
 					print("Shadow socket [%i] not found", modulebartype_or_socketposition)

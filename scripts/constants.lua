@@ -2134,14 +2134,19 @@ TECH_INGREDIENT =
     -- for your current character.
 TECH_SKILLTREE_BUILDER_TAG_OWNERS = {}
 
-SKILLTREE_EQUIPPABLE_RESTRICTED_TAGS = 
+SKILLTREE_EQUIPPABLE_RESTRICTED_TAGS =
 {
     -- Using quotes for searching purposes.
     ["inspectacleshatuser"]  = "winona",
     ["wathgrithrshielduser"] = "wathgrithr",
     [UPGRADETYPES.SPEAR_LIGHTNING.."_upgradeuser"] = "wathgrithr",
     ["nabbaguser"] = "wortox",
-	["drone_zap_user"] = "wx78",
+	["drone_zap_user"] =
+    { -- (OMAR): :,)
+        ["wx78"] = true,
+        ["wx78_possessedbody"] = true,
+        ["wx78_backupbody_inventory"] = true,
+    },
 }
 
 -- IngredientMod must be one of the following values
@@ -3010,10 +3015,15 @@ end
 
 MAX_CIRCUIT_SLOTS = 7 -- NOTES(JBK): Keep this value updated in export_accountitems.lua [EAITAB]
 
-SOCKETQUALITY = {
+SOCKETNAMES = {
+    SHADOW = "socket_shadow",
+    GESTALTTRAPPER = "socket_gestalttrapper",
+}
+SOCKETQUALITY = { -- NOTES(JBK): Keep this value updated in export_accountitems.lua [EAITAB]
     NONE = 0,
     LOW = 1,
     MEDIUM = 2,
     HIGH = 3,
+    PERFECT = 4,
 }
 SOCKETQUALITY_MAXVALUE = table.count(SOCKETQUALITY)

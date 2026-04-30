@@ -65,7 +65,7 @@ local function DoAOEAttack(inst, dist, radius, heavymult, mult, forcelanded, tar
 			local dsq = v:GetDistanceSqToPoint(x, y, z)
 			if dsq < range * range and inst.components.combat:CanTarget(v) then
 				inst.components.combat:DoAttack(v)
-				if devour == true and v.sg ~= nil and v:HasTag("player") and dsq < AOE_DEVOUR_RADIUS_SQ then
+				if devour == true and v.sg ~= nil and v:HasAnyTag("player", "devourable") and dsq < AOE_DEVOUR_RADIUS_SQ then
 					--Don't buffer, handle immediately
 					v:PushEventImmediate("devoured", { attacker = inst })
 					if v.sg:HasStateTag("devoured") and v.sg.statemem.attacker == inst then

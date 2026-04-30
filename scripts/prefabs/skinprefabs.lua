@@ -5915,6 +5915,16 @@ table.insert(prefs, CreatePrefabSkin("hat_hutch_costumep",
 	granted_items = { "researchlab4_hutch_costumep", },
 }))
 
+table.insert(prefs, CreatePrefabSkin("hat_ice_pengulls",
+{
+	base_prefab = "icehat",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) icehat_init_fn(inst, "hat_ice_pengulls", skin_custom) end,
+	skin_tags = { "ICEHAT", "CRAFTABLE", },
+	release_group = 181,
+}))
+
 table.insert(prefs, CreatePrefabSkin("hat_ice_shark",
 {
 	base_prefab = "icehat",
@@ -18931,7 +18941,7 @@ table.insert(prefs, CreatePrefabSkin("wx78_dronedeliverysmall_gothic",
 	rarity = "Distinguished",
 	rarity_modifier = "Woven",
 	init_fn = function(inst, skin_custom) wx78_drone_delivery_small_init_fn(inst, "wx78_dronedeliverysmall_gothic", skin_custom) end,
-	skin_tags = { "WX78DRONEDELIVERY", "CRAFTABLE", },
+	skin_tags = { "WX78DRONEDELIVERY", "GOTHIC", "CRAFTABLE", },
 	release_group = 180,
 	granted_items = { "wx78_dronedelivery_gothic", "wx78_dronedelivery_item_gothic", "wx78_dronedeliverysmall_item_gothic", },
 }))
@@ -18967,7 +18977,7 @@ table.insert(prefs, CreatePrefabSkin("wx78_dronedeliverysmall_jewelbox",
 	rarity = "Distinguished",
 	rarity_modifier = "Woven",
 	init_fn = function(inst, skin_custom) wx78_drone_delivery_small_init_fn(inst, "wx78_dronedeliverysmall_jewelbox", skin_custom) end,
-	skin_tags = { "WX78DRONEDELIVERY", "CRAFTABLE", },
+	skin_tags = { "WX78DRONEDELIVERY", "JEWELBOX", "CRAFTABLE", },
 	release_group = 180,
 	granted_items = { "wx78_dronedelivery_item_jewelbox", "wx78_dronedelivery_jewelbox", "wx78_dronedeliverysmall_item_jewelbox", },
 }))
@@ -19046,7 +19056,7 @@ table.insert(prefs, CreatePrefabSkin("wx78_dronezapremote_gothic",
 	rarity = "Distinguished",
 	rarity_modifier = "Woven",
 	init_fn = function(inst, skin_custom) wx78_drone_zap_remote_init_fn(inst, "wx78_dronezap_gothic", skin_custom) end,
-	skin_tags = { "WX78SCANNER", "CRAFTABLE", },
+	skin_tags = { "WX78SCANNER", "GOTHIC", "CRAFTABLE", },
 	release_group = 180,
 	granted_items = { "wx78_dronezap_gothic", "wx78_dronezap_gothic_overlay", },
 }))
@@ -19059,7 +19069,7 @@ table.insert(prefs, CreatePrefabSkin("wx78_dronezapremote_jewelbox",
 	rarity = "Distinguished",
 	rarity_modifier = "Woven",
 	init_fn = function(inst, skin_custom) wx78_drone_zap_remote_init_fn(inst, "wx78_dronezap_jewelbox", skin_custom) end,
-	skin_tags = { "WX78SCANNER", "CRAFTABLE", },
+	skin_tags = { "WX78SCANNER", "JEWELBOX", "CRAFTABLE", },
 	release_group = 180,
 	granted_items = { "wx78_dronezap_jewelbox", "wx78_dronezap_jewelbox_overlay", },
 }))
@@ -19496,6 +19506,50 @@ table.insert(prefs, CreatePrefabSkin("wx78_shadow",
 	has_alternate_for_body = { "wx78_shadow", },
 	marketable = true,
 	release_group = 6,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_shadowdrone_debuffer_gothic",
+{
+	base_prefab = "wx78_shadowdrone_debuffer",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst, skin_custom) wx78_shadowdrone_debuffer_init_fn(inst, "wx78_shadowdrone_debuffer_gothic", skin_custom) end,
+	skin_tags = { "WX78SHADOWDRONEDEBUFFER", "GOTHIC", "CRAFTABLE", },
+	release_group = 181,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_shadowdrone_debuffer_jewelbox",
+{
+	base_prefab = "wx78_shadowdrone_debuffer",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst, skin_custom) wx78_shadowdrone_debuffer_init_fn(inst, "wx78_shadowdrone_debuffer_jewelbox", skin_custom) end,
+	skin_tags = { "WX78SHADOWDRONEDEBUFFER", "JEWELBOX", "CRAFTABLE", },
+	release_group = 181,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_shadowdrone_harvester_gothic",
+{
+	base_prefab = "wx78_shadowdrone_harvester",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst, skin_custom) wx78_shadowdrone_harvester_init_fn(inst, "wx78_shadowdrone_harvester_gothic", skin_custom) end,
+	skin_tags = { "WX78SHADOWDRONEHARVESTER", "GOTHIC", "CRAFTABLE", },
+	release_group = 181,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_shadowdrone_harvester_jewelbox",
+{
+	base_prefab = "wx78_shadowdrone_harvester",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst, skin_custom) wx78_shadowdrone_harvester_init_fn(inst, "wx78_shadowdrone_harvester_jewelbox", skin_custom) end,
+	skin_tags = { "WX78SHADOWDRONEHARVESTER", "JEWELBOX", "CRAFTABLE", },
+	release_group = 181,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wx78_shadowp",

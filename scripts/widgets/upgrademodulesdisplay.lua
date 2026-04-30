@@ -68,6 +68,25 @@ local UpgradeModulesDisplay = Class(Widget, function(self, owner, reversed)
     self.anim:GetAnimState():PlayAnimation("energy1")
     self.anim:GetAnimState():AnimateWhilePaused(false)
 
+    self.energy_nightmare = self:AddChild(UIAnim()) -- timer bar for the nightmare energy buff
+    self.energy_nightmare:GetAnimState():SetBank("status_wx")
+    self.energy_nightmare:GetAnimState():SetBuild("status_wx")
+    self.energy_nightmare:GetAnimState():PlayAnimation("energy_nightmare")
+    self.energy_nightmare:GetAnimState():AnimateWhilePaused(false)
+    self.energy_nightmare:Hide()
+
+    self.energy_nightmare_top = self.energy_nightmare:AddChild(UIAnim())
+    self.energy_nightmare_top:GetAnimState():SetBank("status_wx")
+    self.energy_nightmare_top:GetAnimState():SetBuild("status_wx")
+    self.energy_nightmare_top:GetAnimState():PlayAnimation("energy_nightmare_top", true)
+    self.energy_nightmare_top:GetAnimState():AnimateWhilePaused(false)
+
+    self.energy_nightmare_glow = self.energy_nightmare:AddChild(UIAnim())
+    self.energy_nightmare_glow:GetAnimState():SetBank("status_wx")
+    self.energy_nightmare_glow:GetAnimState():SetBuild("status_wx")
+    self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow", true)
+    self.energy_nightmare_glow:GetAnimState():AnimateWhilePaused(false)
+
     self.module_bars = {}
 
     self.chip_objectpools = {}
@@ -122,9 +141,46 @@ local UpgradeModulesDisplay = Class(Widget, function(self, owner, reversed)
     self.focus_box.OnGainFocus = FocusBox_OnGainFocus
     self.focus_box.OnLoseFocus = FocusBox_OnLoseFocus
     --
+    self._overrideenergywithshadow = false
+    self.inst:ListenForEvent("wx78_abilitycooldowns_update", function(_, data) self:UpdateAbilityCooldowns() end, owner)
+    self:UpdateAbilityCooldowns()
     self:StartUpdating()
     self:UpdateMaxEnergy(self.max_energy, self.max_energy)
 end)
+
+function UpgradeModulesDisplay:UpdateAbilityCooldowns()
+    local old_override = self._overrideenergywithshadow
+    self._overrideenergywithshadow = self.owner.components.wx78_abilitycooldowns:IsInCooldown("shadow_energy") or false
+
+    if old_override ~= self._overrideenergywithshadow then
+        if self._overrideenergywithshadow then
+            self.energy_nightmare_top:Show()
+            self.energy_nightmare:Hide()
+            self.energy_nightmare_glow:UnhookCallback("animover")
+            self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow", true)
+            self.energy_backing:Hide()
+            self.energy_blinking:Hide()
+            self.anim:Hide()
+            self.energy_nightmare:Show()
+            TheFrontEnd:GetSound():PlaySound("WX_rework/charge/shadowgauge_up")
+        else
+            TheFrontEnd:GetSound():PlaySound("WX_rework/charge/shadowgauge_off")
+            self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow_pst")
+            self.energy_nightmare_glow:UnhookCallback("animover")
+            self.energy_nightmare_glow:HookCallback("animover", function()
+                self.energy_nightmare_top:Show()
+                self.energy_nightmare:Hide()
+                self.energy_nightmare_glow:UnhookCallback("animover")
+                self.energy_nightmare_glow:GetAnimState():PlayAnimation("energy_nightmare_glow", true)
+            end)
+            self.energy_backing:Show()
+            self.energy_blinking:Show()
+            self.anim:Show()
+            self.energy_nightmare_top:Hide()
+        end
+        self:UpdateChipCharges(true)
+    end
+end
 
 function UpgradeModulesDisplay:IsExtended()
     return self.max_energy >= 7
@@ -133,6 +189,8 @@ end
 function UpgradeModulesDisplay:UpdateSlotCount()
     self:UpdateFocusBox()
     if self:IsExtended() then
+        self.energy_nightmare:SetScale(1, FOCUS_BOX_EXTENDED_SCALE_Y)
+        self.energy_nightmare:SetPosition(0, 10)
         self.battery_frame:GetAnimState():Hide("frame")
         self.battery_frame:GetAnimState():Show("frame_extended")
 
@@ -142,6 +200,8 @@ function UpgradeModulesDisplay:UpdateSlotCount()
             v:GetAnimState():Show("barframe"..i.."_extended")
         end
     else
+        self.energy_nightmare:SetScale(1, 1)
+        self.energy_nightmare:SetPosition(0, 0)
         self.battery_frame:GetAnimState():Show("frame")
         self.battery_frame:GetAnimState():Hide("frame_extended")
 
@@ -158,7 +218,7 @@ end
 function UpgradeModulesDisplay:UpdateChipCharges(plugging_in)
     for bartype, index in pairs(self.chip_poolindexes) do
         if index > 1 then
-            local charge = self.energy_level
+            local charge = self._overrideenergywithshadow and self.max_energy or self.energy_level
             local objectpool = self.chip_objectpools[bartype]
             for i = 1, index - 1 do
                 local chip = objectpool[i]
@@ -587,19 +647,32 @@ function UpgradeModulesDisplay:ShowUpgradeModulesDisplay()
     self:MoveTo(self.original_pos + HIDDEN_OFFSET, self.original_pos, 0.3)
 end
 
-local CHIPS_TO_ABILITIES =
-{
-    ["screech"] = "wxscreech",
-    ["shielding"] = "wxshielding",
-}
+local ENERGY_NIGHTMARE_TOP_MAX_Y = 55
+local ENERGY_NIGHTMARE_TOP_MIN_Y = -60
 function UpgradeModulesDisplay:OnUpdate()
-    if self.owner.components.wx78_abilitycooldowns ~= nil and self.open then
-        for k, v in pairs(self.module_bars) do
-            for _, chip in ipairs(self.chip_objectpools[k]) do
-                if chip.chip_pos and CHIPS_TO_ABILITIES[chip.modulename] then
-                    local abilityname = CHIPS_TO_ABILITIES[chip.modulename]
-                    local ability_cooldown_percent = self.owner.components.wx78_abilitycooldowns:GetAbilityCooldownPercent(abilityname)
-                    chip.cooldown:GetAnimState():SetPercent("minichip_cooldown", ability_cooldown_percent or 0)
+    if self.owner.components.wx78_abilitycooldowns ~= nil then
+        if self._overrideenergywithshadow then
+            local ability_cooldown_percent = self.owner.components.wx78_abilitycooldowns:GetAbilityCooldownPercent("shadow_energy")
+            local perc = 1 - (ability_cooldown_percent or 0)
+            self.energy_nightmare:GetAnimState():SetPercent("energy_nightmare", perc)
+            self.energy_nightmare_top:SetPosition(0, Lerp(ENERGY_NIGHTMARE_TOP_MAX_Y, ENERGY_NIGHTMARE_TOP_MIN_Y, perc))
+        end
+
+        if self.open then
+            local abilities = {}
+            for abilityhash, cd in pairs(self.owner.components.wx78_abilitycooldowns.cooldowns) do
+                abilities[abilityhash] = true
+            end
+
+            for k, v in pairs(self.module_bars) do
+                for _, chip in ipairs(self.chip_objectpools[k]) do
+                    if chip.chip_pos then
+                        local abilityname = hash(chip.modulename)
+                        if abilities[abilityname] then
+                            local ability_cooldown_percent = self.owner.components.wx78_abilitycooldowns:GetAbilityCooldownPercent(abilityname)
+                            chip.cooldown:GetAnimState():SetPercent("minichip_cooldown", ability_cooldown_percent or 0)
+                        end
+                    end
                 end
             end
         end

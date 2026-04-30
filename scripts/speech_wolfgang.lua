@@ -68,6 +68,8 @@ return{
 			TICOON = "Wolfgang already has good furry friend.",
             BUSY_STATION = "Wolfgang must wait.",
 --fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_HARVESTER = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_DEBUFFER = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -1236,6 +1238,8 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+--fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+--fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6089,6 +6093,7 @@ return{
         WX78MODULE_LIGHT2 = "Is robot snacks, yes?",
         WX78MODULE_SHIELDING = "Is robot snacks, yes?",
         WX78MODULE_SPIN = "Is robot snacks, yes?",
+		WX78MODULE_CHESS = "Is robot snacks, yes?",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6103,11 +6108,21 @@ return{
             GENERIC = "It is too hard for even Wolfgang mighty teeth.",
         },
 
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "Wolfgang only need one mighty body.", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+--fallback to speech_wilson.lua             UNCLAIMED = "only_used_by_wx78", -- We are examining an unclaimed body.
+--fallback to speech_wilson.lua             VIEWERS_BODY = "only_used_by_wx78", -- We (WX) are examining our own body.
+        },
+
         WX78_POSSESSEDBODY = "Something extra creepy about robot.",
 
         WX78_GESTALTTRAPPER = "Robot is tamper with powerful forces.",
 
         SHADOW_HEART_VEIN = "Haha! Not as mighty as Wolfgang biceps vein!",
+
+        WX78_SHADOWDRONE_DEBUFFER = "Aw, tell Wolfgang secret too!",
+        WX78_SHADOWDRONE_HARVESTER = "Busy little guy!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

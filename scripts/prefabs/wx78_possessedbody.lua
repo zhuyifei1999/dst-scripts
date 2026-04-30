@@ -27,24 +27,19 @@ local function DisplayNameFn(inst)
     return ownername and subfmt(STRINGS.NAMES.WX78_POSSESSEDBODY_FMT, { name = ownername }) or nil
 end
 
-local function GetSpecialDescription(inst, viewer)
-    if not viewer:HasTag("playerghost") then
-        local ownername =  inst.components.linkeditem:GetOwnerName()
-        if ownername then
-            local descriptions = GetString(viewer.prefab, "DESCRIBE", "WX78_POSSESSEDBODY")
-            local description = descriptions and descriptions.GENERIC or nil
-            if description then
-                return string.format(description, ownername) -- Bypass translations for player names.
-            end
-        end
-    end
-end
-
 local function CheckCircuitSlotStatesFrom(inst, owner)
     inst._maxcharge = owner ~= nil and owner.components.upgrademoduleowner ~= nil and owner.components.upgrademoduleowner:GetMaxChargeLevel()
         or TUNING.WX78_INITIAL_MAXCHARGELEVEL
     inst.components.upgrademoduleowner:SetMaxCharge(inst._maxcharge)
     inst.components.upgrademoduleowner:SetChargeLevel(inst._maxcharge) -- We're a gestalt, always full charge.
+end
+
+local function CheckZapUserStatesFrom(inst, owner)
+    if owner ~= nil and owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_zapdrone_1") then
+        inst:AddTag("drone_zap_user")
+    else
+        inst:RemoveTag("drone_zap_user")
+    end
 end
 
 local function TryToAttachToOwner(inst, owner)
@@ -62,7 +57,6 @@ local function TryToAttachToOwner(inst, owner)
     if owner.wx78_classified and (owner.wx78_classified:GetNumFreeBackupBodies() > numfreeneeded) then
         linkeditem:LinkToOwnerUserID(owner.userid)
         if owner.isplayer then
-            inst.components.skinner:CopySkinsFromPlayer(owner, true)
             if not inst._hide_body_skinfx then
                 local x, y, z = inst.Transform:GetWorldPosition()
                 local fx = SpawnPrefab("explode_reskin")
@@ -74,6 +68,7 @@ local function TryToAttachToOwner(inst, owner)
             inst.components.skinner:SetupNonPlayerData()
         end
         inst:CheckCircuitSlotStatesFrom(owner)
+        inst:CheckZapUserStatesFrom(owner)
         return true
     end
 
@@ -91,10 +86,25 @@ local function TryToAttachToLeader(inst)
     end
 end
 
+local function OnLeaderEmote(inst, data)
+    inst._brain_emotedata = nil
+    if data ~= nil and data.loop then
+        inst._brain_emotedata = data
+        inst.sg:RemoveStateTag("emoting")
+        inst.brain:ForceUpdate()
+    else
+        inst:PushEvent("emote", data)
+    end
+end
+
 local function OnChangedLeader(inst, new_leader, prev_leader)
     local linkeditem = inst.components.linkeditem
     if linkeditem and new_leader ~= nil then
         linkeditem:LinkToOwnerUserID(nil)
+    end
+    if inst.ms_emotecb ~= nil then
+        inst:RemoveEventCallback("emote", inst.ms_emotecb, prev_leader)
+        inst.ms_emotecb = nil
     end
     if inst.ms_skilltree_initializecb ~= nil then
         inst:RemoveEventCallback("ms_skilltreeinitialized", inst.ms_skilltree_initializecb, prev_leader)
@@ -102,6 +112,8 @@ local function OnChangedLeader(inst, new_leader, prev_leader)
     end
 
     if new_leader ~= nil then
+        inst.ms_emotecb = function(_, data) OnLeaderEmote(inst, data) end
+        inst:ListenForEvent("emote", inst.ms_emotecb, new_leader)
         if new_leader._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY then
             TryToAttachToLeader(inst)
         else
@@ -137,6 +149,7 @@ local function OnSkillTreeInitializedFn(inst, owner)
         end
     else
         inst:CheckCircuitSlotStatesFrom(owner)
+        inst:CheckZapUserStatesFrom(owner)
     end
 end
 local function OnOwnerInstCreatedFn(inst, owner)
@@ -154,34 +167,25 @@ local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         if data.attacker.components.leader ~= nil and
             data.attacker.components.leader:IsFollower(inst) then
-            inst.components.health:Kill()
+            inst:DoSanityDeath()
         end
     end
 end
 
+local function OnDeath(inst, data)
+    WX78Common.DropEatenGears(inst)
+end
+
 local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always removes the possessed body.
-    -- Save stats here before messing with upgrademoduleowner, otherwise we get incorrect stats
-    local stats =
-    {
-        health = inst.components.health.currenthealth,
-        hunger = inst.components.hunger.current,
-        sanity = inst.components.sanity.current,
-    }
     local x, y, z = inst.Transform:GetWorldPosition()
     local body = SpawnPrefab("wx78_backupbody")
     body._hide_body_skinfx = true
+    local stats = body:GetDoerSavedStats(inst) -- Save stats here before messing with upgrademoduleowner, otherwise we get incorrect stats
     body.components.upgrademoduleowner:SetChargeLevel(0)
     if inst.components.upgrademoduleowner then
         inst.components.upgrademoduleowner:SetChargeLevel(0)
     end
     body.Transform:SetPosition(x, y, z)
-    if not body.components.activatable:DoActivate(inst) then
-        body:Remove()
-        return false
-    end
-    if gestaltalive then
-        body:ConfigurePossessed(true, inst:GetIsPlanar(), stats)
-    end
     local owner = inst.components.linkeditem:GetOwnerInst()
     if owner ~= nil then
         if owner.wx78_classified then
@@ -191,65 +195,19 @@ local function TryToReplaceWithBackupBody(inst, gestaltalive) -- This always rem
     else
         body.components.linkeditem:LinkToOwnerUserID(inst.components.linkeditem:GetOwnerUserID())
     end
+    if not body.components.activatable:DoActivate(inst) then
+        body:Remove()
+        return false
+    end
+    if gestaltalive then
+        body:ConfigurePossessed(true, inst:GetIsPlanar())
+    end
+    body:ConfigureStats(stats)
     inst.wx78_backupbody_save_inst = body
     -- body._Light_value = body.Light:IsEnabled() -- HACK flag for default behaviour with Remove and Return to Scene modifying light states.
     -- body:RemoveFromScene()
     inst:Remove()
     return true
-end
-
-local function CreateGestaltFx()
-	local inst = CreateEntity()
-
-	inst:AddTag("DECOR")
-	inst:AddTag("NOCLICK")
-	--[[Non-networked entity]]
-	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
-	inst.persists = false
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddFollower()
-
-	inst.Transform:SetFourFaced()
-
-	inst.AnimState:SetBank("wx78_lunar_affinity_fx")
-	inst.AnimState:SetBuild("brightmare_gestalt_head_evolved")
-	inst.AnimState:OverrideSymbol("fx_embers", "lunarthrall_plant_front", "fx_embers")
-	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-	inst.AnimState:SetMultColour(1, 1, 1, 0.2)
-	inst.AnimState:SetLightOverride(0.1)
-
-	return inst
-end
-
-local PLANAR_BIT = 1
-local SHOWN_BIT = 2
-
-local function OnPlanarFlagsDirty(inst)
-	if inst.gestaltfx then
-		if bit.band(inst.planarflags:value(), SHOWN_BIT) ~= 0 then
-			local planar = bit.band(inst.planarflags:value(), PLANAR_BIT) ~= 0
-			local anim = planar and "wx78_lunar_affinity_fx_2" or "wx78_lunar_affinity_fx_1"
-			inst.gestaltfx.AnimState:PlayAnimation(anim, true)
-			inst.gestaltfx.AnimState:SetFrame(math.random(inst.gestaltfx.AnimState:GetCurrentAnimationNumFrames()) - 1)
-			inst.gestaltfx:Show()
-		else
-			inst.gestaltfx:Hide()
-		end
-	end
-end
-
-local function SetPlanarBit(inst, flag, val)
-	val = val and bit.bor(inst.planarflags:value(), flag) or bit.bxor(bit.bor(inst.planarflags:value(), flag), flag)
-	if inst.planarflags:value() ~= val then
-		inst.planarflags:set(val)
-		OnPlanarFlagsDirty(inst)
-	end
-end
-
-local function SetPlanarFxShown(inst, shown)
-	SetPlanarBit(inst, SHOWN_BIT, shown)
 end
 
 local function SetIsPlanar(inst, planar)
@@ -263,13 +221,13 @@ local function SetIsPlanar(inst, planar)
 			inst:RemoveComponent("planarentity")
 			inst.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.SKILLS.WX78.POSSESSEDBODY_NEGATIVE_SANITY_AURA_MODIFIER, "gestalt_possessedbody")
 		end
-		SetPlanarBit(inst, PLANAR_BIT, planar)
+		inst:SetGestaltFxPlanar(planar)
 	end
 end
 
-local function GetIsPlanar(inst)
-	return bit.band(inst.planarflags:value(), PLANAR_BIT) ~= 0
-end
+--[[local function GetIsPlanar(inst)
+	return inst:IsGestaltFxPlanar()
+end]]
 
 ----------------------------------------------------------------------------------------
 
@@ -292,6 +250,23 @@ end
 local function OnUnequip(inst, data)
     if data ~= nil and data.item ~= nil then
         data.item:RemoveEventCallback("percentusedchange", WeaponPercentChanged)
+    end
+end
+
+local function OnLeaderFailedFurl(inst)
+    local leader = inst.components.follower and inst.components.follower:GetLeader()
+    if leader ~= nil then
+        if inst.sg.mem.furl_target == leader.sg.mem.furl_target then
+            inst:PushBufferedAction(BufferedAction(inst, inst.sg.mem.furl_target, ACTIONS.LOWER_SAIL_FAIL))
+        end
+    end
+end
+
+local function OnLeaderFailedRow(inst)
+    local leader = inst.components.follower and inst.components.follower:GetLeader()
+    if leader ~= nil then
+        local tool = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+        inst:PushBufferedAction(BufferedAction(inst, nil, ACTIONS.ROW_FAIL, tool))
     end
 end
 
@@ -329,9 +304,16 @@ local function CustomSPCombatDamage(inst, target, weapon, multiplier, mount)
 end
 
 local function OnSanityDelta(inst, data)
-    if data.newpercent == 0 and not inst.components.health:IsDead() then
-        inst.components.health:Kill()
+    -- #HACK _ignore_sanity_death is a hack flag to give us time to apply upgrade modules before we apply fresh spawn stats, otherwise
+    -- sanity delta runs and we die on a 0 sanity chassis
+    if data.newpercent == 0 and not inst.components.health:IsDead() and not inst._ignore_sanity_death then
+        inst:DoSanityDeath()
     end
+end
+
+local function DoSanityDeath(inst)
+    inst._saved_health_on_sanity_death = inst.components.health.currenthealth
+    inst.components.health:Kill()
 end
 
 local function ArmorBroke(inst, data)
@@ -407,6 +389,38 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function CanTransformToContainer(inst, doer)
+    if doer ~= nil then
+        if not doer.wx78_classified then
+            return false, "NOTAROBOT"
+        end
+        local linkeditem = inst.components.linkeditem
+        if not linkeditem then
+            return false, "NOTMYBACKUP"
+        end
+        local owneruserid = linkeditem:GetOwnerUserID()
+        if owneruserid and owneruserid ~= doer.userid then
+            return false, "NOTMYBACKUP"
+        end
+    end
+
+    return not inst.sg:HasStateTag("busy")
+end
+
+local function TransformToContainer(inst)
+    inst:TryToReplaceWithBackupBody(true)
+    if inst.wx78_backupbody_save_inst ~= nil then
+        inst.wx78_backupbody_save_inst.wx78_backupbody_inventory.AnimState:PlayAnimation("wx_chassis_poweroff")
+        inst.wx78_backupbody_save_inst.wx78_backupbody_inventory.AnimState:PushAnimation("wx_chassis_idle", true)
+        inst.wx78_backupbody_save_inst:SetPossessedContainerState()
+        return inst.wx78_backupbody_save_inst
+    end
+
+    return nil
+end
+
+----------------------------------------------------------------------------------------
+
 local function RedirectToWxShield(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
 	return inst.components.wx78_shield ~= nil and inst.components.wx78_shield:OnTakeDamage(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
 end
@@ -416,6 +430,7 @@ end
 local function OnSave(inst, data)
     data.maxcharge = inst._maxcharge or nil
 	data.isplanar = inst:GetIsPlanar() or nil
+    data.gears_eaten = inst._gears_eaten
 
     -- WX-78 needs to manually save/load health, hunger, and sanity, in case their maxes
     -- were modified by upgrade circuits, because those components only save current,
@@ -426,6 +441,7 @@ local function OnSave(inst, data)
     data._wx78_sanity = inst.components.sanity.current
     data._wx78_hunger = inst.components.hunger.current
     data._wx78_shield = inst.components.wx78_shield.currentshield
+    data._saved_health_on_sanity_death = inst._saved_health_on_sanity_death
 end
 
 local function OnLoad(inst, data, newents)
@@ -438,6 +454,9 @@ local function OnLoad(inst, data, newents)
             inst:SetIsPlanar(true)
         end
 
+        if data.gears_eaten ~= nil then
+            inst._gears_eaten = data.gears_eaten
+        end
         -- WX-78 needs to manually save/load health, hunger, and sanity, in case their maxes
         -- were modified by upgrade circuits, because those components only save current,
         -- and that gets overridden by the default max values during construction.
@@ -457,6 +476,10 @@ local function OnLoad(inst, data, newents)
 
         if data._wx78_shield then
             inst.components.wx78_shield.currentshield = data._wx78_shield
+        end
+
+        if data._saved_health_on_sanity_death then
+            inst._saved_health_on_sanity_death = data._saved_health_on_sanity_death
         end
     end
 end
@@ -487,6 +510,7 @@ local function fn()
     inst.AnimState:AddOverrideBuild("wx_chassis")
     inst.AnimState:PlayAnimation("wx_chassis_idle")
     PlayerCommonExtensions.SetupBaseSymbolVisibility(inst)
+    PlayerCommonExtensions.SetupOverrideSymbols(inst)
     PlayerCommonExtensions.SetupOverrideBuilds(inst)
     inst.AnimState:AddOverrideBuild("player_wx78_actions")
 	inst.AnimState:SetSymbolBloom("fx_puff2_parts")
@@ -520,14 +544,7 @@ local function fn()
     inst:AddTag("lunar_aligned")
     inst:AddTag("electricdamageimmune")
     --electricdamageimmune is for combat and not lightning strikes
-
-	if not TheNet:IsDedicated() then
-		inst.gestaltfx = CreateGestaltFx()
-		inst.gestaltfx.entity:SetParent(inst.entity)
-		inst.gestaltfx.Follower:FollowSymbol(inst.GUID, "headbase")
-	end
-	inst.planarflags = net_tinybyte(inst.GUID, "wx78_possessedbody.planarflags", "planarflagsdirty")
-	SetPlanarFxShown(inst, true)
+    inst:AddTag("devourable")
 
 	inst.footstepoverridefn = PlayerCommonExtensions.FootstepOverrideFn
 	inst.foleyoverridefn = PlayerCommonExtensions.FoleyOverrideFn
@@ -538,6 +555,7 @@ local function fn()
     inst.AttachClassified_wx78 = AttachClassified_wx78
     inst.DetachClassified_wx78 = DetachClassified_wx78
 
+	WX78Common.AddGestaltFx_Common(inst, false, true)
 	WX78Common.AddHeatSteamFx_Common(inst)
 	WX78Common.AddDizzyFx_Common(inst)
 	WX78Common.Initialize_Common(inst)
@@ -545,8 +563,6 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-		inst:ListenForEvent("planarflagsdirty", OnPlanarFlagsDirty)
-
         return inst
     end
 
@@ -554,8 +570,7 @@ local function fn()
     inst.wx78_classified.entity:SetParent(inst.entity)
     inst.wx78_classified.Network:SetClassifiedTarget(inst)
 
-    local inspectable = inst:AddComponent("inspectable")
-    inspectable.getspecialdescription = GetSpecialDescription
+    inst:AddComponent("inspectable")
 
 	inst:AddComponent("maprevealable")
 	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
@@ -582,7 +597,7 @@ local function fn()
     inst:AddComponent("eater")
     inst.components.eater:SetIgnoresSpoilage(true)
     inst.components.eater:SetCanEatGears()
-    -- inst.components.eater:SetOnEatFn(OnEat)
+    inst.components.eater:SetOnEatFn(WX78Common.OnEat)
 
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
@@ -624,6 +639,9 @@ local function fn()
     -- activatable.quickaction = true
     -- activatable.forcerightclickaction = true
 
+    inst:AddComponent("areaaware") -- needed for slipperyfeet
+	inst.components.areaaware:StartWatchingTile(WORLD_TILES.OCEAN_ICE)
+
     inst:AddComponent("lootdropper")
     inst:AddComponent("timer")
     inst:AddComponent("damagetyperesist")
@@ -633,6 +651,10 @@ local function fn()
     inst:AddComponent("sheltered")
     inst:AddComponent("wx78_abilitycooldowns")
     inst:AddComponent("luckuser")
+    inst:AddComponent("bloomer")
+    inst:AddComponent("colouradder")
+    inst:AddComponent("pinnable")
+    inst:AddComponent("slipperyfeet")
 
     inst.components.damagetyperesist:AddResist("lunar_aligned", inst, TUNING.SKILLS.WX78.POSSESSEDBODY_LUNAR_RESIST, "lunaraligned")
     inst.components.damagetypebonus:AddBonus("shadow_aligned", inst, TUNING.SKILLS.WX78.POSSESSEDBODY_VS_SHADOW_BONUS, "lunaraligned")
@@ -657,27 +679,34 @@ local function fn()
     upgrademoduleowner.onmoduleremoved = OnUpgradeModuleRemoved
     upgrademoduleowner.ononemodulepopped = OnOneUpgradeModulePopped
     upgrademoduleowner.onallmodulespopped = OnAllUpgradeModulesRemoved
-    -- upgrademoduleowner.canupgradefn = CanUseUpgradeModule
-    upgrademoduleowner:SetChargeLevel(3)
-    -- upgrademoduleowner:SetAutomaticModuleActivations(false)
+    upgrademoduleowner:SetChargeLevel(6)
+    upgrademoduleowner:SetOverrideFullCharge(true)
 
     linkeditem:SetOnSkillTreeInitializedFn(OnSkillTreeInitializedFn)
     linkeditem:SetOnOwnerInstCreatedFn(OnOwnerInstCreatedFn)
     linkeditem:SetOnOwnerInstRemovedFn(OnOwnerInstRemovedFn)
 
+    inst:AddComponent("container_transform")
+    inst.components.container_transform:SetCanTransform(CanTransformToContainer)
+    inst.components.container_transform:SetOnTransform(TransformToContainer)
+
     inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("death", OnDeath)
     inst:ListenForEvent("sanitydelta", OnSanityDelta)
     inst:ListenForEvent("armorbroke", ArmorBroke)
     inst:ListenForEvent("equip", OnEquip)
     inst:ListenForEvent("unequip", OnUnequip)
+    inst:ListenForEvent("leader_failed_furl", OnLeaderFailedFurl)
+    inst:ListenForEvent("leader_failed_row", OnLeaderFailedRow)
 
     inst.SetIsPlanar = SetIsPlanar
-    inst.GetIsPlanar = GetIsPlanar
-	inst.SetPlanarFxShown = SetPlanarFxShown
+	inst.GetIsPlanar = inst.IsGestaltFxPlanar--GetIsPlanar
     inst.TryToAttachToOwner = TryToAttachToOwner
     inst.TryToReplaceWithBackupBody = TryToReplaceWithBackupBody
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
+    inst.CheckZapUserStatesFrom = CheckZapUserStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.DoSanityDeath = DoSanityDeath
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
     inst.OnLoadPostPass = OnLoadPostPass

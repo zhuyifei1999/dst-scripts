@@ -946,9 +946,6 @@ local function MakeWarg(data)
 		else
 			inst.components.health:SetMaxHealth(TUNING.WARG_HEALTH)
 		end
-		if not is_clay and not is_mutated then
-			inst.components.health.nofadeout = true
-		end
 
         inst:AddComponent("sanityaura")
         inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
@@ -1046,7 +1043,7 @@ local function MakeWarg(data)
         MakeLargeFreezableCharacter(inst)
 
 		inst:SetStateGraph("SGwarg")
-		if is_clay and is_gingerbread then
+		if is_clay or is_gingerbread then
 			inst.sg.mem.noelectrocute = true
 		end
         if is_clay or is_mutated then

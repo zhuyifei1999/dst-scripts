@@ -2506,6 +2506,26 @@ CommonStates.AddCorpseStates = function(states, anims, fns, overridecorpseprefab
         end
     end
 
+    local function TryReplaceWithCorpsePrefab(inst)
+        local corpseprefab = overridecorpseprefab or inst.sg.sg.name.."corpse"
+        local corpse = TryEntityToCorpse(inst, corpseprefab) or nil
+        if corpse == nil then
+			inst:AddTag("NOCLICK")
+			inst.persists = false
+			RemovePhysicsColliders(inst)
+
+			-- time since death anim started
+			local delay = (inst.components.health.destroytime or 2) - inst.sg.statemem.deathtimeelapsed
+            if delay > 0 then
+				inst.sg:SetTimeout(delay)
+			else
+				DoCorpseErode(inst)
+			end
+        elseif fns and fns.corpseoncreate ~= nil then
+            fns.corpseoncreate(inst, corpse)
+        end
+    end
+
     table.insert(states, State{
 		name = "corpse",
 		tags = { "dead", "busy", "noattack" },
@@ -2517,7 +2537,7 @@ CommonStates.AddCorpseStates = function(states, anims, fns, overridecorpseprefab
 
             -- Assuming the death animation is one animation. Is there a case where it's split up?
             inst.sg.statemem.deathtimeelapsed = (inst.AnimState:GetCurrentAnimationNumFrames() + 1) * FRAMES
-			
+
             if inst.components.locomotor ~= nil then
                 inst.components.locomotor:Stop()
             end
@@ -2528,28 +2548,15 @@ CommonStates.AddCorpseStates = function(states, anims, fns, overridecorpseprefab
             end
 		end,
 
+        events =
+        {
+            -- For sleep cases.
+            EventHandler("forcecorpsereplace", TryReplaceWithCorpsePrefab)
+        },
+
 		timeline =
 		{
-            --a 1 frame delay in case we are loading
-            FrameEvent(1, function(inst)
-                local corpseprefab = overridecorpseprefab or inst.sg.sg.name.."corpse"
-                local corpse = TryEntityToCorpse(inst, corpseprefab) or nil
-                if corpse == nil then
-	        		inst:AddTag("NOCLICK")
-	        		inst.persists = false
-	        		RemovePhysicsColliders(inst)
-
-	        		-- time since death anim started
-	        		local delay = (inst.components.health.destroytime or 2) - inst.sg.statemem.deathtimeelapsed
-                    if delay > 0 then
-	        			inst.sg:SetTimeout(delay)
-	        		else
-	        			DoCorpseErode(inst)
-	        		end
-                elseif fns and fns.corpseoncreate ~= nil then
-                    fns.corpseoncreate(inst, corpse)
-                end
-            end)
+            FrameEvent(1, TryReplaceWithCorpsePrefab) --a 1 frame delay in case we are loading
 		},
 
 		ontimeout = DoCorpseErode,
@@ -2851,7 +2858,8 @@ CommonStates.AddLunarRiftMutationStates = function(states, timelines, anims, fns
 end
 
 local function oncorpsedeathanimover(inst)
-    if inst.AnimState:AnimDone() and EntityHasCorpse(inst) then
+    local is_corpsing = inst.components.health ~= nil and inst.components.health.is_corpsing or nil
+    if inst.AnimState:AnimDone() and is_corpsing then
         inst.sg:GoToState("corpse")
     end
 end
@@ -2943,7 +2951,7 @@ CommonStates.AddPossessChassisState = function(states, anim, possess_frame_timin
         {
             FrameEvent(possess_frame_timing, function(inst)
                 local isplanar = inst.components.gestaltcapturable and inst.components.gestaltcapturable:GetIsPlanar()
-				if inst.sg.statemem.target:TryToSpawnPossessedBody(isplanar) then
+				if inst.sg.statemem.target:TryToSpawnPossessedBody(isplanar, true) then
 					inst.persists = false
 				end
 			end),

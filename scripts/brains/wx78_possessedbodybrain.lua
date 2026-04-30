@@ -4,9 +4,10 @@ require "behaviours/chaseandattack"
 require "behaviours/doaction"
 require "behaviours/leash"
 require "behaviours/standstill"
-require "behaviours/runawaytodist"
+require "behaviours/runtodist"
 
 local BrainCommon = require("brains/braincommon")
+local WX78Common = require("prefabs/wx78_common")
 
 local MAX_CHASE_TIME = 10
 local MAX_CHASE_DIST = 50
@@ -14,8 +15,8 @@ local MAX_CHASE_DIST = 50
 local TRADE_DIST = 20
 
 local FOLLOW_MIN_DIST = 1
-local FOLLOW_TARGET_DIST = 6
-local FOLLOW_MAX_DIST = 9
+local FOLLOW_TARGET_DIST = 3
+local FOLLOW_MAX_DIST = 4
 
 --------------------------------------------------------------------------------------------------------------------------------
 
@@ -23,18 +24,18 @@ local Wx78_PossessedBodyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-local function GetTraderFn(inst)
+local function GetInteractorFn(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local players = FindPlayersInRange(x, y, z, TRADE_DIST, true)
     for _, player in ipairs(players) do
-        if inst.components.trader:IsTryingToTradeWithMe(player) or inst.components.eater:IsTryingToFeedMe(player) then
+        if inst.components.trader:IsTryingToTradeWithMe(player) or inst.components.eater:IsTryingToFeedMe(player) or inst.components.container_transform:IsTryingToOpenMe(player) then
             return player
         end
     end
 end
 
-local function KeepTraderFn(inst, target)
-    return inst.components.trader:IsTryingToTradeWithMe(target) or inst.components.eater:IsTryingToFeedMe(target)
+local function KeepInteractorFn(inst, target)
+    return inst.components.trader:IsTryingToTradeWithMe(target) or inst.components.eater:IsTryingToFeedMe(target) or inst.components.container_transform:IsTryingToOpenMe(target)
 end
 
 local function GetLeader(inst)
@@ -57,7 +58,8 @@ end
 
 local function CanToolDoAction(tool, action)
     -- tool:CanDoAction is for till
-    return ((tool.components.tool ~= nil and tool.components.tool:CanDoAction(action)) or tool:CanDoAction(action)) 
+    return ((tool.components.tool ~= nil and tool.components.tool:CanDoAction(action)) or tool:CanDoAction(action))
+        or (action == ACTIONS.ROW and tool.components.oar ~= nil)
 end
 
 local function HasToolForAction(inst, action, tryequip)
@@ -81,18 +83,24 @@ local function HasToolForAction(inst, action, tryequip)
 end
 
 local function GetLeaderAction(inst)
-	local target
     local act = inst:GetBufferedAction() or inst.sg.statemem.action
 	if act then
-		target = act.target
-		act = act.action
-    elseif inst.sg:HasStateTag("spinning") and inst._lastspintime and GetTime() - inst._lastspintime < 1 then
-        act, target = inst._lastspinaction, inst._lastspintarget
-	elseif inst.components.playercontroller then
-		act, target = inst.components.playercontroller:GetRemoteInteraction()
+		return act.action, act.target, act:GetActionPoint()
 	end
 
-    return act, target
+	if inst._lastspintime then
+		if inst.sg:HasStateTag("spinning") then
+			if GetTime() - inst._lastspintime < 1 then
+				return inst._lastspinaction, inst._lastspintarget
+			end
+		elseif inst:HasTag("using_drone_remote") then
+			return inst._lastspinaction, inst._lastspintarget
+		end
+	end
+
+	if inst.components.playercontroller then
+		return inst.components.playercontroller:GetRemoteInteraction()
+	end
 end
 
 local function IsLeaderAttacking(inst)
@@ -116,14 +124,12 @@ local function IsLeaderMoving(inst)
     end
 end
 
-local function Create_Starter(action)
+local function Create_Starter(action, notool)
     return function(inst, leaderdist, finddist)
         local leader = GetLeader(inst)
         if leader ~= nil then
             local leaderact, leadertarget = GetLeaderAction(leader)
-            if leaderact == action and HasToolForAction(inst, action, true) then
-                return true
-            end
+            return leaderact == action and (notool or HasToolForAction(inst, action, true))
         end
     end
 end
@@ -138,14 +144,14 @@ local function Create_KeepGoing(action)
     end
 end
 
-local function Create_FindNew(action)
+local function Create_FindNew(action, notool)
     return function(inst, leaderdist, finddist)
         local leader = GetLeader(inst)
         if leader ~= nil then
             local leaderact, leadertarget = GetLeaderAction(leader)
-            if leaderact == action then
-                return BufferedAction(inst, leadertarget, action, GetTool(inst))
-            end
+            return leaderact == action
+                and BufferedAction(inst, leadertarget, action, (not notool and GetTool(inst) or nil))
+                or nil
         end
     end
 end
@@ -192,22 +198,186 @@ local NODE_ASSIST_TILL_ACTION =
     shouldrun = true,
 }
 
+local function IsValidAnchorToRaise(anchor)
+    return anchor ~= nil and (not anchor:HasTag("anchor_raised") or anchor:HasTag("anchor_transitioning"))
+end
+local NODE_ASSIST_RAISE_ANCHOR_ACTION =
+{
+    action = "RAISE_ANCHOR",
+    starter = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.RAISE_ANCHOR and IsValidAnchorToRaise(leadertarget)
+        end
+    end,
+    keepgoing = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.RAISE_ANCHOR and IsValidAnchorToRaise(leadertarget)
+        end
+    end,
+    finder = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return (leaderact == ACTIONS.RAISE_ANCHOR and IsValidAnchorToRaise(leadertarget))
+                and BufferedAction(inst, leadertarget, ACTIONS.RAISE_ANCHOR)
+                or nil
+        end
+    end,
+    shouldrun = true,
+}
+local NODE_ASSIST_ROW_ACTION =
+{
+    action = "ROW",
+    starter = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return (leaderact == ACTIONS.ROW or leaderact == ACTIONS.ROW_CONTROLLER) and HasToolForAction(inst, ACTIONS.ROW, true)
+        end
+    end,
+    keepgoing = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.ROW or leaderact == ACTIONS.ROW_CONTROLLER
+        end
+    end,
+    finder = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget, leaderpos = GetLeaderAction(leader)
+            if leaderact == ACTIONS.ROW or leaderact == ACTIONS.ROW_CONTROLLER or leaderact == ACTIONS.ROW_FAIL then
+                if leaderact == ACTIONS.ROW_CONTROLLER then
+                    leaderact = ACTIONS.ROW -- Always use the ROW action for non-players.
+                    local platform = leader:GetCurrentPlatform()
+                    local leaderx, leadery, leaderz = leader.Transform:GetWorldPosition()
+                    if platform ~= nil then
+	                    local boat_x, boat_y, boat_z = platform.Transform:GetWorldPosition()
+	                    local dir_x, dir_z = VecUtil_Normalize(leaderx - boat_x, leaderz - boat_z)
+                        local test_length = 2
+                        local test_x, test_z = leaderx + dir_x * test_length, leaderz + dir_z * test_length
+                        local found_water = not TheWorld.Map:IsVisualGroundAtPoint(test_x, 0, test_z) and TheWorld.Map:GetPlatformAtPoint(test_x, test_z) == nil
+                        if found_water then
+                            leaderpos = Vector3(test_x, 0, test_z)
+                        end
+                    end
+                end
+                return BufferedAction(inst, leadertarget, leaderact, GetTool(inst), leaderpos)
+            end
+        end
+    end,
+    shouldrun = true,
+}
+
+local function IsValidToLowerSailBoost(inst, leader, leadertarget)
+    return (inst.sg.mem.furl_target ~= leadertarget)
+        or (inst.sg.currentstate.name == "furl" and leader.sg.currentstate.name == "furl_boost")
+end
+local NODE_ASSIST_LOWER_SAIL_ACTION =
+{
+    action = "LOWER_SAIL",
+    starter = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return (leaderact == ACTIONS.LOWER_SAIL_BOOST or leaderact == ACTIONS.LOWER_SAIL_FAIL)
+                and IsValidToLowerSailBoost(inst, leader, leadertarget)
+        end
+    end,
+    keepgoing = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.LOWER_SAIL_BOOST or leaderact == ACTIONS.LOWER_SAIL_FAIL
+                and IsValidToLowerSailBoost(inst, leader, leadertarget)
+        end
+    end,
+    finder = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            if (leaderact == ACTIONS.LOWER_SAIL_BOOST or leaderact == ACTIONS.LOWER_SAIL_FAIL)
+                and IsValidToLowerSailBoost(inst, leader, leadertarget) then
+                return BufferedAction(inst, leadertarget, leaderact)
+            end
+        end
+    end,
+    shouldrun = true,
+}
+local NODE_ASSIST_SOAKIN_ACTION =
+{
+    action = "SOAKIN",
+    starter = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.SOAKIN or leader.sg.statemem.occupying_bathingpool ~= nil
+        end
+    end,
+    keepgoing = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.SOAKIN or leader.sg.statemem.occupying_bathingpool ~= nil
+        end
+    end,
+    finder = function(inst, leaderdist, finddist)
+        local leader = GetLeader(inst)
+        if leader ~= nil then
+            local leaderact, leadertarget = GetLeaderAction(leader)
+            return leaderact == ACTIONS.SOAKIN
+                and BufferedAction(inst, leadertarget, ACTIONS.SOAKIN)
+                or nil
+        end
+    end,
+    shouldrun = true,
+}
+
+local SpDamageUtil = require("components/spdamageutil")
+local function IsValidZapRemote(inst, item)
+    return item:HasTag("wx_remotecontroller")
+        and item.components.equippable ~= nil
+        and not item.components.equippable:IsRestricted(inst)
+        and (item.components.finiteuses == nil or item.components.finiteuses:GetUses() > 0)
+end
+local function IsWeaponBetter(inst, weapon1, weapon2, target)
+    if weapon2 == nil or not weapon2.components.weapon then
+        return true
+    end
+
+    local itemdmg, itemspdmg = inst.components.combat:CalcDamage(target, weapon1)
+    local dmg, spdmg = inst.components.combat:CalcDamage(target, weapon2)
+
+    itemspdmg = itemspdmg and SpDamageUtil.CalcTotalDamage(itemspdmg) or 0
+    spdmg = spdmg and SpDamageUtil.CalcTotalDamage(spdmg) or 0
+
+    return (itemdmg + itemspdmg) > (dmg + spdmg)
+end
 local function EquipBestWeapon(inst, target)
+    -- Prioritize zap drone!
+    local heldweapon = GetTool(inst)
+    local zap_drone = inst.components.inventory:FindItem(function(item) return IsValidZapRemote(inst, item) end)
+    if zap_drone and zap_drone ~= heldweapon and (heldweapon == nil or not IsValidZapRemote(inst, heldweapon)) then
+        inst.components.inventory:Equip(zap_drone)
+        return
+    elseif heldweapon and IsValidZapRemote(inst, heldweapon) then
+        return
+    end
+
     -- Find highest damage weapon to use
     -- Not the best since it doesnt take into account damage multipliers, can be improved.
     local bestweapon
     inst.components.inventory:ForEachItem(function(item)
-        if (bestweapon == nil and item.components.weapon ~= nil) or
-            (bestweapon ~= nil and bestweapon.components.weapon ~= nil and item.components.weapon ~= nil
-            and item.components.weapon:GetDamage(inst, target) > bestweapon.components.weapon:GetDamage(inst, target)) then
+        if item.components.weapon ~= nil
+            and (bestweapon == nil or IsWeaponBetter(inst, item, bestweapon, target)) then
             bestweapon = item
         end
     end)
-    local heldweapon = GetTool(inst)
-    if bestweapon and bestweapon ~= heldweapon
-        and (heldweapon == nil or heldweapon.components.weapon == nil or (
-            bestweapon.components.weapon:GetDamage(inst, target) ~= heldweapon.components.weapon:GetDamage(inst, target)
-        )) then
+    if bestweapon and bestweapon ~= heldweapon and IsWeaponBetter(inst, bestweapon, heldweapon, target) then
         inst.components.inventory:Equip(bestweapon)
     end
 end
@@ -216,7 +386,7 @@ local function SetTargetOnLeaderTarget(inst)
     local leader = GetLeader(inst)
     if leader ~= nil then
         local leaderact, leadertarget = GetLeaderAction(leader)
-        if leaderact == ACTIONS.ATTACK then
+        if leaderact == ACTIONS.ATTACK and leadertarget ~= nil then
             inst.components.combat:SetTarget(leadertarget)
             EquipBestWeapon(inst, leadertarget)
         elseif leader.components.combat.target ~= nil then
@@ -226,15 +396,27 @@ local function SetTargetOnLeaderTarget(inst)
     end
 end
 
+local function ShouldEmote(inst)
+    local leader = GetLeader(inst)
+    return inst._brain_emotedata ~= nil
+        and leader ~= nil and leader.sg.currentstate.name == "emote"
+        and not inst.sg:HasStateTag("emoting")
+end
+
+local function DoEmote(inst)
+    inst:PushEventImmediate("emote", inst._brain_emotedata)
+end
+
 local function EatFoodAction(inst)
     if not inst.sg:HasStateTag("busy") then
         -- We're well topped off, just return for optimization sake.
-        if inst.components.health:GetPercent() <= 0.9 or inst.components.hunger:GetPercent() <= 0.9 or inst.components.sanity:GetPercent() <= 0.9 then
+        local ishurt = inst.components.health:GetPercent() <= 0.9
+        if ishurt or inst.components.hunger:GetPercent() <= 0.9 or inst.components.sanity:GetPercent() <= 0.9 then
             local health = inst.components.health.currenthealth
             local hunger = inst.components.hunger.current
             local sanity = inst.components.sanity.current
 
-            local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.5 -- Some leniency for healing.
+            local maxhealth = inst.components.health:GetMaxWithPenalty() * 1.1 -- Some leniency for healing.
             local maxhunger = inst.components.hunger.max
             local maxsanity = inst.components.sanity:GetMaxWithPenalty()
 
@@ -249,7 +431,8 @@ local function EatFoodAction(inst)
                     local itemhunger = edible:GetHunger(inst)
                     local itemsanity = edible:GetSanity(inst)
 
-                    if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth then
+                    if itemhealth >= TUNING.HEALING_MEDSMALL and (health + itemhealth) <= maxhealth
+                        and ishurt then -- check if we're hurt, for the leniency added above
                         if besthealth == nil or (itemhealth > besthealth.components.edible:GetHealth(inst)) then
                             besthealth = item
                         end
@@ -286,6 +469,44 @@ local function EatFoodAction(inst)
     end
 end
 
+local function DoForgeRepairAction(inst)
+    if inst.sg:HasStateTag("busy") then
+        return
+    end
+
+    local repair_kits = {} -- [type] = item
+    inst.components.inventory:ForEachItem(function(item)
+        if item.components.forgerepair ~= nil
+            and item.components.forgerepair.repairmaterial ~= nil
+            and repair_kits[item.components.forgerepair.repairmaterial] == nil then
+            repair_kits[item.components.forgerepair.repairmaterial] = item
+        end
+    end)
+
+    local itemtorepair = inst.components.inventory:FindItem(function(item)
+        return item:HasTag("broken")
+            and item.components.forgerepairable ~= nil
+            and item.components.forgerepairable.repairmaterial ~= nil
+            and repair_kits[item.components.forgerepairable.repairmaterial]
+    end)
+
+    if itemtorepair then
+        local repairkit = repair_kits[itemtorepair.components.forgerepairable.repairmaterial]
+        local buffaction = BufferedAction(inst, itemtorepair, ACTIONS.REPAIR, repairkit)
+
+        buffaction:AddSuccessAction(function()
+            if itemtorepair and itemtorepair.components.equippable and not itemtorepair.components.equippable:IsRestricted(inst) then
+                local equipslot = itemtorepair.components.equippable.equipslot
+                if not inst.components.inventory:GetEquippedItem(equipslot) then
+                    inst.components.inventory:Equip(itemtorepair)
+                end
+            end
+        end)
+
+        return buffaction
+    end
+end
+
 local function DoUpgradeModuleAction(inst)
     if inst.sg:HasStateTag("busy") or (inst.last_upgrade_module_action and GetTime() - inst.last_upgrade_module_action < 5)then
         return
@@ -299,17 +520,44 @@ local function DoUpgradeModuleAction(inst)
     end
 end
 
-local function GetRunAwayTarget(inst)
-    local target = inst.components.combat.target or Ents[inst.components.combat.lasttargetGUID]
-    if target ~= nil and not IsEntityDead(target) then
-        return target
-    end
+local function RescueLeaderAction(inst)
+    return BufferedAction(inst, GetLeader(inst), ACTIONS.UNPIN)
+end
+
+local KEEP_LAST_TARGET_TIME = 4
+local function GetTarget(inst)
+	local target = inst.components.combat.target
+	if target == nil then
+		local leader = GetLeader(inst)
+		if leader then
+			local leaderact, leadertarget = GetLeaderAction(leader)
+			if leaderact == ACTIONS.ATTACK and leadertarget and leadertarget:IsValid() then
+				target = leadertarget
+			end
+		end
+		if target == nil then
+			local last_target = Ents[inst.components.combat.lasttargetGUID]
+			if last_target then
+				if GetTime() - (inst.components.combat.laststartattacktime or 0) < KEEP_LAST_TARGET_TIME then
+					--keep last target for at least [KEEP_LAST_TARGET_TIME] seconds
+					target = last_target
+				else
+					--otherwise keep last target as long as they're still in combat with us
+					local theirtarget = last_target.components.combat and last_target.components.combat.target
+					if theirtarget and inst.components.combat:IsAlly(theirtarget) then
+						target = last_target
+					end
+				end
+			end
+		end
+	end
+	return target and not IsEntityDead(target) and target or nil
 end
 
 local DROP_TARGET_KITE_DIST_SQ = 14 * 14
 local function LeaderInRangeOfTarget(inst)
     local leader = GetLeader(inst)
-    local target = GetRunAwayTarget(inst)
+    local target = GetTarget(inst)
     if leader ~= nil and target ~= nil then
         if leader:GetDistanceSqToInst(target) > DROP_TARGET_KITE_DIST_SQ then
             inst.components.combat:SetTarget(nil)
@@ -318,18 +566,54 @@ local function LeaderInRangeOfTarget(inst)
     end
     return true
 end
-local RUNAWAY_PARAM = { getfn = GetRunAwayTarget }
+local RUNTODIST_PARAM = { getfn = GetTarget }
 local MAX_KITE_DIST = 10
-local TOLERANCE_DIST = .5
+local TOLERANCE_DIST = .75
+
+local function GetAttackRange(inst)
+    if not IsLeaderAttacking(inst) then -- So that ranged attackers don't just constantly run back and forth to the target
+        return 0
+    end
+
+    local weapon = GetTool(inst)
+    if weapon and weapon:HasTag("wx_remotecontroller") then
+		local max_range = WX78Common.CalcDroneZapRange(inst)
+		local range = math.sqrt(max_range) * 2.4
+        if inst:HasTag("using_drone_remote") then
+			return range, 6, max_range
+        else
+			return range
+        end
+    end
+
+    return inst.components.combat:GetAttackRange()
+end
+
+local function UseDroneRemoteAction(inst)
+    if inst.sg:HasStateTag("doing") then
+        return
+    end
+    local heldweapon = GetTool(inst)
+    if heldweapon and heldweapon:HasTag("wx_remotecontroller") then
+        local attack_range = GetAttackRange(inst)
+        local target = GetTarget(inst)
+        if target and target:IsValid() then
+            local dist_to_target = math.sqrt(inst:GetDistanceSqToInst(target))
+            if dist_to_target < attack_range then
+                return BufferedAction(inst, nil, ACTIONS.USEEQUIPPEDITEM, heldweapon)
+            end
+        end
+    end
+end
 
 local function GetRunDist(inst, hunter)
-    local attack_range = inst.components.combat:GetAttackRange()
+    local attack_range = GetAttackRange(inst)
     local leader = GetLeader(inst)
     if leader ~= nil then
-        local dist = math.max(attack_range, math.min(math.sqrt(leader:GetDistanceSqToInst(hunter)), MAX_KITE_DIST))
+        local leader_dist = math.sqrt(leader:GetDistanceSqToInst(hunter))
+        local dist = math.max(attack_range, math.min(leader_dist, MAX_KITE_DIST))
         if inst._lastdist == nil or (math.abs(inst._lastdist - dist) >= TOLERANCE_DIST) then
             inst._lastdist = dist
-            inst._lastruntime = GetTime()
             return dist
         else
             return inst._lastdist
@@ -339,32 +623,96 @@ local function GetRunDist(inst, hunter)
     return 1 -- Shrug?
 end
 
-local RUN_AFTER_KITE_DELAY = 1
+local function ShouldMoveAnyways(inst)
+    local leader = GetLeader(inst)
+    local target = GetTarget(inst)
+    if leader ~= nil and target ~= nil then
+		local attack_range, min_range, max_range = GetAttackRange(inst)
+        local dist_to_target = math.sqrt(inst:GetDistanceSqToInst(target))
+
+		if max_range and dist_to_target >= max_range then
+			return true --using drone: target is out of max range
+		elseif min_range and dist_to_target >= min_range then
+			return false --using drone: target is not too close, don't move
+		elseif math.abs(dist_to_target - attack_range) <= 1 then
+			return false
+		end
+
+		local leader_dist = math.sqrt(leader:GetDistanceSqToInst(target)) + 0.5
+		if min_range and leader_dist < dist_to_target then
+			return false
+		end
+        return attack_range >= leader_dist
+    end
+end
+
 --------------------------------------------------------------------------------------------------------------------------------
 
 local UPDATE_RATE = 0.1
+local STOP_USING_DRONE_DELAY = 3
 function Wx78_PossessedBodyBrain:OnStart()
     local root = PriorityNode(
     {
-        WhileNode(function() return true end, --not self.inst.sg:HasStateTag("busy") end,
+        WhileNode(function() return not self.inst.sg:HasStateTag("jumping") end, --not self.inst.sg:HasStateTag("busy") end,
         "<busy state guard",
         PriorityNode({
             -- No panic behaviours. We're controlled by gestalts.
-            FaceEntity(self.inst, GetTraderFn, KeepTraderFn),
+            FaceEntity(self.inst, GetInteractorFn, KeepInteractorFn),
 
-            WhileNode(function() return IsLeaderAttacking(self.inst) end, "is leader attacking",
-                PriorityNode({
-                    FailIfSuccessDecorator(ActionNode(function() SetTargetOnLeaderTarget(self.inst) end)),
-                    ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
-                }, UPDATE_RATE)
+            WhileNode(function() local leader = GetLeader(self.inst) return leader and leader.components.pinnable and leader.components.pinnable:IsStuck() end, "Leader Phlegmed",
+                DoAction(self.inst, RescueLeaderAction, "Rescue Leader", true)),
+
+			WhileNode(
+				function()
+                    if not LeaderInRangeOfTarget(self.inst) then
+                        self._last_drone_time = nil
+                        return false
+                    end
+					if IsLeaderAttacking(self.inst) and not ShouldMoveAnyways(self.inst) then
+						self._last_drone_time = self.inst:HasTag("using_drone_remote") and GetTime() or nil
+						return true
+					elseif self._last_drone_time then
+						--don't immediately stop using drone when player stops attacking
+						if self.inst:HasTag("using_drone_remote") and GetTime() - self._last_drone_time < STOP_USING_DRONE_DELAY then
+							return true
+						end
+						self._last_drone_time = nil
+					end
+					return false
+				end,
+				"is leader attacking",
+				ParallelNodeAny{
+					ConditionWaitNode(function()
+						SetTargetOnLeaderTarget(self.inst)
+						return false --abusing ConditionWaitNode as perma-running loop
+					end),
+					PriorityNode({
+						FailIfSuccessDecorator(ConditionWaitNode(function()
+							if self.inst:HasTag("using_drone_remote") then
+								--let clone know whether to fire the drone or not since they don't
+								--stop using the drone right away when the player stops attacking.
+								self.inst:PushEventImmediate("ms_wx_clone_use_drone_zap_attack", { doattack = IsLeaderAttacking(self.inst) })
+								return false
+							end
+							return true
+						end)),
+						DoAction(self.inst, UseDroneRemoteAction, nil, true),
+						ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+					}, UPDATE_RATE),
+				}
             ),
 
             DoAction(self.inst, DoUpgradeModuleAction, nil, true),
 
-            WhileNode(function() return not IsLeaderAttacking(self.inst) and IsLeaderMoving(self.inst) and LeaderInRangeOfTarget(self.inst) end, "is leader not attacking",
-                RunAwayToDist(self.inst, RUNAWAY_PARAM, GetRunDist, nil, nil, nil, true)),
+            WhileNode(function() return (ShouldMoveAnyways(self.inst) or (not IsLeaderAttacking(self.inst) and IsLeaderMoving(self.inst))) and LeaderInRangeOfTarget(self.inst) end, "is leader not attacking",
+                RunToDist(self.inst, RUNTODIST_PARAM, GetRunDist, nil, nil, nil, true)),
 
             -- Actions
+            BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_SOAKIN_ACTION),
+            BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_RAISE_ANCHOR_ACTION),
+
+            BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_LOWER_SAIL_ACTION),
+
             WhileNode(function() return HasToolForAction(self.inst, ACTIONS.CHOP) end, "chop with tool",
                 BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_CHOP_ACTION)),
 
@@ -380,14 +728,22 @@ function Wx78_PossessedBodyBrain:OnStart()
             WhileNode(function() return HasToolForAction(self.inst, ACTIONS.TILL) end, "till with tool",
                 BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_TILL_ACTION)),
 
+            WhileNode(function() return HasToolForAction(self.inst, ACTIONS.ROW) end, "row with oar",
+                BrainCommon.NodeAssistLeaderDoAction(self, NODE_ASSIST_ROW_ACTION)),
+
             SequenceNode{
                 ConditionWaitNode(function()
-                    return self.inst._lastruntime == nil or (GetTime() - self.inst._lastruntime > RUN_AFTER_KITE_DELAY)
+                    return (GetTarget(self.inst) == nil) or not LeaderInRangeOfTarget(self.inst)
                 end, "Wait after kiting"),
-                Follow(self.inst, GetLeader, FOLLOW_MIN_DIST, FOLLOW_TARGET_DIST, FOLLOW_MAX_DIST, true),
+                Follow(self.inst, GetLeader, FOLLOW_MIN_DIST, FOLLOW_TARGET_DIST, FOLLOW_MAX_DIST, true)
             },
 
+            WhileNode(function() return ShouldEmote(self.inst) end, "Emoting",
+                ActionNode(function() DoEmote(self.inst) end)),
+
             DoAction(self.inst, EatFoodAction, nil, true),
+            DoAction(self.inst, DoForgeRepairAction, nil, true),
+
             FaceEntity(self.inst, GetFaceLeaderFn, KeepFaceLeaderFn),
             StandStill(self.inst),
         }, UPDATE_RATE))

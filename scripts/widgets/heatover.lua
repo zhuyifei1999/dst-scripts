@@ -29,7 +29,9 @@ local HeatOver = Class(Widget, function(self, owner)
     --self.effectSpeed_target = 0.0
 	self:StartUpdating()
 
-    self.inst:ListenForEvent("temperaturedelta", function() self:OnHeatChange() end, self.owner)
+	local _on_heat_change = function() self:OnHeatChange() end
+    self.inst:ListenForEvent("temperaturedelta", _on_heat_change, self.owner)
+    self.inst:ListenForEvent("updateheatover", _on_heat_change, self.owner) -- from overheat overlay block setter
 end)
 
 function HeatOver:OnHeatChange()
@@ -56,19 +58,19 @@ function HeatOver:OnHeatChange()
 		"HUD_hot_level3",
 		"HUD_hot_level4",
 	}
-	--local all_down_thresh = {8, 3, -2, -7}
 
-	local up_thresh = all_up_thresh[self.laststep+1]
-	local down_thresh = all_up_thresh[self.laststep]
-
+	local is_blocked = self.owner.IsOverheatingEffectBlocked and self.owner:IsOverheatingEffectBlocked()
 	local isup = false
-	while all_up_thresh[self.laststep+1] ~= nil and
-		temp > all_up_thresh[self.laststep+1] and
-		self.laststep < num_steps and
-		(temp >= 65 or TheWorld.state.issummer or GetLocalTemperature(self.owner) >= 65) do
 
-		self.laststep = self.laststep + 1
-		isup = true
+	if not is_blocked then
+		while all_up_thresh[self.laststep+1] ~= nil and
+			temp > all_up_thresh[self.laststep+1] and
+			self.laststep < num_steps and
+			(temp >= 65 or TheWorld.state.issummer or GetLocalTemperature(self.owner) >= 65) do
+
+			self.laststep = self.laststep + 1
+			isup = true
+		end
 	end
 
 	if isup then
@@ -78,7 +80,7 @@ function HeatOver:OnHeatChange()
 		end
 	else
 		while all_up_thresh[self.laststep] ~= nil and
-			temp < all_up_thresh[self.laststep] and
+			(temp < all_up_thresh[self.laststep] or is_blocked) and
 			self.laststep > 0 do
 
 			self.laststep = self.laststep - 1

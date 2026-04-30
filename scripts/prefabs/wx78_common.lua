@@ -10,16 +10,15 @@ local DEPENDENCIES = {
 	prefabs = {
         "wx78_big_spark",
         "wx78_classified",
-        -- socket_shadow_harvester component
-        "shadow_puff",
-        "shadow_harvester_trail",
         -- socket_shadow_heart component
-        "wx78_possessed_shadow",
-        "wx78_shadow_heart_debuff",
+        "wx78_shadow_fuel_debuff",
     },
 }
 
 ---------------------------------------------------------------------------
+local function GUIDSort(a, b)
+    return a.GUID < b.GUID
+end
 
 local function GetMaxEnergy(inst)
     if inst.components.upgrademoduleowner ~= nil then
@@ -144,7 +143,7 @@ local WX78_UPGRADE_MODULE_ACTIONS = ACTIONS and
                 return true
             end
 
-            if inst.components.wx78_abilitycooldowns and inst.components.wx78_abilitycooldowns:IsInCooldown("wxscreech") then
+            if inst.components.wx78_abilitycooldowns and inst.components.wx78_abilitycooldowns:IsInCooldown("screech") then
                 return false
             end
 			return not inst:HasAnyTag("wx_screeching", "busy", "inspectingupgrademodules", "using_drone_remote")
@@ -156,7 +155,7 @@ local WX78_UPGRADE_MODULE_ACTIONS = ACTIONS and
                 return true
             end
 
-            if inst.components.wx78_abilitycooldowns and inst.components.wx78_abilitycooldowns:IsInCooldown("wxshielding") then
+            if inst.components.wx78_abilitycooldowns and inst.components.wx78_abilitycooldowns:IsInCooldown("shielding") then
                 return false
             end
 			return not inst:HasAnyTag("wx_shielding", "busy", "inspectingupgrademodules", "using_drone_remote")
@@ -478,9 +477,104 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function CreateGestaltFx()
+	local inst = CreateEntity()
+
+	inst:AddTag("DECOR")
+	inst:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+
+	inst.Transform:SetFourFaced()
+
+	inst.AnimState:SetBank("wx78_lunar_affinity_fx")
+	inst.AnimState:SetBuild("brightmare_gestalt_head_evolved")
+	inst.AnimState:OverrideSymbol("fx_embers", "lunarthrall_plant_front", "fx_embers")
+	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	inst.AnimState:SetMultColour(1, 1, 1, 0.2)
+	inst.AnimState:SetLightOverride(0.1)
+
+	return inst
+end
+
+local GESTALT_FX_PLANAR_BIT = 1
+local GESTALT_FX_SHOWN_BIT = 2
+
+local function OnGestaltFxDirty(inst)
+	if inst:IsGestaltFxShown() then
+		local planar = inst:IsGestaltFxPlanar()
+		local anim = planar and "wx78_lunar_affinity_fx_2" or "wx78_lunar_affinity_fx_1"
+		if inst.gestaltfx == nil then
+			inst.gestaltfx = CreateGestaltFx()
+			inst.gestaltfx.entity:SetParent(inst.entity)
+			inst.gestaltfx.Follower:FollowSymbol(inst.GUID, "headbase")
+		else
+			inst.gestaltfx:Show()
+		end
+		inst.gestaltfx.AnimState:PlayAnimation(anim, true)
+		inst.gestaltfx.AnimState:SetFrame(math.random(inst.gestaltfx.AnimState:GetCurrentAnimationNumFrames()) - 1)
+	elseif inst.gestaltfx then
+		inst.gestaltfx:Hide()
+	end
+end
+
+local function SetGestaltFxFlag(inst, flag, val)
+	local oldflags = inst.gestaltfxflags:value()
+	val = val and bit.bor(oldflags, flag) or bit.bxor(bit.bor(oldflags, flag), flag)
+	if oldflags ~= val then
+		inst.gestaltfxflags:set(val)
+		if not TheNet:IsDedicated() then
+			OnGestaltFxDirty(inst)
+		end
+	end
+end
+
+local function SetGestaltFxPlanar(inst, isplanar)
+	SetGestaltFxFlag(inst, GESTALT_FX_PLANAR_BIT, isplanar)
+end
+
+local function SetGestaltFxShown(inst, isshown)
+	SetGestaltFxFlag(inst, GESTALT_FX_SHOWN_BIT, isshown)
+end
+
+local function IsGestaltFxPlanar(inst)
+	return bit.band(inst.gestaltfxflags:value(), GESTALT_FX_PLANAR_BIT) ~= 0
+end
+
+local function IsGestaltFxShown(inst)
+	return bit.band(inst.gestaltfxflags:value(), GESTALT_FX_SHOWN_BIT) ~= 0
+end
+
+local function AddGestaltFx_Common(inst, initplanar, initshown)
+	inst.gestaltfxflags = net_tinybyte(inst.GUID, "wx78.gestaltfxflags", "gestaltfxflagsdirty")
+
+	inst.IsGestaltFxPlanar = IsGestaltFxPlanar
+	inst.IsGestaltFxShown = IsGestaltFxShown
+
+	if initplanar then
+		SetGestaltFxPlanar(inst, true)
+	end
+	if initshown then
+		SetGestaltFxShown(inst, true)
+	end
+
+	if TheWorld.ismastersim then
+		inst.SetGestaltFxPlanar = SetGestaltFxPlanar
+		inst.SetGestaltFxShown = SetGestaltFxShown
+	else
+		inst:ListenForEvent("gestaltfxflagsdirty", OnGestaltFxDirty)
+	end
+end
+
+----------------------------------------------------------------------------------------
+
 local function ModuleBasedPreserverRateFn(inst, item)
-    return (inst._temperature_modulelean > 0 and TUNING.WX78_PERISH_HOTRATE)
-        or (inst._temperature_modulelean < 0 and TUNING.WX78_PERISH_COLDRATE)
+    return inst._temperature_modulelean ~= 0 and math.max(0, 1 + inst._temperature_modulelean * TUNING.WX78_PERISH_RATE_MODULELEAN)
         or 1
 end
 
@@ -508,33 +602,155 @@ local function ShouldAllowSocketable_CLIENT(inst, item, doer)
     return inst.components.linkeditem and inst.components.linkeditem:GetOwnerUserID() == doer.userid
 end
 
-local function OnGetSocketable(inst, item, doer) -- doer can be nil!
-    local socketname = item.components.socketable:GetSocketName()
-    local socketquality = item.components.socketable:GetSocketQuality()
-    if socketname == "socket_shadow" then
-        if socketquality >= SOCKETQUALITY.LOW then
-            if not inst.components.socket_shadow_harvester then
-                local socket_shadow_harvester = inst:AddComponent("socket_shadow_harvester")
-                socket_shadow_harvester:SetHarvestRadius(TUNING.SKILLS.WX78.HARVEST_RADIUS)
-                socket_shadow_harvester:SetTravelSpeed(TUNING.SKILLS.WX78.HARVEST_TRAVEL_SPEED)
-                socket_shadow_harvester:SetMaxTendrils(TUNING.SKILLS.WX78.HARVEST_MAX_TENDRILS)
+-- Shadow drones
+local function SetPetLeashLimits(inst, prefab, limit)
+    local petleash = inst.components.petleash
+    if petleash then
+        petleash:SetMaxPetsForPrefab(prefab, limit)
+        local pets = petleash:GetPetsWithPrefab(prefab)
+        if pets then
+			if #pets > 1 then
+                table.sort(pets, GUIDSort)
             end
-            if socketquality >= SOCKETQUALITY.MEDIUM then
-                WX78Common.SetHeartVeins(inst, true)
-                if not inst.components.socket_shadow_heart then
-                    local socket_shadow_heart = inst:AddComponent("socket_shadow_heart")
-                    socket_shadow_heart:SetDebuffRadius(TUNING.SKILLS.WX78.SHADOWHEART_DEBUFF_RADIUS)
-                    socket_shadow_heart:SetDamageMult(TUNING.SKILLS.WX78.SHADOWHEART_DAMAGEMULT)
-                end
-                if socketquality >= SOCKETQUALITY.HIGH then
-                    WX78Common.SetMimicEyes(inst, true, doer)
-                    if not inst.components.socket_shadow_mimicry then
-                        inst:AddComponent("socket_shadow_mimicry")
-                    end
-                end
+            local toremovecount = math.max(#pets - limit, 0)
+            for i = 1, toremovecount do
+				pets[i]:PushEventImmediate("despawn")
             end
         end
-    elseif socketname == "socket_gestalttrapper" then
+    end
+end
+
+-- Harvester
+local function SetShadowHarvesterLimits_None(inst)
+    if inst.components.builder then
+        inst.components.builder:RemoveRecipe("wx78_shadowdrone_harvester")
+    end
+
+    SetPetLeashLimits(inst, "wx78_shadowdrone_harvester", 0)
+
+    inst:RemoveComponent("socket_shadow_harvester")
+end
+
+local function SetShadowHarvesterLimits_Default(inst)
+    if inst.components.builder then
+        inst.components.builder:UnlockRecipe("wx78_shadowdrone_harvester", true)
+    end
+
+    SetPetLeashLimits(inst, "wx78_shadowdrone_harvester", TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT)
+
+    local socket_shadow_harvester = inst.components.socket_shadow_harvester or inst:AddComponent("socket_shadow_harvester")
+    socket_shadow_harvester:SetHarvestRadius(TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_FINDITEM_RADIUS)
+end
+
+local function SetShadowHarvesterLimits_Boosted(inst)
+    if inst.components.builder then
+        inst.components.builder:UnlockRecipe("wx78_shadowdrone_harvester", true)
+    end
+
+    SetPetLeashLimits(inst, "wx78_shadowdrone_harvester", TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT_BOOSTED)
+
+    local socket_shadow_harvester = inst.components.socket_shadow_harvester or inst:AddComponent("socket_shadow_harvester")
+    socket_shadow_harvester:SetHarvestRadius(TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_BOOSTED)
+end
+
+-- Debuffer
+local function SetShadowDebufferLimits_None(inst)
+    if inst.components.builder then
+        inst.components.builder:RemoveRecipe("wx78_shadowdrone_debuffer")
+    end
+
+    SetPetLeashLimits(inst, "wx78_shadowdrone_debuffer", 0)
+end
+
+local function SetShadowDebufferLimits_Default(inst)
+    if inst.components.builder then
+        inst.components.builder:UnlockRecipe("wx78_shadowdrone_debuffer", true)
+    end
+
+    SetPetLeashLimits(inst, "wx78_shadowdrone_debuffer", TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT)
+end
+
+local function SetShadowDebufferLimits_Boosted(inst)
+    if inst.components.builder then
+        inst.components.builder:UnlockRecipe("wx78_shadowdrone_debuffer", true)
+    end
+
+    SetPetLeashLimits(inst, "wx78_shadowdrone_debuffer", TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED)
+end
+
+local SHADOWSOCKET_CONFIGS_DEFAULT = {
+    mimic = false,
+    heart = false,
+    debuffer = SetShadowDebufferLimits_None,
+    harvester = SetShadowHarvesterLimits_None,
+}
+local SHADOWSOCKET_CONFIGS = {
+    [SOCKETQUALITY.LOW] = { -- Nightmare Fuel
+        mimic = false,
+        heart = false,
+        debuffer = SetShadowDebufferLimits_None,
+        harvester = SetShadowHarvesterLimits_Default,
+    },
+    [SOCKETQUALITY.MEDIUM] = { -- Pure Horror
+        mimic = false,
+        heart = false,
+        debuffer = SetShadowDebufferLimits_None,
+        harvester = SetShadowHarvesterLimits_Boosted,
+    },
+    [SOCKETQUALITY.HIGH] = { -- Shadow Heart
+        mimic = false,
+        heart = true,
+        debuffer = SetShadowDebufferLimits_Default,
+        harvester = SetShadowHarvesterLimits_None,
+    },
+    [SOCKETQUALITY.PERFECT] = { -- Mimic Shadow Heart
+        mimic = true,
+        heart = true,
+        debuffer = SetShadowDebufferLimits_Boosted,
+        harvester = SetShadowHarvesterLimits_None,
+    },
+}
+
+local function RefreshShadowSocketBuffs(inst, doer)
+    local socketquality = inst.components.socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW)
+
+    local config = SHADOWSOCKET_CONFIGS[socketquality] or SHADOWSOCKET_CONFIGS_DEFAULT
+    if config.mimic then
+        WX78Common.SetMimicEyes(inst, true, doer)
+        if not inst.components.socket_shadow_mimicry then
+            inst:AddComponent("socket_shadow_mimicry")
+        end
+    else
+        inst:RemoveComponent("socket_shadow_mimicry")
+        WX78Common.SetMimicEyes(inst, false, doer)
+    end
+
+    if config.heart then
+        WX78Common.SetHeartVeins(inst, true, doer)
+        if not inst.components.socket_shadow_heart then
+            inst:AddComponent("socket_shadow_heart")
+        end
+    else
+        inst:RemoveComponent("socket_shadow_heart")
+        WX78Common.SetHeartVeins(inst, false, doer)
+    end
+
+    config.debuffer(inst)
+    config.harvester(inst)
+    if inst.UpdateShadowDroneCraftingNetvars then
+        inst:UpdateShadowDroneCraftingNetvars()
+    end
+end
+
+local function OnShadowSocketChanged(inst, doer)
+    WX78Common.RefreshShadowSocketBuffs(inst, doer)
+end
+
+local function OnGetSocketable(inst, item, doer) -- doer can be nil!
+    local socketname = item.components.socketable:GetSocketName()
+    if socketname == SOCKETNAMES.SHADOW then
+        OnShadowSocketChanged(inst, doer)
+    elseif socketname == SOCKETNAMES.GESTALTTRAPPER then
         inst:AddTag("possessable_chassis")
         WX78Common.SetTrapper(inst, true)
     end
@@ -542,20 +758,10 @@ end
 
 local function OnRemoveSocketable(inst, item)
     local socketname = item.components.socketable:GetSocketName()
-    if socketname == "socket_shadow" then
-        local socketquality = inst.components.socketholder:GetHighestQualitySocketed("socket_shadow")
-        if socketquality < SOCKETQUALITY.HIGH then
-            inst:RemoveComponent("socket_shadow_mimicry")
-            WX78Common.SetMimicEyes(inst, false)
-            if socketquality < SOCKETQUALITY.MEDIUM then
-                inst:RemoveComponent("socket_shadow_heart")
-                WX78Common.SetHeartVeins(inst, false)
-                if socketquality < SOCKETQUALITY.LOW then
-                    inst:RemoveComponent("socket_shadow_harvester")
-                end
-            end
-        end
-    elseif socketname == "socket_gestalttrapper" then
+    if socketname == SOCKETNAMES.SHADOW then
+        inst:RemoveDebuff("wx78_shadow_fuel_debuff")
+        OnShadowSocketChanged(inst, nil)
+    elseif socketname == SOCKETNAMES.GESTALTTRAPPER then
         inst:RemoveTag("possessable_chassis")
         WX78Common.SetTrapper(inst, false)
     end
@@ -725,8 +931,8 @@ local function HasTrapper(inst)
     return wx._has_trapper
 end
 
--- For telling our possessed chassis what to do.
-local function OnWxSpinActions(inst, actionsdata)
+-- For telling our possessed chassis our non-standard actions triggered by spinning or zap drone.
+local function OnWxActionData(inst, actionsdata)
     local actiondata = actionsdata[1]
     -- Prioritize an attack first.
     for i, data in ipairs(actionsdata) do
@@ -741,6 +947,12 @@ local function OnWxSpinActions(inst, actionsdata)
         inst._lastspintarget = actiondata.target
         inst._lastspintime = GetTime()
     end
+end
+
+local function OnWxClearActionData(inst)
+	inst._lastspinaction = nil
+	inst._lastspintarget = nil
+	inst._lastspintime = nil
 end
 
 --------------------------------------------------------------------------
@@ -762,11 +974,201 @@ local function CanSpinUsingItem(item)
 end
 
 --------------------------------------------------------------------------
+
+local function OnEat(inst, food)
+    local edible = food.components.edible
+    if edible ~= nil then
+        if edible.foodtype == FOODTYPE.GEARS then
+            inst._gears_eaten = inst._gears_eaten + 1
+            inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/levelup")
+        end
+
+        local charge_amount = edible.chargevalue
+        if charge_amount ~= nil and charge_amount ~= 0 then
+            inst.components.upgrademoduleowner:DoDeltaCharge(charge_amount)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function DropEatenGears(inst)
+    if inst._gears_eaten and inst._gears_eaten > 0 then
+        local dropgears = math.random(math.floor(inst._gears_eaten / 3), math.ceil(inst._gears_eaten / 2))
+        local x, y, z = inst.Transform:GetWorldPosition()
+        for i = 1, dropgears do
+            local gear = SpawnPrefab("gears")
+            if gear ~= nil then
+                if gear.Physics ~= nil then
+                    local speed = 2 + math.random()
+                    local angle = math.random() * TWOPI
+                    gear.Physics:Teleport(x, y + 1, z)
+                    gear.Physics:SetVel(speed * math.cos(angle), speed * 3, speed * math.sin(angle))
+                else
+                    gear.Transform:SetPosition(x, y, z)
+                end
+
+                if gear.components.propagator ~= nil then
+                    gear.components.propagator:Delay(5)
+                end
+            end
+        end
+
+        inst._gears_eaten = 0
+    end
+end
+
+--------------------------------------------------------------------------
+
+local MAXIMUM_ZAPDRONE_RANGE = 40 -- This is the max before we risk seeing entities pop in and out
+--Client-safe
+local function CalcDroneZapRange(owner)
+	local follower = owner.replica.follower
+	local leader = follower and follower:GetLeader() or owner
+	--use leader for skilltree, owner for circuits
+
+	local range = TUNING.SKILLS.WX78.ZAPDRONE_RANGE_1
+
+	if leader.components.skilltreeupdater then
+		if leader.components.skilltreeupdater:IsActivated("wx78_extradronerange") then
+			range = TUNING.SKILLS.WX78.ZAPDRONE_RANGE_2
+		end
+		if leader.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") and owner.GetModuleTypeCount then
+			range = range + owner:GetModuleTypeCount("radar") * TUNING.SKILLS.WX78.RADAR_ZAPDRONERANGE
+		end
+	end
+
+	return math.min(MAXIMUM_ZAPDRONE_RANGE, range)
+end
+
+--------------------------------------------------------------------------
+
+local function RecalculateShadowDronePattern_Internal(inst, pets)
+    local maxpets = #pets
+    local radius = TUNING.SKILLS.WX78.SHADOWDRONE_FOLLOW_RADIUS
+    local angleoffset = math.random() * TWOPI
+    local x, y, z = inst.Transform:GetWorldPosition()
+	for i = 1, #pets do
+        local angle = angleoffset + PI2 * (i - 1) / maxpets
+        local offset = Vector3(radius * math.cos(angle), 0, radius * math.sin(angle))
+		local x1 = x + offset.x
+		local z1 = z + offset.z
+		local mindistsq = math.huge
+		local minj
+		for j, pet in ipairs(pets) do
+			local dsq = pet:GetDistanceSqToPoint(x1, 0, z1)
+			if dsq < mindistsq then
+				mindistsq = dsq
+				minj = j
+			end
+		end
+		table.remove(pets, minj).components.knownlocations:RememberLocation("formationoffset", offset, false)
+    end
+end
+
+local function UpdateShadowDroneCraftingNetvars(inst)
+    if inst.wx78_classified then
+        local harvesterscount, debufferscount
+        local harvestersmaxcount, debuffersmaxcount
+        local petleash = inst.components.petleash
+        if petleash then
+            harvesterscount = petleash:GetNumPetsForPrefab("wx78_shadowdrone_harvester")
+            debufferscount = petleash:GetNumPetsForPrefab("wx78_shadowdrone_debuffer")
+            harvestersmaxcount = petleash:GetMaxPetsForPrefab("wx78_shadowdrone_harvester")
+            debuffersmaxcount = petleash:GetMaxPetsForPrefab("wx78_shadowdrone_debuffer")
+        else
+            harvesterscount, debufferscount = 0, 0
+            harvestersmaxcount, debuffersmaxcount = 0, 0
+        end
+        local harvesterscraftcount = math.max(harvestersmaxcount - harvesterscount, 0)
+        local debufferscraftcount = math.max(debuffersmaxcount - debufferscount, 0)
+        local oldharvesterscraftcount = inst.wx78_classified.num_free_shadowdrone_harvesters:value()
+        local olddebufferscraftcount = inst.wx78_classified.num_free_shadowdrone_debuffers:value()
+        inst.wx78_classified.num_free_shadowdrone_harvesters:set(harvesterscraftcount)
+        inst.wx78_classified.num_free_shadowdrone_debuffers:set(debufferscraftcount)
+        if oldharvesterscraftcount ~= harvesterscraftcount or olddebufferscraftcount ~= debufferscraftcount then
+            if inst.HUD then
+                inst:PushEvent("refreshcrafting")
+            end
+        end
+    end
+end
+
+local function RecalculateShadowDronePattern(inst)
+    local petleash = inst.components.petleash
+
+    if petleash then
+        local harvesters = petleash:GetPetsWithPrefab("wx78_shadowdrone_harvester")
+        local debuffers = petleash:GetPetsWithPrefab("wx78_shadowdrone_debuffer")
+        if harvesters and debuffers then
+            local interleaved = {}
+            for i = 1, math.max(#harvesters, #debuffers) do
+                if harvesters[i] then
+                    table.insert(interleaved, harvesters[i])
+                end
+                if debuffers[i] then
+                    table.insert(interleaved, debuffers[i])
+                end
+            end
+            RecalculateShadowDronePattern_Internal(inst, interleaved)
+        elseif harvesters then
+            RecalculateShadowDronePattern_Internal(inst, harvesters)
+        elseif debuffers then
+            RecalculateShadowDronePattern_Internal(inst, debuffers)
+        end
+    end
+    -- NOTES(JBK): Updating player crafting limits here because this drone offset should be updating every time a drone is added or removed.
+    inst:UpdateShadowDroneCraftingNetvars()
+end
+
+local function OnSpawnPet(inst, pet)
+	if pet:HasTag("wx78_shadowdrone") then
+		pet:PushEventImmediate("spawned", { delay = 0.3 + 0.7 * math.random() })
+	elseif inst._OnSpawnPet then
+        inst:_OnSpawnPet(pet)
+    end
+end
+
+local function OnRemovedPet(inst, pet)
+    if pet.prefab == "wx78_shadowdrone_harvester" or pet.prefab == "wx78_shadowdrone_debuffer" then
+        inst:RecalculateShadowDronePattern()
+    end
+end
+
+local function FixupPetleashLimits(inst)
+    inst:RemoveEventCallback("entitysleep", FixupPetleashLimits)
+    inst:RemoveEventCallback("entitywake", FixupPetleashLimits)
+    WX78Common.RefreshShadowSocketBuffs(inst, nil)
+end
+
+-- Used for temp ground speed modifier, slow multiplier override, and equippable walk speed modifier
+local function COMMON_ModifySpeedMultiplier(inst, mult) --, item)
+    local follower = inst.components.follower
+    local leader = follower and follower:GetLeader() or inst
+    if (leader.components.skilltreeupdater ~= nil and leader.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_2")) and mult < 1 then
+        -- 3 speed modules reduces a slow debuff to 25% of its original value.
+        local speed_mod_count = inst:GetModuleTypeCount("movespeed", "movespeed2")
+        local denominator = 4
+        local reclaim_speed_penalty = (1 - mult) / denominator
+        return math.min(mult + reclaim_speed_penalty * speed_mod_count, 1)
+    end
+    return mult
+end
+
+local function COMMON_ExtraConfigurePlayerLocomotor(inst) -- Used for possessed body too.
+    inst.components.locomotor:SetTempGroundSpeedMultiplierModifier(inst.ModifySpeedMultiplier)
+end
+
+--------------------------------------------------------------------------
 -- Always LAST!
 local function Initialize_Common(inst)
     MakeInstSocketHolder_Client(inst, 1)
     local socketholder = inst.components.socketholder
     socketholder:SetShouldAllowSocketableFn_CLIENT(ShouldAllowSocketable_CLIENT)
+    if inst.isplayer then
+        --players handle socketholder dropping manually in their stategraph
+        socketholder:DisableDropOnDeath()
+    end
 
     if inst.AnimState then
         inst.AnimState:Hide("shad_veins")
@@ -777,10 +1179,15 @@ local function Initialize_Common(inst)
         inst.AnimState:Hide("gestalt_die")
         inst.AnimState:Hide("gestalt_flee")
     end
+
+    inst.ModifySpeedMultiplier = COMMON_ModifySpeedMultiplier -- Also used for locomotor:SetSlowMultiplier in wx78module_defs
+    inst.inventory_EquippableWalkSpeedMultModifier = COMMON_ModifySpeedMultiplier
+    inst.ExtraConfigurePlayerLocomotor = COMMON_ExtraConfigurePlayerLocomotor
 end
 local function Initialize_Master(inst)
+    inst._gears_eaten = 0
     inst._temperature_modulelean = 0 -- Positive if "hot", negative if "cold"; see wx78_moduledefs
-    
+
     inst:AddComponent("heater")
     inst.components.heater:SetThermics(false, false)
     inst.components.heater.heatfn = GetThermicTemperatureFn
@@ -799,7 +1206,29 @@ local function Initialize_Master(inst)
         inst:ListenForEvent("heartveins_changed", OnHeartVeinsChanged)
         inst:ListenForEvent("trapper_changed", OnTrapperChanged)
     else
-        inst:ListenForEvent("ms_wx_spinactions", OnWxSpinActions)
+		inst:ListenForEvent("ms_wx_actiondata", OnWxActionData)
+		inst:ListenForEvent("ms_wx_clearactiondata", OnWxClearActionData)
+    end
+
+    if inst.isplayer or inst:HasTag("wx78_backupbody") then
+        inst.RecalculateShadowDronePattern = RecalculateShadowDronePattern
+        inst.UpdateShadowDroneCraftingNetvars = UpdateShadowDroneCraftingNetvars
+
+        local petleash = inst.components.petleash
+        if petleash then
+            inst._OnSpawnPet = inst.components.petleash.onspawnfn
+        else
+            petleash = inst:AddComponent("petleash")
+        end
+        petleash:SetOnSpawnFn(OnSpawnPet)
+        petleash:SetOnRemovedFn(OnRemovedPet)
+        -- NOTES(JBK): Set the max limit for each pet here for save and loading so it will fill the pets in the proper channels.
+        petleash:SetMaxPetsForPrefab("wx78_shadowdrone_harvester", TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT_BOOSTED)
+        petleash:SetMaxPetsForPrefab("wx78_shadowdrone_debuffer", TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED)
+        if not inst.isplayer then
+            inst:ListenForEvent("entitywake", FixupPetleashLimits)
+            inst:ListenForEvent("entitysleep", FixupPetleashLimits)
+        end
     end
 end
 WX78Common = {
@@ -817,11 +1246,16 @@ WX78Common = {
     HasHeartVeins = HasHeartVeins,
     SetTrapper = SetTrapper,
     HasTrapper = HasTrapper,
+    RefreshShadowSocketBuffs = RefreshShadowSocketBuffs,
 	CanSpinUsingItem = CanSpinUsingItem,
+    DropEatenGears = DropEatenGears,
+    OnEat = OnEat,
+	CalcDroneZapRange = CalcDroneZapRange,
 
     -- Initialization functions should be last in the file do not add your functions below this line unless it is for initialization.
 	AddDizzyFx_Common = AddDizzyFx_Common,
 	AddHeatSteamFx_Common = AddHeatSteamFx_Common,
+	AddGestaltFx_Common = AddGestaltFx_Common,
     Initialize_Common = Initialize_Common,
     Initialize_Master = Initialize_Master,
 

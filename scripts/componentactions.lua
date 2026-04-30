@@ -123,11 +123,10 @@ local function CheckRowOverride(doer, target)
     return false
 end
 
-local SCYTHE_ONEOFTAGS = {"plant", "lichen", "oceanvine", "kelp"}
 local KITCOON_MUST_TAGS = {"kitcoonden"}
 
 local function IsValidScytheTarget(target)
-    return target:HasOneOfTags(SCYTHE_ONEOFTAGS)
+    return target:HasOneOfTags(HARVESTABLE_PLANT_TARGET_TAGS)
 end
 
 -- SCENE		using an object in the world
@@ -307,6 +306,14 @@ local COMPONENT_ACTIONS =
             if inst.components.container_proxy:CanBeOpened() and
                 not inst:HasTag("burnt") and
                 doer.replica.inventory ~= nil
+                and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
+                table.insert(actions, ACTIONS.RUMMAGE)
+            end
+        end,
+
+        container_transform = function(inst, doer, actions, right)
+            if not inst:HasTag("burnt")
+                and doer.replica.inventory ~= nil
                 and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
                 table.insert(actions, ACTIONS.RUMMAGE)
             end
@@ -2444,7 +2451,7 @@ local COMPONENT_ACTIONS =
         end,
 
         wateryprotection = function(inst, doer, target, actions, right)
-            if right and (target:HasTag("withered") or target:HasTag("fire") or target:HasTag("smolder")) then
+            if right and target:HasAnyTag("withered", "fire", "smolder", "canpourwateron") then
                 table.insert(actions, ACTIONS.POUR_WATER)
             end
         end,

@@ -44,7 +44,8 @@ local function turn_evil_redirect(inst, owner)
     end
 end
 
-local function interacted_with_redirect(inst, owner)
+local function interacted_with_redirect(inst)
+    local owner = inst.components.inventoryitem and inst.components.inventoryitem:GetGrandOwner() or nil
     if ShouldItemMimicBeRevealedFor(inst, owner) then
         if owner and owner.components.talker then
             owner.components.talker:Say(GetActionFailString(owner, "GENERIC", "ITEMMIMIC"))
@@ -98,8 +99,7 @@ local ItemMimic = Class(function(self, inst)
 
     -- Machine reactions (to cover "free" light sources, mostly)
     self._on_interacted_with = function(inst2)
-        local doer = (inst2.components.inventoryitem ~= nil and inst2.components.inventoryitem:GetGrandOwner())
-        inst2:DoTaskInTime(10*FRAMES, interacted_with_redirect, doer)
+        inst2:DoTaskInTime(10*FRAMES, interacted_with_redirect)
     end
     inst:ListenForEvent("machineturnedon", self._on_interacted_with)
     inst:ListenForEvent("machineturnedoff", self._on_interacted_with)

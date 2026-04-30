@@ -2037,6 +2037,7 @@ local PREFABS =
     ["wx78_drone_delivery"] = true,
     ["wx78_drone_delivery_small"] = true,
     ["wx78_drone_zap"] = true,
+    ["wx78_drone_zap_remote"] = true,
 
     ["wx78module_radar"] = true,
     ["wx78module_stacksize"] = true,
@@ -2045,11 +2046,15 @@ local PREFABS =
     ["wx78module_screech"] = true,
     ["wx78module_spin"] = true,
     ["wx78module_shielding"] = true,
+	["wx78module_chess"] = true,
 
     ["wx78_backupbody_inventory"] = true,
 
     ["wx78_foodbrick"] = true,
     ["wx78_gestalttrapper"] = true,
+
+    ["wx78_shadowdrone_debuffer"] = true,
+    ["wx78_shadowdrone_harvester"] = true,
 
     -----------------------------------------------
 

@@ -3854,28 +3854,6 @@ local fx =
 		build = "vault_portal_fx",
 		anim = "activate",
 	},
-    {
-        name = "wx78_possessed_shadow",
-        bank = "wx78_possessed_shadow",
-        build = "wx78_possessed_shadow",
-        anim = "shadow_attack",
-        sound = "rifts2/thrall_wings/flap_walk",
-        eightfaced = true,
-        fn = function(inst)
-            inst.AnimState:SetMultColour(1, 1, 1, .5)
-        end,
-    },
-    {
-        name = "wx78_possessed_shadow_hitfx",
-        bank = "merm_shadow_fx",
-        build = "merm_shadow_fx",
-        anim = "spawn_poof",
-        sound = "meta4/shadow_merm/buff_pst",
-        fn = function(inst)
-            inst.AnimState:SetFinalOffset(1)
-            inst.AnimState:SetMultColour(1, 1, 1, .5)
-        end,
-    },
 }
 
 for cratersteamindex = 1, 4 do

@@ -154,6 +154,8 @@ local function fn()
     inst:AddTag("trader")
     inst:AddTag("recordplayer")
     inst:AddTag("furnituredecor")
+
+	--groundonlymachine (from machine component) added to pristine state for optimization
 	inst:AddTag("groundonlymachine")
 
     MakeInventoryFloatable(inst, "med", 0.07, 0.72)
@@ -194,6 +196,7 @@ local function fn()
 
     --
     local machine = inst:AddComponent("machine")
+	machine:SetGroundOnlyMachine(true)
     machine.turnonfn = inst.TryToPlayRecord
     machine.turnofffn = inst.StopPlayingRecord
     machine.enabled = false

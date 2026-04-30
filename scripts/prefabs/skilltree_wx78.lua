@@ -6,33 +6,32 @@ local LOCK_SPACER = SPACER * 0.85
 
 local BIG_GEAR_SHIFT = SPACER * 0.05
 
-local ORIGIN_CIRCUITRY_X = -149 -- Bigger top gear.
-local ORIGIN_CIRCUITRY_Y = 16 + 65 + BIG_GEAR_SHIFT --105 + BIG_GEAR_SHIFT
+local ORIGIN_CIRCUITRY_X = -155 -- Bigger top gear.
+local ORIGIN_CIRCUITRY_Y = 81 + BIG_GEAR_SHIFT
 
-local ORIGIN_CIRCUITRY_FLOATING_1_X = -206 -- Left most floating gear moving right.
-local ORIGIN_CIRCUITRY_FLOATING_1_Y = 31
-local ORIGIN_CIRCUITRY_FLOATING_2_X = ORIGIN_CIRCUITRY_FLOATING_1_X + 118
-local ORIGIN_CIRCUITRY_FLOATING_2_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y + 5
+local ORIGIN_CIRCUITRY_FLOATING_1_X = -211 -- Left most floating gear moving right.
+local ORIGIN_CIRCUITRY_FLOATING_1_Y = 33
+local ORIGIN_CIRCUITRY_FLOATING_2_X = ORIGIN_CIRCUITRY_FLOATING_1_X + 119
+local ORIGIN_CIRCUITRY_FLOATING_2_Y = ORIGIN_CIRCUITRY_FLOATING_1_Y
 
-local ORIGIN_CHASSIS_SMALL_X = 25 -- Small bottom gear.
-local ORIGIN_CHASSIS_SMALL_Y = 16
+local ORIGIN_CHASSIS_SMALL_X = 3 -- Small bottom gear.
+local ORIGIN_CHASSIS_SMALL_Y = 20
 local ORIGIN_CHASSIS_BIG_X = ORIGIN_CHASSIS_SMALL_X -- Bigger top gear.
 local ORIGIN_CHASSIS_BIG_Y = ORIGIN_CHASSIS_SMALL_Y + 65 + BIG_GEAR_SHIFT
 
 -- Inside middle medium gear.
-local ORIGIN_DRONES_X = 165
-local ORIGIN_DRONES_Y = 62
+local ORIGIN_DRONES_X = 134
+local ORIGIN_DRONES_Y = 86
 -- Orbiting gears.
-local ORIGIN_DRONES_BOTTOMLEFT_X = ORIGIN_DRONES_X - 65
-local ORIGIN_DRONES_BOTTOMLEFT_Y = ORIGIN_DRONES_Y - 55
-local ORIGIN_DRONES_BOTTOMRIGHT_X = ORIGIN_DRONES_X + 61
-local ORIGIN_DRONES_BOTTOMRIGHT_Y = ORIGIN_DRONES_Y - 49
-local ORIGIN_DRONES_TOPRIGHT_X = ORIGIN_DRONES_X + 51
-local ORIGIN_DRONES_TOPRIGHT_Y = ORIGIN_DRONES_Y + 57
+local ORIGIN_DRONES_BOTTOMLEFT_X = ORIGIN_DRONES_X - 60
+local ORIGIN_DRONES_BOTTOMLEFT_Y = ORIGIN_DRONES_Y - 59
+local ORIGIN_DRONES_BOTTOMRIGHT_X = ORIGIN_DRONES_X + 62
+local ORIGIN_DRONES_BOTTOMRIGHT_Y = ORIGIN_DRONES_Y - 56
+local ORIGIN_DRONES_TOPRIGHT_X = ORIGIN_DRONES_X + 87
+local ORIGIN_DRONES_TOPRIGHT_Y = ORIGIN_DRONES_Y + 19
 
-local ORIGIN_ALLEGIANCE_X = 180
-local ORIGIN_ALLEGIANCE_Y = 183
-
+local ORIGIN_ALLEGIANCE_X = 175
+local ORIGIN_ALLEGIANCE_Y = 185
 
 local GROUPS = {
     CIRCUITRY = "circuitry",
@@ -44,10 +43,9 @@ local GROUPS = {
 local ORDERS = {
     {GROUPS.CIRCUITRY, {ORIGIN_CIRCUITRY_X, ORIGIN_CIRCUITRY_Y + SPACER * 2.4 + LOCK_SPACER * 0 + TEXT_SPACER}},
     {GROUPS.CHASSIS, {ORIGIN_CHASSIS_BIG_X, ORIGIN_CHASSIS_BIG_Y + SPACER * 2.4 + LOCK_SPACER * 0 + TEXT_SPACER}},
-    {GROUPS.DRONES, {ORIGIN_DRONES_X - SPACER * 0.55, ORIGIN_DRONES_Y + SPACER * 0.78 + LOCK_SPACER * 0 + TEXT_SPACER}},
+    {GROUPS.DRONES, {ORIGIN_DRONES_X, ORIGIN_DRONES_Y + SPACER * 0.75 + LOCK_SPACER * 0 + TEXT_SPACER}},
     {GROUPS.ALLEGIANCE, {ORIGIN_ALLEGIANCE_X, ORIGIN_ALLEGIANCE_Y + SPACER * 0 + LOCK_SPACER * 0 + TEXT_SPACER}},
 }
-
 
 local function ActivateBetaCircuitsInBody(item, player)
     if item.TryToActivateBetaCircuitStates then
@@ -66,8 +64,14 @@ local function CheckCircuitSlotStatesInBody(item, player)
     end
 end
 
+local function CheckZapUserStatesInPossessedBody(item, player)
+    if item.CheckZapUserStatesFrom then
+        item:CheckZapUserStatesFrom(player)
+    end
+end
+
 local function ActivateGestaltTrapSocketsInBody(item, player)
-    WX78Common.ActivateSocketsIn(item, 1, "socket_gestalttrapper")
+    WX78Common.ActivateSocketsIn(item, 1, SOCKETNAMES.GESTALTTRAPPER)
 end
 
 local function DeactivateGestaltTrapSocketsInBody(item, player)
@@ -75,7 +79,7 @@ local function DeactivateGestaltTrapSocketsInBody(item, player)
 end
 
 local function ActivateShadowSocketsInBody(item, player)
-    WX78Common.ActivateSocketsIn(item, 1, "socket_shadow")
+    WX78Common.ActivateSocketsIn(item, 1, SOCKETNAMES.SHADOW)
 end
 
 local function DeactivateSocketsInBody(item, player)
@@ -104,6 +108,9 @@ local function BuildSkillsData(SkillTreeFns)
             group = GROUPS.CIRCUITRY,
             tags = {GROUPS.CIRCUITRY},
             root = true,
+            forced_focus = {
+                right = "wx78_circuitry_bettercharge",
+            },
         },
 
         wx78_circuitry_bettercharge = {
@@ -115,7 +122,8 @@ local function BuildSkillsData(SkillTreeFns)
             tags = {GROUPS.CIRCUITRY},
             root = true,
             forced_focus = {
-                up = "wx78_circuitry_betabuffs_1",
+                left = "wx78_circuitry_betterunplug",
+                up = "wx78_circuitry_gammabuffs_1",
             },
 
             onactivate = function(inst, fromload)
@@ -205,7 +213,7 @@ local function BuildSkillsData(SkillTreeFns)
                 "wx78_circuitry_gammabuffs_2",
             },
             forced_focus = {
-                down = "wx78_circuitry_betterunplug",
+                down = "wx78_circuitry_bettercharge",
                 right = "wx78_extrabody_2",
             },
         },
@@ -234,12 +242,14 @@ local function BuildSkillsData(SkillTreeFns)
                 inst.components.upgrademoduleowner:SetMaxCharge(TUNING.WX78_MAXCHARGELEVEL_SKILL)
                 if TheWorld.components.linkeditemmanager then
                     TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", CheckCircuitSlotStatesInBody)
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_possessedbody", CheckCircuitSlotStatesInBody)
                 end
             end,
             ondeactivate = function(inst)
                 inst.components.upgrademoduleowner:SetMaxCharge(TUNING.WX78_INITIAL_MAXCHARGELEVEL)
                 if TheWorld.components.linkeditemmanager then
                     TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", CheckCircuitSlotStatesInBody)
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_possessedbody", CheckCircuitSlotStatesInBody)
                 end
             end,
         },
@@ -359,65 +369,74 @@ local function BuildSkillsData(SkillTreeFns)
             title = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_DESC,
 			icon = "wx78_scoutdrone_1",
-            pos = {ORIGIN_DRONES_X - SPACER * 0.5, ORIGIN_DRONES_Y - SPACER * 0.5},
+            pos = {ORIGIN_DRONES_X, ORIGIN_DRONES_Y + SPACER * 0.5},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
             root = true,
-            connects = {
-                "wx78_scoutdrone_2",
+            forced_focus = {
+                left = "wx78_ghostrevive_3",
+                right = "wx78_extradronerange",
             },
         },
-        wx78_scoutdrone_2 = {
-            title = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_TITLE,
-            desc = STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_DESC,
-			icon = "wx78_scoutdrone_2",
-            pos = {ORIGIN_DRONES_BOTTOMLEFT_X, ORIGIN_DRONES_BOTTOMLEFT_Y},
+        wx78_extradronerange = {
+            title = STRINGS.SKILLTREE.WX78.WX78_EXTRADRONERANGE_TITLE,
+            desc = STRINGS.SKILLTREE.WX78.WX78_EXTRADRONERANGE_DESC,
+			icon = "wx78_extradronerange",
+            pos = {ORIGIN_DRONES_TOPRIGHT_X, ORIGIN_DRONES_TOPRIGHT_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
+            root = true,
+            forced_focus = {
+                up = "wx78_allegiance_shadow",
+                down = "wx78_zapdrone_2",
+                left = "wx78_scoutdrone_1",
+            },
         },
         wx78_deliverydrone_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_1_DESC,
 			icon = "wx78_deliverydrone_1",
-            pos = {ORIGIN_DRONES_X - SPACER * 0.5, ORIGIN_DRONES_Y + SPACER * 0.5},
+            pos = {ORIGIN_DRONES_X - SPACER * 0.5, ORIGIN_DRONES_Y - SPACER * 0.5},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
             root = true,
             connects = {
                 "wx78_deliverydrone_2",
             },
-            forced_focus = {
-                right = "wx78_deliverydrone_2",
-            },
         },
         wx78_deliverydrone_2 = {
             title = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_2_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_DELIVERYDRONE_2_DESC,
 			icon = "wx78_deliverydrone_2",
-            pos = {ORIGIN_DRONES_TOPRIGHT_X, ORIGIN_DRONES_TOPRIGHT_Y},
+            pos = {ORIGIN_DRONES_BOTTOMLEFT_X, ORIGIN_DRONES_BOTTOMLEFT_Y},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
-            forced_focus = {
-                up = "wx78_allegiance_shadow",
-                down = "wx78_zapdrone_1",
-                left = "wx78_deliverydrone_1",
-            },
         },
         wx78_zapdrone_1 = {
             title = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_TITLE,
             desc = STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_1_DESC,
 			icon = "wx78_zapdrone_1",
-            pos = {ORIGIN_DRONES_X + SPACER * 0.5, ORIGIN_DRONES_Y},
+            pos = {ORIGIN_DRONES_X + SPACER * 0.5, ORIGIN_DRONES_Y - SPACER * 0.5},
             group = GROUPS.DRONES,
             tags = {GROUPS.DRONES},
             root = true,
-			onactivate = function(inst) inst:AddTag("drone_zap_user") end,
-			ondeactivate = function(inst) inst:RemoveTag("drone_zap_user") end,
+			onactivate = function(inst)
+                inst:AddTag("drone_zap_user")
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_possessedbody", CheckZapUserStatesInPossessedBody)
+                end
+            end,
+			ondeactivate = function(inst)
+                inst:RemoveTag("drone_zap_user")
+                if TheWorld.components.linkeditemmanager then
+                    TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_possessedbody", CheckZapUserStatesInPossessedBody)
+                end
+            end,
             connects = {
                 "wx78_zapdrone_2",
             },
             forced_focus = {
-                up = "wx78_deliverydrone_2",
+                up = "wx78_scoutdrone_1",
                 down = "wx78_zapdrone_2",
             },
         },
@@ -464,7 +483,7 @@ local function BuildSkillsData(SkillTreeFns)
             group = GROUPS.ALLEGIANCE,
             tags = {"lunar_favor", "allegiance"},
             forced_focus = {
-                down = "wx78_deliverydrone_1",
+                down = "wx78_scoutdrone_1",
             },
             locks = {"wx78_allegiance_lunar_lock_1"},
             onactivate = function(inst)
@@ -491,8 +510,8 @@ local function BuildSkillsData(SkillTreeFns)
 
                 if inst.components.leader ~= nil then
                     for k in pairs(inst.components.leader.followers) do
-                        if k:HasTag("possessedbody") then
-                            inst.components.leader:RemoveFollower(k)
+                        if k:HasTag("possessedbody") and k.DoSanityDeath then
+                            k:DoSanityDeath()
                         end
                     end
                 end
@@ -504,17 +523,12 @@ local function BuildSkillsData(SkillTreeFns)
         },
         ------------------------------------------------------------------------------------------------------------------------
         wx78_shadow_allegiance_lock_1 = {
-            --desc = STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC,
-            desc = STRINGS.SKILLTREE.TEMPORARILY_DISABLED, -- FIXME(JBK): WX: Remove this when finished.
+            desc = STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC,
             pos = {ORIGIN_ALLEGIANCE_X + 7, ORIGIN_ALLEGIANCE_Y - 18},
             group = "allegiance",
             tags = {"allegiance", "lock"},
             root = true,
             lock_open = function(prefabname, activatedskills, readonly)
-                if true then -- FIXME(JBK): WX: Remove this when finished.
-                    return false
-                end
-
                 local maxbodies = SkillTreeFns.CountTags(prefabname, "wx78_maxbody", activatedskills)
                 if maxbodies == 0 then
                     return false
@@ -540,6 +554,9 @@ local function BuildSkillsData(SkillTreeFns)
             group = GROUPS.ALLEGIANCE,
             tags = {"shadow_favor", "allegiance"},
             locks = {"wx78_shadow_allegiance_lock_1"},
+            forced_focus = {
+                down = "wx78_extradronerange",
+            },
             onactivate = function(inst)
                 inst:AddTag("player_shadow_aligned")
                 if inst.components.damagetyperesist ~= nil then
@@ -549,7 +566,7 @@ local function BuildSkillsData(SkillTreeFns)
                     inst.components.damagetypebonus:AddBonus("lunar_aligned", inst, TUNING.SKILLS.WX78.ALLEGIANCE_VS_LUNAR_BONUS, "allegiance_shadow")
                 end
 
-                WX78Common.ActivateSocketsIn(inst, 1, "socket_shadow")
+                WX78Common.ActivateSocketsIn(inst, 1, SOCKETNAMES.SHADOW)
                 if TheWorld.components.linkeditemmanager then
                     TheWorld.components.linkeditemmanager:ForEachLinkedItemForPlayerOfPrefab(inst, "wx78_backupbody", ActivateShadowSocketsInBody)
                 end

@@ -363,6 +363,9 @@ local function UmbrellaFn()
 	--shadowlevel (from shadowlevel component) added to pristine state for optimization
 	inst:AddTag("shadowlevel")
 
+	--groundonlymachine (from machine component) added to pristine state for optimization
+	inst:AddTag("groundonlymachine")
+
 	inst.triggerfx = net_event(inst.GUID, "voidcloth_umbrella.triggerfx")
 	inst.isbroken = net_bool(inst.GUID, "voidcloth_umbrella.isbroken", "isbrokendirty")
 

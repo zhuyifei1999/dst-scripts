@@ -4438,8 +4438,9 @@ local function MakeHat(name)
         end
     end
 
-    fns.wagpunk_test = function(inst,target)
-        return inst:GetDistanceSqToInst(target) <= TUNING.WAGPUNK_MAXRANGE*TUNING.WAGPUNK_MAXRANGE
+    fns.wagpunk_test = function(inst, target)
+        local range = GetArmorWagpunkRange(inst, inst.components.inventoryitem.owner)
+        return inst:GetDistanceSqToInst(target) <= range*range
     end
 
     fns.wagpunk_onequip = function(inst, owner)
@@ -5588,6 +5589,10 @@ local function MakeHat(name)
         if data.victim.sg == nil or not (data.victim.sg:HasState("parasite_revive") or data.victim.sg:HasState("death_hosted")) then
             return
         end
+        
+        if data.victim.was_shadowthrall_parasited or data.victim:HasTag("shadowthrall_parasite_hosted") then
+            return
+        end
 
         data.victim.shadowthrall_parasite_hosted_death = true
 
@@ -6722,7 +6727,7 @@ local function MakeHat(name)
 			"spoiled_food",
 		}
 		table.insert(assets, Asset("DYNAMIC_ATLAS", "images/pumpkinhat_face.xml"))
-		table.insert(assets, Asset("ASSET_PKGREF", "images/pumpkinhat_face.tex"))
+		table.insert(assets, Asset("PKGREF", "images/pumpkinhat_face.tex"))
     elseif name == "mask_princess" then
         fn = fns.princess
         prefabs = {

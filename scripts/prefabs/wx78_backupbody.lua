@@ -6,6 +6,9 @@ local assets = JoinArrays({
     Asset("ANIM", "anim/wx_chassis.zip"),
     Asset("ANIM", "anim/ui_wx78_backupbody_5x3.zip"),
 	Asset("ANIM", "anim/wx78_map_marker.zip"),
+	Asset("ANIM", "anim/wx78_lunar_affinity_fx.zip"),
+	Asset("ANIM", "anim/brightmare_gestalt_head_evolved.zip"),
+	Asset("ANIM", "anim/lunarthrall_plant_front.zip"),
 }, WX78Common.DEPENDENCIES.assets)
 
 local prefabs = JoinArrays({
@@ -60,11 +63,18 @@ local function DisplayNameFn(inst)
     return ownername and subfmt(STRINGS.NAMES.WX78_BACKUPBODY_FMT, { name = ownername }) or nil
 end
 
+local function GetStatus(inst, viewer)
+    local owner_inst = inst.components.linkeditem:GetOwnerInst()
+    return (owner_inst == viewer and "VIEWERS_BODY")
+        or ((owner_inst == nil and viewer.wx78_classified) and "UNCLAIMED")
+        or nil
+end
+
 local function GetSpecialDescription(inst, viewer)
-    if not viewer:HasTag("playerghost") then
-        local ownername =  inst.components.linkeditem:GetOwnerName()
+    if not viewer:HasTag("playerghost") and viewer ~= inst.components.linkeditem:GetOwnerInst() then
+        local ownername = inst.components.linkeditem:GetOwnerName()
         if ownername then
-            local descriptions = GetString(viewer.prefab, "DESCRIBE", "WX78")
+            local descriptions = GetString(viewer.prefab, "DESCRIBE", "WX78_BACKUPBODY")
             local description = descriptions and descriptions.GENERIC or nil
             if description then
                 return string.format(description, ownername) -- Bypass translations for player names.
@@ -104,9 +114,9 @@ end
 local function CheckSocketStatesFrom(inst, owner)
     if owner and owner.components.skilltreeupdater then
         if owner.components.skilltreeupdater:IsActivated("wx78_allegiance_shadow") then
-            WX78Common.ActivateSocketsIn(inst, 1, "socket_shadow")
+            WX78Common.ActivateSocketsIn(inst, 1, SOCKETNAMES.SHADOW)
         elseif owner.components.skilltreeupdater:IsActivated("wx78_allegiance_lunar") then
-            WX78Common.ActivateSocketsIn(inst, 1, "socket_gestalttrapper")
+            WX78Common.ActivateSocketsIn(inst, 1, SOCKETNAMES.GESTALTTRAPPER)
         else
             WX78Common.DeactivateSocketsIn(inst, 1)
         end
@@ -149,7 +159,7 @@ local function TryToAttachToOwner(inst, owner)
     return false
 end
 
-local function TryToSpawnPossessedBody(inst, isplanar, fromownerrejoin, stats)
+local function TryToSpawnPossessedBody(inst, isplanar, freshspawn)
     local owner = inst.components.linkeditem:GetOwnerInst()
     if owner == nil or owner.is_snapshot_user_session then
         return false
@@ -161,8 +171,12 @@ local function TryToSpawnPossessedBody(inst, isplanar, fromownerrejoin, stats)
     end
 
     inst.Physics:SetActive(false)
+
     local possessedbody = SpawnPrefab("wx78_possessedbody")
     possessedbody.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    possessedbody._hide_body_skinfx = true
+    possessedbody._ignore_sanity_death = true -- HACK
+    possessedbody.components.follower:SetLeader(owner)
     if not inst.components.activatable:DoActivate(possessedbody) then
         inst.Physics:SetActive(true)
         possessedbody:Remove()
@@ -171,29 +185,28 @@ local function TryToSpawnPossessedBody(inst, isplanar, fromownerrejoin, stats)
         end
         return false
     end
-    possessedbody._hide_body_skinfx = true
-    possessedbody.components.follower:SetLeader(owner)
     possessedbody:SetIsPlanar(isplanar)
-    possessedbody:PushEventImmediate("possessed", { fromownerrejoin = fromownerrejoin })
+    possessedbody:PushEventImmediate("possessed")
 
-    if stats ~= nil then
-        if stats.health ~= nil then
-            possessedbody.components.health:SetCurrentHealth(stats.health)
-        end
-        if stats.hunger ~= nil then
-            possessedbody.components.hunger:SetCurrent(stats.hunger)
-        end
-        if stats.sanity ~= nil then
-            possessedbody.components.sanity.current = stats.sanity
-        end
+    if freshspawn then
+        local stats = inst:GetFreshStats()
+        stats.health = possessedbody.components.health:GetMaxWithPenalty()
+        stats.hunger = possessedbody.components.hunger.max
+        stats.sanity = possessedbody.components.sanity:GetMaxWithPenalty()
+
+        inst:ConfigureStats(stats)
+        inst:ApplySavedStatsToDoer(possessedbody)
     end
+    possessedbody._ignore_sanity_death = nil -- HACK, now that a fresh spawn may have given us stats, we can respect sanity death
 
+    inst.wx78_possessedbody_save_inst = possessedbody
     inst:Remove()
 
     return true
 end
 
 local function OnBuiltFn(inst, builder)
+    inst:ConfigureStats(inst:GetFreshStats())
     inst._hide_body_skinfx = true
     inst:TryToAttachToOwner(builder)
     inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk")
@@ -218,6 +231,72 @@ local function CanDoerActivate(inst, doer)
     return true
 end
 
+local FRESH_STATS =
+{
+    health = TUNING.WX78_HEALTH,
+    hunger = TUNING.WX78_HUNGER,
+    sanity = TUNING.WX78_SANITY,
+    gears_eaten = 0,
+    moisture = 0,
+    temperature = TUNING.STARTING_TEMP,
+    wx78_shield = 0,
+    grogginess = 0,
+}
+local function GetFreshStats(inst) -- fresh stats on building a new chassis
+    return FRESH_STATS
+end
+local function GetDoerSavedStats(inst, doer)
+    local stats =
+    {
+        health = doer.components.health ~= nil and doer.components.health.currenthealth or nil,
+        hunger = doer.components.hunger ~= nil and doer.components.hunger.current or nil,
+        sanity = doer.components.sanity ~= nil and doer.components.sanity.current or nil,
+        gears_eaten = doer._gears_eaten ~= nil and doer._gears_eaten or nil,
+        moisture = doer.components.moisture ~= nil and doer.components.moisture:GetMoisture() or nil,
+        temperature = doer.components.temperature ~= nil and doer.components.temperature:GetCurrent() or nil,
+        wx78_shield = doer.components.wx78_shield ~= nil and doer.components.wx78_shield:GetCurrent() or nil,
+        grogginess = doer.components.grogginess ~= nil and doer.components.grogginess.grog_amount or nil,
+    }
+    if stats.health ~= nil then
+        stats.health = math.max(1, stats.health) -- Always leave ourselves with at least one health. This can happen from a dying possessed chassis
+    end
+    return stats
+end
+local function ApplySavedStatsToDoer(inst, doer)
+    local saved_stats = inst.saved_stats
+    if saved_stats ~= nil then
+        if saved_stats.health ~= nil and doer.components.health ~= nil then
+            doer.components.health:SetCurrentHealth(saved_stats.health)
+            doer.components.health:ForceUpdateHUD(true)
+        end
+        if saved_stats.hunger ~= nil and doer.components.hunger ~= nil then
+            doer.components.hunger:SetCurrent(saved_stats.hunger, true)
+        end
+        if saved_stats.sanity ~= nil and doer.components.sanity ~= nil then
+            doer.components.sanity:SetCurrent(saved_stats.sanity)
+        end
+        if saved_stats.gears_eaten ~= nil then
+            doer._gears_eaten = saved_stats.gears_eaten
+        end
+        if saved_stats.moisture ~= nil and doer.components.moisture ~= nil then
+            doer.components.moisture:SetMoistureLevel(saved_stats.moisture)
+        end
+        if saved_stats.temperature ~= nil and doer.components.temperature ~= nil then
+            local world_temp = GetLocalTemperature(inst)
+            if (saved_stats.temperature <= 5 and world_temp > 0)
+                or (saved_stats.temperature >= (doer.components.temperature.overheattemp - 15) and world_temp < 0) then
+                saved_stats.temperature = TUNING.STARTING_TEMP
+            end
+            doer.components.temperature:SetTemperature(saved_stats.temperature)
+        end
+        if saved_stats.wx78_shield ~= nil and doer.components.wx78_shield ~= nil then
+            doer.components.wx78_shield:SetCurrent(doer.components.wx78_shield:HasChargeSource() and saved_stats.wx78_shield or 0)
+        end
+        if saved_stats.grogginess ~= nil and doer.components.grogginess ~= nil then
+            doer.components.grogginess:MakeGrogginessAtLeast(saved_stats.grogginess)
+        end
+    end
+end
 local function OnActivateFn(inst, doer)
     -- FIXME(JBK): WX: Make this code less in here and more in a component or component util file.
     inst.components.activatable.inactive = true -- FIXME(JBK): WX: Make this a task?
@@ -227,6 +306,47 @@ local function OnActivateFn(inst, doer)
 
     local x, y, z = inst.Transform:GetWorldPosition()
     local x2, y2, z2 = doer.Transform:GetWorldPosition()
+
+    -- NOTES(JBK): Petleash needs to detach first and then attach last to avoid items, sockets, entity sleep states and other things that would mess with the pets.
+    local harvesters_doer, debuffers_doer, harvesters_inst, debuffers_inst
+    if doer.components.petleash and inst.components.petleash then
+        harvesters_doer = doer.components.petleash:GetPetsWithPrefab("wx78_shadowdrone_harvester")
+        debuffers_doer = doer.components.petleash:GetPetsWithPrefab("wx78_shadowdrone_debuffer")
+        if harvesters_doer then
+            for _, harvester in ipairs(harvesters_doer) do
+                doer.components.petleash:DetachPet(harvester)
+                if harvester.components.follower then
+                    harvester.components.follower:StopFollowing()
+                end
+            end
+        end
+        if debuffers_doer then
+            for _, debuffer in ipairs(debuffers_doer) do
+                doer.components.petleash:DetachPet(debuffer)
+                if debuffer.components.follower then
+                    debuffer.components.follower:StopFollowing()
+                end
+            end
+        end
+        harvesters_inst = inst.components.petleash:GetPetsWithPrefab("wx78_shadowdrone_harvester")
+        debuffers_inst = inst.components.petleash:GetPetsWithPrefab("wx78_shadowdrone_debuffer")
+        if harvesters_inst then
+            for _, harvester in ipairs(harvesters_inst) do
+                inst.components.petleash:DetachPet(harvester)
+                if harvester.components.follower then
+                    harvester.components.follower:StopFollowing()
+                end
+            end
+        end
+        if debuffers_inst then
+            for _, debuffer in ipairs(debuffers_inst) do
+                inst.components.petleash:DetachPet(debuffer)
+                if debuffer.components.follower then
+                    debuffer.components.follower:StopFollowing()
+                end
+            end
+        end
+    end
 
 	local stacksize_circuit_containers = {}
     if doer.components.inventory then
@@ -341,15 +461,18 @@ local function OnActivateFn(inst, doer)
     end
 
     if doer.components.skinner then
-        local skindata = deepcopy(inst.wx78_backupbody_inventory.components.skinner:OnSave())
-        inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(doer, true)
-
-        if doer.components.skinner:IsNonPlayer() then
-            doer.components.skinner:CopySkinsFromPlayer(inst.wx78_backupbody_inventory, true)
-        else
+        if doer.isplayer then
+            local skindata = deepcopy(inst.wx78_backupbody_inventory.components.skinner:OnSave())
+            skindata.monkey_curse = doer.components.skinner:GetMonkeyCurse()
+            inst.wx78_backupbody_inventory.components.skinner:CopySkinsFromPlayer(doer, true)
             doer.components.skinner:OnLoad(skindata)
+        else
+            doer.components.skinner:SwapCopiedPlayerSkins(inst.wx78_backupbody_inventory, true)
         end
     end
+
+    -- Save stats of doer before modules are swapped
+    local stats = inst:GetDoerSavedStats(doer)
 
     if doer.components.upgrademoduleowner then
         local doer_charge_level = doer.components.upgrademoduleowner:GetChargeLevel()
@@ -360,6 +483,10 @@ local function OnActivateFn(inst, doer)
         inst.components.upgrademoduleowner:SwapUpgradeModules(doer.components.upgrademoduleowner)
         inst:CheckBetaCircuitStatesFrom(doer)
     end
+
+    -- Then swap stats after modules are swapped.
+    inst:ApplySavedStatsToDoer(doer)
+    inst:ConfigureStats(next(stats) ~= nil and stats or nil)
 
 	for _, v in ipairs(stacksize_circuit_containers) do
 		v._backupbody_transferring = nil
@@ -384,6 +511,44 @@ local function OnActivateFn(inst, doer)
     inst:PushEvent("teleported")
     doer:PushEvent("teleported")
 
+    -- NOTES(JBK): Now that the bodies are teleported we can assign the petleash back.
+    if doer.components.petleash and inst.components.petleash then
+        if harvesters_doer then
+            for _, harvester in ipairs(harvesters_doer) do
+                if not inst.components.petleash:AttachPet(harvester) then
+					harvester:PushEventImmediate("despawn")
+                end
+            end
+        end
+        if debuffers_doer then
+            for _, debuffer in ipairs(debuffers_doer) do
+                if not inst.components.petleash:AttachPet(debuffer) then
+					debuffer:PushEventImmediate("despawn")
+                end
+            end
+        end
+        if harvesters_inst then
+            for _, harvester in ipairs(harvesters_inst) do
+                if not doer.components.petleash:AttachPet(harvester) then
+					harvester:PushEventImmediate("despawn")
+                end
+            end
+        end
+        if debuffers_inst then
+            for _, debuffer in ipairs(debuffers_inst) do
+                if not doer.components.petleash:AttachPet(debuffer) then
+					debuffer:PushEventImmediate("despawn")
+                end
+            end
+        end
+    end
+    if inst.UpdateShadowDroneCraftingNetvars then
+        inst:UpdateShadowDroneCraftingNetvars()
+    end
+    if doer.UpdateShadowDroneCraftingNetvars then
+        doer:UpdateShadowDroneCraftingNetvars()
+    end
+
     inst._backupbody_transferring = nil
     doer._backupbody_transferring = nil
     return true
@@ -404,6 +569,10 @@ local function DetachClassified_wx78(inst)
     inst.ondetach_wx78_classified = nil
 end
 
+local function RevertToPossessedBody(inst)
+    inst:TryToSpawnPossessedBody(inst.is_planar)
+end
+
 local function OnOpen(inst, data)
     if data and data.doer then
         if inst.wx78_classified then
@@ -413,10 +582,27 @@ local function OnOpen(inst, data)
         -- inst.components.upgrademoduleowner:StartInspecting(data.doer)
     end
 end
+
+local function OnAnimOver(inst)
+    local parent = inst.entity:GetParent()
+    if parent ~= nil then
+        RevertToPossessedBody(parent)
+        parent:RemoveEventCallback("animover", OnAnimOver, inst)
+    end
+end
 local function OnClose(inst, data)
     -- inst.components.upgrademoduleowner:StopInspecting()
     if inst.wx78_classified then
         inst.wx78_classified.Network:SetClassifiedTarget(inst)
+    end
+
+    if inst.is_possessed then
+        if inst.wx78_backupbody_inventory.AnimState:IsCurrentAnimation("wx_chassis_poweroff") then
+            inst.components.container.canbeopened = false
+            inst:ListenForEvent("animover", OnAnimOver, inst.wx78_backupbody_inventory)
+        else
+            RevertToPossessedBody(inst)
+        end
     end
 end
 
@@ -434,9 +620,11 @@ local function OnSkillTreeInitializedFn(inst, owner)
         inst:CheckSocketStatesFrom(owner)
 
         if owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("wx78_allegiance_lunar") then
-            if inst.is_possessed then
+            if inst.is_possessed and not inst.components.container:IsOpen() then
                 inst:DoTaskInTime(0, function()
-                    inst:TryToSpawnPossessedBody(inst.is_planar, true, inst.saved_stats)
+                    if not inst.components.container:IsOpen() then
+                        RevertToPossessedBody(inst)
+                    end
                 end)
             end
         else
@@ -518,10 +706,18 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function ConfigureStats(inst, stats)
+    inst.saved_stats = stats or nil
+end
+
 local function ConfigurePossessed(inst, possessed, planar, stats) -- stats is a table
     inst.is_possessed = possessed or nil
     inst.is_planar = planar or nil
-    inst.saved_stats = stats or nil
+    if stats ~= nil then
+        inst.saved_stats = stats or nil
+    end
+	inst.wx78_backupbody_inventory:SetGestaltFxPlanar(planar)
+	inst.wx78_backupbody_inventory:SetGestaltFxShown(possessed)
 end
 
 local function GetPossessed(inst)
@@ -543,6 +739,9 @@ local function RegisterGhostRezEvents(inst, doer)
         if inst.components.activatable:CanActivate(doer) then
             inst.components.upgrademoduleowner:SetChargeLevel(0)
             inst.components.activatable:DoActivate(doer)
+            if doer.components.skilltreeupdater ~= nil and doer.components.skilltreeupdater:IsActivated("wx78_ghostrevive_3") then
+                doer.components.health:SetPercent(1)
+            end
             inst:Remove()
         end
     end
@@ -570,6 +769,37 @@ end
 
 ----------------------------------------------------------------------------------------
 
+local function PossessedContainer_ShouldKeepTarget()
+    return false
+end
+
+local function PossessedContainer_OnAttacked(inst, data)
+    RevertToPossessedBody(inst)
+    if inst.wx78_possessedbody_save_inst ~= nil then
+        inst.wx78_possessedbody_save_inst:PushEvent("attacked", data)
+    end
+end
+
+-- Weird semi state where this backup body should feel like a 'person' because it is the possessed body still,
+-- but in chassis form temporarily for leader to be looking at its container
+-- This state does not need to save. Back up body will repossess on load.
+local function SetPossessedContainerState(inst)
+    inst:AddTag("companion")
+
+    inst.components.upgrademoduleowner:SetAutomaticModuleActivations(true)
+    inst.components.activatable.inactive = false
+
+    inst:AddComponent("health")
+    inst.components.health:SetAbsorptionAmount(1)
+
+    inst:AddComponent("combat")
+    inst.components.combat:SetKeepTargetFunction(PossessedContainer_ShouldKeepTarget)
+
+    inst:ListenForEvent("attacked", PossessedContainer_OnAttacked)
+end
+
+----------------------------------------------------------------------------------------
+
 local function OnSave(inst, data)
     data.body_inventory = inst.wx78_backupbody_inventory:GetSaveRecord()
     data.maxcharge = inst._maxcharge or nil
@@ -588,12 +818,16 @@ local function OnLoad(inst, data, newents)
             if not TheNet:IsDedicated() then
                 inst.highlightchildren[1] = inst.wx78_backupbody_inventory
             end
+			inst.steamfx = inst.wx78_backupbody_inventory.steamfx
         end
         if data.maxcharge ~= nil then
             inst.components.upgrademoduleowner:SetMaxCharge(data.maxcharge)
         end
         if data.is_possessed ~= nil then
-            inst:ConfigurePossessed(true, data.is_planar, data.saved_stats)
+            inst:ConfigurePossessed(true, data.is_planar)
+        end
+        if data.saved_stats ~= nil then
+            inst:ConfigureStats(data.saved_stats)
         end
     end
 end
@@ -634,6 +868,8 @@ local function fn()
     inst.AttachClassified_wx78 = AttachClassified_wx78
     inst.DetachClassified_wx78 = DetachClassified_wx78
 
+    inst.scrapbook_proxy = "wx78_backupbody_inventory"
+
     WX78Common.Initialize_Common(inst)
     inst.entity:SetPristine()
 
@@ -659,6 +895,7 @@ local function fn()
     workable:SetOnWorkCallback(OnHit)
 
     local inspectable = inst:AddComponent("inspectable")
+    inspectable.getstatus = GetStatus
     inspectable.getspecialdescription = GetSpecialDescription
 
     local activatable = inst:AddComponent("activatable")
@@ -666,9 +903,11 @@ local function fn()
     activatable.OnActivate = OnActivateFn
     activatable.quickaction = true
     activatable.forcerightclickaction = true
+    activatable.forcenopickupaction = true -- disables spacebar interaction
 
     inst:AddComponent("lootdropper")
     inst:AddComponent("timer")
+    inst:AddComponent("leader")
 
     local hauntable = inst:AddComponent("hauntable")
     hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)
@@ -705,10 +944,17 @@ local function fn()
     inst.CheckCircuitSlotStatesFrom = CheckCircuitSlotStatesFrom
     inst.CheckSocketStatesFrom = CheckSocketStatesFrom
     inst.AddTemperatureModuleLeaning = WX78Common.AddTemperatureModuleLeaning
+    inst.ConfigureStats = ConfigureStats
     inst.ConfigurePossessed = ConfigurePossessed
     inst.GetPossessed = GetPossessed
+    inst.SetPossessedContainerState = SetPossessedContainerState
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    inst.GetDoerSavedStats = GetDoerSavedStats
+    -- Exposed for Mods.
+    inst.GetFreshStats = GetFreshStats
+    inst.ApplySavedStatsToDoer = ApplySavedStatsToDoer
 
     WX78Common.Initialize_Master(inst)
 
@@ -766,10 +1012,13 @@ local function fn_inventory()
     inst.AnimState:Hide("mimic2")
     inst.AnimState:Hide("mimic3")
     inst.AnimState:Hide("trapper")
+    inst.AnimState:Hide("gestalt_die")
+    inst.AnimState:Hide("gestalt_flee")
 
     inst.scrapbook_inspectonseen = true
     inst.scrapbook_specialinfo = "WX78_BACKUPBODY"
 
+	WX78Common.AddGestaltFx_Common(inst, false, false)
 	WX78Common.AddHeatSteamFx_Common(inst, true) --true for no facings
 
     inst.entity:SetPristine()

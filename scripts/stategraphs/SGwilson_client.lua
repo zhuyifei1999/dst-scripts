@@ -398,7 +398,7 @@ local actionhandlers =
 				if inst.GetModuleTypeCount and
 					inst:GetModuleTypeCount("spin") > 0 and
 					not action.target:HasAnyTag("quickpick", "quickrummage") and
-					action.target:HasAnyTag(SGWX78Common.WX_SPIN_PICKABLE_TAGS)
+					action.target:HasAnyTag(HARVESTABLE_PLANT_TARGET_TAGS)
 				then
 					--wx skill
 					local inventory = inst.replica.inventory
@@ -711,7 +711,7 @@ local actionhandlers =
 	ActionHandler(ACTIONS.LOWER_SAIL_BOOST, "furl_boost"),
     ActionHandler(ACTIONS.LOWER_SAIL_FAIL, "furl_fail"),
     ActionHandler(ACTIONS.RAISE_ANCHOR, "dolongaction"),
-    ActionHandler(ACTIONS.LOWER_ANCHOR, "dolongaction"),
+    ActionHandler(ACTIONS.LOWER_ANCHOR, "doshortaction"),
     ActionHandler(ACTIONS.STEER_BOAT, "steer_boat_idle_pre"),
     ActionHandler(ACTIONS.ROTATE_BOAT_CLOCKWISE, "doshortaction"),
     ActionHandler(ACTIONS.ROTATE_BOAT_COUNTERCLOCKWISE, "doshortaction"),
@@ -835,10 +835,17 @@ local actionhandlers =
     ActionHandler(ACTIONS.USEITEMON, function(inst, action)
 		if action.invobject == nil then
 			return "dolongaction"
-		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == "socket_shadow" then
+		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == SOCKETNAMES.SHADOW then
 			--socketable and socketholder components are available on client
 			local target = action.target or (action.invobject:HasTag("useabletargateditem_canselftarget") and action.doer or nil)
-			if target == action.doer and target.components.socketholder then
+
+            local socketholder = inst.components.socketholder
+            if socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
+                and (target == action.doer) then
+                return "eat"
+            end
+
+            if (target == action.doer) and socketholder then
 				return inst:HasTag("inspectingupgrademodules") and "plug_module" or "start_plugging_module"
 			end
 		end

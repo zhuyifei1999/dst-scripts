@@ -374,9 +374,13 @@ function Combat:DropTarget(hasnexttarget)
     end
 end
 
-function Combat:EngageTarget(target)
+--V2C: [oldtarget] and [hasnexttarget](above) are really internal use flags.
+--     [oldtarget] is NOT an override, hence not "oldtarget or self.target".
+--     We really should assert that they don't mismatch, but no need because [oldtarget]
+--     was added very late, and should not be passed in externally (now or in the past).
+function Combat:EngageTarget(target, oldtarget)
     if target then
-        local oldtarget = self.target
+		oldtarget = self.target or oldtarget
         self.target = target
         self.inst:PushEvent("newcombattarget", {target=target, oldtarget=oldtarget})
         self:StartTrackingTarget(target)
@@ -464,8 +468,9 @@ function Combat:SetTarget(target)
         (target == nil or (self:IsValidTarget(target) and self:ShouldAggro(target))) and
 		not (target and target.isplayer and target.sg and target.sg:HasStateTag("hiding"))
 	then
+		local oldtarget = self.target
         self:DropTarget(target ~= nil)
-        self:EngageTarget(target)
+		self:EngageTarget(target, oldtarget)
     end
 end
 

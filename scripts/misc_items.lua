@@ -7678,6 +7678,20 @@ MISC_ITEMS =
 		output_items = {  "wx78_ancient", "body_wx78_ancient", "feet_wx78_ancient", "hand_wx78_ancient", "wx78_moduleremover_gothic", "wx78_scanner_gothic", "wx78_dronedeliverysmall_gothic", "wx78_dronescout_gothic", "wx78_dronezapremote_gothic", "wx78_moduleremover_jewelbox", "wx78_scanner_jewelbox", "wx78_dronedeliverysmall_jewelbox", "wx78_dronescout_jewelbox", "wx78_dronezapremote_jewelbox", },
 		release_group = 180,
 	},
+	pack_wx78_gothicjewel_shadowdrones =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_pack_wx78_gothicjewel_shadowdrones.xml",
+		display_tex = "pack_wx78_gothicjewel_shadowdrones.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wx78_shadowdrone_harvester_gothic", "wx78_shadowdrone_debuffer_gothic", "wx78_shadowdrone_harvester_jewelbox", "wx78_shadowdrone_debuffer_jewelbox", },
+		output_items = {  "wx78_shadowdrone_harvester_gothic", "wx78_shadowdrone_debuffer_gothic", "wx78_shadowdrone_harvester_jewelbox", "wx78_shadowdrone_debuffer_jewelbox", },
+		release_group = 181,
+	},
 	pack_wx78_masquerade =
 	{
 		type = "purchase",

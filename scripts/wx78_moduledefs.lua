@@ -52,18 +52,29 @@ end
 --
 
 local function IsSkillActivated(wx, skill)
-    return wx.components.skilltreeupdater and wx.components.skilltreeupdater:IsActivated(skill)
+    local skilltreeupdater = wx.components.skilltreeupdater
+    if skilltreeupdater == nil and wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        skilltreeupdater = leader and leader.components.skilltreeupdater
+    end
+    return skilltreeupdater and skilltreeupdater:IsActivated(skill)
 end
 
 local function Circuit_SetUpSkillCb(inst, wx, skillnames, activatecb, deactivatecb, isloading)
     local is_one_skill = type(skillnames) == "string"
-    if wx.components.skilltreeupdater then
+    local skilltreeupdater = wx.components.skilltreeupdater
+    if skilltreeupdater == nil and wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        skilltreeupdater = leader and leader.components.skilltreeupdater
+    end
+
+    if skilltreeupdater then
         local do_activate = false
         if is_one_skill then
-            do_activate = wx.components.skilltreeupdater:IsActivated(skillnames)
+            do_activate = skilltreeupdater:IsActivated(skillnames)
         else
             for skill in pairs(skillnames) do
-                if wx.components.skilltreeupdater:IsActivated(skill) then
+                if skilltreeupdater:IsActivated(skill) then
                     do_activate = true
                     break
                 end
@@ -88,8 +99,31 @@ local function Circuit_SetUpSkillCb(inst, wx, skillnames, activatecb, deactivate
             inst._circuit_skill_activated = nil
         end
     end
-    inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, wx)
-    inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+
+    if wx.isplayer then
+        inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, wx)
+        inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+    elseif wx.components.follower ~= nil then
+        inst._onleaderchanged_handler = function(_, data)
+            local oldleader = data.old
+            if oldleader ~= nil then
+                inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, oldleader)
+                inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, oldleader)
+            end
+
+            local newleader = data.new
+            if newleader ~= nil then
+                inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, newleader)
+                inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, newleader)
+            end
+        end
+        local leader = wx.components.follower:GetLeader()
+        if leader ~= nil then
+            inst:ListenForEvent("onactivateskill_server", inst._onactivateskill_handler, leader)
+            inst:ListenForEvent("ondeactivateskill_server", inst._ondeactivateskill_handler, leader)
+        end
+        inst:ListenForEvent("leaderchanged", inst._onleaderchanged_handler, wx)
+    end
 end
 
 local function Circuit_DestroySkillCb(inst, wx)
@@ -97,10 +131,20 @@ local function Circuit_DestroySkillCb(inst, wx)
         inst._ondeactivateskill_handler(wx, { force = true })
     end
 
-    inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, wx)
-    inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+    if wx.isplayer then
+        inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, wx)
+        inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, wx)
+    elseif wx.components.follower ~= nil then
+        local leader = wx.components.follower:GetLeader()
+        if leader ~= nil then
+            inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill_handler, leader)
+            inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill_handler, leader)
+        end
+        inst:RemoveEventCallback("leaderchanged", inst._onleaderchanged_handler, wx)
+    end
     inst._onactivateskill_handler = nil
     inst._ondeactivateskill_handler = nil
+    inst._onleaderchanged_handler = nil
 end
 
 ---------------------------------------------------------------
@@ -110,7 +154,7 @@ local function GetHealthCircuitArmor(wx)
     local armor = 0
     if IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") then
         for k, v in ipairs(wx.components.upgrademoduleowner:GetAllModules()) do
-            if v._skill_health_armor_mult then
+            if v._skill_health_armor_mult and v.components.upgrademodule.activated then
                 armor = armor + (base_armor * v._skill_health_armor_mult)
             end
         end
@@ -177,28 +221,35 @@ AddCreatureScanDataDefinition("spider", "maxhealth", 2)
 
 ---------------------------------------------------------------
 
-local function GetSanityCircuitDapperMult(wx)
-    local dapperness = 0
-    if IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") then
-        for k, v in ipairs(wx.components.upgrademoduleowner:GetAllModules()) do
-            if v._skill_sanity_dapperness_mult then
-                dapperness = dapperness + v._skill_sanity_dapperness_mult
+local function GetEquippableDapperness(owner, equippable)
+    local dapperness = equippable:GetDapperness(owner, owner.components.sanity.no_moisture_penalty)
+
+    if dapperness > 0 then
+        local dapperness_mult = 1
+
+        if IsSkillActivated(owner, "wx78_circuitry_alphabuffs_2") then
+            for k, v in ipairs(owner.components.upgrademoduleowner:GetAllModules()) do
+                if v._skill_sanity_dapperness_mult and v.components.upgrademodule.activated then
+                    dapperness_mult = dapperness_mult + v._skill_sanity_dapperness_mult
+                end
             end
         end
+
+        return dapperness * dapperness_mult
     end
-    return 1 + dapperness
+
+    return dapperness
 end
 
 local function sanity_skill_activate(inst, wx, isloading, sanitymod)
     if wx.components.sanity then
-        wx.components.sanity.dapperness_mult = GetSanityCircuitDapperMult(wx)
+        wx.components.sanity.get_equippable_dappernessfn = GetEquippableDapperness
         wx.components.sanity.neg_aura_modifiers:SetModifier(inst, sanitymod)
     end
 end
 
 local function sanity_skill_deactivate(inst, wx)
     if wx.components.sanity then
-        wx.components.sanity.dapperness_mult = GetSanityCircuitDapperMult(wx)
         wx.components.sanity.neg_aura_modifiers:RemoveModifier(inst)
     end
 end
@@ -372,6 +423,34 @@ AddCreatureScanDataDefinition("rook_nightmare", "movespeed2", 3)
 
 ---------------------------------------------------------------
 
+-- A higher mintemp means that it's harder to freeze.
+-- A lower maxtemp means that it's harder to overheat.
+-- we clamp our temps, because we shouldnt get TOO hot or too cold.. keep in mind networking constraints
+-- player can go from -105 to 99 temperature before things overflow/underflow
+local MIN_TEMP = TUNING.MIN_ENTITY_TEMP
+local MAX_TEMP = TUNING.MAX_ENTITY_TEMP
+local function update_temperature_temps(inst, wx)
+    local heat_count = wx._heat_modcount or 0
+    local cold_count = wx._cold_modcount or 0
+
+    if wx.components.temperature then
+        local heat_tempchange = heat_count * TUNING.WX78_MINTEMPCHANGEPERMODULE
+        local cold_tempchange = cold_count * TUNING.WX78_MINTEMPCHANGEPERMODULE
+        wx.components.temperature.mintemp = math.clamp(MIN_TEMP - cold_tempchange + heat_tempchange, MIN_TEMP, MAX_TEMP)
+        wx.components.temperature.maxtemp = math.clamp(MAX_TEMP - cold_tempchange + heat_tempchange, MIN_TEMP, MAX_TEMP)
+    end
+end
+
+local function update_temperature_overlays(wx) -- from both heat and cold circuits
+    if wx.SetFreezingEffectBlockModifier ~= nil then
+        wx:SetFreezingEffectBlockModifier(wx, wx.components.temperature.mintemp >= 0)
+    end
+
+    if wx.SetOverheatingEffectBlockModifier ~= nil then
+        wx:SetOverheatingEffectBlockModifier(wx, wx.components.temperature.maxtemp <= TUNING.OVERHEAT_TEMP)
+    end
+end
+
 local function heat_freezeimmune_redirect()
     return true -- return true to be immune to freezing
 end
@@ -392,16 +471,15 @@ end
 local EXTRA_DRYRATE = 0.1
 local function heat_activate(inst, wx, isloading)
     wx._heat_modcount = (wx._heat_modcount or 0) + 1
-    if wx.components.temperature then
-        -- A higher mintemp means that it's harder to freeze.
-        wx.components.temperature.mintemp = wx.components.temperature.mintemp + TUNING.WX78_MINTEMPCHANGEPERMODULE
-        wx.components.temperature.maxtemp = wx.components.temperature.maxtemp + TUNING.WX78_MINTEMPCHANGEPERMODULE
-    end
+
+    update_temperature_temps(inst, wx)
 
     if wx.components.moisture then
         wx.components.moisture.maxDryingRate = wx.components.moisture.maxDryingRate + EXTRA_DRYRATE
         wx.components.moisture.baseDryingRate = wx.components.moisture.baseDryingRate + EXTRA_DRYRATE
     end
+
+    update_temperature_overlays(wx)
 
     if wx.AddTemperatureModuleLeaning then
         wx:AddTemperatureModuleLeaning(1)
@@ -412,15 +490,15 @@ end
 
 local function heat_deactivate(inst, wx)
     wx._heat_modcount = math.max(0, wx._heat_modcount - 1)
-    if wx.components.temperature then
-        wx.components.temperature.mintemp = wx.components.temperature.mintemp - TUNING.WX78_MINTEMPCHANGEPERMODULE
-        wx.components.temperature.maxtemp = wx.components.temperature.maxtemp - TUNING.WX78_MINTEMPCHANGEPERMODULE
-    end
+
+    update_temperature_temps(inst, wx)
 
     if wx.components.moisture then
         wx.components.moisture.maxDryingRate = wx.components.moisture.maxDryingRate - EXTRA_DRYRATE
         wx.components.moisture.baseDryingRate = wx.components.moisture.baseDryingRate - EXTRA_DRYRATE
     end
+
+    update_temperature_overlays(wx)
 
     if wx.AddTemperatureModuleLeaning then
         wx:AddTemperatureModuleLeaning(-1)
@@ -516,29 +594,28 @@ end
 
 local function cold_activate(inst, wx, isloading)
     wx._cold_modcount = (wx._cold_modcount or 0) + 1
-    if wx.components.temperature then
-        -- A lower maxtemp means it's harder to overheat.
-        wx.components.temperature.maxtemp = wx.components.temperature.maxtemp - TUNING.WX78_MINTEMPCHANGEPERMODULE
-        wx.components.temperature.mintemp = wx.components.temperature.mintemp - TUNING.WX78_MINTEMPCHANGEPERMODULE
-    end
+
+    update_temperature_temps(inst, wx)
 
     if wx.AddTemperatureModuleLeaning then
         wx:AddTemperatureModuleLeaning(-1)
     end
+
+    update_temperature_overlays(wx)
 
     Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_betabuffs_1", cold_skill_activate, cold_skill_deactivate, isloading)
 end
 
 local function cold_deactivate(inst, wx)
     wx._cold_modcount = math.max(0, wx._cold_modcount - 1)
-    if wx.components.temperature then
-        wx.components.temperature.maxtemp = wx.components.temperature.maxtemp + TUNING.WX78_MINTEMPCHANGEPERMODULE
-        wx.components.temperature.mintemp = wx.components.temperature.mintemp + TUNING.WX78_MINTEMPCHANGEPERMODULE
-    end
+
+    update_temperature_temps(inst, wx)
 
     if wx.AddTemperatureModuleLeaning then
         wx:AddTemperatureModuleLeaning(1)
     end
+
+    update_temperature_overlays(wx)
 
     Circuit_DestroySkillCb(inst, wx)
 end
@@ -762,20 +839,17 @@ local HUNGER_BUFF_SKILLS =
     ["wx78_circuitry_alphabuffs_1"] = true,
     ["wx78_circuitry_alphabuffs_2"] = true,
 }
-local function maxhunger_skill_activate(inst, wx, isloading)
-    if inst._hunger_skill_burnrate_modifiers ~= nil then
-        local index =
-            IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") and 2 or
-            IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1") and 1
-        if wx.components.hunger then
-            wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_skill_burnrate_modifiers[index])
-        end
-    end
-end
 
-local function maxhunger_skill_deactivate(inst, wx)
+local function maxhunger_skill_refresh(inst, wx, isloading)
     if wx.components.hunger then
-        wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_module_burnrate or 1)
+        if inst._hunger_skill_burnrate_modifiers ~= nil and (IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") or IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1")) then
+            local index =
+                IsSkillActivated(wx, "wx78_circuitry_alphabuffs_2") and 2 or
+                IsSkillActivated(wx, "wx78_circuitry_alphabuffs_1") and 1
+            wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_skill_burnrate_modifiers[index])
+        else
+            wx.components.hunger.burnratemodifiers:SetModifier(inst, inst._hunger_module_burnrate or 1)
+        end
     end
 end
 
@@ -801,10 +875,11 @@ local function maxhunger_activate(inst, wx, isloading)
     inst._hunger_module_burnrate = TUNING.WX78_MAXHUNGER_SLOWPERCENT
     inst._hunger_skill_burnrate_modifiers = MAXHUNGER_SKILL_BURNRATE_MODIFIERS
     maxhunger_change(inst, wx, TUNING.WX78_MAXHUNGER_BOOST, isloading)
-    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_activate, maxhunger_skill_deactivate, isloading)
+    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_refresh, maxhunger_skill_refresh, isloading)
 end
 
 local function maxhunger_deactivate(inst, wx)
+    inst._hunger_module_burnrate = 1
     maxhunger_change(inst, wx, -TUNING.WX78_MAXHUNGER_BOOST)
     Circuit_DestroySkillCb(inst, wx)
 end
@@ -828,7 +903,7 @@ local MAXHUNGER1_SKILL_BURNRATE_MODIFIERS = { TUNING.SKILLS.WX78.MAXHUNGER1_SLOW
 local function maxhunger1_activate(inst, wx, isloading)
     inst._hunger_skill_burnrate_modifiers = MAXHUNGER1_SKILL_BURNRATE_MODIFIERS
     maxhunger_change(inst, wx, TUNING.WX78_MAXHUNGER1_BOOST, isloading)
-    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_activate, maxhunger_skill_deactivate, isloading)
+    Circuit_SetUpSkillCb(inst, wx, HUNGER_BUFF_SKILLS, maxhunger_skill_refresh, maxhunger_skill_refresh, isloading)
 end
 
 local function maxhunger1_deactivate(inst, wx)
@@ -1018,6 +1093,12 @@ AddCreatureScanDataDefinition("hermitcrab", "music", 4)
 
 ---------------------------------------------------------------
 
+-- Needs to listen for alphabuff_1 for the sanity modifier
+local BEE_BUFF_SKILLS =
+{
+    ["wx78_circuitry_alphabuffs_1"] = true,
+    ["wx78_circuitry_alphabuffs_2"] = true,
+}
 local function bee_getticktime(inst, wx)
     return TUNING.WX78_BEE_TICKPERIOD
 end
@@ -1094,7 +1175,7 @@ local function bee_activate(inst, wx, isloading)
     end
 
     maxsanity_activate(inst, wx, isloading, true)
-    Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_alphabuffs_2", bee_skill_activate, bee_skill_deactivate, isloading)
+    Circuit_SetUpSkillCb(inst, wx, BEE_BUFF_SKILLS, bee_skill_activate, bee_skill_deactivate, isloading)
 end
 
 local function bee_deactivate(inst, wx)
@@ -1198,8 +1279,8 @@ local function GetIsBirdFn(cage_or_trap)
     if cage_or_trap.components.occupiable ~= nil then
         local bird = cage_or_trap.components.occupiable:GetOccupant()
         birdprefab = bird ~= nil and bird.prefab or nil
-    elseif cage_or_trap.components.trap ~= nil then
-        birdprefab = cage_or_trap.trappedbuild ~= nil and string.sub(cage_or_trap.trappedbuild, 0, -7) or nil
+    elseif cage_or_trap.components.trap ~= nil and cage_or_trap.components.trap.lootprefabs ~= nil then
+        birdprefab = cage_or_trap.components.trap.lootprefabs[1]
     end
 
     return birdprefab and scandata_definitions[birdprefab] ~= nil or nil
@@ -1433,12 +1514,14 @@ AddCreatureScanDataDefinition("catcoon", "digestion", 2)
 ---------------------------------------------------------------
 
 local function spin_overriderange(wx, override)
-	wx.components.combat:SetRange(override or TUNING.DEFAULT_ATTACK_RANGE, wx.components.combat.hitrange)
+    if wx.components.combat then
+	    wx.components.combat:SetRange(override or TUNING.DEFAULT_ATTACK_RANGE, wx.components.combat.hitrange)
+    end
 end
 
 local function spin_checktool(wx, data)
 	if data == nil or data.eslot == EQUIPSLOTS.HANDS then
-		local item = wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		local item = wx.components.inventory and wx.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		spin_overriderange(wx, WX78Common.CanSpinUsingItem(item) and TUNING.WX78_SPIN_START_RANGE or nil)
 	end
 end
@@ -1515,6 +1598,52 @@ table.insert(module_definitions, SHIELDING_MODULE_DATA)
 AddCreatureScanDataDefinition("rocky", "shielding", 4)
 AddCreatureScanDataDefinition("slurtle", "shielding", 4)
 AddCreatureScanDataDefinition("snurtle", "shielding", 6)
+
+---------------------------------------------------------------
+
+local function chess_skill_activate(inst, wx, isloading)
+	wx:AddTag("chessbff")
+end
+
+local function chess_skill_deactivate(inst, wx)
+    if (wx._chess_modules == nil) or (wx._chess_modules == 0) or (not IsSkillActivated(wx, "wx78_circuitry_gammabuffs_1")) then
+        wx:RemoveTag("chessbff")
+    end
+end
+
+local function chess_activate(inst, wx, isloading)
+	wx._chess_modules = (wx._chess_modules or 0) + 1
+	if wx.components.clockworktracker == nil then
+		wx:AddComponent("clockworktracker")
+	end
+	wx.components.clockworktracker:SetBonus(wx, wx._chess_modules, "wx78module_chess")
+	Circuit_SetUpSkillCb(inst, wx, "wx78_circuitry_gammabuffs_1", chess_skill_activate, chess_skill_deactivate, isloading)
+end
+
+local function chess_deactivate(inst, wx)
+	wx._chess_modules = (wx._chess_modules or 1) - 1
+	if wx._chess_modules <= 0 then
+		wx._chess_modules = nil
+	end
+	if wx.components.clockworktracker then
+		wx.components.clockworktracker:SetBonus(wx, wx._chess_modules, "wx78module_chess")
+	end
+	Circuit_DestroySkillCb(inst, wx)
+end
+
+local CHESS_MODULE_DATA =
+{
+	name = "chess",
+	type = CIRCUIT_BARS.GAMMA,
+	slots = 1,
+	activatefn = chess_activate,
+	deactivatefn = chess_deactivate,
+}
+table.insert(module_definitions, CHESS_MODULE_DATA)
+
+AddCreatureScanDataDefinition("knight", "chess", 3)
+AddCreatureScanDataDefinition("knight_nightmare", "chess", 3)
+AddCreatureScanDataDefinition("knight_yoth", "chess", 3)
 
 ---------------------------------------------------------------
 local module_netid = 1

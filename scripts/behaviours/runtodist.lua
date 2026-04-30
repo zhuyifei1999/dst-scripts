@@ -1,7 +1,7 @@
 -- OMAR: For wx78_possessedbody only, right now.
 
-RunAwayToDist = Class(BehaviourNode, function(self, inst, hunterparams, safe_dist, fn, fix_overhang, walk_instead, allow_boats)
-    BehaviourNode._ctor(self, "RunAway")
+RunToDist = Class(BehaviourNode, function(self, inst, hunterparams, safe_dist, fn, fix_overhang, walk_instead, allow_boats)
+    BehaviourNode._ctor(self, "RunToDist")
     self.safe_dist = safe_dist
     if type(hunterparams) == "table" then
 		self.gethunterfn = hunterparams.getfn
@@ -13,11 +13,11 @@ RunAwayToDist = Class(BehaviourNode, function(self, inst, hunterparams, safe_dis
     self.allow_boats = allow_boats or nil
 end)
 
-function RunAwayToDist:__tostring()
-    return string.format("RUNAWAY %f from: %s", self.safe_dist, tostring(self.hunter))
+function RunToDist:__tostring()
+    return string.format("RunToDist %f from: %s", self.safe_dist, tostring(self.hunter))
 end
 
-function RunAwayToDist:GetRunPosition(pt, hp, safe_dist)
+function RunToDist:GetRunPosition(pt, hp, safe_dist)
     if self.avoid_angle ~= nil then
         local avoid_time = GetTime() - self.avoid_time
         if avoid_time < 1 then
@@ -72,9 +72,9 @@ function RunAwayToDist:GetRunPosition(pt, hp, safe_dist)
     return result_offset
 end
 
-local TOLERANCE_DIST = .5
+local TOLERANCE_DIST = .4
 local TOLERANCE_DIST_SQ = TOLERANCE_DIST*TOLERANCE_DIST
-function RunAwayToDist:Visit()
+function RunToDist:Visit()
     if self.status == READY then
 		if self.gethunterfn then
 			self.hunter = self.gethunterfn(self.inst)
@@ -97,14 +97,15 @@ function RunAwayToDist:Visit()
             local safe_dist = FunctionOrValue(self.safe_dist, self.inst, self.hunter)
             local pos = self:GetRunPosition(pt, hp, safe_dist)
 
-            if distsq(pos, pt) <= TOLERANCE_DIST_SQ then
-                self.status = FAILED
-                self.inst.components.locomotor:Stop()
-                return
-            end
-
             if pos ~= nil then
                 pos = hp + pos
+
+                if distsq(pos, pt) <= TOLERANCE_DIST_SQ then
+                    self.status = FAILED
+                    self.inst.components.locomotor:Stop()
+                    return
+                end
+
                 if self.walk_instead then
                     self.inst.components.locomotor.dest = nil
                     self.inst.components.locomotor:GoToPoint(pos, nil, false)

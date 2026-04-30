@@ -59,7 +59,7 @@ local function StartRepel(inst)
     local creatures = {}
     for i, v in ipairs(TheSim:FindEntities(x, y, z, REPEL_RADIUS, SLEEPREPEL_MUST_TAGS, SLEEPREPEL_CANT_TAGS)) do
         if v:IsValid() and v.entity:IsVisible() and not (v.components.health ~= nil and v.components.health:IsDead()) then
-            if v:HasTag("player") then
+            if v:HasAnyTag("player", "possessedbody") then
                 v:PushEvent("repelled", { repeller = inst, radius = REPEL_RADIUS })
             elseif v.components.combat ~= nil then
                 v.components.combat:GetAttacked(inst, 10)

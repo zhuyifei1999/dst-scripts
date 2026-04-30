@@ -134,6 +134,16 @@ local function GetNumFreeScoutingDrones(inst)
     return math.max(maxscouts - numdronescouts, 0)
 end
 
+local function GetNumFreeShadowDrone_Harvesters(inst)
+    local wx78_classified = inst:GetOwningWX78_Classified()
+    return wx78_classified.num_free_shadowdrone_harvesters:value()
+end
+
+local function GetNumFreeShadowDrone_Debuffers(inst)
+    local wx78_classified = inst:GetOwningWX78_Classified()
+    return wx78_classified.num_free_shadowdrone_debuffers:value()
+end
+
 local function OnPowerOffOverlayDirty(inst)
 	if inst._parent and inst._parent.HUD then
 		if inst.poweroffoverlay:value() then
@@ -184,6 +194,7 @@ local function TryDeactivateModule(inst, definition, bartype, moduleindex)
 end
 
 local function UpdateActivatedModules(inst)
+    inst.update_activated_modules = nil
     for bartype, modules in pairs(inst.upgrademodulebars) do
         local remaining_charge = inst:GetEnergyLevel()
         for i, module_netvar in ipairs(modules) do
@@ -261,12 +272,12 @@ local function GetMaxEnergy(inst)
 end
 
 local function GetEnergyLevel(inst)
-    return inst.currentenergylevel:value()
+    return inst.overridefullcharge:value() and inst.maxenergylevel:value() or inst.currentenergylevel:value()
 end
 
 local function OnEnergyLevelDirty(inst)
     if inst._parent ~= nil then
-        local energylevel = inst.currentenergylevel:value()
+        local energylevel = inst:GetEnergyLevel()
         local maxenergylevel = inst.maxenergylevel:value()
         local data =
         {
@@ -276,7 +287,12 @@ local function OnEnergyLevelDirty(inst)
             new_max_level = maxenergylevel,
         }
 
-        UpdateActivatedModules(inst)
+        -- Delay by a frame to let OnUpgradeModulesListDirty handle things first.
+        if inst.update_activated_modules ~= nil then
+            inst.update_activated_modules:Cancel()
+        end
+        inst.update_activated_modules = inst:DoStaticTaskInTime(0, UpdateActivatedModules)
+
         inst._oldcurrentenergylevel = energylevel
         inst._oldmaxenergylevel = maxenergylevel
         inst._parent:PushEvent("energylevelupdate", data)
@@ -377,6 +393,18 @@ local function OnCraftingNetVarDirty(inst)
     end
 end
 
+local function OnFreezeEffectBlockedDirty(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("updateiceover")
+    end
+end
+
+local function OnOverHeatEffectBlockedDirty(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("updateheatover")
+    end
+end
+
 --------------------------------------------------------------------------
 local function RegisterNetListeners_mastersim(inst)
 	inst:ListenForEvent("wx_performedspinaction", OnPerformedSpinAction_Server, inst._parent)
@@ -388,9 +416,13 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("inspectupgrademodulebarsdirty", OnInspectUpgradeModuleBarsDirty)
     inst:ListenForEvent("numactivebodiesdirty", OnCraftingNetVarDirty)
     inst:ListenForEvent("numdronescoutsdirty", OnCraftingNetVarDirty)
+    inst:ListenForEvent("num_free_shadowdrone_harvestersdirty", OnCraftingNetVarDirty)
+    inst:ListenForEvent("num_free_shadowdrone_debuffersdirty", OnCraftingNetVarDirty)
 	inst:ListenForEvent("performedspinactiondirty", OnPerformedSpinActionDirty)
     inst:ListenForEvent("shielddirty", OnShieldDirty)
     inst:ListenForEvent("canshieldchargedirty", OnCanShieldChargeDirty)
+	inst:ListenForEvent("freezeeffectdirty", OnFreezeEffectBlockedDirty)
+	inst:ListenForEvent("overheateffectdirty", OnOverHeatEffectBlockedDirty)
 end
 local function RegisterNetListeners_common(inst)
 	inst:ListenForEvent("poweroffoverlaydirty", OnPowerOffOverlayDirty)
@@ -448,6 +480,8 @@ local function fn()
     inst.GetMaxBackupBodies = GetMaxBackupBodies
     inst.GetNumFreeBackupBodies = GetNumFreeBackupBodies
     inst.GetNumFreeScoutingDrones = GetNumFreeScoutingDrones
+    inst.GetNumFreeShadowDrone_Harvesters = GetNumFreeShadowDrone_Harvesters
+    inst.GetNumFreeShadowDrone_Debuffers = GetNumFreeShadowDrone_Debuffers
 
     inst.uirobotsparksevent = net_event(inst.GUID, "uirobotsparksevent")
 
@@ -457,6 +491,7 @@ local function fn()
     inst.currentenergylevel = net_smallbyte(inst.GUID, "wx78.currentenergylevel", "upgrademoduleenergyupdate")
     inst.maxenergylevel = net_smallbyte(inst.GUID, "wx78.maxenergylevel", "upgrademoduleenergyupdate")
     inst.maxenergylevel:set(TUNING.WX78_INITIAL_MAXCHARGELEVEL)
+    inst.overridefullcharge = net_bool(inst.GUID, "wx78.overridefullcharge", "upgrademoduleenergyupdate")
 
     inst._oldupgrademodulebars = {}
     inst.upgrademodulebars = {}
@@ -492,9 +527,16 @@ local function fn()
     -- Drones
     local numdronescouts_net_enum = GetIdealUnsignedNetVarForCount(TUNING.SKILLS.WX78.SCOUTDRONE_MAX_COUNT)
     inst.numdronescouts = numdronescouts_net_enum(inst.GUID, "wx78.numdronescouts", "numdronescoutsdirty")
+    -- Shadow Drones
+    local num_free_shadowdrone_harvesters_net_enum = GetIdealUnsignedNetVarForCount(math.max(TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT, TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_LIMIT_BOOSTED))
+    inst.num_free_shadowdrone_harvesters = num_free_shadowdrone_harvesters_net_enum(inst.GUID, "wx78.num_free_shadowdrone_harvesters", "num_free_shadowdrone_harvestersdirty")
+    local num_free_shadowdrone_debuffers_net_enum = GetIdealUnsignedNetVarForCount(math.max(TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT, TUNING.SKILLS.WX78.SHADOWDRONE_DEBUFFER_LIMIT_BOOSTED))
+    inst.num_free_shadowdrone_debuffers = num_free_shadowdrone_debuffers_net_enum(inst.GUID, "wx78.num_free_shadowdrone_debuffers", "num_free_shadowdrone_debuffersdirty")
 
 	-- UI
 	inst.poweroffoverlay = net_bool(inst.GUID, "hud.wxpowerover", "poweroffoverlaydirty")
+    inst.freezeeffectblocked = net_bool(inst.GUID, "wx78.freezeeffectblocked", "freezeeffectdirty")
+    inst.overheateffectblocked = net_bool(inst.GUID, "wx78.overheateffectblocked", "overheateffectdirty")
 
     --Delay net listeners until after initial values are deserialized
     inst:DoStaticTaskInTime(0, RegisterNetListeners)

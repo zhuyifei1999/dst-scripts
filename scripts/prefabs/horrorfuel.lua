@@ -1,3 +1,5 @@
+local WX78Common = require("prefabs/wx78_common")
+
 local assets =
 {
     Asset("ANIM", "anim/horrorfuel.zip"),
@@ -144,6 +146,35 @@ local function Wurt_MermSpellFn(inst, target, pos, doer)
     end
 end
 
+local function ResetInUse(inst)
+	inst.components.useabletargeteditem:StopUsingItem()
+end
+
+local WX78_BUFF_DATA = { duration = TUNING.SKILLS.WX78.HORRORFUEL_DEBUFF_TIME }
+local function OnUseAsWX78(inst, target, doer)
+    if target.components.upgrademoduleowner then
+        target:AddDebuff("wx78_shadow_fuel_debuff", "wx78_shadow_fuel_debuff", WX78_BUFF_DATA)
+		inst.components.stackable:Get():Remove()
+		if inst:IsValid() then
+			--We don't need to lock this item as "inuse"
+			inst:DoStaticTaskInTime(0, ResetInUse)
+		end
+        return true
+    end
+end
+
+local function ValidTargetToConsumeAsWX78(inst, target, doer)
+    -- wx
+    local socketholder = (target or doer).components.socketholder
+    return socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
+        and ( (target == doer) or target == nil )
+end
+
+local function GetUseItemOnVerb(inst, target, doer)
+    return ValidTargetToConsumeAsWX78(inst, target, doer) and "CONSUME"
+        or nil
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -166,6 +197,10 @@ local function fn()
 
     MakeInventoryFloatable(inst)
 
+    -- before MakeItemSocketable_Client (it handles hooking)
+    inst.UseableTargetedItem_ValidTarget = ValidTargetToConsumeAsWX78
+    MakeItemSocketable_Client(inst, SOCKETNAMES.SHADOW)
+
     --Dedicated server does not need to spawn the local fx
     if not TheNet:IsDedicated() then
         inst.core = CreateCore()
@@ -174,6 +209,8 @@ local function fn()
         inst.highlightchildren = { inst.core }
     end
 
+    inst.GetUseItemOnVerb = GetUseItemOnVerb
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -181,6 +218,13 @@ local function fn()
     end
 
     inst.scrapbook_anim = "scrapbook"
+
+    -- before WX78Common.MakeItemSocketable (it handles hooking)
+    inst:AddComponent("useabletargeteditem")
+    inst.components.useabletargeteditem:SetOnUseFn(OnUseAsWX78)
+
+    WX78Common.MakeItemSocketable(inst)
+    inst.components.socketable:SetSocketQuality(SOCKETQUALITY.MEDIUM)
 
     inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 

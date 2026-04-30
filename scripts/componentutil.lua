@@ -129,6 +129,14 @@ SOULLESS_TARGET_TAGS = ConcatArrays(
 	NON_LIFEFORM_TARGET_TAGS
 )
 
+-- Tags that target specific families of plants, for use in things that harvest or pick.
+HARVESTABLE_PLANT_TARGET_TAGS = {
+    "plant",
+    "lichen",
+    "oceanvine",
+    "kelp",
+}
+
 --------------------------------------------------------------------------
 local IGNORE_DROWNING_ONREMOVE_TAGS = {"ignorewalkableplatforms", "ignorewalkableplatformdrowning", "activeprojectile", "flying", "FX", "DECOR", "INLIMBO"}
 function TempTile_HandleTileChange_Ocean(x, y, z)
@@ -1121,6 +1129,21 @@ end
 -------
 -- Flying checks for restrictions.
 
+function IsFlyingPermittedFromPointToPoint_BypassVault(fx, fy, fz, tx, ty, tz)
+    -- Entities using this must have staysthroughvirtualrooms tag!
+    local map = TheWorld.Map
+
+    if map:IsWagPunkArenaBarrierUp() then
+        if map:IsPointInWagPunkArena(fx, fy, fz) then
+            return map:IsPointInWagPunkArena(tx, ty, tz)
+        end
+    end
+
+    -- No vault check.
+
+    return true
+end
+
 function IsFlyingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
     local map = TheWorld.Map
 
@@ -1975,10 +1998,13 @@ local function UseableTargetedItem_ValidTarget_SocketHolder(inst, target, doer, 
     local socketable = inst.components.socketable
     local socketholder = target.components.socketholder
     if socketable and socketholder then
-        return socketholder:CanTryToSocket(inst, doer)
+        local success = socketholder:CanTryToSocket(inst, doer)
+        if success then
+            return success
+        end
     end
     if inst._UseableTargetedItem_ValidTarget_SocketHolder then
-        return inst:_UseableTargetedItem_ValidTarget_SocketHolder(inst, target, doer, ...)
+        return inst:_UseableTargetedItem_ValidTarget_SocketHolder(target, doer, ...)
     end
 end
 
@@ -1997,7 +2023,7 @@ local function OnPotentialSocketHolderUsed(inst, target, doer, ...)
     local socketholder = target.components.socketholder
     if socketable and socketholder then
         local success, failreason = socketholder:TryToSocket(inst, doer)
-        if success ~= nil then
+        if success then
             return success, failreason
         end
     end
@@ -2047,9 +2073,32 @@ function ShouldItemMimicBeRevealedFor(item, user)
     if user == nil then
         return itemisamimic
     end
-
+    
     local userprocsmimics = user.components.socket_shadow_mimicry == nil
+    if itemisamimic then
+        -- Special cases to always force mimic reveals.
+        if item.prefab == "greenstaff" then
+            -- Ingredients must be earned.
+            return true
+        end
+    end
+
     return itemisamimic and userprocsmimics
 end
 
 --------------------------------------------------------------------------
+
+function GetArmorWagpunkRange(inst, owner)
+    local range = TUNING.WAGPUNK_MAXRANGE
+
+    if owner ~= nil then
+        local follower = owner.components.follower
+	    local leader = follower and follower:GetLeader() or owner
+
+        if owner.GetModuleTypeCount and leader.components.skilltreeupdater ~= nil and leader.components.skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
+            range = range + owner:GetModuleTypeCount("radar") * TUNING.SKILLS.WX78.RADAR_WAGPUNKRANGE
+        end
+    end
+
+    return range
+end

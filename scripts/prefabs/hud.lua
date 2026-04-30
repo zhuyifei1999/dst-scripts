@@ -157,6 +157,7 @@ local assets =
     Asset("ANIM", "anim/ui_balatro.zip"),
 
     Asset("ANIM", "anim/status_wx_chest.zip"),
+	Asset("ANIM", "anim/status_wx_chest_shadow.zip"),
     Asset("ANIM", "anim/ui_wx78moduleremover.zip"),
     Asset("ANIM", "anim/status_meter_wx_shield.zip"),
 

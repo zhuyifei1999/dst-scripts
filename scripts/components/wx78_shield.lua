@@ -79,6 +79,10 @@ function Wx78_Shield:RemoveChargeSource(source, reason)
     self:ChargeSourceChanged_Internal()
 end
 
+function Wx78_Shield:HasChargeSource()
+    return self.chargegenerationsources:Get() ~= 0
+end
+
 function Wx78_Shield:SetMax(amount)
     assert(amount > 0, "Max wx78_shield must be bigger than 0.")
 	self.maxshield = amount

@@ -2291,6 +2291,11 @@ msgctxt "STRINGS.ACTIONS.USEITEMON.BEEF_BELL"
 msgid "Bond"
 msgstr "建立聯繫"
 
+#. STRINGS.ACTIONS.USEITEMON.CONSUME
+msgctxt "STRINGS.ACTIONS.USEITEMON.CONSUME"
+msgid "Consume"
+msgstr "消耗"
+
 #. STRINGS.ACTIONS.USEITEMON.GEARS
 msgctxt "STRINGS.ACTIONS.USEITEMON.GEARS"
 msgid "Repair"
@@ -4546,6 +4551,16 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BUILD.TOOMANYBACKUPBODIES"
 msgid "only_used_by_wx78"
 msgstr "only_used_by_wx78"
 
+#. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_DEBUFFER"
+msgid "only_used_by_wx78"
+msgstr "only_used_by_wx78"
+
+#. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_HARVESTER"
+msgid "only_used_by_wx78"
+msgstr "only_used_by_wx78"
+
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.CARNIVALGAME_FEED.TOO_LATE
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.CARNIVALGAME_FEED.TOO_LATE"
 msgid "I need to be quicker!"
@@ -6678,8 +6693,8 @@ msgstr "那道閃光！那是月光嗎？"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_MAX_CLOCKWORKS
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_MAX_CLOCKWORKS"
-msgid "Why won't it follow me?"
-msgstr "它為什麼不跟着我？"
+msgid "Hm, I suppose it makes sense I can only have a pair of these."
+msgstr "嗯，只能拿一對，倒也説得過去。"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_MEGA_FLARE_SEEN
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_MEGA_FLARE_SEEN"
@@ -7700,6 +7715,16 @@ msgstr "聽起來不太妙？"
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT"
 msgid "Hmm. What went wrong?"
 msgstr "呣。哪裡出錯了？"
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WX_NIGHTMARECHARGE
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WX_NIGHTMARECHARGE"
+msgid "only_used_by_wx78"
+msgstr "only_used_by_wx78"
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WX_NIGHTMAREDISCHARGE
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WX_NIGHTMAREDISCHARGE"
+msgid "only_used_by_wx78"
+msgstr "only_used_by_wx78"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WX_SCANNER_FOUND_NO_DATA
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WX_SCANNER_FOUND_NO_DATA"
@@ -22856,6 +22881,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_BEE"
 msgid "So much science packed into one tiny gizmo."
 msgstr "一個小玩意竟然裝得下這麼多的科學知識。"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_CHESS"
+msgid "So much science packed into one tiny gizmo."
+msgstr "一個小玩意竟然裝得下這麼多的科學知識。"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_COLD"
 msgid "So much science packed into one tiny gizmo."
@@ -22961,6 +22991,21 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78MODULE_TASER"
 msgid "So much science packed into one tiny gizmo."
 msgstr "一個小玩意竟然裝得下這麼多的科學知識。"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Practical immortality through engineering!"
+msgstr "通過工程學實現了現實意義的永生！"
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_BACKUPBODY.UNCLAIMED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_BACKUPBODY.UNCLAIMED"
+msgid "only_used_by_wx78"
+msgstr "only_used_by_wx78"
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_BACKUPBODY.VIEWERS_BODY
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_BACKUPBODY.VIEWERS_BODY"
+msgid "only_used_by_wx78"
+msgstr "only_used_by_wx78"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "A freight it will get lost!"
@@ -23050,6 +23095,16 @@ msgstr "我想知道它是否會夢到掃描羊。"
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's got the look of someone eager to show their work."
 msgstr "它有一種迫不及待向世人展示自己作品的急迫。"
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "It's a keen observer."
+msgstr "好一位敏鋭的觀察者。"
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "A collector in WX's collection."
+msgstr "WX收藏品中的一位收集者。"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.W_RADIO"
@@ -25513,8 +25568,8 @@ msgstr "看，沃比！那裡有東西在發亮！"
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_MAX_CLOCKWORKS
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_MAX_CLOCKWORKS"
-msgid "It doesn't wanna come with us, Woby."
-msgstr "它不想跟我們走，沃比。"
+msgid "Ha! Of course we only get a pair, Woby! They're chess pieces!"
+msgstr "哈！我們當然只能得到一對，沃比！這些是棋子！"
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_MEGA_FLARE_SEEN
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_MEGA_FLARE_SEEN"
@@ -41511,6 +41566,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_BEE"
 msgid "Robot guts! Neat!"
 msgstr "機器人的內臟！太帥了！"
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_CHESS"
+msgid "Robot guts! Neat!"
+msgstr "機器人的內臟！太帥了！"
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_COLD"
 msgid "Robot guts! Neat!"
@@ -41616,6 +41676,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78MODULE_TASER"
 msgid "Robot guts! Neat!"
 msgstr "機器人的內臟！太帥了！"
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "That WX is full of surprises!"
+msgstr "那個WX真是充滿了驚喜！"
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "A hardworking delivery buddy!"
@@ -41695,6 +41760,16 @@ msgstr "我猜它在打盹。"
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "What is it boy? Do you have something to show WX?"
 msgstr "怎麼了，孩子？你有東西給WX看嗎？"
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Ooh, I think it studies the monsters!"
+msgstr "噢，我想它是在研究那些怪物！"
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "That sure is handy! Or should I say clawy! Get it, Wobes?"
+msgstr "這可真是稱手呀！還是説該叫“稱爪”呢？聽懂沒，沃比？"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.W_RADIO"
@@ -60031,6 +60106,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78MODULE_BEE"
 msgid "Aha! I was wondering when they'd started making these."
 msgstr "啊哈！我就琢磨著應該有人做這種東西了。"
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78MODULE_CHESS"
+msgid "Aha! I was wondering when they'd started making these."
+msgstr "啊哈！我就琢磨著應該有人做這種東西了。"
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78MODULE_COLD"
 msgid "Aha! I was wondering when they'd started making these."
@@ -60136,6 +60216,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78MODULE_TASER"
 msgid "Aha! I was wondering when they'd started making these."
 msgstr "啊哈！我就琢磨著應該有人做這種東西了。"
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "That WX is ahead of their time."
+msgstr "那個WX引領了時代。"
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Nothing beats a speedy delivery."
@@ -60215,6 +60300,16 @@ msgstr "它在等待時機。"
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "I suppose you have nothing better to do than wait around?"
 msgstr "你除了乾等著就沒事可做了？"
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "It makes fighting more efficient for WX."
+msgstr "它讓WX戰鬥得更高效。"
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Of course an automaton would automate."
+msgstr "機器人理所當然要自動化。"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.W_RADIO"
@@ -77646,6 +77741,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78MODULE_BEE"
 msgid "They give our metal friend a little extra zest, non?"
 msgstr "能給我們的金屬朋友帶來了一點額外的風味，不是嗎？"
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78MODULE_CHESS"
+msgid "They give our metal friend a little extra zest, non?"
+msgstr "能給我們的金屬朋友帶來了一點額外的風味，不是嗎？"
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78MODULE_COLD"
 msgid "They give our metal friend a little extra zest, non?"
@@ -77751,6 +77851,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78MODULE_TASER"
 msgid "They give our metal friend a little extra zest, non?"
 msgstr "能給我們的金屬朋友帶來了一點額外的風味，不是嗎？"
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Bonjour? WX?"
+msgstr "你好？WX？"
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "A flying pantry! Wonderful!"
@@ -77830,6 +77935,16 @@ msgstr "似乎隱約是土豆的形狀……也可能我只是餓了。"
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Voilà, it is done!"
 msgstr "哇啦，完成了！"
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "What do you see, mon ami?"
+msgstr "你看到了什麼，我的朋友？"
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Have a happy harvest!"
+msgstr "祝你豐收愉快！"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.W_RADIO"
@@ -95986,6 +96101,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78MODULE_BEE"
 msgid "These boons shall empower our metal warrior."
 msgstr "這些恩賜將使我們的金屬戰士變得更強。"
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78MODULE_CHESS"
+msgid "These boons shall empower our metal warrior."
+msgstr "這些恩賜將使我們的金屬戰士變得更強。"
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78MODULE_COLD"
 msgid "These boons shall empower our metal warrior."
@@ -96091,6 +96211,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78MODULE_TASER"
 msgid "These boons shall empower our metal warrior."
 msgstr "這些恩賜將使我們的金屬戰士變得更強。"
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Like a new suit of armor, the metal warrior may simply don a fresh body!"
+msgstr "它就像一套新盔甲，金屬戰士可以輕鬆換上一具新身體！"
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Loyal courier! Provision thy Iron Lord!"
@@ -96170,6 +96295,16 @@ msgstr "歇息吧，尊貴的偵察兵。"
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Metal warrior! The scout's report is complete!"
 msgstr "金屬戰士！偵察兵已送回報告！"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "'Tis a spy for the metal warrior."
+msgstr "那是金屬戰士的間諜。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "The metal warrior's little plunderer."
+msgstr "為金屬戰士掠奪的小兵。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.W_RADIO"
@@ -114406,6 +114541,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78MODULE_BEE"
 msgid "That robot needs to pull themselves together."
 msgstr "那個機器人需要把自己的零件都裝好。"
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78MODULE_CHESS"
+msgid "That robot needs to pull themselves together. Filthy cheat."
+msgstr "那個機器人不要再胡搞了。這是骯髒的作弊。"
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78MODULE_COLD"
 msgid "That robot needs to pull themselves together."
@@ -114511,6 +114651,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78MODULE_TASER"
 msgid "That robot needs to pull themselves together."
 msgstr "那個機器人需要把自己的零件都裝好。"
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "WX! Someone could stub their toe on you!"
+msgstr "WX！你這樣會絆到別人的腳趾頭！"
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Nice trash hauler."
@@ -114590,6 +114735,16 @@ msgstr "不知怎地，忍不住想踢它一腳。"
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "That constant blinking light is testing my patience."
 msgstr "燈一直在閃爍，簡直就是在考驗我的耐心。"
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "The little watcher is powered by a familiar source."
+msgstr "驅動這個小監視器的是一種熟悉的力量。"
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "That robot applies forces indiscriminately to take what it wants."
+msgstr "那個機器人為了得到想要的東西敢對一切動手。"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.W_RADIO"
@@ -132746,6 +132901,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78MODULE_BEE"
 msgid "Huh. Is that what robot insides look like?"
 msgstr "哈。機器人裡面長這樣啊？"
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78MODULE_CHESS"
+msgid "Huh. Is that what robot insides look like?"
+msgstr "哈。機器人裡面長這樣啊？"
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78MODULE_COLD"
 msgid "Huh. Is that what robot insides look like?"
@@ -132851,6 +133011,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78MODULE_TASER"
 msgid "Huh. Is that what robot insides look like?"
 msgstr "哈。機器人裡面長這樣啊？"
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Hello? Anybody home?"
+msgstr "你好？有人在家嗎？"
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Are there surprises inside?"
@@ -132930,6 +133095,16 @@ msgstr "你的真名是吉米嗎？"
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "WX! We think Jimmy's trying to get your attention!"
 msgstr "WX！我們猜吉米有事找你！"
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "It tells WX how to win!"
+msgstr "它會告訴WX怎麼贏！"
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "It's rude to grab!"
+msgstr "亂抓東西很不禮貌！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.W_RADIO"
@@ -151121,6 +151296,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78MODULE_BEE"
 msgid "It looks so fragile... hopefully no tragic accidents befall it."
 msgstr "它看起來很脆弱……希望別出悲劇性事故。"
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78MODULE_CHESS"
+msgid "It looks so fragile... hopefully no tragic accidents befall it."
+msgstr "它看起來很脆弱……希望別出悲劇性事故。"
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78MODULE_COLD"
 msgid "It looks so fragile... hopefully no tragic accidents befall it."
@@ -151226,6 +151406,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78MODULE_TASER"
 msgid "It looks so fragile... hopefully no tragic accidents befall it."
 msgstr "它看起來很脆弱……希望別出悲劇性事故。"
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Does this mean WX has a soul?"
+msgstr "這是不是意味着WX也有靈魂？"
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "And they say you can't take it with you."
@@ -151305,6 +151490,16 @@ msgstr "死翹翹了。"
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Poor little machine. Is nobody paying attention to you?"
 msgstr "可憐的小機器。沒有人注意到你嗎？"
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "What if the enemy is my own heart?"
+msgstr "如果敵人是我自己的內心呢？"
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "When will it be enough?"
+msgstr "什麼時候才算夠呢？"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.W_RADIO"
@@ -153823,8 +154018,8 @@ msgstr "我懷疑強大能量的湧入是那束奇怪的光芒的來源。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_MAX_CLOCKWORKS
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_MAX_CLOCKWORKS"
-msgid "This stubborn piece refuses to follow me."
-msgstr "這個頑固的棋子不肯跟我走。"
+msgid "Well, yes. The rules of chess are simple. One may have no more than a pair of these pieces."
+msgstr "嗯，是的。國際象棋的規則很簡單。每人最多隻能有兩顆這種棋子。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_MEGA_FLARE_SEEN
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_MEGA_FLARE_SEEN"
@@ -169501,6 +169696,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78MODULE_BEE"
 msgid "They dislike organics, but don't seem opposed to taking inspiration from them."
 msgstr "儘管TA不喜歡有機物，但似乎並不反對從它們那裡獲得靈感。"
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78MODULE_CHESS"
+msgid "They dislike organics, but don't seem opposed to taking inspiration from them."
+msgstr "儘管TA不喜歡有機物，但似乎並不反對從它們那裡獲得靈感。"
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78MODULE_COLD"
 msgid "They dislike organics, but don't seem opposed to taking inspiration from them."
@@ -169606,6 +169806,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78MODULE_TASER"
 msgid "They dislike organics, but don't seem opposed to taking inspiration from them."
 msgstr "儘管TA不喜歡有機物，但似乎並不反對從它們那裡獲得靈感。"
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "One of WX's backup chassis."
+msgstr "這是WX的備用底盤之一。"
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "The automaton deomonstrates an unusual attachment to its belongings."
@@ -169628,7 +169833,7 @@ msgstr "機器人通過信號傳輸操控飛行裝置並釋放電擊。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_FOODBRICK.GENERIC
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_FOODBRICK.GENERIC"
-msgid "The nutrient brick is inedible in its desicated form."
+msgid "The nutrient brick is inedible in its desiccated form."
 msgstr "營養磚在脫水狀態下無法食用。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_FOODBRICK.WET
@@ -169685,6 +169890,16 @@ msgstr "它當前處於休眠狀態。"
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's finished compiling some more research, I believe."
 msgstr "我相信它已經完成了研究資料的編纂。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "It studies enemies, calibrating WX's attack parameters."
+msgstr "它在研究敵人，並校準WX的攻擊參數。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "It is a rather industrious little gatherer."
+msgstr "它是一個相當勤勞的小採集器。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.W_RADIO"
@@ -187846,6 +188061,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78MODULE_BEE"
 msgid "Hey WX, when are you gonna install a flamethrower?"
 msgstr "我說WX，你啥時候裝火焰噴射器啊？"
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78MODULE_CHESS"
+msgid "Hey WX, when are you gonna install a flamethrower?"
+msgstr "我說WX，你啥時候裝火焰噴射器啊？"
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78MODULE_COLD"
 msgid "Hey WX, when are you gonna install a flamethrower?"
@@ -187951,6 +188171,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78MODULE_TASER"
 msgid "Hey WX, when are you gonna install a flamethrower?"
 msgstr "我說WX，你啥時候裝火焰噴射器啊？"
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "WX is always leaving their junk around."
+msgstr "WX總是把這些破爛到處亂丟。"
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "WX gets free delivery? No fair!"
@@ -188030,6 +188255,16 @@ msgstr "嘿嘿……我給它畫個鬍子的話，WX會有多生氣呢？"
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "What are you waiting for, a pat on the head?"
 msgstr "你還在等什麼，想讓我拍拍你的腦袋？"
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "What'dya mean you can only tell WX?"
+msgstr "你只告訴WX算幾個意思？"
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "WX, you greedy old robot!"
+msgstr "WX，你這個貪心的破銅爛鐵！"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.W_RADIO"
@@ -190538,8 +190773,8 @@ msgstr "我應該去看看那道奇怪的光芒。"
 
 #. STRINGS.CHARACTERS.WINONA.ANNOUNCE_MAX_CLOCKWORKS
 msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_MAX_CLOCKWORKS"
-msgid "Well fine then, don't follow me."
-msgstr "行吧，那你就別跟着我。"
+msgid "Darnit! A pair only? I hate chess."
+msgstr "可惡！只能拿一對？我討厭象棋。"
 
 #. STRINGS.CHARACTERS.WINONA.ANNOUNCE_MEGA_FLARE_SEEN
 msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_MEGA_FLARE_SEEN"
@@ -206271,6 +206506,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_BEE"
 msgid "They've really gotta start takin' better care of themselves."
 msgstr "TA真該學學怎麼照顧好自己了。"
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_CHESS"
+msgid "WX, you gotta stop leavin' this stuff lying around!"
+msgstr "WX，你以後可別再亂丟這些東西了！"
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_COLD"
 msgid "WX, you gotta stop leavin' this stuff lying around!"
@@ -206376,6 +206616,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78MODULE_TASER"
 msgid "They've really gotta start takin' better care of themselves."
 msgstr "TA真該學學怎麼照顧好自己了。"
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Well, if it ain't a bucket of bolts."
+msgstr "好吧，這可不就是一桶螺栓嘛。"
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Wish I had me a flyin' toolkit."
@@ -206455,6 +206700,16 @@ msgstr "應該在休息。"
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "He's signalling his supervisor."
 msgstr "他在給主管發信號。"
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "I can see why WX likes you."
+msgstr "我明白WX為什麼喜歡你了。"
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Save some for the rest of us, buddy!"
+msgstr "給我們其他人留點，夥計！"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.W_RADIO"
@@ -224641,6 +224896,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_BEE"
 msgid "Is robot snacks, yes?"
 msgstr "機器人的零食，對不對？"
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_CHESS"
+msgid "Is robot snacks, yes?"
+msgstr "機器人的零食，對不對？"
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_COLD"
 msgid "Is robot snacks, yes?"
@@ -224746,6 +225006,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78MODULE_TASER"
 msgid "Is robot snacks, yes?"
 msgstr "機器人的零食，對不對？"
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "Wolfgang only need one mighty body."
+msgstr "沃爾夫岡只需要一副強壯的身體。"
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Wolfgang carry more things."
@@ -224825,6 +225090,16 @@ msgstr "它現在睡著了。"
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Funny machine is winking at Wolfgang?"
 msgstr "有趣的機器在跟沃爾夫岡眨眼？"
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Aw, tell Wolfgang secret too!"
+msgstr "啊，也告訴沃爾夫岡秘密吧！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Busy little guy!"
+msgstr "忙碌的小傢伙！"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.W_RADIO"
@@ -242961,6 +243236,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78MODULE_BEE"
 msgid "Some fancy robot bits."
 msgstr "胡裡花哨的機器人零件。"
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78MODULE_CHESS"
+msgid "Some fancy robot bits."
+msgstr "胡裡花哨的機器人零件。"
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78MODULE_COLD"
 msgid "Some fancy robot bits."
@@ -243066,6 +243346,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78MODULE_TASER"
 msgid "Some fancy robot bits."
 msgstr "胡裡花哨的機器人零件。"
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "It just sits there."
+msgstr "它就那麼坐在那裏。"
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "To think I carried all my stuff to the cabin."
@@ -243145,6 +243430,16 @@ msgstr "睡著呢。"
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Trying to get someone's attention, eh?"
 msgstr "是想吸引眼球，誒？"
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Creepy little fella."
+msgstr "瘮人的小傢伙。"
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Yes, Lucy. It'll pick up the logs."
+msgstr "是的，露西，它會把木頭撿起來。"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.W_RADIO"
@@ -261326,6 +261621,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78MODULE_BEE"
 msgid "Beep boops"
 msgstr "嗶咘！"
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78MODULE_CHESS"
+msgid "Beep boops"
+msgstr "嗶咘！"
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78MODULE_COLD"
 msgid "Beep boops"
@@ -261431,6 +261731,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78MODULE_TASER"
 msgid "Beep boops"
 msgstr "嗶咘！"
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "No friend inside."
+msgstr "裏面沒有朋友。"
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Helpful friend"
@@ -261510,6 +261815,16 @@ msgstr "機器人朋友的小朋友"
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Blinky blink"
 msgstr "一眨一眨的"
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Tell robot friend how to fight friends"
+msgstr "告訴機器人朋友怎麼跟朋友打架"
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Friend get things"
+msgstr "朋友拿東西"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.W_RADIO"
@@ -279826,6 +280141,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_BEE"
 msgid "Are you the brightest bulb of the bunch?"
 msgstr "你是夜空中最閃亮的燈泡麼？"
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_CHESS"
+msgid "Are you the brightest bulb of the bunch?"
+msgstr "你是夜空中最閃亮的燈泡麼？"
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_COLD"
 msgid "Are you the brightest bulb of the bunch?"
@@ -279931,6 +280251,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78MODULE_TASER"
 msgid "Are you the brightest bulb of the bunch?"
 msgstr "你是夜空中最閃亮的燈泡麼？"
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "No fair! Spare hardware!"
+msgstr "公平何在？備用硬件他不該！"
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "WX Express!"
@@ -280010,6 +280335,16 @@ msgstr "那片金屬疲倦了！"
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's done its toil, now our friend must collect the spoils."
 msgstr "有它辛苦在前，才有主人的方便。"
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "It's got eyes on the bad guys! Hyuyu!"
+msgstr "盯牢壞蛋！哼哼！"
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "The hardest working collector in this sector!"
+msgstr "這一帶最拼命的收集怪！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.W_RADIO"
@@ -298281,6 +298616,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78MODULE_BEE"
 msgid "Crunchy."
 msgstr "脆脆的。"
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78MODULE_CHESS"
+msgid "Crunchy."
+msgstr "脆脆的。"
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78MODULE_COLD"
 msgid "Crunchy."
@@ -298386,6 +298726,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78MODULE_TASER"
 msgid "Crunchy."
 msgstr "脆脆的。"
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "No folk in Ironfolk."
+msgstr "鐵人裏只有鐵，沒有人。"
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "Lemme see Ironfolk stuff."
@@ -298465,6 +298810,16 @@ msgstr "是蟲子？好像不是？嗯……"
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Why it all blinky?"
 msgstr "怎麼一直閃呢？"
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "What you see?"
+msgstr "你看到了啥？"
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "Florp! So grabby!"
+msgstr "浮浪噗！這麼愛抓！"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.W_RADIO"
@@ -299290,6 +299645,16 @@ msgstr "已經達到最高限額"
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.BUILD.TOOMANYBACKUPBODIES"
 msgid "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED"
 msgstr "拒絕訪問。備份數量已達上限。"
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_DEBUFFER"
+msgid "DENIED. MAXIMUM NUMBER OF EXPLOITERATORS REACHED"
+msgstr "拒絕訪問。破綻放大機數量已達上限"
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.BUILD.TOOMANYSHADOWDRONE_HARVESTER"
+msgid "DENIED. MAXIMUM NUMBER OF AUTO-GRABBERS REACHED"
+msgstr "拒絕訪問。自動抓取機數量已達上限"
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.CARNIVALGAME_FEED.TOO_LATE
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.CARNIVALGAME_FEED.TOO_LATE"
@@ -301685,6 +302050,16 @@ msgstr "大量肉腸來襲"
 msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT"
 msgid "ERROR: BAD LOOP DETECTED"
 msgstr "錯誤：檢測到壞環路"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_WX_NIGHTMARECHARGE
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_WX_NIGHTMARECHARGE"
+msgid "FOREIGN MATTER DETECTED. POWER SYSTEMS OVERRIDE ENGAGED"
+msgstr "檢測到異常物質。電力系統已啓用超控"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_WX_NIGHTMAREDISCHARGE
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_WX_NIGHTMAREDISCHARGE"
+msgid "OVERRIDE RESOLVED. POWER LEVELS RESTORED"
+msgstr "超控解除。電力水平已恢復。"
 
 #. STRINGS.CHARACTERS.WX78.ANNOUNCE_WX_SCANNER_FOUND_NO_DATA
 msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_WX_SCANNER_FOUND_NO_DATA"
@@ -316736,6 +317111,11 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78MODULE_BEE"
 msgid "DON'T WORRY MINIONS, WHEN I RULE I WILL MAKE ALL YOUR DECISIONS FOR YOU"
 msgstr "別擔心，隨從們。我統治之後，將替你們做所有的決定。"
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78MODULE_CHESS
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78MODULE_CHESS"
+msgid "CHECKMATE, FLESHLINGS!"
+msgstr "將軍，肉體生物們！"
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78MODULE_COLD
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78MODULE_COLD"
 msgid "ACTIVATE COLD DISPOSITION"
@@ -316841,6 +317221,21 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78MODULE_TASER"
 msgid "COME FLESHLINGS, NOTHING WAKES YOU UP LIKE A FEW THOUSAND VOLTS"
 msgstr "放馬過來吧，肉體生物，沒有什麼比幾千伏的電壓更能喚醒你們了。"
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_BACKUPBODY.GENERIC
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_BACKUPBODY.GENERIC"
+msgid "ARE YOU THERE, %s? YOU'RE SUCH A GOOD LISTENER"
+msgstr "你在嗎，%s? 你真是一個好聽眾"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_BACKUPBODY.UNCLAIMED
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_BACKUPBODY.UNCLAIMED"
+msgid "NICE HARDWARE"
+msgstr "不錯的硬件。"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_BACKUPBODY.VIEWERS_BODY
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_BACKUPBODY.VIEWERS_BODY"
+msgid "PATHETIC FLESHLINGS, BOUND TO THEIR ORGANIC FORM"
+msgstr "可悲的肉體生物，被束縛在有機形態裏"
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_DRONE_DELIVERY
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_DRONE_DELIVERY"
 msgid "TRUSTY OLD DREW"
@@ -316930,6 +317325,16 @@ msgstr "他在休息模式。吉米還是那個老樣子"
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "EXCELLENT WORK, JIMMY. AWAIT RETRIEVAL"
 msgstr "幹得漂亮，吉米。等待提取"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SHADOWDRONE_DEBUFFER"
+msgid "YES, VICKY! TELL ME THEIR SECRETS!"
+msgstr "很好，維姬！告訴我他們的秘密！"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SHADOWDRONE_HARVESTER"
+msgid "THE WORLD IS MINE, GARY. ALL MINE"
+msgstr "這個世界是我的，加里，通通是我的。"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.W_RADIO
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.W_RADIO"
@@ -339551,6 +339956,11 @@ msgctxt "STRINGS.NAMES.WX78MODULE_BEE"
 msgid "Beanbooster Circuit"
 msgstr "豆增壓電路"
 
+#. STRINGS.NAMES.WX78MODULE_CHESS
+msgctxt "STRINGS.NAMES.WX78MODULE_CHESS"
+msgid "Chessmaster Circuit"
+msgstr "棋聖電路"
+
 #. STRINGS.NAMES.WX78MODULE_COLD
 msgctxt "STRINGS.NAMES.WX78MODULE_COLD"
 msgid "Refrigerant Circuit"
@@ -339740,6 +340150,16 @@ msgstr "生物掃描分析儀"
 msgctxt "STRINGS.NAMES.WX78_SCANNER_SUCCEEDED"
 msgid "Bio Scanalyzer"
 msgstr "生物掃描分析儀"
+
+#. STRINGS.NAMES.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.NAMES.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Exploiterator"
+msgstr "破綻放大機"
+
+#. STRINGS.NAMES.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.NAMES.WX78_SHADOWDRONE_HARVESTER"
+msgid "Auto-Grabber"
+msgstr "自動抓取機"
 
 #. STRINGS.NAMES.W_RADIO
 msgctxt "STRINGS.NAMES.W_RADIO"
@@ -346736,6 +347156,11 @@ msgctxt "STRINGS.RECIPE_DESC.WX78MODULE_BEE"
 msgid "Get your brain and body buzzing with powerful potential!"
 msgstr "讓你的大腦和身體都充滿嗡嗡作響的潛能！"
 
+#. STRINGS.RECIPE_DESC.WX78MODULE_CHESS
+msgctxt "STRINGS.RECIPE_DESC.WX78MODULE_CHESS"
+msgid "Only a pair of each chess piece? Rules are for fleshlings."
+msgstr "每種棋子只能帶兩個？規則是給肉體生物準備的。"
+
 #. STRINGS.RECIPE_DESC.WX78MODULE_COLD
 msgctxt "STRINGS.RECIPE_DESC.WX78MODULE_COLD"
 msgid "Turn your chassis into a portable freezer."
@@ -346880,6 +347305,16 @@ msgstr "成功的鉗（前）提是努力。"
 msgctxt "STRINGS.RECIPE_DESC.WX78_SCANNER_ITEM"
 msgid "It never hurts to have a backup scan."
 msgstr "備份掃描永遠不會有壞處。"
+
+#. STRINGS.RECIPE_DESC.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.RECIPE_DESC.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Know your enemy... then destroy them!"
+msgstr "瞭解你的敵人……然後摧毀他們！"
+
+#. STRINGS.RECIPE_DESC.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.RECIPE_DESC.WX78_SHADOWDRONE_HARVESTER"
+msgid "It's all up for grabs."
+msgstr "任意拿取。"
 
 #. STRINGS.RECIPE_DESC.W_RADIO
 msgctxt "STRINGS.RECIPE_DESC.W_RADIO"
@@ -347028,7 +347463,7 @@ msgstr "坐上去搖一搖，享受一場停留在原地的旅程。"
 
 #. STRINGS.RECIPE_DESC.YOTH_KNIGHTSHRINE
 msgctxt "STRINGS.RECIPE_DESC.YOTH_KNIGHTSHRINE"
-msgid "Make offerings to the whirring Clockwork Knight"
+msgid "Make offerings to the whirring Clockwork Knight."
 msgstr "向嗡嗡作響的發條騎士獻上供品。"
 
 #. STRINGS.RECIPE_DESC.YOTH_KNIGHTSTICK
@@ -350173,8 +350608,13 @@ msgstr "從 WX-78 上移除已安裝的電路。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_BEE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_BEE"
-msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from the Bee Queen.\n\nRequires 3 sockets, heals 5 Health every 30 seconds, gains 2 Sanity every minute and increases Maximum Sanity by 100 points.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 25%, and provides a regenerating shield when WX-78 is at full health. The shield protects an attack from damaging its health if WX-78 has over 15 shield."
-msgstr "插入WX-78的阿爾法電路板。製作配方可通過掃描蜂王獲得。\n\n\n需要3個插槽，每30秒回覆5點生命，每分鐘獲得2點理智，並提高100點最大理智。\n\n"
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from the Bee Queen.\n\nRequires 3 sockets, heals 5 Health every 30 seconds, gains 2 Sanity every minute and increases Maximum Sanity by 100 points.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 30%, and provides a regenerating shield when WX-78 is at full health. The shield protects an attack from damaging its health if WX-78 has over 15 shield."
+msgstr "插入WX-78的阿爾法電路板。製作配方可通過掃描蜂王獲得。\n\n需要3個插槽，每30秒回覆5點生命，每分鐘獲得2點理智，並提高100點最大理智。\n\n一級阿爾法電路改裝使該電路對負面理智光環的影響降低50%。\n\n二級阿爾法電路改裝使該電路將服裝帶來的理智回覆提升30%，並在WX-78滿血時提供可再生護盾：護盾超過15點時可阻止一次傷害。"
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_CHESS
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_CHESS"
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Knight.\n\nRequires 1 socket and allows WX-78 to have 1 additional Clockwork follower. Interacting with Clockworks no longer requires them to be stunned.\n\nGamma Circuit Tinkering I allows WX-78 to approach Clockworks without drawing aggro."
+msgstr "插入WX-78的伽馬電路板。製作配方可通過掃描騎士獲得。\n\n需要1個插槽，使WX-78 可額外擁有1名發條隨從，並且與發條單位互動時無需將其擊暈。\n\n一級伽馬電路改裝使 WX-78接近發條單位時不會引發仇恨。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_COLD
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_COLD"
@@ -350203,7 +350643,7 @@ msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描洞穴蠕蟲�
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH"
-msgid "Plugs into WX-78's Alpha circuit board. Crfating recipe is scanned from a Spider.\n\nRequires 1 socket and raises Maximum Health +40.\n\nAlpha Circuit Tinkering II boosts this circuit to provide 2.5% armor"
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from a Spider.\n\nRequires 1 socket and raises Maximum Health +40.\n\nAlpha Circuit Tinkering II boosts this circuit to provide 2.5% armor"
 msgstr "插入WX-78的阿爾法電路板。製作配方可通過掃描蜘蛛獲得。\n\n需要1個插槽，提高40點最大生命。\n\n二級阿爾法電路改裝使此電路提供2.5%護甲。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXHEALTH2
@@ -350223,8 +350663,8 @@ msgstr "插入WX-78的阿爾法電路板。製作配方可通過掃描普通獵�
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY"
-msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from Shadow Creatures.\n\nRequires 2 sockets and raises Maximum Sanity +100.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 25%."
-msgstr "插入WX-78的阿爾法電路板。製作配方可通過掃描暗影生物獲得。\n\n需要2個插槽，提高100點最大理智值。\n\n一級阿爾法電路改裝使此電路對負面理智光環的影響降低50%。\n\n二級阿爾法電路改裝使此電路將服裝帶來的理智回覆提升25%。"
+msgid "Plugs into WX-78's Alpha circuit board. Crafting recipe is scanned from Shadow Creatures.\n\nRequires 2 sockets and raises Maximum Sanity +100.\n\nAlpha Circuit Tinkering I boosts this circuit to have a 50% modifier to negative sanity auras.\n\nAlpha Circuit Tinkering II boosts this circuit to increase the sanity gain of clothing items by 30%."
+msgstr "插入WX-78的阿爾法電路板。製作配方可通過掃描暗影生物獲得。\n\n需要2個插槽，提高100點最大理智值。\n\n一級阿爾法電路改裝使此電路對負面理智光環的影響降低50%。\n\n二級阿爾法電路改裝使此電路將服裝帶來的理智回覆提升30%。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY1
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MAXSANITY1"
@@ -350238,7 +350678,7 @@ msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描兔子獲得�
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MOVESPEED2
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MOVESPEED2"
-msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Rook, or the Ancient Guardian.\n\nRequires 2 sockets.\nThe first raises movement speed by 25%.\nThe second raises movement speed by 15%.\nThe third raises movement speed by 10%.\nThe maxmimum speed boost can be 50%.\n\nBeta Circuit Tinkering II boosts this circuit to reduce slowness effects by 25%."
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Rook, or the Ancient Guardian.\n\nRequires 2 sockets.\nThe first raises movement speed by 25%.\nThe second raises movement speed by 15%.\nThe third raises movement speed by 10%.\nThe maximum speed boost can be 50%.\n\nBeta Circuit Tinkering II boosts this circuit to reduce slowness effects by 25%."
 msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描戰車或遠古守護者獲得。\n\n需要2個插槽。\n第一個提高25%移速。\n第二個提高15%移速。\n第三個提高10%移速。\n最高可提升50%的移速。\n\n二級貝塔電路改裝使減速效果降低25%。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_MUSIC
@@ -350253,13 +350693,13 @@ msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描鼴鼠獲得�
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_RADAR
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_RADAR"
-msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Crow, Redbird, Snowbird, Puffin or Canary.\n\nRequires 1 socket and increases Maximum Camera Distance.\n\nBeta Circuit Tinkering I boosts this circuit to increase the ranges of the Roto-Mapper, Zaptrocuter, and Bio Scanalyzer scan."
-msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描烏鴉、紅雀、雪雀、海鸚或金絲雀獲得。\n\n需要1個插槽，提高最大攝像機距離。\n\n一級貝塔電路改裝使此電路增加下列無人機的航程：旋翼測繪機、電刑機；和生物掃描分析儀的掃描範圍。"
+msgid "Plugs into WX-78's Beta circuit board. Crafting recipe is scanned from a Crow, Redbird, Snowbird, Puffin or Canary.\n\nRequires 1 socket and increases WX-78's Vision Range.\n\nBeta Circuit Tinkering I boosts this circuit to increase the range of the Roto-Mapper, Zaptrocuter, Bio Scanalyzer scan area, and W.A.R.B.I.S. target locking."
+msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描烏鴉、紅雀、雪雀、海鸚或金絲雀獲得。\n\n需要1個插槽，提高WX-78的視野距離。\n\n一級貝塔電路改裝使此電路增加下列無人機的航程：旋翼測繪機、電刑機；和生物掃描分析儀的掃描範圍和W.A.R.B.I.S.的目標鎖定距離。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SCREECH
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SCREECH"
-msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Naked Mole Bat.\n\nRequires 3 sockets and allows WX-78 to perform a sonic attack, inflicting panic on nearby creatures, and going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering I allows WX-78 to hold the sonic attack."
-msgstr "插入WX-78的伽馬電路板。製作配方可通過掃描裸鼴蝠獲得。\n\n需要3個插槽，使WX-78可以釋放聲波攻擊，使附近生物陷入恐慌，有20秒的技能冷卻。\n\n一級伽馬電路改裝使WX-78可以發出持續的聲波攻擊。"
+msgid "Plugs into WX-78's Gamma circuit board. Crafting recipe is scanned from a Naked Mole Bat.\n\nRequires 3 sockets and allows WX-78 to perform a sonic attack, inducing panic on nearby creatures, and going off cooldown for 20 seconds.\n\nGamma Circuit Tinkering I allows WX-78 to hold the sonic attack."
+msgstr "插入WX-78的伽馬電路板。製作配方可通過掃描裸鼴蝠獲得。\n\n需要3個插槽，使WX-78可以釋放聲波攻擊，使引發附近生物的恐慌，有20秒的技能冷卻。\n\n一級伽馬電路改裝使WX-78可以發出持續的聲波攻擊。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SHIELDING
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78MODULE_SHIELDING"
@@ -350283,8 +350723,8 @@ msgstr "插入WX-78的貝塔電路板。製作配方可通過掃描伏特羊獲�
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78SCANNER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78SCANNER"
-msgid "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished."
-msgstr "當有趣的生物目標在附近時會發出鳴叫聲。\n\n當WX-78在附近時，將追逐並掃描有趣的生物目標。\n\n完成後掉落生物資料。當有趣的生物目標在附近時會發出鳴叫聲。\n\n當WX-78在附近時，將追逐並掃描有趣的生物目標。\n\n完成後掉落生物資料。"
+msgid "Chirps when interesting biological targets are nearby.\n\nWill chase and scan interesting biological targets while WX-78 is close.\n\nDrops Bio Data when finished.\n\nWX-78 gave this drone the name of Jimmy."
+msgstr "當有趣的生物目標在附近時會發出鳴叫聲。\n\n當 WX-78 接近時，將追逐並掃描有趣的生物目標。\n\n完成後丟棄生物數據。\n\nWX-78將此無人機命名為吉米。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_BACKUPBODY
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_BACKUPBODY"
@@ -350313,13 +350753,23 @@ msgstr "使用電刑機對那些可悲的有機物們進行恐怖打擊。\n\nWX
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_FOODBRICK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_FOODBRICK"
-msgid "Produced by WX-78 with the Redigestion Circuit.\n\nCan be moistened to be edible, or used as fertilizer."
+msgid "Produced by WX-78 with the Redigestion Circuit.\n\nCan be moistened to make edible, or used as fertilizer."
 msgstr "由WX-78通過再消化電路製作。\n\n泡水後可食用，或用作肥料。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_GESTALTTRAPPER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_GESTALTTRAPPER"
 msgid "Install on a Backup Chassis to lure a gestalt over and possess it, for your very own spectrobotic minion!"
 msgstr "在備份底盤安裝後，可以吸引並佔據一個虛影，成為你的幽靈機械僕從！"
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_DEBUFFER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_DEBUFFER"
+msgid "Crafted by WX-78 imbued with a dark heart, the Exploiterators will scan their target giving WX-78 extra damage on the opponent.\n\nWX-78 gave this drone the name of Vicky."
+msgstr "跳躍着黑暗心臟的WX-78製造出了這台破綻放大機。它會掃描目標，使 WX-78對其造成額外傷害。\n\nWX-78 將此無人機命名為維姬。"
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_HARVESTER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WX78_SHADOWDRONE_HARVESTER"
+msgid "Crafted by WX-78 imbued with a dark fuel, the Auto-Grabbers will harvest and pick along with WX-78 and bring them back to them.\n\nWX-78 gave this drone the name of Gary."
+msgstr "跳躍着黑暗心臟的WX-78製造出了這台自動抓取機這台。它會跟隨WX-78進行採集，並將收集的物品帶回。\n\nWX-78將此無人機命名為加里。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.YELLOWAMULET
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.YELLOWAMULET"
@@ -350390,6 +350840,11 @@ msgstr "舞臺戲服"
 msgctxt "STRINGS.SCRAPBOOK.SUBCATS.CRAFTINGSTATION"
 msgid "Crafting Station"
 msgstr "製作站"
+
+#. STRINGS.SCRAPBOOK.SUBCATS.DRONE
+msgctxt "STRINGS.SCRAPBOOK.SUBCATS.DRONE"
+msgid "Drone"
+msgstr "無人機"
 
 #. STRINGS.SCRAPBOOK.SUBCATS.ELEMENT
 msgctxt "STRINGS.SCRAPBOOK.SUBCATS.ELEMENT"
@@ -356366,10 +356821,20 @@ msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRABODY_3_TITLE"
 msgid "Cold Standby III"
 msgstr "三級冷備"
 
+#. STRINGS.SKILLTREE.WX78.WX78_EXTRADRONERANGE_DESC
+msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRADRONERANGE_DESC"
+msgid "Expands the Bio Scanalyzer's scan radius, and extends the range of the Roto-Mapper, Zaptrocuter, Auto-Grabber, and Exploiterator."
+msgstr "擴大生物掃描分析儀的掃描半徑、增加旋翼測繪機、生物掃描分析儀、自動抓取機和破綻放大機的作用範圍。"
+
+#. STRINGS.SKILLTREE.WX78.WX78_EXTRADRONERANGE_TITLE
+msgctxt "STRINGS.SKILLTREE.WX78.WX78_EXTRADRONERANGE_TITLE"
+msgid "Signal Booster"
+msgstr "信號放大器"
+
 #. STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_DESC"
-msgid "Redigestion Circuit and Sonic-Invoker Circuit gain a new effect in addition to their original effect."
-msgstr "再消化電路和聲波激發電路在原有效果基礎上獲得新效果。"
+msgid "Chessmaster Circuit, Redigestion Circuit, and Sonic-Invoker Circuit gain a new effect in addition to their original effect."
+msgstr "信號增強器、再消化電路和聲波激發電路在原有效果基礎上獲得新效果。"
 
 #. STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_GAMMA_CIRCUIT_BUFFS_1_TITLE"
@@ -356438,18 +356903,8 @@ msgstr "學習製作一架旋翼測繪機用於探索和測繪未知區域。"
 
 #. STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_1_TITLE"
-msgid "Field Survey I"
-msgstr "一級野外勘測"
-
-#. STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_DESC
-msgctxt "STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_DESC"
-msgid "Increases the range you may control your Roto-Mapper."
-msgstr "增加旋翼測繪機的可控制範圍。"
-
-#. STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_TITLE
-msgctxt "STRINGS.SKILLTREE.WX78.WX78_SCOUTDRONE_2_TITLE"
-msgid "Field Survey II"
-msgstr "二級野外勘測"
+msgid "Field Survey"
+msgstr "野外勘測"
 
 #. STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_SHADOW_ALLEGIANCE_LOCK_1_DESC"
@@ -356468,8 +356923,8 @@ msgstr "一級遙控機械愛好者"
 
 #. STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_DESC
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_DESC"
-msgid "Learn to craft a Zaptrocuter with greater range and capacity."
-msgstr "學習製作一架航程更遠、電容更大的電刑機。"
+msgid "Learn to craft a Zaptrocuter with greater capacity."
+msgstr "學習製作一架電容更大的電刑機。"
 
 #. STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WX78.WX78_ZAPDRONE_2_TITLE"
@@ -363931,6 +364386,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_hutch_costumep"
 msgid "It's a Hutch hatch, for your head!"
 msgstr "它是個你腦袋的孵化房！"
 
+#. STRINGS.SKIN_DESCRIPTIONS.hat_ice_pengulls
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_ice_pengulls"
+msgid "The most dignified way to cool down."
+msgstr "最體面的降温方式。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.hat_ice_shark
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_ice_shark"
 msgid "You'll be so cool with this chiselled jaw."
@@ -368980,6 +369440,11 @@ msgstr "這個箱子包含了WX-78的下列皮膚物品：暗黑配送無人機�
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_all"
 msgid "This Chest contains the WX-78 Pretty Dark Things Chest, and WX-78's complete set of Archaic skin items."
 msgstr "這個箱子包含了WX-78精美暗黑物品箱子和WX-78的全套古代皮膚物品。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_shadowdrones
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_gothicjewel_shadowdrones"
+msgid "This Chest contains the following WX-78 skin items: Ominous Exploiterator, Elegant Exploiterator, Gloomy Auto-Grabber, and Opulent Auto-Grabber."
+msgstr "這個箱子包含WX-78的下列皮膚物品：不祥破綻放大機、優雅破綻放大機、憂鬱自動抓取機和黃金自動抓取機。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_masquerade
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_masquerade"
@@ -375955,6 +376420,26 @@ msgstr "沒有什麼比螺母和螺栓更棒了。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadow"
 msgid "This robot was evil before. Now they're double evil."
 msgstr "這機器人之前很邪惡，現在雙倍邪惡。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_gothic"
+msgid "It waits, watching for weakness."
+msgstr "它滯留是為了觀察破綻。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_debuffer_jewelbox"
+msgid "It silently appraises your enemy's flaws."
+msgstr "它悄無聲息地分析着敵人的漏洞。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_gothic"
+msgid "It goes about its gathering with grim purpose."
+msgstr "它帶着冷峻的目的進行採集。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_jewelbox
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowdrone_harvester_jewelbox"
+msgid "It's not entitlement if it already belongs to you."
+msgstr "本就屬於你的東西，談何佔有。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_shadowp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_shadowp"
@@ -383446,6 +383931,11 @@ msgctxt "STRINGS.SKIN_NAMES.hat_hutch_costumep"
 msgid "Hutch Head Disguise"
 msgstr "哈奇頭部偽裝"
 
+#. STRINGS.SKIN_NAMES.hat_ice_pengulls
+msgctxt "STRINGS.SKIN_NAMES.hat_ice_pengulls"
+msgid "Pengull Ice Cube"
+msgstr "企鷗冰帽"
+
 #. STRINGS.SKIN_NAMES.hat_ice_shark
 msgctxt "STRINGS.SKIN_NAMES.hat_ice_shark"
 msgid "Jawesome Ice Cube"
@@ -388495,6 +388985,11 @@ msgstr "WX-78精美暗黑物品箱子"
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_all"
 msgid "WX-78 Pretty Dark Idolatry Chest"
 msgstr "WX-78精美暗黑偶像箱子"
+
+#. STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_shadowdrones
+msgctxt "STRINGS.SKIN_NAMES.pack_wx78_gothicjewel_shadowdrones"
+msgid "WX-78 Pretty Dark Presence Chest"
+msgstr "WX-78精美暗黑顯現箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wx78_masquerade
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_masquerade"
@@ -395471,6 +395966,26 @@ msgctxt "STRINGS.SKIN_NAMES.wx78_shadow"
 msgid "The Triumphant"
 msgstr "凱旋"
 
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_gothic"
+msgid "Ominous Exploiterator"
+msgstr "不祥破綻放大機"
+
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_debuffer_jewelbox"
+msgid "Elegant Exploiterator"
+msgstr "優雅破綻放大機"
+
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_gothic
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_gothic"
+msgid "Gloomy Auto-Grabber"
+msgstr "憂鬱自動抓取機"
+
+#. STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_jewelbox
+msgctxt "STRINGS.SKIN_NAMES.wx78_shadowdrone_harvester_jewelbox"
+msgid "Opulent Auto-Grabber"
+msgstr "黃金自動抓取機"
+
 #. STRINGS.SKIN_NAMES.wx78_shadowp
 msgctxt "STRINGS.SKIN_NAMES.wx78_shadowp"
 msgid "The Triumphant"
@@ -399175,6 +399690,16 @@ msgstr "電路提取器"
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SCANNER"
 msgid "Bio Scanalyzer"
 msgstr "生物掃描分析儀"
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEDEBUFFER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEDEBUFFER"
+msgid "Exploiterator"
+msgstr "破綻放大機"
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEHARVESTER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WX78SHADOWDRONEHARVESTER"
+msgid "Auto-Grabber"
+msgstr "自動抓取機"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.YELLOWSTAFF
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.YELLOWSTAFF"
@@ -409300,6 +409825,16 @@ msgstr "找到兔子王來進行這筆交易！"
 msgctxt "STRINGS.UI.CRAFTING.NEEDSRABBITSHRINE"
 msgid "Make an offering at the Bunnyman Shrine!"
 msgstr "在兔人神龕獻上供品！"
+
+#. STRINGS.UI.CRAFTING.NEEDSROBOTSHADOWFUEL
+msgctxt "STRINGS.UI.CRAFTING.NEEDSROBOTSHADOWFUEL"
+msgid "Implant a dark fuel to unlock this recipe."
+msgstr "植入一種黑暗燃料以解鎖此配方。"
+
+#. STRINGS.UI.CRAFTING.NEEDSROBOTSHADOWHEART
+msgctxt "STRINGS.UI.CRAFTING.NEEDSROBOTSHADOWHEART"
+msgid "Implant a dark heart to unlock this recipe."
+msgstr "植入一種黑暗心臟以解鎖此配方。"
 
 #. STRINGS.UI.CRAFTING.NEEDSSEAFARING_STATION
 msgctxt "STRINGS.UI.CRAFTING.NEEDSSEAFARING_STATION"

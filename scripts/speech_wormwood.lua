@@ -68,6 +68,8 @@ return{
 			TICOON = "Already have friend",
             BUSY_STATION = "Like waiting!",
 --fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_HARVESTER = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYSHADOWDRONE_DEBUFFER = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -1239,6 +1241,8 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
 --fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
+--fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
+--fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
 	BATTLECRY =
 	{
@@ -6092,6 +6096,7 @@ return{
         WX78MODULE_LIGHT2 = "Beep boops",
         WX78MODULE_SHIELDING = "Beep boops",
         WX78MODULE_SPIN = "Beep boops",
+		WX78MODULE_CHESS = "Beep boops",
 
         WX78_INVENTORYCONTAINER =
         {
@@ -6106,11 +6111,21 @@ return{
             GENERIC = "Too hard!",
         },
 
+        WX78_BACKUPBODY =
+        {
+            GENERIC = "No friend inside.", -- We are examining a claimed body belonging to a WX. We can use their display name if we want to.
+--fallback to speech_wilson.lua             UNCLAIMED = "only_used_by_wx78", -- We are examining an unclaimed body.
+--fallback to speech_wilson.lua             VIEWERS_BODY = "only_used_by_wx78", -- We (WX) are examining our own body.
+        },
+
         WX78_POSSESSEDBODY = "Not robot friend?",
 
         WX78_GESTALTTRAPPER = "Make more robot friend",
 
         SHADOW_HEART_VEIN = "Cold friend gift?",
+
+        WX78_SHADOWDRONE_DEBUFFER = "Tell robot friend how to fight friends",
+        WX78_SHADOWDRONE_HARVESTER = "Friend get things",
     },
 
     DESCRIBE_GENERIC = "Friend?",

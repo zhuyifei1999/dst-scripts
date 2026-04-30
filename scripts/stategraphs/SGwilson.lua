@@ -1049,7 +1049,7 @@ local actionhandlers =
 				if inst.GetModuleTypeCount and
 					inst:GetModuleTypeCount("spin") > 0 and
 					not action.target.components.pickable.quickpick and
-					action.target:HasAnyTag(SGWX78Common.WX_SPIN_PICKABLE_TAGS)
+					action.target:HasAnyTag(HARVESTABLE_PLANT_TARGET_TAGS)
 				then
 					--wx skill
 					local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -1550,9 +1550,16 @@ local actionhandlers =
     ActionHandler(ACTIONS.USEITEMON, function(inst, action)
 		if action.invobject == nil then
 			return "dolongaction"
-		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == "socket_shadow" then
+		elseif action.invobject.components.socketable and action.invobject.components.socketable:GetSocketName() == SOCKETNAMES.SHADOW then
+
 			local target = action.target or (action.invobject:HasTag("useabletargateditem_canselftarget") and action.doer or nil)
-			if target == action.doer and target.components.socketholder then
+            local socketholder = inst.components.socketholder
+            if socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
+                and target == action.doer then
+                return "eat"
+            end
+
+            if target == action.doer and target.components.socketholder then
 				if inst:HasTag("inspectingupgrademodules") then
 					inst.sg.statemem.stopremovingmodule = true
 					inst.sg.statemem.stoppluggingmodule = true
@@ -1779,7 +1786,7 @@ local events =
     EventHandler("attacked", function(inst, data)
         --V2C: health check since corpse shares this SG
         if inst.components.health and not inst.components.health:IsDead() and not inst.sg:HasAnyStateTag("drowning", "falling") then
-            if data.weapon ~= nil and data.weapon:HasTag("tranquilizer") and (inst.sg:HasStateTag("bedroll") or inst.sg:HasStateTag("knockout")) then
+            if data.weapon ~= nil and data.weapon:HasTag("tranquilizer") and inst.sg:HasAnyStateTag("bedroll", "knockout") then
                 return --Do nothing
             elseif inst.sg:HasStateTag("transform") or inst.sg:HasStateTag("dismounting") then
                 -- don't interrupt transform or when bucked in the air
@@ -2047,10 +2054,9 @@ local events =
 
             if inst.shadowthrall_parasite_hosted_death and
                 not inst.components.rider:IsRiding() and
-                not inst:HasTag("beaver") and 
-                not inst:HasTag("weremoose") and 
-                not inst:HasTag("weregoose") and
+                not inst:HasAnyTag("beaver", "weremoose", "weregoose") and
                 not inst.charlie_vinesave and
+                not (inst.wx78_backupbody_save and inst.CanSpawnBackupBody and inst:CanSpawnBackupBody()) and
                 not inst.components.revivablecorpse then
                 inst.sg:GoToState("death_hosted", data)
             else
@@ -3566,7 +3572,7 @@ local states =
         onenter = function(inst, data)
             assert(inst.deathcause ~= nil, "Entered death state without cause.")
 
-            if data and data.hosted then -- NOTE (Omar): This is seemingly unused?
+            if data and data.hosted then
                 inst.sg.statemem.hosted = true
             end
 
@@ -3612,6 +3618,7 @@ local states =
                         DropAllItemsForDeath(inst)
                         inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
                     else
+						inst.Transform:SetNoFaced()
                         inst.AnimState:PlayAnimation("wx_chassis_poweroff")
                         if not inst.sg.mem.wx_chassis_build then
                             inst.sg.mem.wx_chassis_build = true
@@ -3751,6 +3758,7 @@ local states =
                                 DropAllItemsForDeath(inst)
                                 inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
                             else
+								inst.Transform:SetNoFaced()
                                 inst.AnimState:PlayAnimation("wx_chassis_poweroff")
                                 if not inst.sg.mem.wx_chassis_build then
                                     inst.sg.mem.wx_chassis_build = true
@@ -3779,6 +3787,11 @@ local states =
                         if inst:HasTag("wonkey") and inst.userid and inst.userid ~= "" then -- NOTES(JBK): The userid check is here for c_spawn("wonkey") that would be bad if it died.
                             inst:ChangeFromMonkey()
                         else
+							if inst.sg.mem.wx_chassis_build then
+								inst.sg.mem.wx_chassis_build = nil
+								inst.AnimState:ClearOverrideBuild("wx_chassis")
+								inst.Transform:SetFourFaced()
+							end
                             inst:PushEvent("makeplayerghost", { skeleton = skeleton }) -- if we are not on valid ground then don't drop a skeleton
                         end
                     else
@@ -3792,6 +3805,12 @@ local states =
             if inst.sg.mem.wx_chassis_build then
                 inst.sg.mem.wx_chassis_build = nil
                 inst.AnimState:ClearOverrideBuild("wx_chassis")
+				if inst.components.rider:IsRiding() then
+					--should not happen
+					inst.Transform:SetSixFaced()
+				else
+					inst.Transform:SetFourFaced()
+				end
             end
 			if inst.sg.statemem.vinesaving then
 				return
@@ -4274,11 +4293,13 @@ local states =
         tags = { "idle", "canrotate" },
 
         onenter = function(inst)
-            if inst.components.temperature:GetCurrent() < 5 then
+            if inst.components.temperature:GetCurrent() < 5
+                and (not inst.IsFreezingEffectBlocked or not inst:IsFreezingEffectBlocked()) then
                 inst.AnimState:PlayAnimation("idle_shiver_pre")
                 inst.AnimState:PushAnimation("idle_shiver_loop")
                 inst.AnimState:PushAnimation("idle_shiver_pst", false)
-            elseif inst.components.temperature:GetCurrent() > TUNING.OVERHEAT_TEMP - 10 then
+            elseif (inst.components.temperature:GetCurrent() > TUNING.OVERHEAT_TEMP - 10)
+                and (not inst.IsOverheatingEffectBlocked or not inst:IsOverheatingEffectBlocked()) then
                 inst.AnimState:PlayAnimation("idle_hot_pre")
                 inst.AnimState:PushAnimation("idle_hot_loop")
                 inst.AnimState:PushAnimation("idle_hot_pst", false)
@@ -12768,7 +12789,8 @@ local states =
         events =
         {
             EventHandler("stopraisinganchor", function(inst)
-                inst.sg:GoToState("idle")
+                inst.AnimState:PlayAnimation("build_pst")
+                inst.sg:GoToState("idle", true)
             end),
         },
 
@@ -20998,8 +21020,10 @@ local states =
         tags = { "busy", "furl_fail" },
 
         onenter = function(inst)
-
             inst:PerformBufferedAction()
+            for i, v in ipairs(inst.components.leader:GetFollowersByTag("possessedbody")) do
+                v:PushEvent("leader_failed_furl", inst.sg.mem.furl_target:IsValid() and inst.sg.mem.furl_target or nil)
+            end
 			if inst.sg.mem.furl_target:IsValid() and inst.sg.mem.furl_target.components.mast ~= nil then
 	            inst.sg.mem.furl_target.components.mast:AddSailFurler(inst, 0)
 			end
@@ -27081,6 +27105,16 @@ local states =
             end
 
 			inst:ShowActions(false)
+
+			if transition then
+				--were we trying to swap from one active remover to another?
+				--the first "newactiveitem" event will have sent us over here.
+				local activeitem = inst.components.inventory:GetActiveItem()
+				if activeitem and activeitem.components.upgrademoduleremover then
+					inst.sg.statemem.stoppluggingmodule = true
+					inst.sg:GoToState("removing_module", { transition = true, reverse = true, moduleremover = activeitem })
+				end
+			end
 		end,
 
 		events =
@@ -27290,11 +27324,10 @@ local states =
 
             local continuing
             local transition
+			local reverse
             if data ~= nil then
-                if data.transition ~= nil then
-                    transition = true
-                    inst.sg.statemem.moduleremover = data.moduleremover
-                end
+				transition = data.transition
+				reverse = data.reverse
                 if data.moduleremover ~= nil then
                     continuing = true
                     inst.sg.statemem.moduleremover = data.moduleremover
@@ -27310,7 +27343,7 @@ local states =
             HandleModuleRemoverAssets(inst, moduleremover)
 
             if transition then
-				inst.AnimState:PlayAnimation("wx_upgrade_to_downgrade")
+				inst.AnimState:PlayAnimation(reverse and "wx_downgrade_pst" or "wx_upgrade_to_downgrade")
 				inst.AnimState:PushAnimation("wx_downgrade_pre")
 				inst.AnimState:PushAnimation("wx_downgrade_loop")
             elseif continuing then
@@ -27442,7 +27475,7 @@ local states =
                 end
 				if inst.sg.statemem.unsocketposition and
 					inst.components.socketholder and
-					inst.components.socketholder:IsSocketNameForPosition("socket_shadow", inst.sg.statemem.unsocketposition)
+					inst.components.socketholder:IsSocketNameForPosition(SOCKETNAMES.SHADOW, inst.sg.statemem.unsocketposition)
 				then
 					local item = inst.components.socketholder:UnsocketPosition(inst.sg.statemem.unsocketposition)
 					if item then
@@ -27721,7 +27754,6 @@ local states =
 				inst.AnimState:PlayAnimation("wx_chassis_poweron")
 			end),
 			FrameEvent(15 + 60, function(inst)
-				inst.Transform:SetFourFaced()
 				inst.components.inventory:Show()
 				inst:ShowActions(true)
 				if inst.components.playercontroller then
@@ -27739,7 +27771,20 @@ local states =
 				inst.components.health:SetInvincible(false)
 			end),
 			FrameEvent(15 + 76, function(inst)
-				inst.sg:GoToState("idle", true)
+				inst.sg:RemoveStateTag("busy")
+				inst.sg:RemoveStateTag("nopredict")
+				inst.sg:RemoveStateTag("notalking")
+				inst.sg:AddStateTag("idle")
+				inst.sg:AddStateTag("canrotate")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() and not inst.sg:HasStateTag("busy") then
+					inst.sg:GoToState("idle")
+				end
 			end),
 		},
 
@@ -27766,12 +27811,13 @@ local states =
 
     State{
         name = "respawn_wx_poweron",
-        tags = { "busy", "noattack", "nopredict", "silentmorph" },
+		tags = { "busy", "notalking", "noattack", "nopredict", "silentmorph" },
 
         onenter = function(inst)
             if inst.components.playercontroller then
                 inst.components.playercontroller:Enable(false)
             end
+			inst.Transform:SetNoFaced()
             inst.AnimState:PlayAnimation("wx_chassis_idle")
             if not inst.sg.mem.wx_chassis_build then
                 inst.sg.mem.wx_chassis_build = true
@@ -27780,6 +27826,12 @@ local states =
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
+
+			StopTalkSound(inst, true)
+			if inst.components.talker then
+				inst.components.talker:ShutUp()
+				inst.components.talker:IgnoreAll("wx_poweroff")
+			end
         end,
 
         timeline =
@@ -27793,12 +27845,31 @@ local states =
             FrameEvent(15, function(inst)
                 inst.AnimState:PlayAnimation("wx_chassis_poweron")
             end),
-            FrameEvent(15 + 76, function(inst)
-                inst.sg:GoToState("idle", true)
-            end),
+			FrameEvent(15 + 67, function(inst)
+				inst.sg:RemoveStateTag("nointerrupt")
+				inst.sg:RemoveStateTag("noattack")
+				inst.components.health:SetInvincible(false)
+			end),
+			FrameEvent(15 + 76, function(inst)
+				inst.sg:RemoveStateTag("busy")
+				inst.sg:RemoveStateTag("nopredict")
+				inst.sg:RemoveStateTag("notalking")
+				inst.sg:AddStateTag("idle")
+				inst.sg:AddStateTag("canrotate")
+			end),
         },
 
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() and not inst.sg:HasStateTag("busy") then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
         onexit = function(inst)
+			inst.Transform:SetFourFaced()
             inst.sg.mem.wx_chassis_build = nil
             inst.AnimState:ClearOverrideBuild("wx_chassis")
             inst:ShowHUD(true)
@@ -27808,214 +27879,13 @@ local states =
             end
             inst.components.health:SetInvincible(false)
 
+			if inst.components.talker then
+				inst.components.talker:StopIgnoringAll("wx_poweroff")
+			end
+
             SerializeUserSession(inst)
         end,
     },
-
-	State{
-		name = "wx_start_using_drone",
-		tags = { "doing", "busy" },
-
-		onenter = function(inst)
-			local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			if not (item and item:HasTag("wx_remotecontroller")) then
-				inst:ClearBufferedAction()
-				inst.sg:GoToState("idle")
-				return
-			end
-			inst:AddTag("using_drone_remote")
-			inst.sg.statemem.item = item
-			inst.sg.statemem.buffaction = inst.bufferedaction
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("drone_zap_remote_use_pre")
-			if inst.components.playercontroller then
-				inst.components.playercontroller:EnableMapControls(false)
-			end
-			--inst.components.inventory:Hide() --can't do now or action will fail
-			inst:PushEvent("ms_closepopups")
-			inst:ShowActions(false)
-		end,
-
-		timeline =
-		{
-			FrameEvent(8, function(inst)
-				inst.sg.statemem.buffaction = nil
-				if inst:PerformBufferedAction() then
-					inst.sg.statemem.using_drone = true
-					inst.sg:GoToState("wx_using_drone", inst.sg.statemem.item)
-				else
-					inst.sg.statemem.item = nil
-					inst.sg:GoToState("wx_stop_using_drone")
-				end
-			end),
-		},
-
-		events =
-		{
-			EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("unequip", function(inst, data)
-				if not (data and data.item == inst.sg.statemem.item) then
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			if inst.bufferedaction == inst.sg.statemem.buffaction then
-				inst:ClearBufferedAction()
-			end
-			if not inst.sg.statemem.using_drone then
-				inst:RemoveTag("using_drone_remote")
-				if inst.components.playercontroller then
-					inst.components.playercontroller:EnableMapControls(true)
-				end
-				--inst.components.inventory:Show() --didn't hide during this state
-				inst:ShowActions(true)
-
-				local item = inst.sg.statemem.item
-				if item and item:IsValid() and item.components.useableequippeditem then
-					item.components.useableequippeditem:StopUsingItem(inst)
-				end
-			end
-		end,
-	},
-
-	State{
-		name = "wx_using_drone",
-		tags = { "doing", "overridelocomote", "nodragwalk", "overrideattack" },
-
-		onenter = function(inst, item)
-			if inst.AnimState:IsCurrentAnimation("drone_zap_remote_use_pre") then
-				inst.AnimState:PushAnimation("drone_zap_remote_use_loop")
-			else
-				inst.AnimState:PlayAnimation("drone_zap_remote_use_loop", true)
-			end
-
-			if inst.components.playercontroller then
-				inst.components.playercontroller:SetIsOverrideAttack(true)
-				inst.components.playercontroller:EnableMapControls(false)
-			end
-			inst:AddTag("using_drone_remote")
-			inst.sg.statemem.item = item
-			inst:PushEvent("ms_closepopups")
-			inst.components.inventory:Hide()
-			inst:ShowActions(false)
-			inst:SetCameraZoomed(true)
-			inst:SetAerialCamera(true)
-		end,
-
-		onupdate = function(inst)
-			local item = inst.sg.statemem.item
-			if not (
-				item and item:IsValid() and
-				item.components.equippable and item.components.equippable:IsEquipped() and
-				item.components.inventoryitem and (
-					not item.components.inventoryitem:IsHeld() or
-					item.components.inventoryitem:GetGrandOwner() == inst
-				)
-			) then
-				inst.sg:GoToState("item_in")
-				return
-			elseif not (item.components.useableequippeditem and item.components.useableequippeditem:IsInUse()) then
-				inst.sg.statemem.item = nil
-				inst.sg:GoToState("wx_stop_using_drone")
-				return
-			elseif not (item.drone and not item.drone.killed and item.drone:IsValid()) then
-				if item.components.useableequippeditem then
-					item.components.useableequippeditem:StopUsingItem(inst)
-				end
-				inst.sg.statemem.item = nil
-				inst.sg:GoToState("wx_stop_using_drone")
-				return
-			elseif inst.sg.statemem.canrepeatfire then
-				if item.components.finiteuses and
-					item.components.finiteuses:GetUses() > 0 and
-					inst.components.playercontroller and
-					inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_ATTACK, CONTROL_CONTROLLER_ATTACK)
-				then
-					item.drone:PushEventImmediate("doattack")
-				end
-				if not item.drone.sg:HasStateTag("attack") then
-					inst.sg.statemem.canrepeatfire = false
-				end
-			end
-		end,
-
-		events =
-		{
-			EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("unequip", function(inst, data)
-				if not (data and data.item == inst.sg.statemem.item) then
-					inst.sg:GoToState("idle")
-				end
-			end),
-			EventHandler("locomote", function(inst, data)
-				--direct movement only, no drag or point destination.
-				if not inst.components.locomotor:HasDestination() then
-					local drone = inst.sg.statemem.item and inst.sg.statemem.item.drone
-					if drone and not drone.killed and drone:IsValid() then
-						drone:PushEventImmediate("locomote", data)
-					end
-				end
-				return true
-			end),
-			EventHandler("attackbutton", function(inst)
-				local item = inst.sg.statemem.item
-				if item and
-					item.drone and
-					not item.drone.killed and
-					item.drone:IsValid() and
-					not (item.components.finiteuses and item.components.finiteuses:GetUses() <= 0)
-				then
-					item.drone:PushEventImmediate("doattack")
-					if item.drone.sg:HasStateTag("attack") then
-						inst.sg.statemem.canrepeatfire = true
-					end
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			if inst.components.playercontroller then
-				inst.components.playercontroller:SetIsOverrideAttack(false)
-				inst.components.playercontroller:EnableMapControls(true)
-			end
-			inst:RemoveTag("using_drone_remote")
-			inst.components.inventory:Show()
-			inst:ShowActions(true)
-			inst:SetCameraZoomed(false)
-			inst:SetAerialCamera(false)
-
-			local item = inst.sg.statemem.item
-			if item and item:IsValid() and item.components.useableequippeditem then
-				item.components.useableequippeditem:StopUsingItem(inst)
-			end
-		end,
-	},
-
-	State{
-		name = "wx_stop_using_drone",
-		tags = { "doing", "busy" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("drone_zap_remote_use_pst")
-			inst.sg:SetTimeout(6 * FRAMES)
-		end,
-
-		ontimeout = function(inst)
-			inst.sg:RemoveStateTag("busy")
-		end,
-
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
-	},
 }
 
 local hop_timelines =
@@ -28120,6 +27990,7 @@ SGWX78Common.AddWX78ShieldStates(states,
 })
 SGWX78Common.AddWX78ScreechStates(states)
 SGWX78Common.AddWX78BakeState(states)
+SGWX78Common.AddWX78UseDroneStates(states)
 
 if TheNet:GetServerGameMode() == "quagmire" then
     event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, StopTalkSound, ToggleOnPhysics, ToggleOffPhysics)

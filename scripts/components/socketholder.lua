@@ -23,6 +23,7 @@ local SocketHolder = Class(function(self, inst)
             --[integer position] = [ConvertItemToSaveData output for inst],
         }
 
+        self.dropondeath = true
         self.inst:ListenForEvent("death", OnDeath)
     end
 end)
@@ -72,7 +73,8 @@ function SocketHolder:GetAllSocketPositions(socketname)
     local hashed = socketname and hash(socketname) or nil
     for socketposition, netvar in ipairs(self.socketnames) do
         local netvarvalue = netvar:value()
-        if netvarvalue ~= 0 and (hashed == nil or netvarvalue == hashed) then
+        local issocketed_fromload = self.isloading and self.socketed[socketposition]:value() and self.socketmetadata[socketposition] and (self.socketmetadata[socketposition].socketname == socketname)
+        if issocketed_fromload or (netvarvalue ~= 0 and (hashed == nil or netvarvalue == hashed)) then
             if not positions then
                 positions = {socketposition}
             else
@@ -225,6 +227,20 @@ end
 
 -- Server interface
 
+function SocketHolder:EnableDropOnDeath()
+    if not self.dropondeath then
+        self.dropondeath = true
+        self.inst:ListenForEvent("death", OnDeath)
+    end
+end
+
+function SocketHolder:DisableDropOnDeath()
+    if self.dropondeath then
+        self.dropondeath = false
+        self.inst:RemoveEventCallback("death", OnDeath)
+    end
+end
+
 function SocketHolder:SetShouldAllowSocketableFn_SERVER(fn)
     self.shouldallowsocketablefn_SERVER = fn
 end
@@ -277,6 +293,12 @@ function SocketHolder:DoSocket(item_or_savedata, doer, socketposition)
     if not item then
         return false
     end
+    
+    self.socketmetadata[socketposition] = {
+        socketname = item.components.socketable:GetSocketName(),
+    }
+    self.socketed[socketposition]:set(true)
+    self.socketquality[socketposition]:set(item.components.socketable:GetSocketQuality())
 
     -- Apply the function callback for getting a new item socketed.
     if self.ongetsocketablefn then
@@ -284,18 +306,9 @@ function SocketHolder:DoSocket(item_or_savedata, doer, socketposition)
     end
     self.inst:PushEvent("onsocketeditem", {item = item, doer = doer,}) -- doer can be nil!
 
-    local socketquality = item.components.socketable:GetSocketQuality()
-
-    self.socketmetadata[socketposition] = {
-        -- Unused for now socketquality used to be here but needed networked.
-    }
-
     -- Resave out and delete the item.
     local savedata = ConvertItemToSaveData(item)
-
     self.socketdata[socketposition] = savedata
-    self.socketed[socketposition]:set(true)
-    self.socketquality[socketposition]:set(socketquality)
     return true
 end
 
@@ -349,6 +362,30 @@ function SocketHolder:UnsocketEverything()
     return items
 end
 
+function SocketHolder:VerifySockets()
+    local socketpositions = self:GetAllFullSocketPositions()
+    if socketpositions then
+        local items
+        for _, socketposition in ipairs(socketpositions) do
+            local socketname = self.socketmetadata[socketposition].socketname
+            if not self:IsSocketNameForPosition(socketname, socketposition) then
+                local item = self:UnsocketPosition(socketposition)
+                if item then
+                    if not items then
+                        items = {}
+                    end
+                    table.insert(items, item)
+                end
+            end
+        end
+        if items then
+            for _, item in ipairs(items) do
+                Launch2(item, self.inst, 1, 1, 0.2, 0, 4)
+            end
+        end
+    end
+end
+
 ---------------------------------------------------------------------------------
 
 function SocketHolder:OnSave()
@@ -357,15 +394,24 @@ end
 
 function SocketHolder:DoLoadingOfSockets(data)
     if data then
+        self.isloading = true
         for socketposition, socketdata in pairs(data) do
             self:DoSocket(socketdata, nil, socketposition)
         end
+        self.isloading = nil
     end
 end
 
 function SocketHolder:OnLoad(data, newents)
     if self.inst.isplayer then -- The player instance does not do LoadPostPass.
         self:DoLoadingOfSockets(data)
+        if self.inst._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY then
+            self:VerifySockets()
+        else
+            self.inst:ListenForEvent("ms_skilltreeinitialized", function()
+                self:VerifySockets()
+            end)
+        end
     end
 end
 
@@ -379,9 +425,10 @@ function SocketHolder:GetDebugString()
     local pips = {}
     for i = 1, self.maxsockets do
         local named = self.socketnames[i]:value() ~= 0
+        local name = self.socketmetadata[i] and self.socketmetadata[i].socketname or "n/a"
         local socketed = self.socketed[i]:value()
         local quality = self.socketquality[i]:value()
-        table.insert(pips, string.format("[%d: Named:%d Socketed:%d Quality:%d]", i, named and 1 or 0, socketed and 1 or 0, quality))
+        table.insert(pips, string.format("[%d: Named:%d{%s} Socketed:%d Quality:%d]", i, named and 1 or 0, name, socketed and 1 or 0, quality))
     end
     return table.concat(pips, " ")
 end

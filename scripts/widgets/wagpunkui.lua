@@ -200,8 +200,9 @@ function WagpunkUI:OnUpdate(dt)
         local w, h = TheSim:GetScreenSize()
         local x1, y1 = TheSim:GetScreenPos(x, 0, z)
 
+        local range = GetArmorWagpunkRange(self.hat, self.owner)
         local dist = self.owner:GetDistanceSqToInst(self.target)
-        local percent = math.clamp(dist / (TUNING.WAGPUNK_MAXRANGE * TUNING.WAGPUNK_MAXRANGE),0,1)
+        local percent = math.clamp(dist / (range*range),0,1)
 
         if self.lastdist then
             

@@ -32,6 +32,7 @@ local prefabs =
 	"woby_rack_container",
 	"pet_hunger_classified",
 	"woby_commands_classified",
+	"globalmapiconunderfog",
 }
 
 local brain = require("brains/wobysmallbrain")
@@ -737,6 +738,9 @@ local function fn()
     inst.IsPlayful = IsPlayful
 
 	inst.playmatetags = {"critter"}
+
+	inst:AddComponent("maprevealable")
+	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
 
     inst:AddComponent("inspectable")
 

@@ -11,8 +11,10 @@ local mine_no_tags = { "notraptrigger", "flying", "ghost", "playerghost", "spawn
 local function MineTest(inst, self)
     if self.radius ~= nil then
 		local notags
-		if self.alignment ~= nil then
-			notags = { "notraptrigger", "flying", "ghost", "playerghost", "spawnprotection", self.alignment }
+        if self.alignment == "player" then
+            notags = JoinArrays({ "possessedbody", self.alignment }, mine_no_tags)
+		elseif self.alignment ~= nil then
+			notags = JoinArrays({ self.alignment }, mine_no_tags)
 		else
 			notags = mine_no_tags
 		end

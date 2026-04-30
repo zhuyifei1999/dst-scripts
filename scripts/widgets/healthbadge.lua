@@ -294,15 +294,23 @@ function HealthBadge:SetWxShieldPercent(newpercent, oldpercent, maxshield, penet
 
     self.wxshieldoverpenetrationthreshold = current >= penetrationthreshold
     if oldcurrent ~= current then
+        local function PlaySound(soundpath)
+            -- silent when swapping, it's a bit much on the ears :)
+            if self.owner.wx78_classified == nil or not self.owner.wx78_classified.poweroffoverlay:value() then
+                TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/activate")
+            end
+        end
         if current >= penetrationthreshold then
             self.wxshieldanimflicker:Show()
             if oldcurrent <= 0 then
-                TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/activate")
+                self.wxshieldanimflicker:UnhookCallback("animover")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("empty_to_full", false)
+                PlaySound("WX_rework/bee_shield/activate")
                 self:PushWxShieldIdle()
             elseif oldcurrent < penetrationthreshold then
-                TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/activate")
+                self.wxshieldanimflicker:UnhookCallback("animover")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("half_to_full", false)
+                PlaySound("WX_rework/bee_shield/activate")
                 self:PushWxShieldIdle()
             end
         elseif current < penetrationthreshold then
@@ -315,20 +323,24 @@ function HealthBadge:SetWxShieldPercent(newpercent, oldpercent, maxshield, penet
             end
             local was_over_threshold = oldcurrent >= penetrationthreshold
             if current == 0 and was_over_threshold then
+                self.wxshieldanimflicker:UnhookCallback("animover")
                 self.wxshieldanimflicker:Show()
-                TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/break")
+                PlaySound("WX_rework/bee_shield/break")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("full_to_empty")
                 HideOnAnimOver()
             elseif current > 0 and was_over_threshold then
+                self.wxshieldanimflicker:UnhookCallback("animover")
                 self.wxshieldanimflicker:Show()
-                TheFrontEnd:GetSound():PlaySound("WX_rework/bee_shield/break")
+                PlaySound("WX_rework/bee_shield/break")
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("full_to_half")
                 self:PushWxShieldIdle()
             elseif current == 0 and not was_over_threshold then
+                self.wxshieldanimflicker:UnhookCallback("animover")
                 self.wxshieldanimflicker:Show()
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("half_to_empty")
                 HideOnAnimOver()
             elseif current > 0 and oldcurrent <= 0 then
+                self.wxshieldanimflicker:UnhookCallback("animover")
                 self.wxshieldanimflicker:Show()
                 self.wxshieldanimflicker:GetAnimState():PlayAnimation("empty_to_half", false)
                 self:PushWxShieldIdle()

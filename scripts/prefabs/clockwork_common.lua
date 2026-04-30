@@ -88,7 +88,7 @@ local function IsAlly(inst, target)
 end
 
 local RETARGET_MUST_TAGS = { "_combat" }
-local RETARGET_CANT_TAGS = { "INLIMBO", "chess" }
+local RETARGET_CANT_TAGS = { "INLIMBO", "chess", "chessbff" }
 local RETARGET_ONEOF_TAGS = { "character", "monster" }
 local CHESSFRIEND_RANGE_PERCENT = 0.5
 local function Retarget(inst, range, extrafilterfn)
