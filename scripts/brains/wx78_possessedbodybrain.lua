@@ -361,15 +361,21 @@ local function IsWeaponBetter(inst, weapon1, weapon2, target)
 
     return (itemdmg + itemspdmg) > (dmg + spdmg)
 end
+-- Keep in sync with wagdrone_projectile::WX78_DRONE_ZAP_TARGET_NOTAGS_PVP
+local WX78_DRONE_ZAP_TARGET_NOTAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "ghost", "playerghost", "shadowthrall", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece", "brightmare", "brightmareboss", "electric_connector", "wall", "companion" }
 local function EquipBestWeapon(inst, target)
     -- Prioritize zap drone!
     local heldweapon = GetTool(inst)
-    local zap_drone = inst.components.inventory:FindItem(function(item) return IsValidZapRemote(inst, item) end)
-    if zap_drone and zap_drone ~= heldweapon and (heldweapon == nil or not IsValidZapRemote(inst, heldweapon)) then
-        inst.components.inventory:Equip(zap_drone)
-        return
+    if not target:HasAnyTag(WX78_DRONE_ZAP_TARGET_NOTAGS) then
+        local zap_drone = inst.components.inventory:FindItem(function(item) return IsValidZapRemote(inst, item) end)
+        if zap_drone and zap_drone ~= heldweapon and (heldweapon == nil or not IsValidZapRemote(inst, heldweapon)) then
+            inst.components.inventory:Equip(zap_drone)
+            return
+        elseif heldweapon and IsValidZapRemote(inst, heldweapon) then
+            return
+        end
     elseif heldweapon and IsValidZapRemote(inst, heldweapon) then
-        return
+        inst.components.inventory:GiveItem(heldweapon)
     end
 
     -- Find highest damage weapon to use
@@ -644,6 +650,19 @@ local function ShouldMoveAnyways(inst)
 		local attack_range, min_range, max_range = GetAttackRange(inst)
         local dist_to_target = math.sqrt(inst:GetDistanceSqToInst(target))
 
+        ------
+        -- :,) copy of some RunToDist:GetRunPosition logic. Make sure we actually have a valid offset we're going to move to, otherwise we can't move, so just attack.
+        local pt = inst:GetPosition()
+    	local angle = inst:GetAngleToPoint(target:GetPosition()) + 180
+        if angle > 360 then
+            angle = angle - 360
+        end
+        local result_offset, result_angle, deflected = FindWalkableOffset(pt, angle*DEGREES, GetRunDist(inst, target), 8, true, false, nil, false, true) -- try avoiding walls
+        if result_offset == nil then
+            return false
+        end
+        ------
+
 		local using_drone = min_range ~= nil and max_range ~= nil
 		if using_drone then
 			local deployed = inst:HasTag("using_drone_remote")
@@ -800,10 +819,6 @@ function Wx78_PossessedBodyBrain:OnStart()
     }, UPDATE_RATE)
 
     self.bt = BT(self.inst, root)
-end
-
-function Wx78_PossessedBodyBrain:OnStop()
-
 end
 
 return Wx78_PossessedBodyBrain

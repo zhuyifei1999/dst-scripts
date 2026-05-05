@@ -41,9 +41,9 @@ function RunToDist:GetRunPosition(pt, hp, safe_dist)
         allowwater_or_allowboat = self.inst.components.locomotor:CanPathfindOnWater()
     end
 
-	local result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, false, nil, allowwater_or_allowboat or self.allow_boats) -- try avoiding walls
+	local result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, false, nil, allowwater_or_allowboat, allowwater_or_allowboat or self.allow_boats) -- try avoiding walls
     if result_angle == nil then
-		result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, true, nil, self.allow_boats) -- ok don't try to avoid walls
+		result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, true, nil, allowwater_or_allowboat, allowwater_or_allowboat or self.allow_boats) -- ok don't try to avoid walls
         if result_angle == nil then
 			if self.fix_overhang and not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
                 if self.inst.components.locomotor:IsAquatic() then
@@ -69,6 +69,7 @@ function RunToDist:GetRunPosition(pt, hp, safe_dist)
         self.avoid_time = GetTime()
         self.avoid_angle = result_offset
     end
+
     return result_offset
 end
 

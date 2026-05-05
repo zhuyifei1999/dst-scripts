@@ -37,6 +37,7 @@ local Inventory = Class(function(self, inst)
 
     --Hacky flags for altering behaviour when moving items between containers
     self.ignoreoverflow = false
+	self.ignorespoverflow = false
     self.ignorefull = false
     self.silentfull = false
     self.ignoresound = false
@@ -336,6 +337,7 @@ function Inventory:ReturnActiveActionItem(item, instant)
         --Hacks for altering normal inventory:GiveItem() behaviour
         self.ignorefull = true
         self.ignoreoverflow = true
+		self.ignorespoverflow = true
 
         if self:GiveItem(item) then
             self:SetActiveItem(nil)
@@ -354,6 +356,7 @@ function Inventory:ReturnActiveActionItem(item, instant)
         --Hacks for altering normal inventory:GiveItem() behaviour
         self.ignorefull = false
         self.ignoreoverflow = false
+		self.ignorespoverflow = false
     end
 end
 
@@ -1462,23 +1465,40 @@ function Inventory:GetOverflowContainer()
         or nil
 end
 
+local function ValidateSpecializedContainer(self, container)
+	return container ~= nil
+		and container.priorityfn ~= nil
+		and (	container:IsOpenedBy(self.inst) or
+				(	container.canbeopened and
+					not (container.droponopen or container.inst:HasTag("portablecontainer"))
+				)
+			)
+end
+
 --for specialized pocket containers (e.g. ammo pouch)
 function Inventory:GetSpecializedContainers()
+	if self.ignorespoverflow then
+		return
+	end
 	local ret
 	for k = 1, self.maxslots do
 		local v = self.itemslots[k]
-		if v and v.components.container and v.components.container.priorityfn and
-			(	v.components.container:IsOpenedBy(self.inst) or
-				(	v.components.container.canbeopened and
-					not (v.components.container.droponopen or v:HasTag("portablecontainer"))
-				)
-			)
-		then
+		if v and ValidateSpecializedContainer(self, v.components.container) then
 			ret = ret or {}
 			table.insert(ret, v.components.container)
 		end
 	end
 	return ret
+end
+
+function Inventory:IsSpecializedContainer(container)
+	for k = 1, self.maxslots do
+		local v = self.itemslots[k]
+		if v and v.components.container == container then
+			return ValidateSpecializedContainer(self, container)
+		end
+	end
+	return false
 end
 
 --Note(Peter): We don't care about v.skinname for inventory Has requests.
@@ -2511,11 +2531,22 @@ function Inventory:MoveItemFromAllOfSlot(slot, container)
                 item = self:RemoveItemBySlot(slot)
                 item.prevcontainer = nil
                 item.prevslot = nil
+
+				--Hacks for altering normal inventory:GiveItem() behaviour
+				if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+					container.ignorespoverflow = true
+				end
+
                 if not container:GiveItem(item, targetslot, nil, false) then
                     self.ignoresound = true
                     self:GiveItem(item, slot)
                     self.ignoresound = false
                 end
+
+				--Hacks for altering normal inventory:GiveItem() behaviour
+				if container.ignorespoverflow then
+					container.ignorespoverflow = false
+				end
             end
 
             container.currentuser = nil
@@ -2544,11 +2575,22 @@ function Inventory:MoveItemFromHalfOfSlot(slot, container)
                 local halfstack = item.components.stackable:Get(math.floor(item.components.stackable:StackSize() / 2))
                 halfstack.prevcontainer = nil
                 halfstack.prevslot = nil
+
+				--Hacks for altering normal inventory:GiveItem() behaviour
+				if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+					container.ignorespoverflow = true
+				end
+
                 if not container:GiveItem(halfstack, targetslot) then
                     self.ignoresound = true
                     self:GiveItem(halfstack, slot)
                     self.ignoresound = false
                 end
+
+				--Hacks for altering normal inventory:GiveItem() behaviour
+				if container.ignorespoverflow then
+					container.ignorespoverflow = false
+				end
             end
 
             container.currentuser = nil
@@ -2579,22 +2621,44 @@ function Inventory:MoveItemFromCountOfSlot(slot, container, count)
                     local countedstack = stackable:Get(count)
                     countedstack.prevcontainer = nil
                     countedstack.prevslot = nil
+
+					--Hacks for altering normal inventory:GiveItem() behaviour
+					if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+						container.ignorespoverflow = true
+					end
+
                     if not container:GiveItem(countedstack, targetslot) then
                         self.ignoresound = true
                         self:GiveItem(countedstack, slot)
                         self.ignoresound = false
                     end
+
+					--Hacks for altering normal inventory:GiveItem() behaviour
+					if container.ignorespoverflow then
+						container.ignorespoverflow = false
+					end
 				elseif item.components.inventoryitem and item.components.inventoryitem.islockedinslot then
 					assert(BRANCH ~= "dev")
                 else
                     item = self:RemoveItemBySlot(slot)
                     item.prevcontainer = nil
                     item.prevslot = nil
+
+					--Hacks for altering normal inventory:GiveItem() behaviour
+					if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+						container.ignorespoverflow = true
+					end
+
                     if not container:GiveItem(item, targetslot, nil, false) then
                         self.ignoresound = true
                         self:GiveItem(item, slot)
                         self.ignoresound = false
                     end
+
+					--Hacks for altering normal inventory:GiveItem() behaviour
+					if container.ignorespoverflow then
+						container.ignorespoverflow = false
+					end
                 end
             end
 

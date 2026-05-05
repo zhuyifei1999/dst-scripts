@@ -5855,18 +5855,21 @@ local function OnNewState(inst)--, data)
 end
 
 function PlayerController:OnRemoteToggleMovementPrediction(val)
-	if self.ismastersim and self.remote_predicting ~= val then
+	if self.ismastersim then
+		local dirty = self.remote_predicting ~= val
 		self.remote_predicting = val
 		self.locomotor:Stop()
 		self.locomotor:Clear()
 		self.locomotor:SetAllowPlatformHopping(not val)
 		self:ResetRemoteController()
-		if val then
-			self.inst:ListenForEvent("newstate", OnNewState)
-			self.classified.currentstate:set(self.inst.sg.currentstate ~= nil and self.inst.sg.currentstate.name or 0)
-		else
-			self.inst:RemoveEventCallback("newstate", OnNewState)
-			self.classified.currentstate:set(0)
+		if dirty then
+			if val then
+				self.inst:ListenForEvent("newstate", OnNewState)
+				self.classified.currentstate:set(self.inst.sg.currentstate and self.inst.sg.currentstate.name or 0)
+			else
+				self.inst:RemoveEventCallback("newstate", OnNewState)
+				self.classified.currentstate:set(0)
+			end
 		end
 	end
 end

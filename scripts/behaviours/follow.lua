@@ -77,13 +77,15 @@ function Follow:Visit()
     --cached in case we need to use this multiple times
     local dist_sq, target_pos
 
-    if self.status == READY then
-		local prev_target = self.currenttarget
-        self.currenttarget = self:GetTarget()
+    local prev_target = self.currenttarget
+    self.currenttarget = self:GetTarget()
+    local targetswitched = prev_target ~= self.currenttarget
+    local wasrunning = self.status == RUNNING
+    if self.status == READY or targetswitched then
         if self.currenttarget ~= nil then
             dist_sq, target_pos = _distsq(self.inst, self.currenttarget)
 
-			if prev_target ~= self.currenttarget or self.alwayseval then
+			if targetswitched or self.alwayseval then
 				self:EvaluateDistances()
 			end
 
@@ -97,9 +99,15 @@ function Follow:Visit()
                 self.action = "APPROACH"
             else
                 self.status = FAILED
+                if wasrunning then
+                    self.inst.components.locomotor:Stop()
+                end
             end
         else
             self.status = FAILED
+            if wasrunning then
+                self.inst.components.locomotor:Stop()
+            end
         end
     end
 
