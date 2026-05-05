@@ -284,7 +284,7 @@ local function StartFadeTimer(inst, time)
 end
 
 local function StartGestaltTimer(inst, time)
-    if inst.build == "puffin" then --FIXME: No mutation for puffins! For now.
+    if inst.AnimState:GetBuild() == "puffin_build" then --FIXME: No mutation for puffins! For now.
         StartFadeTimer(inst, time)
         return
     end
@@ -292,6 +292,10 @@ local function StartGestaltTimer(inst, time)
 end
 
 local function StartReviveMutateTimer(inst, time)
+    if inst.AnimState:GetBuild() == "puffin_build" then --FIXME: No mutation for puffins! For now.
+        StartFadeTimer(inst, time)
+        return
+    end
     inst.components.timer:StartTimer(CORPSE_TIMERS.REVIVE_MUTATE, time)
 end
 

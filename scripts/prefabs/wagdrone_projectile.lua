@@ -255,6 +255,7 @@ local function wx78_drone_zap_common_postinit(inst)
 	inst:SetPrefabNameOverride("wx78_drone_zap") --for death announce
 end
 
+-- Keep in sync with wx78_possessedbodybrain::WX78_DRONE_ZAP_TARGET_NOTAGS
 local WX78_DRONE_ZAP_TARGET_TAGS = { "_combat" }
 local WX78_DRONE_ZAP_TARGET_NOTAGS_PVP = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "ghost", "playerghost", "shadowthrall", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece", "brightmare", "brightmareboss", "electric_connector", "wall", "companion" }
 local WX78_DRONE_ZAP_TARGET_NOTAGS = shallowcopy(WX78_DRONE_ZAP_TARGET_NOTAGS_PVP, { "player" })

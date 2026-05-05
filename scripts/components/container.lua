@@ -58,6 +58,7 @@ local Container = Class(function(self, inst)
 
 
     --Hacky flags for altering behaviour when moving items between containers
+	self.ignorespoverflow = false
     self.ignoresound = false
 	self.ignoreoverstacked = false
 end,
@@ -770,23 +771,40 @@ function Container:ForEachItem(fn, ...)
     end
 end
 
+local function ValidateSpecializedContainer(container)
+	return container ~= nil
+		and container.priorityfn ~= nil
+		and (	container:IsOpen() or
+				(	container.canbeopened and
+					not (container.droponopen or container.inst:HasTag("portablecontainer"))
+				)
+			)
+end
+
 --for specialized pocket containers (e.g. ammo pouch)
 function Container:GetSpecializedContainers()
+	if self.ignorespoverflow then
+		return
+	end
 	local ret
 	for i = 1, self.numslots do
 		local v = self.slots[i]
-		if v and v.components.container and v.components.container.priorityfn and
-			(	v.components.container:IsOpen() or
-				(	v.components.container.canbeopened and
-					not (v.components.container.droponopen or v:HasTag("portablecontainer"))
-				)
-			)
-		then
+		if v and ValidateSpecializedContainer(v.components.container) then
 			ret = ret or {}
 			table.insert(ret, v.components.container)
 		end
 	end
 	return ret
+end
+
+function Container:IsSpecializedContainer(container)
+	for i = 1, self.numslots do
+		local v = self.slots[i]
+		if v and v.components.container == container then
+			return ValidateSpecializedContainer(container)
+		end
+	end
+	return false
 end
 
 function Container:Has(item, amount, iscrafting)
@@ -1338,6 +1356,9 @@ function Container:MoveItemFromAllOfSlot(slot, container, opener)
                     if container.ignoreoverflow ~= nil and container:GetOverflowContainer() == self then
                         container.ignoreoverflow = true
                     end
+					if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+						container.ignorespoverflow = true
+					end
                     if container.ignorefull ~= nil then
                         container.ignorefull = true
                     end
@@ -1352,6 +1373,9 @@ function Container:MoveItemFromAllOfSlot(slot, container, opener)
                     if container.ignoreoverflow then
                         container.ignoreoverflow = false
                     end
+					if container.ignorespoverflow then
+						container.ignorespoverflow = false
+					end
                     if container.ignorefull then
                         container.ignorefull = false
                     end
@@ -1395,6 +1419,9 @@ function Container:MoveItemFromHalfOfSlot(slot, container, opener)
                 if container.ignoreoverflow ~= nil and container:GetOverflowContainer() == self then
                     container.ignoreoverflow = true
                 end
+				if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+					container.ignorespoverflow = true
+				end
                 if container.ignorefull ~= nil then
                     container.ignorefull = true
                 end
@@ -1409,6 +1436,9 @@ function Container:MoveItemFromHalfOfSlot(slot, container, opener)
                 if container.ignoreoverflow then
                     container.ignoreoverflow = false
                 end
+				if container.ignorespoverflow then
+					container.ignorespoverflow = false
+				end
                 if container.ignorefull then
                     container.ignorefull = false
                 end
@@ -1459,6 +1489,9 @@ function Container:MoveItemFromCountOfSlot(slot, container, count, opener)
 					if container.ignoreoverflow ~= nil and container:GetOverflowContainer() == self then
 						container.ignoreoverflow = true
 					end
+					if container.ignorespoverflow ~= nil and container:IsSpecializedContainer(self) then
+						container.ignorespoverflow = true
+					end
 					if container.ignorefull ~= nil then
 						container.ignorefull = true
 					end
@@ -1472,6 +1505,9 @@ function Container:MoveItemFromCountOfSlot(slot, container, count, opener)
 					--Hacks for altering normal inventory:GiveItem() behaviour
 					if container.ignoreoverflow then
 						container.ignoreoverflow = false
+					end
+					if container.ignorespoverflow then
+						container.ignorespoverflow = false
 					end
 					if container.ignorefull then
 						container.ignorefull = false

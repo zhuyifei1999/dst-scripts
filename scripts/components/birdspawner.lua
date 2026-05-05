@@ -505,6 +505,7 @@ function self:SpawnBirdCorpse(spawnpoint)
     corpse:SetAltBuild(PREFAB_TO_BUILD[prefab] or PREFAB_TO_BUILD.default)
     if prefab == "puffin" then
         corpse:SetAltBank("puffin")
+        corpse.sg.mem.nolunarmutate = true
     end
 
     spawnpoint.y = 15

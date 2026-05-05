@@ -910,9 +910,13 @@ local function EnableMovementPrediction(inst, enable)
                 inst.components.locomotor.is_prediction_enabled = true
                 --This is unfortunate but it doesn't seem like you can send an rpc on the first
                 --frame when a character is spawned
-                inst:DoTaskInTime(0, function(inst)
-                    SendRPCToServer(RPC.SetMovementPredictionEnabled, true)
-                    end)
+				if inst._setpredictionrpctask then
+					inst._setpredictionrpctask:Cancel()
+				end
+				inst._setpredictionrpctask = inst:DoTaskInTime(0, function(inst)
+					inst._setpredictionrpctask = nil
+					SendRPCToServer(RPC.SetMovementPredictionEnabled, true)
+				end)
             end
         elseif inst.components.locomotor ~= nil then
             inst:RemoveEventCallback("cancelmovementprediction", OnCancelMovementPrediction)
@@ -928,9 +932,13 @@ local function EnableMovementPrediction(inst, enable)
             print("Movement prediction disabled")
             --This is unfortunate but it doesn't seem like you can send an rpc on the first
             --frame when a character is spawned
-            inst:DoTaskInTime(0, function(inst)
-                SendRPCToServer(RPC.SetMovementPredictionEnabled, false)
-                end)
+			if inst._setpredictionrpctask then
+				inst._setpredictionrpctask:Cancel()
+			end
+			inst._setpredictionrpctask = inst:DoTaskInTime(0, function(inst)
+				inst._setpredictionrpctask = nil
+				SendRPCToServer(RPC.SetMovementPredictionEnabled, false)
+			end)
         end
     end
 end
@@ -1054,6 +1062,10 @@ function fns.CommonSeamlessPlayerSwap(inst)
     inst.userid = ""
     if inst.components.playercontroller ~= nil then
         RemovePlayerComponents(inst)
+		if inst._setpredictionrpctask then
+			inst._setpredictionrpctask:Cancel()
+			inst._setpredictionrpctask = nil
+		end
     end
     inst:PushEvent("seamlessplayerswap")
 end
