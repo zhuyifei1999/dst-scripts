@@ -1173,7 +1173,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
     local shouldwisecrack = true
     if self.activeitem == nil and
         self.maxslots > 0 and
-		ValidateItemForOverflow(inst, self.inst) and
+		ValidateItemForOverflow(inst, self) and
         not (self.inst.components.playercontroller ~= nil and
             self.inst.components.playercontroller.isclientcontrollerattached) then
 

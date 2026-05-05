@@ -585,13 +585,9 @@ local function GetAttackRange(inst)
         if weapon.prefab == "voidcloth_boomerang" then
             return TUNING.VOIDCLOTH_BOOMERANG_ATTACK_DIST
         elseif weapon:HasTag("wx_remotecontroller") then
-		    local max_range = WX78Common.CalcDroneZapRange(inst)
-		    local range = math.sqrt(max_range) * 2.4
-            if inst:HasTag("using_drone_remote") then
-		    	return range, 6, max_range
-            else
-		    	return range
-            end
+			local max_range = WX78Common.CalcDroneZapRange(inst)
+			local range = math.sqrt(max_range) * 2.4
+			return range, 6, max_range
         end
     end
 
@@ -620,7 +616,12 @@ local function UseDroneRemoteAction(inst)
 end
 
 local function GetRunDist(inst, hunter)
-	local attack_range = math.max(0, GetAttackRange(inst) + hunter:GetPhysicsRadius(0) - 0.5)
+	local attack_range, min_range, max_range = GetAttackRange(inst)
+	local using_drone = min_range ~= nil and max_range ~= nil
+	if not using_drone then
+		attack_range = math.max(0, attack_range + hunter:GetPhysicsRadius(0) - 0.5)
+	end
+
     local leader = GetLeader(inst)
     if leader ~= nil then
         local leader_dist = math.sqrt(leader:GetDistanceSqToInst(hunter))
@@ -645,18 +646,29 @@ local function ShouldMoveAnyways(inst)
 
 		local using_drone = min_range ~= nil and max_range ~= nil
 		if using_drone then
-			if dist_to_target >= max_range then
-				return true --target is out of max range
-			elseif dist_to_target >= min_range then
-				return false --target is not too close, don't move
+			local deployed = inst:HasTag("using_drone_remote")
+			if deployed then
+				if dist_to_target >= max_range then
+					return true --target is out of max range
+				elseif dist_to_target >= min_range then
+					return false --target is not too close, don't move
+				end
 			end
-		else
-			local physrad = target:GetPhysicsRadius(0)
-			if min_range then
-				min_range = min_range + physrad
+			if math.abs(dist_to_target - attack_range) <= 1 then
+				return false
 			end
-			attack_range = attack_range + physrad
+			local leader_dist = math.sqrt(leader:GetDistanceSqToInst(target)) + 0.5
+			if deployed and leader_dist < dist_to_target then
+				return false
+			end
+			return attack_range >= leader_dist
 		end
+
+		local physrad = target:GetPhysicsRadius(0)
+		if min_range then
+			min_range = min_range + physrad
+		end
+		attack_range = attack_range + physrad
 
 		if min_range and inst.sg:HasStateTag("spinning") then
 			if dist_to_target >= min_range - 1 and dist_to_target <= attack_range + 1 then
@@ -667,9 +679,6 @@ local function ShouldMoveAnyways(inst)
 		end
 
 		local leader_dist = math.sqrt(leader:GetDistanceSqToInst(target)) + 0.5
-		if using_drone and leader_dist < dist_to_target then
-			return false
-		end
         return attack_range >= leader_dist
     end
 end
