@@ -1301,8 +1301,7 @@ end
 
 ACTIONS.ROW_FAIL.fn = function(act)
     local oar = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-
-    if oar == nil then return false end
+    if (oar == nil) or (oar.components.oar == nil) then return false end
 
     --Can't rely on return false to trigger action fail string because returning
     --false skips the finite uses callback and the oar won't lose durability

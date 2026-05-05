@@ -129,6 +129,42 @@ local function GetItems(inst)
     return items
 end
 
+local function GetSpecializedContainers(inst)
+	local ret
+	if inst._itemspreview then
+		for i = 1, #inst._items do
+			local item = inst._itemspreview[i]
+			local container = item and item.replica.container
+			if container and
+				container.priorityfn and
+				(	container:IsOpenedBy(ThePlayer) or
+					(container:CanBeOpened() and not item:HasTag("portablecontainer"))
+					--NOTE: droponopen check not avail on clients, but it's also mostly deprecated. hmm...
+				)
+			then
+				ret = ret or {}
+				table.insert(ret, container)
+			end
+		end
+	else
+		for i, v in ipairs(inst._items) do
+			local item = v:value()
+			local container = item and item.replica.container
+			if container and
+				container.priorityfn and
+				(	container:IsOpenedBy(ThePlayer) or
+					(container:CanBeOpened() and not item:HasTag("portablecontainer"))
+					--NOTE: droponopen check not avail on clients, but it's also mostly deprecated. hmm...
+				)
+			then
+				ret = ret or {}
+				table.insert(ret, container)
+			end
+		end
+	end
+	return ret
+end
+
 local function IsEmpty(inst)
     if inst._itemspreview ~= nil then
 		for i = 1, #inst._items do
@@ -369,6 +405,25 @@ local function RegisterNetListeners(inst)
             CancelRefresh(inst)
         end
     end, TheWorld)
+
+	if inst._parent and inst._parent._receiveitemonopen then
+		local item = inst._parent._receiveitemonopen.item
+		if inst._parent._receiveitemonopen.isstack then
+			if IsHolding(inst, item) then
+				QueueSlotTask(inst, item, inst:DoStaticTaskInTime(0, OnStackItemDirty, item))
+				CancelRefresh(inst)
+			end
+		else
+			for i, v in ipairs(inst._items) do
+				if item == v:value() then
+					QueueSlotTask(inst, v, inst:DoStaticTaskInTime(0, OnItemsDirty, i, v))
+					CancelRefresh(inst)
+					break
+				end
+			end
+		end
+		inst._parent._receiveitemonopen = nil
+	end
 end
 
 --------------------------------------------------------------------------
@@ -779,6 +834,16 @@ local function MoveItemFromCountOfSlot(inst, slot, container, count)
     end
 end
 
+local function ValidateItemForOverflow(item, overflow)
+	local inventoryitem = item.replica.inventoryitem
+	if inventoryitem == nil then
+		return true --should never happen, just return true XD
+	elseif inventoryitem:CanOnlyGoInPocket() or inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
+		return false
+	end
+	return true
+end
+
 local function ReceiveItem(inst, item, count, forceslot)
     if not IsBusy(inst) and (forceslot == nil or (forceslot >= 1 and forceslot <= #inst._items)) then
         local isstackable = item.replica.stackable ~= nil
@@ -787,6 +852,28 @@ local function ReceiveItem(inst, item, count, forceslot)
         if forceslot == nil and container ~= nil then
             forceslot = container:GetSpecificSlotForItem(item)
         end
+
+		if forceslot == nil then
+			--specialized containers
+			local specialized = GetSpecializedContainers(inst)
+			if specialized then
+				for _, spoverflow in ipairs(specialized) do
+					--V2C: hmmm this probably doesn't work for closed containers
+					if spoverflow.classified and
+						not spoverflow:IsBusy() and
+						spoverflow:ShouldPrioritizeContainer(item) and
+						ValidateItemForOverflow(item, spoverflow)
+					then
+						local remainder = spoverflow.classified:ReceiveItem(item, count)
+						if remainder <= 0 then
+							return 0
+						end
+						count = remainder or count
+					end
+				end
+			end
+		end
+
         if not isstackable or container == nil or not container:AcceptsStacks() then
             for i = forceslot or 1, forceslot or #inst._items do
                 if inst._items[i]:value() == nil then

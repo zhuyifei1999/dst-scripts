@@ -162,7 +162,7 @@ end
 
 function Temperature:SetTemperature(value)
     local last = self.current
-    self.current = value
+    self.current = math.clamp(value, self.mintemp, self.maxtemp)
 
     if (self.current < 0) ~= (last < 0) then
         self.inst:PushEvent(self.current < 0 and "startfreezing" or "stopfreezing")
@@ -288,7 +288,7 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
     -- Can override range, e.g. in special containers
     local mintemp = self.mintemp
     local maxtemp = self.maxtemp
-    
+
     local owner = self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner or nil
     local inside_pocket_container = owner ~= nil and owner:HasTag("pocketdimension_container")
 

@@ -127,7 +127,7 @@ local function onthrown(inst, attacker)
 	inst:AddTag("NOCLICK")
 	inst.persists = false
 
-	inst.ispvp = attacker ~= nil and attacker:IsValid() and attacker:HasTag("player")
+	inst.ispvp = attacker ~= nil and attacker:IsValid() and attacker:HasAnyTag("player", "possessedbody")
 
 	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 	inst.AnimState:PlayAnimation("spin_loop", true)

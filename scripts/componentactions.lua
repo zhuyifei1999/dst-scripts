@@ -149,7 +149,7 @@ local COMPONENT_ACTIONS =
 					--no l.click for inventoryitem or forceright
 					return
 				end
-				if not (inst:HasTag("smolder") or inst:HasTag("fire")) then
+				if not inst:HasAnyTag("smolder", "fire") and (not inst.activatable_CanActivate or inst.activatable_CanActivate(inst, doer)) then
 					table.insert(actions, ACTIONS.ACTIVATE)
 				end
             end

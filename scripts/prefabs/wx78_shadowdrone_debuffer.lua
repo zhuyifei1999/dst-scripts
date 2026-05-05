@@ -207,10 +207,14 @@ local function fn()
 	inst:AddTag("shadow_aligned")
 
 	if not TheNet:IsDedicated() then
-		local fx = CreateShadowFx()
-		fx.entity:SetParent(inst.entity)
-		fx.Follower:FollowSymbol(inst.GUID, "FOLLOW_SHADOW", 0, 0, 0, true)
+		inst.fx = CreateShadowFx()
+		inst.fx.entity:SetParent(inst.entity)
+		inst.fx.Follower:FollowSymbol(inst.GUID, "FOLLOW_SHADOW", 0, 0, 0, true)
+
+		inst:AddComponent("transparentondrones")
 	end
+
+    inst.scrapbook_anim = "scrapbook"
 
     inst.entity:SetPristine()
 

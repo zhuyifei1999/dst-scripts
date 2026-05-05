@@ -1627,9 +1627,10 @@ for y = 1, 0, -1 do
 end
 
 function params.tacklecontainer.itemtestfn(container, item, slot)
-	return item:HasTag("oceanfishing_bobber") or item:HasTag("oceanfishing_lure")
+	return item:HasAnyTag("oceanfishing_bobber", "oceanfishing_lure")
 end
 
+params.tacklecontainer.priorityfn = params.tacklecontainer.itemtestfn
 
 --------------------------------------------------------------------------
 --[[ supertacklecontainer ]]
@@ -1655,6 +1656,7 @@ for y = 1, -3, -1 do
 end
 
 params.supertacklecontainer.itemtestfn = params.tacklecontainer.itemtestfn
+params.supertacklecontainer.priorityfn = params.tacklecontainer.priorityfn
 
 --------------------------------------------------------------------------
 --[[ sunkenchest ]]
@@ -1981,6 +1983,8 @@ function params.battlesong_container.itemtestfn(container, item, slot)
     return item:HasTag("battlesong")
 end
 
+params.battlesong_container.priorityfn = params.battlesong_container.itemtestfn
+
 --------------------------------------------------------------------------
 --[[ wortox_souljar ]]
 --------------------------------------------------------------------------
@@ -2037,8 +2041,10 @@ for y = 2, 0, -1 do
 end
 
 function params.elixir_container.itemtestfn(container, item, slot)
-    return item:HasTag("ghostlyelixir") or item:HasTag("ghostflower")
+	return item:HasAnyTag("ghostlyelixir", "ghostflower")
 end
+
+params.elixir_container.priorityfn = params.elixir_container.itemtestfn
 
 --------------------------------------------------------------------------
 --[[ dragonflyfurnace ]]
@@ -2121,6 +2127,8 @@ end
 function params.slingshotammo_container.itemtestfn(container, item, slot)
     return item:HasTag("slingshotammo")
 end
+
+params.slingshotammo_container.priorityfn = params.slingshotammo_container.itemtestfn
 
 --------------------------------------------------------------------------
 --[[ wx78_backupbody ]]
@@ -2276,6 +2284,12 @@ params.wx78_inventorycontainer =
 	end,
     -- excludefromcrafting = true,
 }
+
+function params.wx78_inventorycontainer.priorityfn(container, item)
+	local existingitem = container:GetItemInSlot(1)
+	local stackable = existingitem and existingitem.replica.stackable
+	return stackable ~= nil and stackable:CanStackWith(item)
+end
 
 --------------------------------------------------------------------------
 --[[ quagmire_pot ]]

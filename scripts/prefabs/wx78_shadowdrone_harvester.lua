@@ -128,6 +128,8 @@ local function fn()
 		fx.Follower:FollowSymbol(inst.GUID, "FOLLOW_SHADOW", 0, 0, 0, true)
 	end
 
+    inst.scrapbook_anim = "scrapbook"
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

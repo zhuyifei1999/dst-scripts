@@ -99,8 +99,9 @@ local function OnUpdate(inst, dt)
 						not inst.owner.components.combat:IsAlly(v)
 					then
                         inst.targets[v] = true
-						local attacker = v.components.follower and v.components.follower:GetLeader() == nil and inst
-							or inst.owner
+						local attacker = (v.components.follower ~= nil
+                            and v.components.follower:GetLeader() == inst.owner
+                            and inst) or inst.owner
 						v.components.combat:GetAttacked(attacker, damage, nil, "electric", inst.spdmg)
 						v:PushEventImmediate("electrocute", { attacker = attacker, stimuli = "electric", noresist = true })
                     end

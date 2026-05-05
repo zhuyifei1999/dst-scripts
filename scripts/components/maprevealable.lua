@@ -191,9 +191,11 @@ function MapRevealable:Refresh()
     if self.task ~= nil then
 		local newps, ispublic
 		local x, y, z = self.inst.Transform:GetWorldPosition()
-		for _, v in ipairs(TheSim:FindEntities(x, y, z, PLAYER_REVEAL_RADIUS, nil, nil, MAPREVEALER_TAGS)) do
+		for _, v in ipairs(TheSim:FindEntities(x, y, z, PLAYER_REVEAL_RADIUS, MAPREVEALER_TAGS)) do
 			if v ~= self.inst then
-				local privateowner = v.components.maprevealer:GetPrivateOwner()
+				--NOTE: nil checking maprevealer is WRONG and hides bugs (ie. maprevealer should be gauranteed.)
+				--      but added the check due to mods incorrectly using "maprevealer" tag.
+				local privateowner = v.components.maprevealer and v.components.maprevealer:GetPrivateOwner()
 				if privateowner then
 					if privateowner.isplayer and privateowner ~= self.inst and privateowner ~= v and privateowner:IsValid() then
 						newps = newps or {}

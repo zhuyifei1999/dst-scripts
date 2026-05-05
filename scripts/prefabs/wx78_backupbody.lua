@@ -214,9 +214,18 @@ local function OnBuiltFn(inst, builder)
     inst.wx78_backupbody_inventory.AnimState:PushAnimation("wx_chassis_idle", true)
 end
 
-local function CanDoerActivate(inst, doer)
+local function activatable_CanActivate(inst, doer) -- for client
     if not doer.isplayer or doer.wx78_classified == nil then
         return false, "NOTAROBOT"
+    end
+
+    return true
+end
+
+local function CanDoerActivate(inst, doer)
+    local success, reason = activatable_CanActivate(inst, doer)
+    if not success then
+        return success, reason
     end
 
     local owneruserid = inst.components.linkeditem:GetOwnerUserID()
@@ -864,6 +873,7 @@ local function fn()
     local linkeditem = inst:AddComponent("linkeditem")
     inst.displaynamefn = DisplayNameFn
     inst.GetActivateVerb = GetActivateVerb
+    inst.activatable_CanActivate = activatable_CanActivate
 
     inst.AttachClassified_wx78 = AttachClassified_wx78
     inst.DetachClassified_wx78 = DetachClassified_wx78

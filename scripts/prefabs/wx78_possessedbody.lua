@@ -91,7 +91,9 @@ local function OnLeaderEmote(inst, data)
     if data ~= nil and data.loop then
         inst._brain_emotedata = data
         inst.sg:RemoveStateTag("emoting")
-        inst.brain:ForceUpdate()
+        if inst.brain then
+            inst.brain:ForceUpdate()
+        end
     else
         inst:PushEvent("emote", data)
     end
@@ -266,7 +268,9 @@ local function OnLeaderFailedRow(inst)
     local leader = inst.components.follower and inst.components.follower:GetLeader()
     if leader ~= nil then
         local tool = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
-        inst:PushBufferedAction(BufferedAction(inst, nil, ACTIONS.ROW_FAIL, tool))
+        if tool ~= nil and tool.components.oar ~= nil and inst:HasTag("is_rowing") then
+            inst:PushBufferedAction(BufferedAction(inst, nil, ACTIONS.ROW_FAIL, tool))
+        end
     end
 end
 

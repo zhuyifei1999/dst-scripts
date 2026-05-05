@@ -1803,9 +1803,6 @@ local states =
         timeline =
         {
             FrameEvent(7, function(inst)
-                if inst.sg.statemem.action ~= nil then
-                    PlayMiningFX(inst, inst.sg.statemem.action.target)
-                end
 				inst.SoundEmitter:PlaySound(inst.sg.statemem.action ~= nil and inst.sg.statemem.action.invobject ~= nil and inst.sg.statemem.action.invobject.hit_skin_sound or "dontstarve/wilson/hit")
 				inst.sg.statemem.recoilstate = "mine_recoil"
 				inst:PerformBufferedAction()

@@ -13,7 +13,11 @@ local function item_is_stealable(item)
 end
 
 function Thief:StealItem(victim, itemtosteal, attack)
-    if victim.components.inventory ~= nil and victim:IsValid() then
+    if not victim:IsValid() then
+        return false
+    end
+
+    if victim.components.inventory and not victim.components.inventory:IsThiefProof() then
         local item = itemtosteal or victim.components.inventory:FindItem(item_is_stealable)
 
         if attack then
@@ -31,7 +35,7 @@ function Thief:StealItem(victim, itemtosteal, attack)
         else
             return false
         end
-    elseif victim.components.container then
+    elseif victim.components.container and not victim.components.container:IsThiefProof() then
         local item = itemtosteal or victim.components.container:FindItem(item_is_stealable)
 
         if attack
