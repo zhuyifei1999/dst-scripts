@@ -24,6 +24,8 @@ local prefabs_item =
 
 --------------------------------------------------------------------------
 
+local NUM_LEVELS = 6
+
 local function CalcFuelRateRescale(inst)
 	return (inst._horror_level > 0 or inst._nightmare_level > 0)
 		and TUNING.WINONA_BATTERY_LOW_SHADOW_FUEL_RATE_MULT
@@ -239,8 +241,6 @@ local function ResolvePartialChargeMult(inst, user, mult)
 end
 
 --------------------------------------------------------------------------
-
-local NUM_LEVELS = 6
 
 local function UpdateSoundLoop(inst, level)
     if inst.SoundEmitter:PlayingSound("loop") then
