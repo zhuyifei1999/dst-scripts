@@ -281,6 +281,7 @@ PREFABFILES = {
   "constructionsite_classified",
   "container_classified",
   "container_opener",
+  "container_receiveitemonopen_classified",
   "cookbook",
   "cookiecutter",
   "cookiecutter_spawner",

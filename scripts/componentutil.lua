@@ -2073,7 +2073,15 @@ function ShouldItemMimicBeRevealedFor(item, user)
     if user == nil then
         return itemisamimic
     end
-    
+
+    if user.prefab == "wx78_backupbody_inventory" then
+        -- Hack to get back to the real body for this check.
+        local parent = user.entity:GetParent()
+        if parent and parent.prefab == "wx78_backupbody" then
+            user = parent
+        end
+    end
+
     local userprocsmimics = user.components.socket_shadow_mimicry == nil
     if itemisamimic then
         -- Special cases to always force mimic reveals.

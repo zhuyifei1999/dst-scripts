@@ -41,7 +41,7 @@ local function GetCreatureScanDataDefinition(ent_or_id)
     end
 
     for k, v in ipairs(scandata_special_definitions) do
-        if v.checkfn(ent_or_id) then
+        if v.checkfn(ent_or_id, v.id) then
             return scandata_definitions[v.id], v.id
         end
     end
@@ -1274,7 +1274,7 @@ local RADAR_MODULE_DATA =
 }
 table.insert(module_definitions, RADAR_MODULE_DATA)
 
-local function GetIsBirdFn(cage_or_trap)
+local function GetIsBirdFn(cage_or_trap, scanid)
     local birdprefab
     if cage_or_trap.components.occupiable ~= nil then
         local bird = cage_or_trap.components.occupiable:GetOccupant()
@@ -1283,7 +1283,7 @@ local function GetIsBirdFn(cage_or_trap)
         birdprefab = cage_or_trap.components.trap.lootprefabs[1]
     end
 
-    return birdprefab and scandata_definitions[birdprefab] ~= nil or nil
+    return birdprefab == scanid
 end
 
 AddSpecialCreatureScanDataDefinition("crow", GetIsBirdFn, "radar", 2)
@@ -1545,7 +1545,7 @@ local function spin_deactivate(inst, wx)
 	wx._spin_modules = (wx._spin_modules or 1) - 1
 	if wx._spin_modules <= 0 then
 		wx._spin_modules = nil
-		wx:RemoveComponent("efficientuser")
+		--wx:RemoveComponent("efficientuser")
 		wx:RemoveComponent("aoediminishingreturns")
 		wx:RemoveEventCallback("equip", spin_checktool)
 		wx:RemoveEventCallback("unequip", spin_checktool)

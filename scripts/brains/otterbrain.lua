@@ -168,6 +168,7 @@ local function LootContainerFood(inst)
         inst.components.timer:StartTimer(STEAL_COOLDOWN_NAME, GetRandomWithVariance(5, 2))
     end
     buffered_action:AddSuccessAction(inst._start_steal_cooldown_callback)
+    buffered_action:AddFailAction(inst._start_steal_cooldown_callback)
     return buffered_action
 end
 
@@ -211,6 +212,7 @@ local function StealCharacterFood(inst)
                 inst.components.timer:StartTimer(STEAL_COOLDOWN_NAME, GetRandomWithVariance(5, 2))
             end
             buffered_action:AddSuccessAction(inst._start_steal_cooldown_callback)
+            buffered_action:AddFailAction(inst._start_steal_cooldown_callback)
             return buffered_action
         end
     end

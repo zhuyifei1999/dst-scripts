@@ -591,6 +591,7 @@ local function MakeItemSocketable(inst)
     local useabletargeteditem = inst.components.useabletargeteditem
     useabletargeteditem:SetCanSelfTarget(true)
     useabletargeteditem:SetUsingItemDoesNotToggleUseability(true)
+    useabletargeteditem:SetUseableMounted(true)
 end
 
 -- socketholder

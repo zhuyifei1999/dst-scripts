@@ -49,6 +49,7 @@ local Container = Class(function(self, inst)
 
 	--self.droponopen = false
     --self.restrictedtag = nil -- Only entities with this tag can interact.
+    --self.thiefproof = nil
 
     inst:ListenForEvent("player_despawn", OnOwnerDespawned)
 
@@ -361,6 +362,15 @@ function Container:DestroyContentsConditionally(filterfn, onpredestroyitemcallba
     end
 end
 
+local function ValidateItemForOverflow(item, overflow)
+	if item.components.inventoryitem == nil then
+		return true --should never happen, just return true XD
+	elseif item.components.inventoryitem.canonlygoinpocket or item.components.inventoryitem.canonlygoinpocketorpocketcontainers then
+		return false
+	end
+	return true
+end
+
 -- Check how many of an item we can accept from its stack.
 function Container:CanAcceptCount(item, maxcount)
     if self.readonlycontainer then
@@ -402,6 +412,33 @@ function Container:CanAcceptCount(item, maxcount)
         end
     end
 
+	local specialized = self:GetSpecializedContainers()
+	if specialized then
+		for _, spoverflow in ipairs(specialized) do
+			if spoverflow:ShouldPrioritizeContainer(item) and ValidateItemForOverflow(item, spoverflow) then
+				for k = 1, spoverflow.numslots do
+					local v = spoverflow.slots[k]
+					if v then
+						if v.components.stackable and v.components.stackable:CanStackWith(item) then
+							acceptcount = acceptcount + v.components.stackable:RoomLeft()
+							if acceptcount >= stacksize then
+								return stacksize
+							end
+						end
+					elseif spoverflow:CanTakeItemInSlot(item, k) then
+						if spoverflow.acceptsstacks or stacksize <= 1 then
+							return stacksize
+						end
+						acceptcount = acceptcount + 1
+						if acceptcount >= stacksize then
+							return stacksize
+						end
+					end
+				end
+			end
+		end
+	end
+
     return acceptcount
 end
 
@@ -410,6 +447,21 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
         return false
     elseif item.components.inventoryitem ~= nil and self:CanTakeItemInSlot(item, slot) then
         slot = slot or self:GetSpecificSlotForItem(item)
+
+		if slot == nil then
+			--specialized containers
+			local specialized = self:GetSpecializedContainers()
+			if specialized then
+				for _, spoverflow in ipairs(specialized) do
+					if spoverflow:ShouldPrioritizeContainer(item) and
+						ValidateItemForOverflow(item, spoverflow) and
+						spoverflow:GiveItem(item, nil, src_pos, false)
+					then
+						return true
+					end
+				end
+			end
+		end
 
         --try to burn off stacks if we're just dumping it in there
         if item.components.stackable ~= nil and self.acceptsstacks then
@@ -716,6 +768,25 @@ function Container:ForEachItem(fn, ...)
     for k,v in pairs(self.slots) do
         fn(v, ...)
     end
+end
+
+--for specialized pocket containers (e.g. ammo pouch)
+function Container:GetSpecializedContainers()
+	local ret
+	for i = 1, self.numslots do
+		local v = self.slots[i]
+		if v and v.components.container and v.components.container.priorityfn and
+			(	v.components.container:IsOpen() or
+				(	v.components.container.canbeopened and
+					not (v.components.container.droponopen or v:HasTag("portablecontainer"))
+				)
+			)
+		then
+			ret = ret or {}
+			table.insert(ret, v.components.container)
+		end
+	end
+	return ret
 end
 
 function Container:Has(item, amount, iscrafting)
@@ -1504,6 +1575,10 @@ function Container:IsRestricted(target)
     return self.restrictedtag ~= nil
         and self.restrictedtag:len() > 0
         and not target:HasTag(self.restrictedtag)
+end
+
+function Container:IsThiefProof()
+    return self.thiefproof
 end
 
 return Container

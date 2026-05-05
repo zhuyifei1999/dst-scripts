@@ -210,6 +210,43 @@ local function GetOverflowContainer(inst)
     return item ~= nil and item.replica.container or nil
 end
 
+--for specialized pocket containers (e.g. ammo pouch)
+local function GetSpecializedContainers(inst)
+	local ret
+	if inst._itemspreview then
+		for i = 1, #inst._items do
+			local item = inst._itemspreview[i]
+			local container = item and item.replica.container
+			if container and
+				container.priorityfn and
+				(	container:IsOpenedBy(inst._parent) or
+					(container:CanBeOpened() and not item:HasTag("portablecontainer"))
+					--NOTE: droponopen check not avail on clients, but it's also mostly deprecated. hmm...
+				)
+			then
+				ret = ret or {}
+				table.insert(ret, container)
+			end
+		end
+	else
+		for i, v in ipairs(inst._items) do
+			local item = v:value()
+			local container = item and item.replica.container
+			if container and
+				container.priorityfn and
+				(	container:IsOpenedBy(inst._parent) or
+					(container:CanBeOpened() and not item:HasTag("portablecontainer"))
+					--NOTE: droponopen check not avail on clients, but it's also mostly deprecated. hmm...
+				)
+			then
+				ret = ret or {}
+				table.insert(ret, container)
+			end
+		end
+	end
+	return ret
+end
+
 local function IsFull(inst)
     if inst._itemspreview ~= nil then
 		for i = 1, #inst._items do
@@ -1146,43 +1183,61 @@ local function MoveItemFromCountOfSlot(inst, slot, container, count)
     end
 end
 
+local function ValidateItemForOverflow(item, overflow)
+	local inventoryitem = item.replica.inventoryitem
+	if inventoryitem == nil then
+		return true --should never happen, just return true XD
+	elseif inventoryitem:CanOnlyGoInPocket() then
+		return false
+	elseif inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
+		local overflow_inventoryitem = overflow.inst.replica.inventoryitem
+		return overflow_inventoryitem ~= nil and overflow_inventoryitem:CanOnlyGoInPocket()
+	end
+	return true
+end
+
 local function GetNextAvailableSlot(inst, item)
     local isstackable = item.replica.stackable ~= nil
 
     local inventory_replica = inst and inst._parent and inst._parent.replica.inventory
     local overflow = GetOverflowContainer(inst)
     overflow = (overflow and not overflow:IsBusy()) and overflow or nil
-    local prioritize_container = overflow and overflow:ShouldPrioritizeContainer(item) or false
-    
-    local useoverflow = true
-    if overflow then
-        if item.replica.inventoryitem then
-            if item.replica.inventoryitem:CanOnlyGoInPocket() then
-                useoverflow = false
-            elseif item.replica.inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
-                useoverflow = overflow.replica and overflow.replica.inventoryitem and overflow.replica.inventoryitem:CanOnlyGoInPocket() or false
-            end
-        end
-    else
-        useoverflow = false
-    end
+	local prioritize_overflow = overflow and overflow:ShouldPrioritizeContainer(item) or false
+	local useoverflow = overflow ~= nil and ValidateItemForOverflow(item, overflow)
 
-    local prefabname
-    local prefabskinname
+	--specialized containers
+	local specialized = GetSpecializedContainers(inst)
+	if specialized then
+		local j = 1
+		for i = 1, #specialized do
+			local spoverflow = specialized[i]
+			specialized[i] = nil
+			if not spoverflow:IsBusy() and
+				spoverflow:ShouldPrioritizeContainer(item) and
+				ValidateItemForOverflow(item, spoverflow)
+			then
+				specialized[j] = spoverflow
+				j = j + 1
+			end
+		end
+		if #specialized <= 0 then
+			specialized = nil
+		end
+	end
+
     if isstackable and (inventory_replica == nil or inventory_replica:AcceptsStacks()) then
-        prefabname = item.prefab
-        prefabskinname = item.AnimState:GetSkinBuild()
-
         for k, v in pairs(inst:GetEquips()) do
-			if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
+			local stackable = v.replica.stackable
+			if stackable and not stackable:IsFull() and stackable:CanStackWith(item) then
                 return k, "equips", useoverflow
             end
         end
 
         local inv_slot, inv_pref
         for k, v in pairs(inst:GetItems()) do
-			if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
-                if prioritize_container then
+			local stackable = v.replica.stackable
+			if stackable and not stackable:IsFull() and stackable:CanStackWith(item) then
+				if prioritize_overflow or specialized then
                     inv_slot, inv_pref = k, "invslots"
                     break
                 else
@@ -1191,26 +1246,53 @@ local function GetNextAvailableSlot(inst, item)
             end
         end
 
-        if useoverflow then
+		if useoverflow and (prioritize_overflow or not (inv_slot and inv_pref)) then
             for k, v in pairs(overflow:GetItems()) do
-                if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
+				local stackable = v.replica.stackable
+				if stackable and not stackable:IsFull() and stackable:CanStackWith(item) then
+					if specialized and not prioritize_overflow then
+						inv_slot, inv_pref = k, "overflow"
+						break
+					end
                     return k, "overflow", useoverflow
                 end
             end
         end
 
-        if prioritize_container and inv_slot and inv_pref then
+		if specialized then
+			for _, spoverflow in ipairs(specialized) do
+				--V2C: hmmm this probably doesn't work for closed containers
+				for k, v in pairs(spoverflow:GetItems()) do
+					local stackable = v.replica.stackable
+					if stackable and not stackable:IsFull() and stackable:CanStackWith(item) then
+						return k, spoverflow
+					end
+				end
+			end
+		end
+
+		if (prioritize_overflow or specialized) and inv_slot and inv_pref then
             return inv_slot, inv_pref
         end
     end
 
-    if useoverflow and prioritize_container then
+	if useoverflow and prioritize_overflow then
         for k = 1, overflow:GetNumSlots() do
             if overflow:CanTakeItemInSlot(item, k) and not overflow:GetItemInSlot(k) then
                 return k, "overflow", useoverflow
             end
         end
     end
+
+	if specialized then
+		for _, spoverflow in ipairs(specialized) do
+			for k = 1, spoverflow:GetNumSlots() do
+				if spoverflow:CanTakeItemInSlot(item, k) and not spoverflow:GetItemInSlot(k) then
+					return k, spoverflow, useoverflow
+				end
+			end
+		end
+	end
 
     --check for empty space in the container
     if inventory_replica then
@@ -1248,6 +1330,11 @@ local function ReceiveItem(inst, item, count)--, forceslot)
             if remainder ~= nil then
                 count = math.max(count - (originalstacksize - remainder), 0)
             end
+		elseif type(container_pref) == "table" then
+			local remainder = container_pref:ReceiveItem(item, count)
+			if remainder then
+				count = math.max(count - (originalstacksize - remainder), 0)
+			end
         elseif container_pref == "equips" then
             local eslot = item.replica.equippable:EquipSlot()
             local equip = inst:GetEquippedItem(eslot)

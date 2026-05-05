@@ -434,7 +434,6 @@ local function CalcActualFuel(inst, user)
 	end
 end
 
-local BATTERY_COST = { fuel = TUNING.WINONA_BATTERY_LOW_MAX_FUEL_TIME * 0.9, shard = 1 }
 local function CanBeUsedAsBattery(inst, user, mult)
 	if inst._shard_level > 0 then
 		if not inst:IsOverloaded() then
@@ -442,8 +441,24 @@ local function CanBeUsedAsBattery(inst, user, mult)
 		end
 	else
 		local actual_fuel, efficiency_mult = CalcActualFuel(inst, user)
-		if actual_fuel and actual_fuel >= BATTERY_COST.fuel * (mult or 1) * efficiency_mult then
-			return true
+		if actual_fuel then
+			local fuel_cost = TUNING.WINONA_WXBATTERY_COST.fuel
+			if mult then
+				if actual_fuel >= fuel_cost * mult * efficiency_mult then
+					return true
+				end
+			else
+				local fuelperbar = TUNING.WINONA_BATTERY_HIGH_MAX_FUEL_TIME / NUM_LEVELS
+				local numbars = math.floor(fuel_cost * efficiency_mult / fuelperbar + 0.5)
+				--Allow one more charge if we have at least this much fuel remaining, because
+				--visually, the number of bars remaining will look like it has enough charge.
+				--NOTE: (>= 1 * fuelperbar) --> shows two bars
+				--      (> 0 * fuelperbar) --> shows one bar
+				fuel_cost = math.max(0, numbars - 1) * fuelperbar
+				if actual_fuel > 0 and actual_fuel >= fuel_cost * efficiency_mult then
+					return true
+				end
+			end
 		end
 	end
 	return false, "NOT_ENOUGH_CHARGE"
@@ -456,7 +471,7 @@ local function UseAsBattery(inst, user, mult)
 		ApplyEfficiencyBonus(inst)
 		UpdateCircuitPower(inst)
 	end
-	local cost = BATTERY_COST
+	local cost = TUNING.WINONA_WXBATTERY_COST
 	if mult and mult ~= 1 then
 		cost = { fuel = cost.fuel * mult, shard = cost.shard * mult }
 	end
@@ -468,7 +483,7 @@ local function ResolvePartialChargeMult(inst, user, mult)
 		return mult
 	end
 	local actual_fuel, efficiency_mult = CalcActualFuel(inst, user)
-	return actual_fuel and math.min(mult, actual_fuel / (BATTERY_COST.fuel * efficiency_mult)) or mult
+	return actual_fuel and math.min(mult, actual_fuel / (TUNING.WINONA_WXBATTERY_COST.fuel * efficiency_mult)) or mult
 end
 
 --------------------------------------------------------------------------
@@ -1221,7 +1236,7 @@ end
 
 local function OnUsedIndirectly(inst, doer)
 	if doer and doer.userid == inst._engineerid then
-		if doer:HasTag("engineerid") then
+		if doer:HasTag("handyperson") then
 			--skip if this is already mine and I'm still an engineer (didn't swap chars)
 			return
 		end

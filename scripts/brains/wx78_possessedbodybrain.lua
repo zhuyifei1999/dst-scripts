@@ -6,6 +6,10 @@ require "behaviours/leash"
 require "behaviours/standstill"
 require "behaviours/runtodist"
 
+-- #GLOOMERANG_HACK
+    -- Ugly gloomerang hack.. When it runs out of stock, it sets its range to 0 so the possessed body tries to run up to the target.
+    -- The gloomerang is at fault here, never add a weapon that works like it again!
+
 local BrainCommon = require("brains/braincommon")
 local WX78Common = require("prefabs/wx78_common")
 
@@ -576,15 +580,24 @@ local function GetAttackRange(inst)
     end
 
     local weapon = GetTool(inst)
-    if weapon and weapon:HasTag("wx_remotecontroller") then
-		local max_range = WX78Common.CalcDroneZapRange(inst)
-		local range = math.sqrt(max_range) * 2.4
-        if inst:HasTag("using_drone_remote") then
-			return range, 6, max_range
-        else
-			return range
+    if weapon then
+        -- #GLOOMERANG_HACK
+        if weapon.prefab == "voidcloth_boomerang" then
+            return TUNING.VOIDCLOTH_BOOMERANG_ATTACK_DIST
+        elseif weapon:HasTag("wx_remotecontroller") then
+		    local max_range = WX78Common.CalcDroneZapRange(inst)
+		    local range = math.sqrt(max_range) * 2.4
+            if inst:HasTag("using_drone_remote") then
+		    	return range, 6, max_range
+            else
+		    	return range
+            end
         end
     end
+
+	if inst.sg:HasStateTag("spinning") then
+		return TUNING.WX78_SPIN_START_RANGE, TUNING.WX78_SPIN_RADIUS - 0.5
+	end
 
     return inst.components.combat:GetAttackRange()
 end
@@ -607,7 +620,7 @@ local function UseDroneRemoteAction(inst)
 end
 
 local function GetRunDist(inst, hunter)
-    local attack_range = GetAttackRange(inst)
+	local attack_range = math.max(0, GetAttackRange(inst) + hunter:GetPhysicsRadius(0) - 0.5)
     local leader = GetLeader(inst)
     if leader ~= nil then
         local leader_dist = math.sqrt(leader:GetDistanceSqToInst(hunter))
@@ -630,22 +643,46 @@ local function ShouldMoveAnyways(inst)
 		local attack_range, min_range, max_range = GetAttackRange(inst)
         local dist_to_target = math.sqrt(inst:GetDistanceSqToInst(target))
 
-		if max_range and dist_to_target >= max_range then
-			return true --using drone: target is out of max range
-		elseif min_range and dist_to_target >= min_range then
-			return false --using drone: target is not too close, don't move
-		elseif math.abs(dist_to_target - attack_range) <= 1 then
+		local using_drone = min_range ~= nil and max_range ~= nil
+		if using_drone then
+			if dist_to_target >= max_range then
+				return true --target is out of max range
+			elseif dist_to_target >= min_range then
+				return false --target is not too close, don't move
+			end
+		else
+			local physrad = target:GetPhysicsRadius(0)
+			if min_range then
+				min_range = min_range + physrad
+			end
+			attack_range = attack_range + physrad
+		end
+
+		if min_range and inst.sg:HasStateTag("spinning") then
+			if dist_to_target >= min_range - 1 and dist_to_target <= attack_range + 1 then
+				return false
+			end
+		elseif dist_to_target >= attack_range - 1 and dist_to_target < attack_range then
 			return false
 		end
 
 		local leader_dist = math.sqrt(leader:GetDistanceSqToInst(target)) + 0.5
-		if min_range and leader_dist < dist_to_target then
+		if using_drone and leader_dist < dist_to_target then
 			return false
 		end
         return attack_range >= leader_dist
     end
 end
 
+local function ShouldAttack(inst)
+    -- #GLOOMERANG_HACK
+    local item = GetTool(inst)
+    if item and item.prefab == "voidcloth_boomerang" and item.components.rechargeable and not item.components.rechargeable:IsCharged() then
+        return false
+    end
+
+    return true
+end
 --------------------------------------------------------------------------------------------------------------------------------
 
 local UPDATE_RATE = 0.1
@@ -653,7 +690,10 @@ local STOP_USING_DRONE_DELAY = 3
 function Wx78_PossessedBodyBrain:OnStart()
     local root = PriorityNode(
     {
-        WhileNode(function() return not self.inst.sg:HasStateTag("jumping") end, --not self.inst.sg:HasStateTag("busy") end,
+		WhileNode(function()
+			return not self.inst.sg:HasStateTag("jumping")
+				or self.inst.sg:HasAnyStateTag("prespin", "spinning") --during spin, we have "jumping" tag, but don't lock up the brain
+		end,
         "<busy state guard",
         PriorityNode({
             -- No panic behaviours. We're controlled by gestalts.
@@ -688,7 +728,7 @@ function Wx78_PossessedBodyBrain:OnStart()
 					end),
 					PriorityNode({
 						FailIfSuccessDecorator(ConditionWaitNode(function()
-							if self.inst:HasTag("using_drone_remote") then
+                            if self.inst:HasTag("using_drone_remote") then
 								--let clone know whether to fire the drone or not since they don't
 								--stop using the drone right away when the player stops attacking.
 								self.inst:PushEventImmediate("ms_wx_clone_use_drone_zap_attack", { doattack = IsLeaderAttacking(self.inst) })
@@ -697,7 +737,8 @@ function Wx78_PossessedBodyBrain:OnStart()
 							return true
 						end)),
 						DoAction(self.inst, UseDroneRemoteAction, nil, true),
-						ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+                        WhileNode(function() return ShouldAttack(self.inst) end, "Should we attack?",
+                            ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST)),
 					}, UPDATE_RATE),
 				}
             ),

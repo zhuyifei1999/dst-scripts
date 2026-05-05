@@ -41,7 +41,7 @@ local function OnDropped(inst)
 end
 
 local function OnPicked(inst, picker, loot)
-    inst.SoundEmitter:PlaySound("qol1/wagstaff_ruins/rummagepile_pst") -- pickable.picksound only works for something that gives pickable loot the usuable way
+    inst.SoundEmitter:PlaySound("qol1/wagstaff_ruins/rummagepile_pst") -- pickable.picksound only works for something that gives pickable loot the usual way
 
 	local loots = inst.components.container:GetAllItems()
 	if #loots > 0 then
@@ -92,6 +92,11 @@ local function SetPowered(inst, powered)
 			RefreshIcon(inst)
 		end
 	end
+end
+
+local function PreserverRateFn(inst, item)
+	local owner = inst.components.inventoryitem.owner
+	return owner ~= nil and owner.components.preserver ~= nil and owner.components.preserver:GetPerishRateMultiplier(item)
 end
 
 local function ValidateOnLoad(inst)
@@ -187,8 +192,8 @@ local function fn()
 	inst.components.pickable.onpickedfn = OnPicked
 	inst.components.pickable:SetUp(nil, 0)
 
-    -- inst:AddComponent("preserver")
-    -- inst.components.preserver:SetPerishRateMultiplier(TUNING.BEARGERFUR_SACK_PRESERVER_RATE)
+    inst:AddComponent("preserver")
+    inst.components.preserver:SetPerishRateMultiplier(PreserverRateFn)
 
     MakeHauntableLaunchAndDropFirstItem(inst)
 
@@ -198,4 +203,4 @@ local function fn()
     return inst
 end
 
-return Prefab("wx78_inventorycontainer", fn, assets, prefabs)
+return Prefab("wx78_inventorycontainer", fn, assets)

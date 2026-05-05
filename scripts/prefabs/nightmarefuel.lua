@@ -26,7 +26,7 @@ local function ValidTargetToConsumeAsWX78(inst, target, doer)
     -- wx
     local socketholder = (target or doer).components.socketholder
     return socketholder ~= nil and (socketholder:GetHighestQualitySocketed(SOCKETNAMES.SHADOW) > SOCKETQUALITY.NONE)
-        and ( (target == doer) or target == nil )
+        and ( (target == doer) or (target == nil) )
 end
 
 local function GetUseItemOnVerb(inst, target, doer)

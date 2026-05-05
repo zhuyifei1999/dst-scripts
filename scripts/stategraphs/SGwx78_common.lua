@@ -56,6 +56,9 @@ local function DoWX78Screech(inst)
                 v:DoTaskInTime(math.random(), DelayedWX78ScreechWake)
             end
             v.components.hauntable:Panic(TUNING.WX78_SCREECH_PANIC_TIME)
+			if v.brain then
+				v.brain:ForceUpdate()
+			end
         end
     end
 end
@@ -128,6 +131,10 @@ local function ApplyWX78ShieldingDefense(inst)
 
 		inst.sg.mem.wx78shieldtaunttask = inst:DoPeriodicTask(TAUNT_PERIOD, TauntCreatures, 0)
 
+		if inst.components.inventory ~= nil then
+			inst.components.inventory.thiefproof = true
+		end
+
         -- This event listener isn't really necessacary anymore. But left just in case.
 		inst:ListenForEvent("refreshwxshielddefense", UpdateWX78ShieldingDefense)
 		UpdateWX78ShieldingDefense(inst)
@@ -156,6 +163,10 @@ local function ClearWX78ShieldingDefense(inst)
 			inst.sg.mem.wx78shieldtaunttask:Cancel()
 			inst.sg.mem.wx78shieldtaunttask = nil
 		end
+
+		if inst.components.inventory ~= nil then
+			inst.components.inventory.thiefproof = nil
+		end
         inst.sg.mem.wx78shieldingdamage = nil
         inst.sg.mem.wx78shieldingtime = nil
         inst.sg.mem.wx78shieldhit = nil
@@ -171,10 +182,12 @@ local function IsSkillActivated(wx, skill)
     return skilltreeupdater and skilltreeupdater:IsActivated(skill)
 end
 
+local WX78_SPIN_KEY = "wx78_spin"
+
 SGWX78Common.AddWX78SpinStates = function(states)
     table.insert(states, State{
         name = "wx_spin_start",
-		tags = { "prespin", "working", "busy" },
+		tags = { "prespin", "working", "busy", "jumping" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -271,7 +284,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 
     table.insert(states, State{
 		name = "wx_spin",
-		tags = { "busy", "prespin", "spinning", "working", "nopredict", "overridelocomote" },
+		tags = { "busy", "prespin", "spinning", "working", "nopredict", "overridelocomote", "jumping" },
 
 		onenter = function(inst, data)
 			local anim =
@@ -298,7 +311,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
             if inst.isplayer then
 			    inst.sg.statemem.target = buffaction and buffaction.action == ACTIONS.ATTACK and buffaction.target or nil
             else
-			    inst.sg.statemem.target = buffaction and buffaction.target or nil
+			    inst.sg.statemem.target = buffaction and buffaction.target or inst.components.combat.target or nil
             end
 
 			if data then
@@ -395,7 +408,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 								PlayMiningFX(inst, v)
 								local eff = inst.sg.statemem.efficiency.MINE
 								if eff and inst.components.efficientuser then
-									inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst)
+									inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst, WX78_SPIN_KEY)
 								end
 								if BufferedAction(inst, v, ACTIONS.REMOVELUNARBUILDUP, item):Do() then
 									table.insert(actiondata, { action = ACTIONS.REMOVELUNARBUILDUP, target = v })
@@ -411,7 +424,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 									if canchop then
 										local eff = inst.sg.statemem.efficiency.CHOP
 										if eff and inst.components.efficientuser then
-											inst.components.efficientuser:AddMultiplier(ACTIONS.CHOP, eff, inst)
+											inst.components.efficientuser:AddMultiplier(ACTIONS.CHOP, eff, inst, WX78_SPIN_KEY)
 										end
 										if BufferedAction(inst, v, ACTIONS.CHOP, item):Do() then
 											table.insert(actiondata, { action = ACTIONS.CHOP, target = v })
@@ -429,7 +442,7 @@ SGWX78Common.AddWX78SpinStates = function(states)
 									if canmine then
 										local eff = inst.sg.statemem.efficiency.MINE
 										if eff and inst.components.efficientuser then
-											inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst)
+											inst.components.efficientuser:AddMultiplier(ACTIONS.MINE, eff, inst, WX78_SPIN_KEY)
 										end
 										if BufferedAction(inst, v, ACTIONS.MINE, item):Do() then
 											table.insert(actiondata, { action = ACTIONS.MINE, target = v })
@@ -468,12 +481,12 @@ SGWX78Common.AddWX78SpinStates = function(states)
 							then
 								local eff = inst.sg.statemem.efficiency.ATTACK
 								if inst.components.efficientuser then
-									inst.components.efficientuser:AddMultiplier(ACTIONS.ATTACK, eff, inst)
+									inst.components.efficientuser:AddMultiplier(ACTIONS.ATTACK, eff, inst, WX78_SPIN_KEY)
 								end
 								local dim = inst.sg.statemem.dim
 								if dim and inst.components.aoediminishingreturns then
 									--NOTE: this is not for dmg, but for any unique weapon behaviour that would make sense to scale the same as usage efficiency
-									inst.components.aoediminishingreturns.mult:SetModifier(inst, dim, "wx_spin")
+									inst.components.aoediminishingreturns.mult:SetModifier(inst, dim, WX78_SPIN_KEY)
 								end
 								if not didattack then
 									inst.components.combat:SetTarget(v)
@@ -534,13 +547,13 @@ SGWX78Common.AddWX78SpinStates = function(states)
 				inst.components.combat.ignorehitrange = false
 
 				if inst.components.efficientuser then
-					inst.components.efficientuser:RemoveMultiplier(ACTIONS.CHOP, inst)
-					inst.components.efficientuser:RemoveMultiplier(ACTIONS.MINE, inst)
-					inst.components.efficientuser:RemoveMultiplier(ACTIONS.ATTACK, inst)
+					inst.components.efficientuser:RemoveMultiplier(ACTIONS.CHOP, inst, WX78_SPIN_KEY)
+					inst.components.efficientuser:RemoveMultiplier(ACTIONS.MINE, inst, WX78_SPIN_KEY)
+					inst.components.efficientuser:RemoveMultiplier(ACTIONS.ATTACK, inst, WX78_SPIN_KEY)
 				end
 
 				if inst.components.aoediminishingreturns then
-					inst.components.aoediminishingreturns.mult:RemoveModifier(inst, "wx_spin")
+					inst.components.aoediminishingreturns.mult:RemoveModifier(inst, WX78_SPIN_KEY)
 				end
 
 				if (didwork or didattack) then
@@ -1028,7 +1041,7 @@ SGWX78Common.AddWX78ScreechStates = function(states)
                 inst.SoundEmitter:PlaySound("WX_rework/screech/loop", "wx_screech")
             end
             -- TheMixer:PushMix("wx_screech") -- TODO
-            inst.sg.statemem.scarecd = FRAMES * 2
+            inst.sg.statemem.scarecd = 0
 
             if timeout ~= nil then
                 inst.sg:SetTimeout(timeout)

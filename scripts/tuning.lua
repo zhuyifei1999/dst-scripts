@@ -3697,6 +3697,8 @@ function Tune(overrides)
 		WINONA_STORAGE_ROBOT_POWER_LOAD_CHARGING = 0.1,
 		WINONA_STORAGE_ROBOT_LOW_FUEL_PCT = 0.02,
 
+		WINONA_WXBATTERY_COST = { fuel = total_day_time / 3 + 0.00001, shard = 1 },
+
         WINONA_BATTERY_LOW_MAX_FUEL_TIME = seg_time * 6,
         WINONA_BATTERY_LOW_FUEL_RATE_MULT = .375, --changes max fuel to last 1 full day, while still only costing 2 nitre
 		WINONA_BATTERY_LOW_SHADOW_FUEL_RATE_MULT = .1875, --changes max fuel to last 2 full days

@@ -11,17 +11,24 @@ local function SetInvincible(inst, invincible)
 	end
 end
 
+local function _transfer_statemem_to_electrocute(inst)
+	if inst.sg.currentstate.name == "jump_pst_boat" then
+		inst.sg.statemem.not_interrupted = true
+	end
+end
+
 local events =
 {
-	CommonHandlers.OnElectrocute(),
+	EventHandler("electrocute", function(inst, data)
+		if not (inst.components.health and inst.components.health:IsDead()) then
+			CommonHandlers.TryElectrocuteOnEvent(inst, data, nil, nil,
+				_transfer_statemem_to_electrocute)
+		end
+	end),
 	EventHandler("attacked", function(inst, data)
 		if inst.components.health and not inst.components.health:IsDead() then
 			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
-				function(inst)
-					if inst.sg.currentstate.name == "jump_pst_boat" then
-						inst.sg.statemem.not_interrupted = true
-					end
-				end)
+				_transfer_statemem_to_electrocute)
 			then
 				return
 			elseif not inst.sg:HasStateTag("busy") then

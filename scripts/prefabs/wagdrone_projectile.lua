@@ -141,6 +141,7 @@ end
 local function Launch(inst, x, y, z)
 	inst.Follower:StopFollowing()
 	inst.entity:SetParent(nil)
+	inst.Physics:SetActive(true)
 	inst.Physics:Teleport(x, y, z)
 	inst.Physics:SetMotorVel(0, -15, 0)
 	inst.AnimState:SetScale(1, 1)
@@ -154,6 +155,7 @@ end
 local function AttachTo(inst, parent)
 	inst.weapon = parent
 	inst.entity:SetParent(parent.entity)
+	inst.Physics:SetActive(false)
 	inst.Follower:FollowSymbol(parent.GUID, "light")
 	inst.SoundEmitter:PlaySound("rifts5/wagdrone_rolling/beamlp_a", "charging")
 end

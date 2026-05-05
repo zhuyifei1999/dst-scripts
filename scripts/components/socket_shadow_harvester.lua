@@ -107,7 +107,7 @@ function Socket_Shadow_Harvester:GetHarvestRadius()
         if skilltreeupdater:IsActivated("wx78_extradronerange") then
             extradronerange = extradronerange + TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_SKILLBOOST
         end
-        if skilltreeupdater:IsActivated("wx78_bodycircuits") and skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
+        if (self.inst.isplayer or skilltreeupdater:IsActivated("wx78_bodycircuits")) and skilltreeupdater:IsActivated("wx78_circuitry_betabuffs_1") then
             if self.inst.GetModuleTypeCount then
                 extradronerange = extradronerange + self.inst:GetModuleTypeCount("radar") * TUNING.SKILLS.WX78.SHADOWDRONE_HARVESTER_FINDITEM_RADIUS_RADAR
             end
