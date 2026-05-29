@@ -15,6 +15,7 @@ DEGREES = PI/180
 RADIANS = 180/PI
 FRAMES = 1/30
 TILE_SCALE = 4
+HALF_TILE_SCALE = TILE_SCALE/2
 MAXUINT = 4294967295
 
 RESOLUTION_X = 1280
@@ -1013,7 +1014,7 @@ DEFAULT_FE_MUSIC =
 {
 	--bank = "music_frontend_WX.fsb",
 	bank = "music_frontend.fsb",
-	sound = "dontstarve/music/music_FE_WX",
+	sound = "dontstarve/music/music_FE_cavepuzzle",
 	--sound = "dontstarve/music/music_FE_cavepuzzle",
 	--sound = "dontstarve/music/music_FE_wagboss",
 	--sound = "dontstarve/music/music_FE_balatro",

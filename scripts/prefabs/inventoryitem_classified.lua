@@ -128,12 +128,58 @@ local function OnIsAcidSizzlingDirty(parent)
     end
 end
 
+--Temperature stuff
+local max_precision_temp = 6
+local min_precision_temp = -11
+local precision_factor = 4
+local coarse_factor = 1
+local pivot = math.floor((256 - (max_precision_temp + min_precision_temp) * precision_factor) / 2)
+
+local function SerializeTemperature(inst, temperature, mintemperature, maxtemperature)
+    if temperature ~= nil then
+        if temperature >= max_precision_temp then
+            inst.temperature:set(pivot + max_precision_temp * precision_factor + math.floor((temperature - max_precision_temp) * coarse_factor + .5))
+        elseif temperature <= min_precision_temp then
+            inst.temperature:set(pivot + min_precision_temp * precision_factor + math.floor((temperature - min_precision_temp) * coarse_factor + .5))
+        else
+            inst.temperature:set(pivot + math.floor(temperature * precision_factor + .5))
+        end
+    end
+
+    if mintemperature ~= nil then
+        inst.temperaturemin:set(mintemperature + 128)
+    end
+
+    if maxtemperature ~= nil then
+        inst.temperaturemax:set(maxtemperature + 128)
+    end
+end
+
+local function DeserializeTemperature(inst)
+    local temperature
+    if inst.temperature:value() >= pivot + max_precision_temp * precision_factor then
+        temperature = (inst.temperature:value() - pivot - max_precision_temp * precision_factor) / coarse_factor + max_precision_temp
+    elseif inst.temperature:value() <= pivot + min_precision_temp * precision_factor then
+        temperature = (inst.temperature:value() - pivot - min_precision_temp * precision_factor) / coarse_factor + min_precision_temp
+    else
+        temperature = (inst.temperature:value() - pivot) / precision_factor
+    end
+
+    local mintemperature = inst.temperaturemin:value() - 128
+    local maxtemperature = inst.temperaturemax:value() - 128
+
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("temperaturedelta", { new = temperature, mintemp = mintemperature, maxtemp = maxtemperature })
+    end
+end
+
 local function RegisterNetListeners(inst)
     inst:ListenForEvent("imagedirty", OnImageDirty)
     inst:ListenForEvent("percentuseddirty", DeserializePercentUsed)
     inst:ListenForEvent("perishdirty", DeserializePerish)
     inst:ListenForEvent("rechargedirty", DeserializeRecharge)
     inst:ListenForEvent("rechargetimedirty", DeserializeRechargeTime)
+    inst:ListenForEvent("temperaturedirty", DeserializeTemperature)
 	inst:ListenForEvent("inventoryitem_stacksizedirty", OnStackSizeDirty, inst._parent)
     inst:ListenForEvent("iswetdirty", OnIsWetDirty, inst._parent)
     inst:ListenForEvent("isacidsizzlingdirty", OnIsAcidSizzlingDirty, inst._parent)
@@ -170,9 +216,12 @@ local function fn()
     inst.usegridplacer = net_bool(inst.GUID, "deployable.usegridplacer")
     inst.attackrange = net_float(inst.GUID, "weapon.attackrange")
     inst.walkspeedmult = net_byte(inst.GUID, "equippable.walkspeedmult")
-    inst.equiprestrictedtag = net_hash(inst.GUID, "equippable.restrictedtag")
     inst.moisture = net_float(inst.GUID, "inventoryitemmoisture.moisture")
-	inst.islockedinslot = net_bool(inst.GUID, "inventoryitem.islockedinslot")
+    inst.temperature = net_byte(inst.GUID, "inventoryitemtemperature.temperature", "temperaturedirty")
+    inst.temperaturemin = net_byte(inst.GUID, "inventoryitemtemperature.temperaturemin", "temperaturedirty")
+    inst.temperaturemax = net_byte(inst.GUID, "inventoryitemtemperature.temperaturemax", "temperaturedirty")
+    inst.equiprestrictedtag = net_hash(inst.GUID, "equippable.restrictedtag")
+    inst.islockedinslot = net_bool(inst.GUID, "inventoryitem.islockedinslot")
 
     inst.image:set(0)
     inst.atlas:set(0)
@@ -190,8 +239,11 @@ local function fn()
     inst.usegridplacer:set(false)
     inst.attackrange:set(-99)
     inst.walkspeedmult:set(1)
-    inst.equiprestrictedtag:set(0)
     inst.moisture:set(0)
+    inst.temperature:set(0)
+    inst.temperaturemin:set(TUNING.MIN_ENTITY_TEMP + 128)
+    inst.temperaturemax:set(TUNING.MAX_ENTITY_TEMP + 128)
+    inst.equiprestrictedtag:set(0)
 	inst.islockedinslot:set(false)
 
     inst.entity:SetPristine()
@@ -201,6 +253,7 @@ local function fn()
         inst.DeserializePerish = DeserializePerish
         inst.DeserializeRecharge = DeserializeRecharge
         inst.DeserializeRechargeTime = DeserializeRechargeTime
+        inst.DeserializeTemperature = DeserializeTemperature
         inst.OnEntityReplicated = OnEntityReplicated
 
         --inst._rechargetask = nil
@@ -217,6 +270,7 @@ local function fn()
     inst.ForcePerishDirty = ForcePerishDirty
     inst.SerializeRecharge = SerializeRecharge
     inst.SerializeRechargeTime = SerializeRechargeTime
+    inst.SerializeTemperature = SerializeTemperature
 
     return inst
 end

@@ -260,7 +260,11 @@ function Combat:CanLightTarget(target, weapon)
 		and not target:HasAnyTag("fire", "burnt")
 end
 
+--@V2C: WARNING!  This doesn't match combat component's version.  Why is this needed on clients anyway?
 function Combat:CanHitTarget(target)
+	print("WARNING: combat_replica::CanHitTarget is deprecated; no client-safe support for this.")
+	assert(BRANCH ~= "dev")
+
     if self.inst.components.combat ~= nil then
         return self.inst.components.combat:CanHitTarget(target)
     elseif self.classified ~= nil

@@ -410,6 +410,8 @@ local function orbfn()
 
 	MakeInventoryFloatable(inst, "small", 0.05, { 0.8, 0.75, 0.8 })
 
+    inst:AddTag("irreplaceable")
+    inst:AddTag("forcedtosavethroughvirtualrooms")
 	inst:AddTag("donotautopick")
 
 	inst.entity:SetPristine()

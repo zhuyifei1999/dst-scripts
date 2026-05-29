@@ -1,5 +1,10 @@
 local assets = {
     Asset("ANIM", "anim/vault_lobby_exit.zip"),
+    Asset("ANIM", "anim/vault_ladder.zip"),
+}
+local prefabs = {
+    "ceiling_rope",
+    "rope",
 }
 
 local function StartTravelSound(inst, doer)
@@ -29,9 +34,115 @@ local function SetExitTarget(inst, targetinst)
         inst.components.teleporter:SetEnabled(false)
         return
     end
-    
+
+    if inst.hadrope_fromload then
+        inst.hadrope_fromload = nil
+        inst:AddRope()
+    end
     inst.components.teleporter:SetEnabled(true)
     inst:ListenForEvent("onremove", inst._exittarget_onremove, targetinst)
+end
+
+local function CreateVaultLadderVisualFor(parent)
+    local inst = CreateEntity()
+    
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("vault_ladder")
+    inst.AnimState:SetBuild("vault_ladder")
+    inst.AnimState:PlayAnimation(parent.hasrope:value() and "idle_rope" or "idle_empty")
+
+    inst.entity:SetParent(parent.entity)
+    return inst
+end
+
+local function OnHasRopeDirty(inst)
+    if inst.ropevfx then
+        inst.ropevfx.AnimState:PlayAnimation(inst.hasrope:value() and "idle_rope" or "idle_empty")
+    end
+end
+
+local function AddRope(inst)
+    if inst.hasrope:value() then
+        return false
+    end
+
+    local target = inst.components.teleporter:GetTarget()
+    if not target then
+        return false
+    end
+
+    local x, y, z = target.Transform:GetWorldPosition()
+    local rope = SpawnPrefab("ceiling_rope")
+    inst.rope = rope
+    rope:ListenForEvent("onremove", inst._onroperemoved)
+    rope.Transform:SetPosition(x, y, z)
+    rope.persists = false
+    rope:SetExitTarget(inst)
+    if not rope:IsAsleep() then
+        rope.AnimState:PlayAnimation("down")
+        rope.AnimState:PushAnimation("idle_loop", true)
+    end
+
+    inst.hasrope:set(true)
+    inst:RemoveTag("canrope")
+    return true
+end
+
+local function RemoveRope(inst)
+    -- FIXME(JBK): rifts7: If a player is climbing the rope and it is removed they will get stuck in a teleport void.
+    -- This removing of the rope is not used yet so this will not be a case hit but it is a danger spot.
+    if not inst.hasrope:value() then
+        return false
+    end
+
+    if inst.components.lootdropper then
+        inst.components.lootdropper:DropLoot()
+    end
+
+    if inst.rope then
+        inst.rope:RemoveEventCallback("onremove", inst._onroperemoved)
+        inst.rope:ScheduleForDelete()
+        inst.rope = nil
+    end
+
+    inst.hasrope:set(false)
+    inst:AddTag("canrope")
+    return true
+end
+
+local function OnUsedRope(inst, rope, doer)
+    if inst:AddRope() then
+        if rope.components.stackable and rope.components.stackable:IsStack() then
+            rope.components.stackable:Get():Remove()
+        else
+            rope:Remove()
+        end
+        return true
+    end
+    return false
+end
+
+local function OnSave(inst, data)
+    if inst.hasrope:value() then
+        data.hasrope = true
+    end
+end
+
+local function OnLoad(inst, data, ents)
+    if data then
+        if data.hasrope then
+            if not inst:AddRope() then
+                -- This entity loaded before the exit teleporter so reschedule the rope creation.
+                inst.hadrope_fromload = true
+            end
+        end
+    end
 end
 
 local function fn()
@@ -72,6 +183,15 @@ local function fn()
 
 	inst:SetDeploySmartRadius(3)
 
+    inst.hasrope = net_bool(inst.GUID, "vault_lobby_exit.hasrope", "hasropedirty")
+    inst:AddTag("canrope")
+    --Dedicated server does not need to spawn the local fx
+    if not TheNet:IsDedicated() then
+        inst.ropevfx = CreateVaultLadderVisualFor(inst)
+        inst:ListenForEvent("hasropedirty", OnHasRopeDirty)
+        inst.highlightchildren = {inst.ropevfx}
+    end
+
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then
         return inst
@@ -80,6 +200,9 @@ local function fn()
     inst.scrapbook_facing = FACING_LEFT
 
     inst:AddComponent("inspectable")
+
+    local lootdropper = inst:AddComponent("lootdropper")
+    lootdropper:SetLoot({"rope"})
 
     local teleporter = inst:AddComponent("teleporter")
     teleporter.onActivate = OnActivate
@@ -94,9 +217,20 @@ local function fn()
     inst._exittarget_onremove = function()
         inst:SetExitTarget(nil)
     end
+
+    inst._onroperemoved = function()
+        inst.rope = nil
+    end
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+    inst.AddRope = AddRope
+    inst.RemoveRope = RemoveRope
+    inst.OnUsedRope = OnUsedRope
+
     TheWorld:PushEvent("ms_register_vault_lobby_exit", inst)
 
     return inst
 end
 
-return Prefab("vault_lobby_exit", fn, assets)
+return Prefab("vault_lobby_exit", fn, assets, prefabs)

@@ -894,6 +894,9 @@ defs.playbill1.LayoutNewRoomAtXZ = function(inst, x, z)
 		decortable.Transform:SetPosition(x1, 0, z1)
 		if j == playbillvar then
 			decortable.components.furnituredecortaker:AcceptDecor(SpawnPrefab("playbill_the_vault"), TheWorld)
+		else
+			-- TODO add in vault compass
+			--decortable.components.furnituredecortaker:AcceptDecor(SpawnPrefab("vault_compass"), TheWorld)
 		end
 		SpawnPrefab("vault_chandelier"):SetVariation(j == lightvar and 2 or 1).Transform:SetPosition(x1, 0, z1)
 		local theta = math.random() * TWOPI
@@ -936,6 +939,130 @@ defs.playbill1.LayoutNewRoomAtXZ = function(inst, x, z)
 		SpawnPrefab("vault_pillar"):MakeCapped(2):AttachRelic().Transform:SetPosition(x - dx * TILE_SIZE, 0, z - dz * TILE_SIZE)
 		i = i + 1
 	end
+end
+
+--------------------------------------------------------------------------
+
+defs["decon1"] = {}
+
+defs.decon1.TerraformRoomAtXZ = function(inst, x, z)
+    local terraformer = Terraformer()
+
+    for col = 3, 4 do
+        for row = -4, 4 do
+            terraformer:EraseTile(col, row)
+            terraformer:EraseTile(-col, row)
+        end
+    end
+    for row = -2, 2 do
+        terraformer:EraseTile(2, row)
+        terraformer:EraseTile(-2, row)
+    end
+    for row = -1, 1 do
+        terraformer:EraseTile(5, row)
+        terraformer:EraseTile(-5, row)
+    end
+    terraformer:EraseTile(1, 2)
+    terraformer:EraseTile(1, -2)
+    terraformer:EraseTile(-1, 2)
+    terraformer:EraseTile(-1, -2)
+
+    terraformer:ApplyAtXZ(x, z)
+end
+
+defs.decon1.LayoutNewRoomAtXZ = function(inst, x, z)
+    -- Mist generators.
+    local mist1 = SpawnPrefab("vault_decon_mister")
+    local mist2 = SpawnPrefab("vault_decon_mister")
+    local mist3 = SpawnPrefab("vault_decon_mister")
+    local mist4 = SpawnPrefab("vault_decon_mister")
+    local PLACEMENT_SIZE = 3.5 -- 14 units for the square and we have one mister in the center of each quadrant of the square.
+    mist1.Transform:SetPosition(x + PLACEMENT_SIZE, 0, z + PLACEMENT_SIZE)
+    mist2.Transform:SetPosition(x - PLACEMENT_SIZE, 0, z + PLACEMENT_SIZE)
+    mist3.Transform:SetPosition(x + PLACEMENT_SIZE, 0, z - PLACEMENT_SIZE)
+    mist4.Transform:SetPosition(x - PLACEMENT_SIZE, 0, z - PLACEMENT_SIZE)
+
+    -- Doors.
+    local door1 = SpawnPrefab("vault_decon_door_collision")
+    local door2 = SpawnPrefab("vault_decon_door_collision")
+    door1.Transform:SetPosition(x, 0, z - TILE_SCALE * 2)
+    door2.Transform:SetPosition(x, 0, z + TILE_SCALE * 2)
+
+    -- Sanity adjusters.
+    local sanityadjuster = SpawnPrefab("vault_sanity_adjuster")
+    sanityadjuster.Transform:SetPosition(x, 0, z + 0.8)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x + TILE_SCALE + 2, 0, z + TILE_SCALE * 5 - 2)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x - TILE_SCALE - 2, 0, z + TILE_SCALE * 5 - 2)
+
+    -- Mist switch.
+    local switch = SpawnPrefab("vault_decon_switch")
+    switch.Transform:SetPosition(x + TILE_SCALE * 1.3, 0, z)
+    switch.components.entitytracker:TrackEntity("door1", door1)
+    switch.components.entitytracker:TrackEntity("door2", door2)
+    switch.components.entitytracker:TrackEntity("mist1", mist1)
+    switch.components.entitytracker:TrackEntity("mist2", mist2)
+    switch.components.entitytracker:TrackEntity("mist3", mist3)
+    switch.components.entitytracker:TrackEntity("mist4", mist4)
+    switch.components.entitytracker:TrackEntity("sanityadjuster", sanityadjuster)
+
+    -- Reset switches in case of key entry with the door in the opposite state from where the player needs to get to.
+    local switch_reset = SpawnPrefab("vault_decon_switch_reset")
+    switch_reset.Transform:SetPosition(x + TILE_SCALE, 0, z - TILE_SCALE * 3)
+    switch_reset.components.entitytracker:TrackEntity("switch", switch)
+    local switch_reset2 = SpawnPrefab("vault_decon_switch_reset2")
+    switch_reset2.Transform:SetPosition(x + TILE_SCALE, 0, z + TILE_SCALE * 3)
+    switch_reset2.components.entitytracker:TrackEntity("switch", switch)
+
+    -- Pillars
+    local brokenvar = math.random(4)
+    SpawnPrefab("vault_pillar"):MakeBroken(1 == brokenvar).Transform:SetPosition(x + TILE_SCALE * 3, 0, z + TILE_SIZE)
+    SpawnPrefab("vault_pillar"):MakeBroken(2 == brokenvar).Transform:SetPosition(x + TILE_SCALE * 3, 0, z - TILE_SIZE)
+    SpawnPrefab("vault_pillar"):MakeBroken(3 == brokenvar).Transform:SetPosition(x - TILE_SCALE * 3, 0, z + TILE_SIZE)
+    SpawnPrefab("vault_pillar"):MakeBroken(4 == brokenvar).Transform:SetPosition(x - TILE_SCALE * 3, 0, z - TILE_SIZE)
+    brokenvar = math.random(2)
+    SpawnPrefab("vault_pillar"):MakeBroken(1 == brokenvar).Transform:SetPosition(x + TILE_SIZE * 3.5, 0, z + TILE_SIZE * 3.5)
+    SpawnPrefab("vault_pillar"):MakeBroken(2 == brokenvar).Transform:SetPosition(x - TILE_SIZE * 3.5, 0, z + TILE_SIZE * 3.5)
+    brokenvar = math.random(2)
+    SpawnPrefab("vault_pillar"):MakeBroken(1 == brokenvar).Transform:SetPosition(x + TILE_SIZE * 3.5, 0, z - TILE_SIZE * 3.5)
+    SpawnPrefab("vault_pillar"):MakeBroken(2 == brokenvar).Transform:SetPosition(x - TILE_SIZE * 3.5, 0, z - TILE_SIZE * 3.5)
+
+    -- Lights.
+    SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x - TILE_SCALE * 1.5, 0, z - TILE_SCALE * 3.5)
+    SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x + TILE_SCALE * 1.5, 0, z - TILE_SCALE * 3.5)
+    SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x, 0, z)
+    SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x - TILE_SCALE * 1.5, 0, z + TILE_SCALE * 3.5)
+    SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x + TILE_SCALE * 1.5, 0, z + TILE_SCALE * 3.5)
+
+    switch:SetDoorStates(true) -- Always at the end for the switch to setup the room.
+end
+
+--------------------------------------------------------------------------
+
+defs["key1"] = {}
+
+defs.key1.TerraformRoomAtXZ = function(inst, x, z)
+	local terraformer = Terraformer()
+	terraformer:ApplyAtXZ(x, z)
+end
+
+defs.key1.LayoutNewRoomAtXZ = function(inst, x, z)
+	local trial = SpawnPrefab("vault_key_trial")
+	trial.Transform:SetPosition(x, 0, z)
+	trial:InitializeLayout()
+
+    -- Sanity adjusters.
+    --  Center column.
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x, 0, z + TILE_SCALE * 4 + 1.5)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x, 0, z)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x, 0, z - (TILE_SCALE * 4 + 1.5))
+    --  Right column.
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x + TILE_SCALE * 4 - 2.5, 0, z + TILE_SCALE * 2 + 2.5)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x + TILE_SCALE * 4 + 1.5, 0, z)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x + TILE_SCALE * 4 - 2.5, 0, z - (TILE_SCALE * 2 + 2.5))
+    --  Left column.
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x - (TILE_SCALE * 4 - 2.5), 0, z + TILE_SCALE * 2 + 2.5)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x - (TILE_SCALE * 4 + 1.5), 0, z)
+    SpawnPrefab("vault_sanity_adjuster_alwaysincreasing").Transform:SetPosition(x - (TILE_SCALE * 4 - 2.5), 0, z - (TILE_SCALE * 2 + 2.5))
 end
 
 --------------------------------------------------------------------------

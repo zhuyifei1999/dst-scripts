@@ -447,6 +447,42 @@ local Wisecracker = Class(function(self, inst)
 	inst:ListenForEvent("ms_maxclockworks", function(inst, target)
 		inst.components.talker:Say(GetString(inst, "ANNOUNCE_MAX_CLOCKWORKS"))
 	end)
+    
+    local lastmisted
+    local mistedtask
+    local function ondeconmisted(inst)
+        mistedtask = nil
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_GOT_DECON_MISTED"))
+    end
+    inst:ListenForEvent("got_decon_misted", function(inst)
+        local t = GetTime()
+        if lastmisted == nil or lastmisted + 15 < t then
+            lastmisted = t
+            if mistedtask then
+                mistedtask:Cancel()
+            end
+            mistedtask = inst:DoTaskInTime(0.5 + math.random() * 0.5, ondeconmisted)
+        end
+    end)
+
+	local lastshadowassist
+	local shadowassisttask
+	local function onshadowassisted(inst)
+		shadowassisttask = nil
+		if TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition()) then
+			inst.components.talker:Say(GetString(inst, "ANNOUNCE_VAULT_SHADOW_ASSIST"))
+		end
+	end
+	inst:ListenForEvent("ms_vaultshadowassist", function(inst)
+		local t = GetTime()
+		if lastshadowassist == nil or lastshadowassist + 300 < t then
+			lastshadowassist = t
+			if shadowassisttask then
+				shadowassisttask:Cancel()
+			end
+			shadowassisttask = inst:DoTaskInTime(2 + math.random() * 2, onshadowassisted)
+		end
+	end)
 
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)

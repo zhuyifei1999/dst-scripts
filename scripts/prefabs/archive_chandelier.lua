@@ -9,8 +9,19 @@ local assets_vault =
 	Asset("ANIM", "anim/chandelier_vault.zip"),
 }
 
+local assets_crawler =
+{
+	Asset("ANIM", "anim/chandelier_vault2.zip"),
+}
+
+local prefabs_crawler =
+{
+	"vault_crawler",
+}
+
+local OFF = 0
 local ON = 1
-local OFF = 2
+local DROP = 2
 
 local LIGHT_PARAMS =
 {
@@ -55,6 +66,16 @@ local LIGHT_PARAMS_VAULT =
 		falloff = 1,
 		colour = { 0, 0, 0 },
 		time = 3,
+	},
+
+	[DROP] =
+	{
+		id = DROP,
+		radius = 4.5,
+		intensity = 0.7,
+		falloff = 0.8,
+		colour = { 180/255, 240/255, 255/255 },
+		time = 9 * FRAMES,
 	},
 }
 
@@ -154,7 +175,7 @@ local function pushparams(inst, params)
     inst.Light:SetColour(unpack(params.colour))
 
     if TheWorld.ismastersim then
-        if params.intensity > 0 then
+		if params.intensity > 0 and not inst.detached then
             inst.Light:Enable(true)
         else
             inst.Light:Enable(false)
@@ -257,7 +278,7 @@ local function OnSpawnTask(inst, cavephase)
     end
 end
 
-local function updatelight(inst)
+local function _updatelight(inst)
 	local powered
 	if inst.vaultpowered then
 		local vaultroommanager = TheWorld.components.vaultroommanager
@@ -360,7 +381,7 @@ local function MakeChandelier(name, build, light_params, flamedata, sfxheight, m
 
 		inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
-		inst.updatelight = updatelight
+		inst.updatelight = _updatelight
 
 		if master_postinit then
 			master_postinit(inst)
@@ -371,15 +392,19 @@ local function MakeChandelier(name, build, light_params, flamedata, sfxheight, m
 	return Prefab(name, fn, assets, prefabs)
 end
 
+--------------------------------------------------------------------------
+
 local function archive_master_postinit(inst)
 	inst:AddComponent("playerprox")
 	inst.components.playerprox:SetDist(20, 23) --15,17
-	inst.components.playerprox:SetOnPlayerNear(updatelight)
-	inst.components.playerprox:SetOnPlayerFar(updatelight)
+	inst.components.playerprox:SetOnPlayerNear(inst.updatelight)
+	inst.components.playerprox:SetOnPlayerFar(inst.updatelight)
 
-	inst:ListenForEvent("arhivepoweron", function() updatelight(inst) end, TheWorld)
-	inst:ListenForEvent("arhivepoweroff", function() updatelight(inst) end, TheWorld)
+	inst:ListenForEvent("arhivepoweron", function() inst:updatelight() end, TheWorld)
+	inst:ListenForEvent("arhivepoweroff", function() inst:updatelight() end, TheWorld)
 end
+
+--------------------------------------------------------------------------
 
 local function vault_SetVariation(inst, variation)
 	inst.variation = variation
@@ -409,10 +434,63 @@ local function vault_master_postinit(inst)
 	inst.OnSave = vault_OnSave
 	inst.OnLoad = vault_OnLoad
 
-	inst:ListenForEvent("ms_vaultroom_vault_playerleft", function() updatelight(inst) end, TheWorld)
-	inst:ListenForEvent("ms_vaultroom_vault_playerentered", function() updatelight(inst) end, TheWorld)
-	updatelight(inst)
+	inst:ListenForEvent("ms_vaultroom_vault_playerleft", function() inst:updatelight() end, TheWorld)
+	inst:ListenForEvent("ms_vaultroom_vault_playerentered", function() inst:updatelight() end, TheWorld)
+	inst:updatelight()
 end
 
+--------------------------------------------------------------------------
+
+local function crawler_UpdateLight(inst)
+	if not inst.dropped then
+		_updatelight(inst)
+	elseif inst._lightphase:value() ~= DROP then
+		inst._lightphase:set(DROP)
+		OnLightPhaseDirty(inst)
+	end
+end
+
+local function crawler_OnAnimOver(inst)
+	inst:RemoveEventCallback("animover", crawler_OnAnimOver)
+	inst:ListenForEvent("animqueueover", inst.Remove)
+	inst.persists = false
+	inst.detached = true
+	inst.Light:Enable(false)
+	inst.AnimState:ClearBloomEffectHandle()
+
+	local x, _, z = inst.Transform:GetWorldPosition()
+	local crawler = SpawnPrefab("vault_crawler")
+	crawler.Transform:SetPosition(x, 0, z)
+	crawler.sg:GoToState("spawn")
+
+	inst:PushEvent("ms_vaultcrawler_dropped", crawler)
+end
+
+local function crawler_DropCrawler(inst)
+	if inst.dropped then
+		return
+	end
+	inst.dropped = true
+	inst:ListenForEvent("animover", crawler_OnAnimOver)
+	inst.AnimState:PlayAnimation("fall")
+	inst.AnimState:PushAnimation("fall_pst")
+	--inst.AnimState:PushAnimation("empty_idle")
+	inst.AnimState:PushAnimation("withdraw", false)
+	inst:updatelight()
+end
+
+local function crawler_master_postinit(inst)
+	inst.vaultpowered = true
+	inst.updatelight = crawler_UpdateLight
+	inst.DropCrawler = crawler_DropCrawler
+
+	inst:ListenForEvent("ms_vaultroom_vault_playerleft", function() inst:updatelight() end, TheWorld)
+	inst:ListenForEvent("ms_vaultroom_vault_playerentered", function() inst:updatelight() end, TheWorld)
+	inst:updatelight()
+end
+
+--------------------------------------------------------------------------
+
 return MakeChandelier("archive_chandelier", "chandelier_archives", LIGHT_PARAMS, FLAMEDATA, 8, archive_master_postinit, assets),
-	MakeChandelier("vault_chandelier", "chandelier_vault", LIGHT_PARAMS_VAULT, nil, 6, vault_master_postinit, assets_vault)
+	MakeChandelier("vault_chandelier", "chandelier_vault", LIGHT_PARAMS_VAULT, nil, 6, vault_master_postinit, assets_vault),
+	MakeChandelier("vault_crawler_chandelier", "chandelier_vault2", LIGHT_PARAMS_VAULT, nil, 6, crawler_master_postinit, assets_crawler, prefabs_crawler)

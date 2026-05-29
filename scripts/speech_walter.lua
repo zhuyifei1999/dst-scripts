@@ -1282,6 +1282,17 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
 --fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
+    -- Rifts 7
+
+    ANNOUNCE_MITEGLAND_DEBUFF =
+	{
+		"I-is it getting hot in here...?",
+		"I feel so hot, I-I might have a fever...",
+	},
+	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "I-it's okay, Woby. I'm feeling better now!",
+    ANNOUNCE_GOT_DECON_MISTED = "Huh. Is it just me, or does the atmosphere in here feel lighter?",
+	ANNOUNCE_VAULT_SHADOW_ASSIST = "Wait a minute! They're helping us, Woby!",
+
 	BATTLECRY =
 	{
 		GENERIC = "Sorry!!",
@@ -5939,7 +5950,7 @@ return{
         },
 --fallback to speech_wilson.lua 		VAULT_TELEPORTER_UNDERCONSTRUCTION = "\"This Waymark is under development for a future update.\"",
 		VAULT_ORB = "That's not your ball, silly girl!",
-        VAULT_LOBBY_EXIT = "You think this is the way out, Woby?",
+        VAULT_LOBBY_EXIT = "You should always use a safety rope when you're exploring a cave!",
 		VAULT_CHANDELIER_BROKEN = "Wonder what caused that.",
 
 		ANCIENT_HUSK = "It makes me feel bad too, Woby.",
@@ -6164,6 +6175,93 @@ return{
 
         WX78_SHADOWDRONE_DEBUFFER = "Ooh, I think it studies the monsters!",
         WX78_SHADOWDRONE_HARVESTER = "That sure is handy! Or should I say clawy! Get it, Wobes?",
+
+        -- Rifts 7
+        STALKER_NPC = "I've got so many questions!! Can you feel things without skin? Do you eat? How do you see? ...Hey, where are you going?",
+
+        MITEGLAND =
+        {
+            GENERIC = "A great hot glob of greasy Geothermite guts!",
+            COLD = "It's all cooled off.",
+        },
+        MITEGLAND_COOKED = "I just need to be careful not to burn my tongue.",
+
+        BROKEN_FUMAROLETOOLITEM = "I bet I could melt it back together with a little heat.", -- character should comment that they could melt the pieces back together by heating it.
+        FUMAROLEAXE =
+		{
+			GENERIC = "Uh oh. Looks like it's about to break...", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "It's barely warm.", -- The next state, its lukewarm, no cracks.
+			WARM = "It'll keep me warm while I chop wood!", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Wow, I can feel the heat from here!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEPICKAXE =
+		{
+			GENERIC = "Uh oh. Looks like it's about to break...", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "It's barely warm.", -- The next state, its lukewarm, no cracks.
+			WARM = "It'll keep me warm while I break rocks!", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Wow, I can feel the heat from here!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEHAMMER =
+		{
+			GENERIC = "Uh oh. Looks like it's about to break...", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "It's barely warm.", -- The next state, its lukewarm, no cracks.
+			WARM = "It'll keep me warm while I hammer things!", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Wow, I can feel the heat from here!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLESHOVEL =
+		{
+			GENERIC = "Uh oh. Looks like it's about to break...", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "It's barely warm.", -- The next state, its lukewarm, no cracks.
+			WARM = "It'll keep me warm while I'm digging!", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Wow, I can feel the heat from here!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLE_FARM_HOE =
+		{
+			GENERIC = "Uh oh. Looks like it's about to break...", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "It's barely warm.", -- The next state, its lukewarm, no cracks.
+			WARM = "It'll keep me warm while I'm gardening!", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Wow, I can feel the heat from here!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        -- This trap is a cluster of rocks gets heated and deals fire damage to creatures (including players!) on top
+        TRAP_FUMAROLE =
+        {
+            HELD = "Sorry Woby, those aren't treats.", -- When held in the inventory.
+            GENERIC = "Now it's just rocks.", -- Coldest state, the trap is ineffective.
+            WARM = "It looks nice and warm. Er, maybe a little too warm...", -- Warm, a bit red hot, it does some damage.
+            HOT = "Watch out Woby, that's hot!", -- Super hot, it's doing full fire damage.
+        },
+
+        HEALINGSALVE_FUMAROLE = "Can't be too careful when it comes to fire safety!", -- Provides summer insulation and fire immunity/resistance when applied.
+
+		VAULT_PILLAR_GUARD = "Wow! The pillar came to life!",
+		VAULT_PILLAR_GUARD_DORMANT = "That sure is some neat architecture!",
+		VAULT_CRAWLER = "This would've made a great Midnight Broadcast episode! \"Attack of the subterranean spider-bots!\"",
+
+        VAULT_DECON_DOOR = "There's just gotta be something important inside!",
+        VAULT_DECON_MISTER = "Excuse me, mister! Heh. Get it? Because it sprays that misty stuff!",
+		VAULT_KEY_ACTIVATOR = "It looks like something fits inside. Woby and I are on the case!",
+		VAULT_CRAWLER_LEVER = "What's the worst that could happen?",
+        VAULT_KEY = "I can't wait to see what this unlocks!",
+        VAULT_KEY_PEDESTAL =
+        {
+            GENERIC = "It's so mysterious!", -- Keystone is on it, ready to take
+            PICKED = "I sure that key wasn't cursed!", -- No more keystone on it, we already took it, or someone else did.
+        },
+        VAULT_ORB_FRAGMENT = "What do ya think that's for, Woby?",
+        VAULT_ORB_REFINED = "Pinetree Pioneers don't normally take shortcuts, but this might come in handy.",
+
+        VAULT_COMPASS =
+        {
+            GENERIC = "Now we'll find our way there for sure!", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "I don't think it works here, Woby.", -- We're not in the vault, so its in an ineffective state.
+        },
+
+        CEILING_ROPE = "Good thing I have my climbing badge!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

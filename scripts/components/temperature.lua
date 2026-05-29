@@ -1,4 +1,5 @@
 local easing = require("easing")
+local SourceModifierList = require("util/sourcemodifierlist")
 
 local ZERO_DISTANCE = 10
 local ZERO_DISTSQ = ZERO_DISTANCE * ZERO_DISTANCE
@@ -67,13 +68,15 @@ function Temperature:SetOverheatHurtRate(rate)
     self.overheathurtrate = rate
 end
 
-function Temperature:DoDelta(delta)
-    local winterInsulation,summerInsulation = self:GetInsulation()
+function Temperature:DoDelta(delta, skipinsulation)
+    if not skipinsulation then
+        local winterInsulation,summerInsulation = self:GetInsulation()
 
-    if delta > 0 then
-        delta = delta * (TUNING.SEG_TIME / (TUNING.SEG_TIME + summerInsulation))
-    else
-        delta = delta * (TUNING.SEG_TIME / (TUNING.SEG_TIME + winterInsulation))
+        if delta > 0 then
+            delta = delta * (TUNING.SEG_TIME / (TUNING.SEG_TIME + summerInsulation))
+        else
+            delta = delta * (TUNING.SEG_TIME / (TUNING.SEG_TIME + winterInsulation))
+        end
     end
 
     self:SetTemperature(self.current + delta)
@@ -128,7 +131,7 @@ function Temperature:OnLoad(data)
     end
 
     if data.current ~= nil and self.current ~= data.current then
-        if self.inst:HasTag("player") then
+        if self.inst.isplayer then
             --world updates while players are logged off, so it looks glitchy
             --when you log off with winter temperature and log back into summer
             local world_temp = TheWorld.state.temperature
@@ -225,6 +228,29 @@ function Temperature:RemoveModifier(name)
     end
 end
 
+function Temperature:SetInsulationModifier(insulationtype, src, insulation, key)
+    self.insulation_modifiers = self.insulation_modifiers or {}
+    local modifiers = self.insulation_modifiers[insulationtype]
+	if modifiers == nil then
+		modifiers = SourceModifierList(self.inst, 0, SourceModifierList.additive)
+		self.insulation_modifiers[insulationtype] = modifiers
+	end
+	modifiers:SetModifier(src, insulation, key)
+end
+
+function Temperature:RemoveInsulationModifier(insulationtype, src, key)
+	local modifiers = self.insulation_modifiers ~= nil and self.insulation_modifiers[insulationtype] or nil
+	if modifiers ~= nil then
+		modifiers:RemoveModifier(src, key)
+		if modifiers:IsEmpty() then
+			self.insulation_modifiers[insulationtype] = nil
+            if next(self.insulation_modifiers) == nil then
+                self.insulation_modifiers = nil
+            end
+		end
+	end
+end
+
 function Temperature:GetInsulation()
     local winterInsulation = self.inherentinsulation
     local summerInsulation = self.inherentsummerinsulation
@@ -253,6 +279,16 @@ function Temperature:GetInsulation()
 
     if self.sheltered then
         summerInsulation = summerInsulation + self.shelterinsulation
+    end
+
+    if self.insulation_modifiers ~= nil then
+        if self.insulation_modifiers[SEASONS.WINTER] then
+            winterInsulation = winterInsulation + self.insulation_modifiers[SEASONS.WINTER]:Get()
+        end
+
+        if self.insulation_modifiers[SEASONS.SUMMER] then
+            summerInsulation = summerInsulation + self.insulation_modifiers[SEASONS.SUMMER]:Get()
+        end
     end
 
     if not TheWorld:HasTag("cave") then

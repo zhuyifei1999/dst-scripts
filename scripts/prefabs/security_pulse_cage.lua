@@ -8,11 +8,6 @@ local prefabs_empty =
     "security_pulse_cage_full",
 }
 
-local prefabs_full =
-{
-
-}
-
 local SOUND_LOOP_NAME = "soundloop"
 
 local FULL_IDLE_ANIMNAME      = "idle_full2"
@@ -122,6 +117,10 @@ local function EmptyCageCommonFn(inst)
     inst:AddTag("security_powerpoint")
 end
 
+local function FullCage_UseableTargetedItem_ValidTarget(inst, target, doer)
+	return target.prefab == "vault_key_activator" and target:IsEmpty()
+end
+
 local function FullCageCommonFn(inst)
     inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
@@ -136,6 +135,8 @@ local function FullCageCommonFn(inst)
     inst.AnimState:SetSymbolLightOverride("fx_archive_point",      1)
     inst.AnimState:SetSymbolLightOverride("fx_archive_point_loop", 1)
     inst.AnimState:SetSymbolLightOverride("light",                 1)
+
+	inst.UseableTargetedItem_ValidTarget = FullCage_UseableTargetedItem_ValidTarget
 end
 
 local function EmptyCageFn()
@@ -151,6 +152,29 @@ local function EmptyCageFn()
     return inst
 end
 
+local function OnUsedOnVaultKeyActivator(inst, target, doer)
+	if target.prefab == "vault_key_activator" then
+		target:PushEvent("ms_depositspark", inst)
+
+		local cage = SpawnPrefab("security_pulse_cage")
+		cage.prevcontainer = inst.prevcontainer
+		cage.prevslot = inst.prevslot
+
+		if doer and doer.components.inventory then
+			doer.components.inventory:GiveItem(cage, nil, doer:GetPosition())
+		else
+			local ent = doer or target or inst
+			local x, y, z = ent.Transform:GetWorldPosition()
+			cage.components.inventoryitem:DoDropPhysics(x, y, z, true)
+		end
+
+		inst:Remove()
+
+		return true
+	end
+	return false
+end
+
 local function FullCageFn(full)
     local inst = CommonFn(FullCageCommonFn, FULL_IDLE_ANIMNAME)
 
@@ -159,6 +183,9 @@ local function FullCageFn(full)
     end
 
     inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+
+	inst:AddComponent("useabletargeteditem")
+	inst.components.useabletargeteditem:SetOnUseFn(OnUsedOnVaultKeyActivator)
 
     inst.OnEntityWake  = OnEntityWake
     inst.OnEntitySleep = OnEntitySleep
@@ -169,4 +196,4 @@ local function FullCageFn(full)
 end
 
 return Prefab("security_pulse_cage", EmptyCageFn, assets, prefabs_empty),
-    Prefab("security_pulse_cage_full", FullCageFn,  assets, prefabs_full )
+	Prefab("security_pulse_cage_full", FullCageFn, assets)

@@ -233,12 +233,9 @@ local function OnUpdateIceCircle(inst)
 			then
 				v.components.freezable:AddColdness(.1, 1, inst.freezelimit ~= nil)
 			end
-			if v.components.temperature ~= nil then
-				local newtemp = math.max(v.components.temperature.mintemp, TUNING.DEER_ICE_TEMPERATURE)
-				if newtemp < v.components.temperature:GetCurrent() then
-					v.components.temperature:SetTemperature(newtemp)
-				end
-			end
+			if TUNING.DEER_ICE_TEMPERATURE < GetEntityTemperature(v) then
+                SetEntityTemperature(v, TUNING.DEER_ICE_TEMPERATURE)
+            end
 			if v.components.grogginess ~= nil and
 				not v.components.grogginess:IsKnockedOut() and
 				v.components.grogginess.grog_amount < TUNING.DEER_ICE_FATIGUE

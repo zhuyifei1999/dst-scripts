@@ -3,12 +3,18 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/staff_purple_base_ground.zip"),
+	Asset("ANIM", "anim/vaultorbdestination.zip"), -- From vaultorbteleportdestination component.
+    Asset("MINIMAP_IMAGE", "vaultorbdestination_icon"), -- From vaultorbteleportdestination component.
 }
 
 local prefabs =
 {
     "gemsocket",
     "collapse_small",
+    "globalmapicon", -- From vaultorbteleportdestination component.
+    -- lootdropper from telebase_gemsocket.lua
+    "purplegem",
+    "vault_orb_refined",
 }
 
 local function teleport_target(inst)
@@ -54,6 +60,18 @@ end
 
 --------------------------------------------------------------------------
 
+local function AddVaultOrbRefinedActions(inst)
+    if not inst.components.vaultorbteleportdestination then
+        inst:AddComponent("vaultorbteleportdestination")
+    end
+end
+
+local function RemoveVaultOrbRefinedActions(inst)
+    if inst.components.vaultorbteleportdestination then
+        inst:RemoveComponent("vaultorbteleportdestination")
+    end
+end
+
 local function getstatus(inst)
     return validteleporttarget(inst) and "VALID" or "GEMS"
 end
@@ -71,12 +89,13 @@ local function OnRemove(inst)
         v:Remove()
     end
     TELEBASES[inst] = nil
+    RemoveVaultOrbRefinedActions(inst)
 end
 
 local function dropgems(inst)
     for k, v in pairs(inst.components.objectspawner.objects) do
         if v.components.pickable ~= nil and v.components.pickable.caninteractwith then
-            inst.components.lootdropper:SpawnLootPrefab("purplegem")
+            inst.components.lootdropper:SpawnLootPrefab(v.gemprefab)
         end
     end
 end
@@ -103,14 +122,28 @@ local function onhit(inst)
 end
 
 local function OnGemChange(inst)
+    local requiredgem = nil
+    for k, v in pairs(inst.components.objectspawner.objects) do
+        if v.gemprefab then
+            requiredgem = v.gemprefab
+            break
+        end
+    end
+    for k, v in pairs(inst.components.objectspawner.objects) do
+        v.requiredgem = requiredgem
+    end
     if validteleporttarget(inst) then
         for k, v in pairs(inst.components.objectspawner.objects) do
             v.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        end
+        if requiredgem == "vault_orb_refined" then
+            AddVaultOrbRefinedActions(inst)
         end
     else
         for k, v in pairs(inst.components.objectspawner.objects) do
             v.AnimState:ClearBloomEffectHandle()
         end
+        RemoveVaultOrbRefinedActions(inst)
     end
 end
 

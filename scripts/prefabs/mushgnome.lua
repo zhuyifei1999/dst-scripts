@@ -152,6 +152,8 @@ local function normal_fn()
     inst.components.burnable.flammability = TUNING.LEIF_FLAMMABILITY
     inst.components.burnable:SetOnBurntFn(OnBurnt)
     inst.components.propagator.acceptsheat = true
+    inst.components.burnable:SetBurnTime(8 * TUNING.PLANTMOB_BURNTIME_MULT)
+    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
 
     MakeMediumFreezableCharacter(inst, "body")
 

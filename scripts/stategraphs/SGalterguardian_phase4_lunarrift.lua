@@ -1569,22 +1569,22 @@ local states =
 		{
 			FrameEvent(61, function(inst)
 				inst.sg.statemem.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF")
-				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff.components.npc_talker:DoNextLine()
 				inst.sg.statemem.wagstaff:DoTalkSound(1)
 			end),
 			FrameEvent(135, function(inst)
-				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff.components.npc_talker:DoNextLine()
 				inst.sg.statemem.wagstaff:DoTalkSound(2)
 			end),
 			FrameEvent(224, function(inst)
 				inst.sg.statemem.wagstaff:Materialize()
 			end),
 			FrameEvent(244, function(inst)
-				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff.components.npc_talker:DoNextLine()
 				inst.sg.statemem.wagstaff:DoTalkSound(1.5)
 			end),
 			FrameEvent(325, function(inst)
-				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff.components.npc_talker:DoNextLine()
 				inst.sg.statemem.wagstaff:DoTalkSound(1.5)
 			end),
 			FrameEvent(366, function(inst)

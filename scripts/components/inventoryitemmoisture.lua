@@ -60,8 +60,6 @@ end
 local InventoryItemMoisture = Class(function(self, inst)
     self.inst = inst
 
-    self.lastUpdate = GetTime()
-
     self._replica = nil
     --Don't initialize .moisture and .iswet until we have a link to inventoryitem replica
 end,
@@ -219,7 +217,7 @@ function InventoryItemMoisture:GetTargetMoisture()
 			end
 		end
 	end
-	local value = (self.inst.components.floater ~= nil and self.inst.components.floater.showing_effect and TUNING.MAX_WETNESS)
+	local value = (self.inst.components.floater ~= nil and self.inst.components.floater:IsFloating() and TUNING.MAX_WETNESS)
 		or (exposedroot and (TheWorld.state.israining and exposedroot.components.rainimmunity == nil and TheWorld.state.wetness or 0))
         or (owner.components.moisture ~= nil and owner.components.moisture:GetMoisture())
         or 0

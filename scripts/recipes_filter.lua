@@ -839,6 +839,11 @@ CRAFTING_FILTERS.TOOLS.recipes =
 	"goldenshovel",
 	"golden_farm_hoe",
 	"goldenpitchfork",
+	"fumaroleaxe",
+	"fumarolepickaxe",
+	"fumaroleshovel",
+	"fumarolehammer",
+	"fumarole_farm_hoe",
 	"moonglassaxe",
     "wx78module_spin",
 	"trap",
@@ -957,6 +962,7 @@ CRAFTING_FILTERS.REFINE.recipes =
 	"moonrockcrater",
 	"malbatross_feathered_weave",
 	"refined_dust",
+    "vault_orb_refined",
 }
 
 CRAFTING_FILTERS.WEAPONS.recipes =
@@ -992,6 +998,7 @@ CRAFTING_FILTERS.WEAPONS.recipes =
 	"trap_teeth",
 	"trap_bramble",
 	"beemine",
+	"trap_fumarole",
 	"waterballoon",
 	"boat_cannon_kit",
 	"cannonball_rock_item",
@@ -1089,6 +1096,7 @@ CRAFTING_FILTERS.RESTORATION.recipes =
 	"bandage_butterflywings",
 	"healingsalve",
 	"healingsalve_acid",
+	"healingsalve_fumarole",
 	"bandage",
 	"tillweedsalve",
 	"compostwrap",
@@ -1135,6 +1143,7 @@ CRAFTING_FILTERS.GARDENING.recipes =
 	"farm_plow_item",
 	"farm_hoe",
 	"golden_farm_hoe",
+	"fumarole_farm_hoe",
 	"wateringcan",
 	"premiumwateringcan",
 	"fertilizer",
@@ -1170,14 +1179,14 @@ CRAFTING_FILTERS.FISHING.recipes =
 	"oceanfishingbobber_canary",
 	"oceanfishingbobber_goose",
 	"oceanfishingbobber_malbatross",
-	
+
 	"oceanfishinglure_spoon_red",
 	"oceanfishinglure_spoon_green",
 	"oceanfishinglure_spoon_blue",
 	"oceanfishinglure_spinner_red",
 	"oceanfishinglure_spinner_green",
 	"oceanfishinglure_spinner_blue",
-	
+
 	"oceanfishinglure_hermit_rain",
 	"oceanfishinglure_hermit_snow",
 	"oceanfishinglure_hermit_drowsy",
@@ -1464,6 +1473,8 @@ CRAFTING_FILTERS.SUMMER.recipes =
 	"grass_umbrella",
 	"umbrella",
 	"featherfan",
+
+	"healingsalve_fumarole",
 
 	"reflectivevest",
 	"hawaiianshirt",

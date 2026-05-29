@@ -1244,6 +1244,17 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
 --fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
+    -- Rifts 7
+
+    ANNOUNCE_MITEGLAND_DEBUFF =
+	{
+		"Hot! Hot!!",
+		"Aaaaa! Burning up!!",
+	},
+	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "Ahhh. Burning gone",
+    ANNOUNCE_GOT_DECON_MISTED = "Feel nice!",
+	ANNOUNCE_VAULT_SHADOW_ASSIST = "Shadow... friends?",
+
 	BATTLECRY =
 	{
 		GENERIC = "Attack!",
@@ -5901,7 +5912,7 @@ return{
         },
 --fallback to speech_wilson.lua 		VAULT_TELEPORTER_UNDERCONSTRUCTION = "\"This Waymark is under development for a future update.\"",
 		VAULT_ORB = "Who friend lose ball?",
-        VAULT_LOBBY_EXIT = "Jump!",
+        VAULT_LOBBY_EXIT = "Leave friend string for climbing?",
 		VAULT_CHANDELIER_BROKEN = "Ball fall down",
 
 		ANCIENT_HUSK = "Why, friends? Why?",
@@ -6126,6 +6137,93 @@ return{
 
         WX78_SHADOWDRONE_DEBUFFER = "Tell robot friend how to fight friends",
         WX78_SHADOWDRONE_HARVESTER = "Friend get things",
+
+        -- Rifts 7
+        STALKER_NPC = "Friend...?",
+
+        MITEGLAND =
+        {
+            GENERIC = "Warm!",
+            COLD = "Oh... where warm go?",
+        },
+        MITEGLAND_COOKED = "Oh! Very hot!",
+
+        BROKEN_FUMAROLETOOLITEM = "Make hot to fix!", -- character should comment that they could melt the pieces back together by heating it.
+        FUMAROLEAXE =
+		{
+			GENERIC = "Going to break!", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "No more warm?", -- The next state, its lukewarm, no cracks.
+			WARM = "Warm chopper", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Ah! Hot!!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEPICKAXE =
+		{
+			GENERIC = "Going to break!", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "No more warm?", -- The next state, its lukewarm, no cracks.
+			WARM = "Warm pokey", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Ah! Hot!!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEHAMMER =
+		{
+			GENERIC = "Going to break!", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "No more warm?", -- The next state, its lukewarm, no cracks.
+			WARM = "Warm smasher", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Ah! Hot!!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLESHOVEL =
+		{
+			GENERIC = "Going to break!", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "No more warm?", -- The next state, its lukewarm, no cracks.
+			WARM = "Warm digger", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Ah! Hot!!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLE_FARM_HOE =
+		{
+			GENERIC = "Going to break!", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "No more warm?", -- The next state, its lukewarm, no cracks.
+			WARM = "Warm dirt mover", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "Ah! Hot!!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        -- This trap is a cluster of rocks gets heated and deals fire damage to creatures (including players!) on top
+        TRAP_FUMAROLE =
+        {
+            HELD = "Hot rocks", -- When held in the inventory.
+            GENERIC = "Oh. Not hot anymore", -- Coldest state, the trap is ineffective.
+            WARM = "Careful! Hot!", -- Warm, a bit red hot, it does some damage.
+            HOT = "Hot ground! Very hot!!", -- Super hot, it's doing full fire damage.
+        },
+
+        HEALINGSALVE_FUMAROLE = "Ahhh. Feel nice", -- Provides summer insulation and fire immunity/resistance when applied.
+
+		VAULT_PILLAR_GUARD = "Mean rock!",
+		VAULT_PILLAR_GUARD_DORMANT = "Tall rock friend",
+		VAULT_CRAWLER = "Rolly glow bug",
+
+        VAULT_DECON_DOOR = "Up and down, up and down",
+        VAULT_DECON_MISTER = "Spritz spritz!",
+		VAULT_KEY_ACTIVATOR = "Oh? Need something...",
+		VAULT_CRAWLER_LEVER = "Pull?",
+        VAULT_KEY = "Scary...",
+        VAULT_KEY_PEDESTAL =
+        {
+            GENERIC = "Scared to take", -- Keystone is on it, ready to take
+            PICKED = "Gone", -- No more keystone on it, we already took it, or someone else did.
+        },
+        VAULT_ORB_FRAGMENT = "What for?",
+        VAULT_ORB_REFINED = "Shiny friend!",
+
+        VAULT_COMPASS =
+        {
+            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+        },
+
+        CEILING_ROPE = "Helpful friend",
     },
 
     DESCRIBE_GENERIC = "Friend?",

@@ -13,26 +13,47 @@ local function NotifyBrainOfTarget(inst, target)
     end
 end
 
+local TARGET_DIST = TUNING.SHADOWCREATURE_TARGET_DIST
+local TARGET_DIST_SQ = TARGET_DIST * TARGET_DIST
+
+local VAULT_TARGET_MUST_TAGS = { "epic" }
+local VAULT_TARGET_CANT_TAGS = { "INLIMBO" }
+local function IsVaultTargetValid(guy, inst)
+    return guy.prefab == "vault_pillar_guard" and inst.components.combat:CanTarget(guy)
+end
+
 local function retargetfn(inst)
-    local maxrangesq = TUNING.SHADOWCREATURE_TARGET_DIST * TUNING.SHADOWCREATURE_TARGET_DIST
+    local maxrangesq = TARGET_DIST_SQ
     local rangesq, rangesq1, rangesq2 = maxrangesq, math.huge, math.huge
     local target1, target2 = nil, nil
+    local invault = nil
     for i, v in ipairs(AllPlayers) do
         if v.components.sanity:IsCrazy() and not v:HasTag("playerghost") then
             local distsq = v:GetDistanceSqToInst(inst)
             if distsq < rangesq then
+                local area_data = v.components.areaaware ~= nil and v.components.areaaware:GetCurrentArea() or nil
                 if inst.components.shadowsubmissive:TargetHasDominance(v) then
                     if distsq < rangesq1 and inst.components.combat:CanTarget(v) then
+                        invault = area_data ~= nil and area_data.id ~= nil and area_data.id:find("Vault") or nil
                         target1 = v
                         rangesq1 = distsq
                         rangesq = math.max(rangesq1, rangesq2)
                     end
                 elseif distsq < rangesq2 and inst.components.combat:CanTarget(v) then
+                    invault = area_data ~= nil and area_data.id ~= nil and area_data.id:find("Vault") or nil
                     target2 = v
                     rangesq2 = distsq
                     rangesq = math.max(rangesq1, rangesq2)
                 end
             end
+        end
+    end
+
+    if invault then -- Vault targetting. Get the guard towers!
+        local vaulttarget = FindEntity(inst, TARGET_DIST, IsVaultTargetValid, VAULT_TARGET_MUST_TAGS, VAULT_TARGET_CANT_TAGS)
+        if vaulttarget ~= nil then
+            inst.ignorecombatonkeeptarget = true
+            return vaulttarget, inst.components.combat.target ~= nil and not IsVaultTargetValid(inst.components.combat.target, inst)
         end
     end
 
@@ -75,12 +96,12 @@ local function keeptargetfn(inst, target)
 	--           -this is fine XD
 	--
 	--Deaggro if target has been sane for 2.5s, hasn't hit us in 6s, and hasn't tried to attack us for 5s
-	if inst._deaggrotime + 2.5 >= t or
+	if not inst.ignorecombatonkeeptarget and (inst._deaggrotime + 2.5 >= t or
 		inst.components.combat.lastwasattackedbytargettime + 6 >= t or
 		(	target.components.combat and
 			target.components.combat:IsRecentTarget(inst) and
 			(target.components.combat.laststartattacktime or 0) + 5 >= t
-		)
+		))
 	then
 		return true
 	elseif inst.wantstodespawn then
@@ -131,6 +152,13 @@ local function OnDeath(inst, data)
         --max one nightmarefuel if killed by a crazy NPC (e.g. Bernie)
         inst.components.lootdropper:SetLoot({ "nightmarefuel" })
         inst.components.lootdropper:SetChanceLootTable(nil)
+    end
+
+    -- no loot in key room
+    local vaultroommanager = TheWorld.components.vaultroommanager
+    if vaultroommanager ~= nil and vaultroommanager:GetVaultRoomId() == "key1" and TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition())  then
+		inst.components.lootdropper:SetLoot({})
+		inst.components.lootdropper:SetChanceLootTable(nil)
     end
 end
 

@@ -877,7 +877,9 @@ local COMPONENT_ACTIONS =
 
         teleporter = function(inst, doer, actions, right)
             if inst:HasTag("teleporter") then
-                if not inst:HasAnyTag("townportal", "vault_teleporter") then
+                if inst:HasTag("climbable") then
+                    table.insert(actions, ACTIONS.CLIMB)
+                elseif not inst:HasAnyTag("townportal", "vault_teleporter") then
                     table.insert(actions, ACTIONS.JUMPIN)
                 elseif right and not doer:HasTag("channeling") then
                     table.insert(actions, ACTIONS.TELEPORT)
@@ -3007,6 +3009,17 @@ local COMPONENT_ACTIONS =
                     end
                     table.insert(actions, ACTIONS.USEITEMON)
                 end
+            end
+        end,
+
+        vaultorbteleporter = function(inst, doer, actions, right)
+            if inst.bufferedmapaction and
+                inst.bufferedmapaction:GetAction() == ACTIONS.VAULTORBTELEPORT_MAP and
+                inst.bufferedmapaction:IsDoer(doer)
+            then
+                table.insert(actions, ACTIONS.VAULTORBTELEPORT_MAP)
+            else
+                table.insert(actions, ACTIONS.STARTVAULTORBTELEPORT)
             end
         end,
 

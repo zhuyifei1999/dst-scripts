@@ -1240,6 +1240,17 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_WX_NIGHTMARECHARGE = "only_used_by_wx78", -- WX ate/used a nightmare fuel, giving them full charge temporarily
 --fallback to speech_wilson.lua 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "only_used_by_wx78", -- WX's temporary full charge ran out.
 
+    -- Rifts 7
+
+    ANNOUNCE_MITEGLAND_DEBUFF =
+	{
+		"I burn from within!",
+		"My belly is aflame!",
+	},
+	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "The fire within hath subsided.",
+    ANNOUNCE_GOT_DECON_MISTED = "It doth banish the shadows!",
+	ANNOUNCE_VAULT_SHADOW_ASSIST = "Lo! A dark warband doth come to mine aid!",
+
 	BATTLECRY =
 	{
 		GENERIC = "Valhalla awaits!",
@@ -5897,7 +5908,7 @@ return{
         },
 --fallback to speech_wilson.lua 		VAULT_TELEPORTER_UNDERCONSTRUCTION = "\"This Waymark is under development for a future update.\"",
 		VAULT_ORB = "What purpose hath this blasted bauble?",
-        VAULT_LOBBY_EXIT = "I hath no fear in hurling myself headlong into the abyss.",
+        VAULT_LOBBY_EXIT = "I ought to let down a length of rope, should I wish to venture this way again.",
 		VAULT_CHANDELIER_BROKEN = "Who hath cast thee down from the heavens, little star?",
 
 		ANCIENT_HUSK = "What treachery hath transpired here?",
@@ -6122,6 +6133,93 @@ return{
 
         WX78_SHADOWDRONE_DEBUFFER = "'Tis a spy for the metal warrior.",
         WX78_SHADOWDRONE_HARVESTER = "The metal warrior's little plunderer.",
+
+        -- Rifts 7
+        STALKER_NPC = "The enemy of my enemy is my ally.",
+
+        MITEGLAND =
+        {
+            GENERIC = "It holds the fire of Logi within it.",
+            COLD = "It burns no more.",
+        },
+        MITEGLAND_COOKED = "Roasted entrails.",
+
+        BROKEN_FUMAROLETOOLITEM = "Some heat shall give it life anew.", -- character should comment that they could melt the pieces back together by heating it.
+        FUMAROLEAXE =
+		{
+			GENERIC = "It shall not weather much further use.", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "The fire burns low within it.", -- The next state, its lukewarm, no cracks.
+			WARM = "It offers respite from the cold.", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "It still bears the heat of the forge!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEPICKAXE =
+		{
+			GENERIC = "It shall not weather much further use.", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "The fire burns low within it.", -- The next state, its lukewarm, no cracks.
+			WARM = "It offers respite from the cold.", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "It still bears the heat of the forge!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEHAMMER =
+		{
+			GENERIC = "It shall not weather much further use.", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "The fire burns low within it.", -- The next state, its lukewarm, no cracks.
+			WARM = "It offers respite from the cold.", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "It still bears the heat of the forge!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLESHOVEL =
+		{
+			GENERIC = "It shall not weather much further use.", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "The fire burns low within it.", -- The next state, its lukewarm, no cracks.
+			WARM = "It offers respite from the cold.", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "It still bears the heat of the forge!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLE_FARM_HOE =
+		{
+			GENERIC = "It shall not weather much further use.", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "The fire burns low within it.", -- The next state, its lukewarm, no cracks.
+			WARM = "It offers respite from the cold.", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "It still bears the heat of the forge!", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        -- This trap is a cluster of rocks gets heated and deals fire damage to creatures (including players!) on top
+        TRAP_FUMAROLE =
+        {
+            HELD = "A warrior is always prepared.", -- When held in the inventory.
+            GENERIC = "Its flame is spent.", -- Coldest state, the trap is ineffective.
+            WARM = "My enemies shall regret crossing me... or crossing that.", -- Warm, a bit red hot, it does some damage.
+            HOT = "Woe to the toes of all who pursue me!", -- Super hot, it's doing full fire damage.
+        },
+
+        HEALINGSALVE_FUMAROLE = "A ward against flame. 'Tis also quite moisturizing for the skin.", -- Provides summer insulation and fire immunity/resistance when applied.
+
+		VAULT_PILLAR_GUARD = "Thine charge is a noble one, but I cannot let thee stand in my way!",
+		VAULT_PILLAR_GUARD_DORMANT = "A formidable structure.",
+		VAULT_CRAWLER = "Art thou my enemy, or my guiding light?",
+
+        VAULT_DECON_DOOR = "No barricade can contain me!",
+        VAULT_DECON_MISTER = "Defenses against dark magicks.",
+		VAULT_KEY_ACTIVATOR = "There art something missing... but what?",
+		VAULT_CRAWLER_LEVER = "Steel thyself, and pull!",
+        VAULT_KEY = "'Tis the key to our salvation!",
+        VAULT_KEY_PEDESTAL =
+        {
+            GENERIC = "'Tis my bounty to claim.", -- Keystone is on it, ready to take
+            PICKED = "There is nought.", -- No more keystone on it, we already took it, or someone else did.
+        },
+        VAULT_ORB_FRAGMENT = "What foul magic lies within this fragment?",
+        VAULT_ORB_REFINED = "'Tis a potent orb of old.",
+
+        VAULT_COMPASS =
+        {
+            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+        },
+
+        CEILING_ROPE = "With this, I shall make mine ascent!",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

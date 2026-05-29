@@ -449,6 +449,7 @@ STRINGS =
             HARVEST = "Harvest",
             RUMMAGE = "Rummage",
             SEARCH = "Search",
+            UNSOCKET = "Unsocket",
 		},
         REPAIR =
         {
@@ -582,6 +583,7 @@ STRINGS =
 			DEPLOY_TOSS = "Toss",
             FERTILIZE_GROUND = "Fertilize Plot",
             GRAVEPLANT = "Relocate",
+            HOT_ROCKS = "Scatter Rocks",
         },
 
 		PLAY =
@@ -703,6 +705,7 @@ STRINGS =
 			--verbs
 			GESTALT_POSSESS = "Transfer Gestalt",
             CONSUME = "Consume",
+            TIE_ONTO = "Tie Onto",
             -- prefabs
             BEEF_BELL = "Bond",
             KITCOON_NAMETAG = "Name",
@@ -710,6 +713,7 @@ STRINGS =
 			SLINGSHOTMODKIT = "Mod",
 			WAGDRONE_PARTS = "Repair",
 			GEARS = "Repair",
+			SECURITY_PULSE_CAGE_FULL = "Transfer",
         },
         STOPUSINGITEM =
         {
@@ -1186,6 +1190,15 @@ STRINGS =
         },
 
         EQUIPONBODY = "Equip on",
+
+        -- Rifts 7
+        CLIMB =
+        {
+            GENERIC = "Climb Up",
+            HAUNT = "Haunt",
+        },
+        STARTVAULTORBTELEPORT = "Focus On",
+        VAULTORBTELEPORT_MAP = "Portate",
     },
 
 	WOBY_COMMANDS =
@@ -1234,6 +1247,14 @@ STRINGS =
         DESICCANT = "Damp",
         DESICCANT_FULL = "Saturated",
         WX78_FOODBRICK = "Moistened",
+    },
+
+    TEMPERATURE_PREFIX =
+    {
+        TRAP_FUMAROLE =
+        {
+            HOT = "Hot",
+        },
     },
 
     NAMES =
@@ -4596,6 +4617,38 @@ STRINGS =
         SHADOW_HEART_VEIN = "Shadow Atrium Tendril",
         WX78_SHADOWDRONE_DEBUFFER = "Exploiterator",
         WX78_SHADOWDRONE_HARVESTER = "Auto-Grabber",
+
+        -- Rifts 7
+        STALKER_NPC = "Ancient Fuelweaver",
+
+        MITEGLAND = "Heat Gland",
+        MITEGLAND_COOKED = "Cooked Heat Gland",
+
+        FUMAROLEAXE = "Thermic Axe",
+        FUMAROLEPICKAXE = "Thermic Pickaxe",
+        FUMAROLESHOVEL = "Thermic Shovel",
+        FUMAROLEHAMMER = "Thermic Hammer",
+        FUMAROLE_FARM_HOE = "Thermic Garden Hoe",
+
+        TRAP_FUMAROLE = "Coals",
+
+        HEALINGSALVE_FUMAROLE = "Cooling Balm",
+
+		VAULT_PILLAR_GUARD = "Ancient Guard Tower",
+		VAULT_PILLAR_GUARD_DORMANT = "Ancient Tower",
+		VAULT_CRAWLER = "Lustrous Weevil", --NOTE: "Sanctum Lustre" is the name of the lights
+
+        VAULT_DECON_DOOR = "Inner Sanctum Barrier",
+        VAULT_DECON_MISTER = "Sanctum Purifier",
+		VAULT_KEY_ACTIVATOR = "Pulse Cradle",
+		VAULT_CRAWLER_LEVER = "Lever",
+        VAULT_KEY = "Keystone",
+        VAULT_KEY_PEDESTAL = "Reliquary",
+        VAULT_ORB_FRAGMENT = "Orb Fragment",
+        VAULT_ORB_REFINED = "Polished Orb Fragment",
+        VAULT_COMPASS = "Waymark Compass",
+
+        CEILING_ROPE = "Rope",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5820,6 +5873,19 @@ STRINGS =
 
         WX78_SHADOWDRONE_DEBUFFER = "Know your enemy... then destroy them!",
         WX78_SHADOWDRONE_HARVESTER = "It's all up for grabs.",
+
+        -- Rifts 7
+
+        FUMAROLEAXE = "Chop in cozy comfort.",
+        FUMAROLEPICKAXE = "It's the hottest thing in mining.",
+        FUMAROLESHOVEL = "A superheated shovel, ya dig?",
+        FUMAROLEHAMMER = "Beat with heat.",
+        FUMAROLE_FARM_HOE = "Stay warm while you farm.",
+
+        TRAP_FUMAROLE = "Rake your enemies over the coals.",
+
+        HEALINGSALVE_FUMAROLE = "Smear on some heat protection.",
+        VAULT_ORB_REFINED = "Polish to a shine and let it move you.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -9465,7 +9531,7 @@ STRINGS.UI =
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
 		MAINBANNER_ROT_BETA_TITLE = "Beta Build", --unused now.
-		MAINBANNER_BETA_TITLE = "Skill Spotlight - WX-78 - Beta Branch", --"Winter's Feast - Beta Branch", -- "Title/nBeta Branch"
+		MAINBANNER_BETA_TITLE = "Beta Branch", --"Winter's Feast - Beta Branch", -- "Title/nBeta Branch"
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -11848,7 +11914,8 @@ STRINGS.UI =
                     CRABBY_HERMIT_HAPPY = "The Crabby Hermit gave a shiny gift.",
                     LUNAR_RIFTS_ACTIVE = "Lunar Rifts are forming in the Constant.",
                     -- Caves.
-                    ATRIUM_KEY_FOUND = "The Atrium Key is found.",
+                    ATRIUM_KEY_FOUND = "The Ancient Key is found.",
+                    VAULT_KEY_FOUND = "The Keystone is found.",
                     --  FIXME(JBK): It would be nice for a CELESTIALPORTAL thing here for caves.
                     ARCHIVES_ENERGIZED = "The Ancient Archives are energized.",
                     SHADOW_RIFTS_ACTIVE = "Shadow Rifts are forming in the Constant.",
@@ -11860,7 +11927,8 @@ STRINGS.UI =
                     CRABBY_HERMIT_HAPPY = "The Crabby Hermit has yet to give her shiny gift.",
                     LUNAR_RIFTS_ACTIVE = "Lunar Rifts are no where to be found.",
                     -- Caves.
-                    ATRIUM_KEY_FOUND = "The Atrium Key has yet to be obtained.",
+                    ATRIUM_KEY_FOUND = "The Ancient Key has yet to be obtained.",
+                    VAULT_KEY_FOUND = "The Keystone has yet to be obtained.",
                     --  FIXME(JBK): It would be nice for a CELESTIALPORTAL thing here for caves.
                     ARCHIVES_ENERGIZED = "The Ancient Archives are powered down.",
                     SHADOW_RIFTS_ACTIVE = "Shadow Rifts are no where to be found.",
@@ -11872,7 +11940,8 @@ STRINGS.UI =
                     CRABBY_HERMIT_HAPPY = "The Crabby Hermit may have given a shiny gift.",
                     LUNAR_RIFTS_ACTIVE = "Lunar Rifts may be forming in the Constant.",
                     -- Caves.
-                    ATRIUM_KEY_FOUND = "The Atrium Key may have been found.",
+                    ATRIUM_KEY_FOUND = "The Ancient Key may have been found.",
+                    VAULT_KEY_FOUND = "The Keystone may have been found.",
                     --  FIXME(JBK): It would be nice for a CELESTIALPORTAL thing here for caves.
                     ARCHIVES_ENERGIZED = "The Ancient Archives may be energized.",
                     SHADOW_RIFTS_ACTIVE = "Shadow Rifts may be forming in the Constant.",
@@ -13322,6 +13391,33 @@ STRINGS.UI =
         MYSTERYBOX_DISABLE = "You must be logged in to access the Treasury.",
 
         NOT_AVAILABLE_OFFLINE = "This feature is not available in offline mode."
+    },
+
+    UNRAVELDUPESSCREEN =
+    {
+        TITLE = "Select Duplicate Items To Unravel",
+        SELECTED = "Selected",
+        UNRAVEL = "Unravel",
+        CANCEL = "Cancel",
+    },
+
+    BARTER_QUEUE =
+    {
+        TOOLTIP_UNRAVEL = "Unravel all duplicate items",
+        TOOLTIP_UNRAVEL_DISABLED = "No duplicate items to unravel",
+        TOOLTIP_CANCEL = "Stop unraveling duplicate items",
+
+        UNRAVEL_DUPES_TITLE = "Unravel Duplicate Skins?",
+        UNRAVEL_DUPES_BODY = "Unravel {count} duplicates into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.",
+        UNRAVEL_DUPES_YES = "Unravel!",
+        UNRAVEL_DUPES_NO = "Never mind",
+
+        UNRAVEL_ERROR_TITLE = "Unexpected Error",
+        UNRAVEL_ERROR_BODY = "Something went wrong, please try again later",
+
+        UNRAVEL_COMMAND = "Unraveling {skin_name}",
+
+        CANCEL = "Stopping...",
     },
 
     BEARDSCREEN =
@@ -15329,6 +15425,14 @@ STRINGS.UI =
 	{
 		ATTACK = "Shoot",
 	},
+
+    GIVE_KEY_STONE =
+    {
+        TITLE  = "The Way Ahead",
+        BODY   = "The Shadow Queen is pleased with your progress. She will begin the final preparations, and call upon you when the time is right. Be ready.\nP.S. For now, this will only reset the Sanctum. Continue?",
+        OK     = "Ok",
+        CANCEL = "Let me think about it.",
+    },
 }
 
 --these are broken out into their own files for ease of editing
@@ -18091,7 +18195,7 @@ STRINGS.SCRAPBOOK = {
         STRAWROLL = "Sleeping in it restores 0.66 Sanity and 0.5 health per second, costing 1 Hunger per second.",
         FURROLL = "Sleeping in it restores 1 Sanity and 1 health per second, costing 1 Hunger per second. It also warms the user overtime.",
         HALLOWEENPOTIONFIRE = "Creates pretty sparkles when added to a fire.",
-        SOILAMENDER = "Adds 8-32 Growth Formula nutrient to the ground depending in its fermentation level.\n\nWill also trigger Wormwoods bloom for 1 to 4 minutes depending on fermentation level.",
+        SOILAMENDER = "Adds 8-32 Growth Formula nutrient to the ground depending on its fermentation level.\n\nWill also trigger Wormwoods bloom for 1 to 4 minutes depending on fermentation level.",
         SUSPICIOUSMARBLE = "A piece of broken marble sculpture.",
         REVIVER = "Gives the user 80 Sanity when given to a survivor's ghost.\n\nThe ghost will revive with a 25% max health penalty which can be recovered with a Booster Shot.",
         TERRARIUM = "I sure hope no one opens it, or worse, corrupts it.",
@@ -18518,6 +18622,21 @@ STRINGS.SCRAPBOOK = {
         WX78_BACKUPBODY = "A backup chassis for WX-78 to store items, circuits. WX-78 can transfer their consciousness into the chassis.",
 
         WX78_GESTALTTRAPPER = "Install on a Backup Chassis to lure a gestalt over and possess it, for your very own spectrobotic minion!",
+
+        -- Rifts 7
+
+        TRAP_FUMAROLE = "Scatter these on the floor and heat them up for a hot trap that deals fire damage and ignite/cooks objects on top.",
+        HEALINGSALVE_FUMAROLE = "TODO",
+
+        VAULT_DECON_MISTER = "TODO",
+        VAULT_DECON_DOOR = "TODO",
+        VAULT_CRAWLER = "TODO",
+        VAULT_CRAWLER_SOCKET = "TODO",
+        VAULT_PILLAR_GUARD = "TODO",
+        VAULT_KEY_ACTIVATOR = "TODO",
+        VAULT_CRAWLER_LEVER = "TODO",
+        VAULT_ORB_FRAGMENT = "TODO",
+        VAULT_ORB_REFINED = "TODO",
     },
 
     -- Full name: "{name} Scrapbook Page"
@@ -18534,6 +18653,8 @@ STRINGS.TEMP_BETA_MSG =
 	RIFTS5_KILLTIME_FMT = "You defeated {name} in {time}s.",
 	--
 	RIFTS6_BASIC = "Thanks for playing the beta!\nThe room beyond this point is not yet available.",
+	--
+	RIFTS7_FMT = "You defeated all beta {name}s!\nAdditional loot and rewards coming soon...",
 }
 
 --Don't include this in pot generation as this file is already translated.

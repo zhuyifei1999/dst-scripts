@@ -87,6 +87,8 @@ local function common_server(inst)
 
     MakeMediumFreezableCharacter(inst, "fruit2")
     MakeMediumBurnableCharacter(inst, "fruit2")
+    inst.components.burnable:SetBurnTime(8 * TUNING.PLANTMOB_BURNTIME_MULT)
+    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
 
     MakeHauntablePanic(inst)
 

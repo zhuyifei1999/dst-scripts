@@ -367,7 +367,7 @@ local function ClearWatcherTable(inst, tbl)
 	end
 end
 
-local FIRE_MUST_TAGS = {"fire",}
+local FIRE_ONEOF_TAGS = { "fire", "heatstar" }
 local FIRE_RADIUS = MIASMA_RADIUS + 1 -- Small fudge factor.
 local function OnUpdate(inst)
 	local temp = inst.watchers_toremove
@@ -392,7 +392,7 @@ local function OnUpdate(inst)
 	end
 
     local miasmamanager = TheWorld.components.miasmamanager
-    local nearestfire = TheSim:FindEntities(x, y, z, FIRE_RADIUS, FIRE_MUST_TAGS)[1]
+    local nearestfire = TheSim:FindEntities(x, y, z, FIRE_RADIUS, nil, nil, FIRE_ONEOF_TAGS)[1]
     if nearestfire then
         if miasmamanager and miasmamanager:GetMiasmaAtPoint(x, y, z) then
             miasmamanager:SetMiasmaDiminishingAtPoint(x, y, z, true)

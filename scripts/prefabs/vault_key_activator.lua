@@ -1,0 +1,462 @@
+local assets =
+{
+	Asset("ANIM", "anim/vault_activator.zip"),
+}
+
+local assets_pedestal =
+{
+	Asset("ANIM", "anim/vault_key_pedestal.zip"),
+}
+
+local prefabs =
+{
+	"vault_key_activator",
+	"vault_crawler_lever",
+}
+
+local prefabs_pedestal =
+{
+	"vault_key_pedestal",
+}
+
+local ACTIVATOR_PHYS_RAD = 0.6
+local PEDESTAL_PHYS_RAD = 1
+
+local function OnActivateAnimOver(inst)
+	inst.plate:ClosePlate()
+end
+
+local function OnDepositSpark(inst, spark)
+	if inst.AnimState:IsCurrentAnimation("activator_off_idle") then
+		inst:ListenForEvent("animover", OnActivateAnimOver)
+		inst.AnimState:PlayAnimation("activator_on")
+		inst.SoundEmitter:PlaySound("rifts7/plate/activate")
+		inst:AddTag("NOCLICK")
+		inst.plate:OnDepositSpark()
+	end
+end
+
+local function IsEmpty(inst)
+	return inst.AnimState:IsCurrentAnimation("activator_off_idle")
+end
+
+local function fn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	inst:SetPhysicsRadiusOverride(ACTIVATOR_PHYS_RAD)
+
+	inst.AnimState:SetBank("vault_activator")
+	inst.AnimState:SetBuild("vault_activator")
+	inst.AnimState:PlayAnimation("activator_off_idle")
+	inst.AnimState:SetFinalOffset(-1)
+
+	inst.IsEmpty = IsEmpty
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+	inst:ListenForEvent("ms_depositspark", OnDepositSpark)
+
+	inst.persists = false
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+local function lever_OnAppearAnimOver(inst)
+	inst:RemoveEventCallback("animover", lever_OnAppearAnimOver)
+	inst.AnimState:PlayAnimation("lever_idle")
+	inst:RemoveTag("NOCLICK")
+	inst.components.activatable.inactive = true
+end
+
+local function lever_OnPullAnimOver(inst)
+	if inst.AnimState:IsCurrentAnimation("lever_pull") then
+		inst.plate:OnPullLever(inst._doer)
+		inst.Transform:SetNoFaced()
+		inst.AnimState:PlayAnimation("lever_disappear")
+	else
+		inst:RemoveEventCallback("animover", lever_OnPullAnimOver)
+		inst.plate:ClosePlate()
+	end
+end
+
+local function lever_OnActivate(inst, doer)
+	if doer and doer:IsValid() then
+		inst:ForceFacePoint(doer.Transform:GetWorldPosition())
+	end
+	inst.Transform:SetTwoFaced()
+
+	inst:RemoveEventCallback("animover", lever_OnAppearAnimOver)
+	inst:RemoveEventCallback("animover", lever_OnPullAnimOver)
+	inst:ListenForEvent("animover", lever_OnPullAnimOver)
+
+	inst._doer = doer
+	inst.AnimState:PlayAnimation("lever_pull")
+	inst.SoundEmitter:PlaySound("rifts6/lever/pull")
+end
+
+local function lever_OnEntityWake(inst)
+	inst.OnEntityWake = nil
+
+	if inst._pfx == nil and inst:GetCurrentPlatform() == nil then
+		local _
+		inst._pfx, _, inst._pfz = inst.Transform:GetWorldPosition()
+		for dx = -0.5, 0.5, 1 do
+			for dz = -0.5, 0.5, 1 do
+				TheWorld.Pathfinder:AddWall(inst._pfx + dx, 0, inst._pfz + dz)
+			end
+		end
+	end
+end
+
+local function lever_OnRemoveEntity(inst)
+	if inst._pfx then
+		for dx = -0.5, 0.5, 1 do
+			for dz = -0.5, 0.5, 1 do
+				TheWorld.Pathfinder:RemoveWall(inst._pfx + dx, 0, inst._pfz + dz)
+			end
+		end
+		inst._pfx, inst._pfz = nil, nil
+	end
+end
+
+local function leverfn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	inst:SetPhysicsRadiusOverride(ACTIVATOR_PHYS_RAD)
+
+	inst.AnimState:SetBank("vault_activator")
+	inst.AnimState:SetBuild("vault_activator")
+	inst.AnimState:PlayAnimation("lever_appear")
+	inst.AnimState:SetFinalOffset(-1)
+
+	inst:AddTag("NOCLICK")
+
+	inst.OnEntityWake = lever_OnEntityWake
+	inst.OnRemoveEntity = lever_OnRemoveEntity
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+	inst:AddComponent("activatable")
+	inst.components.activatable.inactive = false
+	inst.components.activatable.standingaction = true
+	inst.components.activatable.OnActivate = lever_OnActivate
+
+	inst.persists = false
+
+	if POPULATING then
+		lever_OnAppearAnimOver(inst)
+	else
+		inst:ListenForEvent("animover", lever_OnAppearAnimOver)
+	end
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+local function pedestal_OnKeyTaken(inst)
+    inst.Light:Enable(false)
+	inst.AnimState:PlayAnimation("pedestal_idle_nokey")
+	inst.components.pickable.caninteractwith = false
+	inst.components.pickable.canbepicked = false -- for onload
+end
+
+local function pedestal_OnAppearAnimOver(inst)
+	inst:RemoveEventCallback("animover", pedestal_OnAppearAnimOver)
+	inst.AnimState:PlayAnimation("pedestal_idle_key", true)
+	inst:RemoveTag("NOCLICK")
+end
+
+local function pedestal_EnableLight(inst)
+    inst.Light:Enable(true)
+end
+
+local function pedestalfn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+    inst.entity:AddLight()
+	inst.entity:AddNetwork()
+
+	inst:SetPhysicsRadiusOverride(PEDESTAL_PHYS_RAD)
+
+	inst.AnimState:SetBank("vault_key_pedestal")
+	inst.AnimState:SetBuild("vault_key_pedestal")
+	inst.AnimState:PlayAnimation("pedestal_appear")
+	inst.AnimState:SetFinalOffset(-1)
+
+    inst.Light:SetIntensity(.85)
+    inst.Light:SetRadius(2)
+    inst.Light:SetFalloff(.5)
+    inst.Light:Enable(true)
+    inst.Light:SetColour(112 / 255, 123 / 255, 243 / 255)
+
+	inst:AddTag("NOCLICK")
+	inst:AddTag("intense")
+	inst:AddTag("high_dolongaction")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+    inst:AddComponent("pickable")
+    inst.components.pickable:SetUp("vault_key", 1000000)
+    inst.components.pickable:Pause()
+    inst.components.pickable.onpickedfn = pedestal_OnKeyTaken
+
+	inst.OnKeyTaken = pedestal_OnKeyTaken
+
+	inst.persists = false
+
+	if POPULATING then
+		pedestal_OnAppearAnimOver(inst)
+	else
+		inst.Light:Enable(false)
+		inst:DoTaskInTime(61 * FRAMES, pedestal_EnableLight)
+		inst:ListenForEvent("animover", pedestal_OnAppearAnimOver)
+	end
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+local function plate_SpawnOpenPrefab(inst)
+	local prefab = inst._openprefab
+	inst._openprefab = nil
+	if prefab then
+		if inst.activator then
+			if inst.activator.prefab == prefab then
+				return
+			end
+			inst.activator:Remove()
+		end
+		inst.activator = SpawnPrefab(prefab)
+		inst.activator.entity:SetParent(inst.entity)
+		inst.activator.plate = inst
+	end
+end
+
+local function plate_CreateFront(build)
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	inst:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+
+	inst.AnimState:SetBank(build)
+	inst.AnimState:SetBuild(build)
+	inst.AnimState:PlayAnimation("plate_front")
+
+	return inst
+end
+
+local function plate_OnShowFrontDirty(inst)
+	if inst.showfront:value() then
+		if inst.front == nil and not TheNet:IsDedicated() then
+			inst.front = plate_CreateFront(inst.build)
+			inst.front.entity:SetParent(inst.entity)
+		end
+	elseif inst.front then
+		inst.front:Remove()
+		inst.front = nil
+	end
+end
+
+local function plate_ShowFront(inst, show)
+	if inst.showfront:value() ~= show then
+		inst.showfront:set(show)
+		plate_OnShowFrontDirty(inst)
+	end
+end
+
+local function plate_OnOpenAnimOver(inst)
+	inst:RemoveEventCallback("animover", plate_OnOpenAnimOver)
+	inst.AnimState:PlayAnimation("plate_opened_idle")
+	inst.Physics:SetActive(true)
+	plate_ShowFront(inst, true)
+	plate_SpawnOpenPrefab(inst)
+end
+
+local function plate_Open(inst, prefab)
+	if prefab then
+		inst._openprefab = prefab
+		if inst.AnimState:IsCurrentAnimation("plate_opened_idle") then
+			plate_SpawnOpenPrefab(inst)
+		elseif inst.AnimState:IsCurrentAnimation("plate_open_pre") then
+			--already opening
+		elseif POPULATING then
+			plate_OnOpenAnimOver(inst)
+		else
+			inst:ListenForEvent("animover", plate_OnOpenAnimOver)
+			inst.AnimState:PlayAnimation("plate_open_pre")
+			inst.SoundEmitter:PlaySound("rifts7/plate/open")
+		end
+	end
+end
+
+local function plate_Close(inst)
+	if inst._openprefab then
+		inst._openprefab = nil
+		inst:RemoveEventCallback("animover", plate_OnOpenAnimOver)
+	end
+	if inst.activator then
+		inst.activator:Remove()
+		inst.activator = nil
+	end
+	inst.Physics:SetActive(false)
+	plate_ShowFront(inst, false)
+	if not (inst.AnimState:IsCurrentAnimation("plate_close_pre") or
+			inst.AnimState:IsCurrentAnimation("plate_closed_idle"))
+	then
+		if POPULATING then
+			inst.AnimState:PlayAnimation("plate_closed_idle")
+		else
+			inst.AnimState:PlayAnimation("plate_close_pre")
+			inst.AnimState:PushAnimation("plate_closed_idle", false)
+			inst.SoundEmitter:PlaySound("rifts7/plate/open")
+		end
+	end
+end
+
+local function plate_GetOpenPrefab(inst)
+	return inst.activator and inst.activator.prefab or inst._openprefab
+end
+
+local function plate_OnDepositSpark(inst)
+	if not inst.gotspark then
+		inst.gotspark = true
+		inst:PushEvent("ms_vaultactivator_changed")
+	end
+end
+
+local function plate_OnPullLever(inst, doer)
+	inst:PushEvent("ms_vaultcrawlerlever_pulled", doer)
+end
+
+local function plate_GotSpark(inst)
+	return inst.gotspark
+end
+
+local function plate_OnSave(inst, data)
+	data.gotspark = inst.gotspark
+	if inst.activator ~= nil and inst.activator.components.pickable ~= nil then
+		data.pedestal = true
+
+		if not inst.activator.components.pickable:CanBePicked() then
+			data.pedestal_picked = true
+		end
+	end
+end
+
+local function plate_OnLoad(inst, data, ents)
+	if data then
+		if data.pedestal then
+			inst:OpenPlate("vault_key_pedestal")
+			if data.pedestal_picked then
+				inst.activator:OnKeyTaken()
+			end
+		elseif data.gotspark then
+			inst:OnDepositSpark()
+			inst:ClosePlate()
+		else
+			inst:OpenPlate("vault_key_activator")
+		end
+	end
+end
+
+local function MakePlate(name, build, radius, assets, prefabs)
+	local function fn()
+		local inst = CreateEntity()
+
+		inst.entity:AddTransform()
+		inst.entity:AddAnimState()
+		inst.entity:AddSoundEmitter()
+		inst.entity:AddNetwork()
+
+		inst:SetDeploySmartRadius(radius + 0.15)
+		MakeSmallObstaclePhysics(inst, radius)
+		inst.Physics:SetActive(false)
+
+		inst.build = build
+		inst.AnimState:SetBank(build)
+		inst.AnimState:SetBuild(build)
+		inst.AnimState:PlayAnimation("plate_closed_idle")
+		inst.AnimState:SetLayer(LAYER_BACKGROUND)
+		inst.AnimState:SetSortOrder(-2)
+
+		--Not using NOCLICK because we do want to block mouse
+		--Not using decor/FX because we do want to block placement
+		--Some actions will highlight targets even if not a valid action:
+		--  "nomagic" blocks SPELLCAST (e.g. reskin_tool)
+		--  "nohighlight" blocks complexprojectile (e.g. bombs)
+		inst:AddTag("nomagic")
+		inst:AddTag("nohighlight")
+		inst:AddTag("blocker")
+
+		inst.showfront = net_bool(inst.GUID, "vault_key_activator_plate.showfront", "showfrontdirty")
+
+		inst.entity:SetPristine()
+
+		if not TheWorld.ismastersim then
+			inst:ListenForEvent("showfrontdirty", plate_OnShowFrontDirty)
+
+			return inst
+		end
+
+		inst.OnDepositSpark = plate_OnDepositSpark
+		inst.OnPullLever = plate_OnPullLever
+		inst.GotSpark = plate_GotSpark
+		inst.OpenPlate = plate_Open
+		inst.ClosePlate = plate_Close
+		inst.GetOpenPrefab = plate_GetOpenPrefab
+		inst.OnSave = plate_OnSave
+		inst.OnLoad = plate_OnLoad
+
+		return inst
+	end
+
+	return Prefab(name, fn, assets, prefabs)
+end
+
+--------------------------------------------------------------------------
+
+return Prefab("vault_key_activator", fn, assets),
+	Prefab("vault_crawler_lever", leverfn, assets),
+	Prefab("vault_key_pedestal", pedestalfn, assets_pedestal),
+	MakePlate("vault_key_activator_plate", "vault_activator", ACTIVATOR_PHYS_RAD, assets, prefabs),
+	MakePlate("vault_key_pedestal_plate", "vault_key_pedestal", PEDESTAL_PHYS_RAD, assets_pedestal, prefabs_pedestal)

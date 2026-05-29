@@ -1240,6 +1240,17 @@ return{
     ANNOUNCE_WX_NIGHTMARECHARGE = "FOREIGN MATTER DETECTED. POWER SYSTEMS OVERRIDE ENGAGED", -- WX ate/used a nightmare fuel, giving them full charge temporarily
 	ANNOUNCE_WX_NIGHTMAREDISCHARGE = "OVERRIDE RESOLVED. POWER LEVELS RESTORED", -- WX's temporary full charge ran out.
 
+    -- Rifts 7
+
+    ANNOUNCE_MITEGLAND_DEBUFF =
+	{
+		"INTERNAL TEMPERATURE HAS RISEN TO AN UNCOMFORTABLE LEVEL",
+		"WARNING: SYSTEM OVERHEATING",
+	},
+	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "TEMPERATURE REGULATION RESTORED",
+    ANNOUNCE_GOT_DECON_MISTED = "ELIMINATING CONTAMINANTS",
+	ANNOUNCE_VAULT_SHADOW_ASSIST = "I DO NOT REQUIRE ASSISTANCE",
+
 	BATTLECRY =
 	{
 		GENERIC = "I WILL DESTROY YOU",
@@ -5897,7 +5908,7 @@ return{
         },
 --fallback to speech_wilson.lua 		VAULT_TELEPORTER_UNDERCONSTRUCTION = "\"This Waymark is under development for a future update.\"",
 		VAULT_ORB = "ESSENTIAL HARDWARE IDENTIFIED",
-        VAULT_LOBBY_EXIT = "ESC",
+        VAULT_LOBBY_EXIT = "TOGGLE \"ROPE\" TO MAINTAIN ACCESS",
 		VAULT_CHANDELIER_BROKEN = "MUST HAVE BEEN MOUNTED BY A FLESHBAG",
 
 		ANCIENT_HUSK = "CONFLICT RESOLVED",
@@ -6122,6 +6133,93 @@ return{
 
         WX78_SHADOWDRONE_DEBUFFER = "YES, VICKY! TELL ME THEIR SECRETS!",
         WX78_SHADOWDRONE_HARVESTER = "THE WORLD IS MINE, GARY. ALL MINE",
+
+        -- Rifts 7
+        STALKER_NPC = "HE HAS SEEN THE ERROR OF HIS WAYS AND BECOME MY MINION",
+
+        MITEGLAND =
+        {
+            GENERIC = "STEAMING HOT ORGANIC INSIDES",
+            COLD = "HEAT DEPLETED",
+        },
+        MITEGLAND_COOKED = "WARNING: CENTER IS EXTREMELY HOT",
+
+        BROKEN_FUMAROLETOOLITEM = "HEAT SOURCE REQUIRED FOR REPAIRS", -- character should comment that they could melt the pieces back together by heating it.
+        FUMAROLEAXE =
+		{
+			GENERIC = "WARNING: LOSING STRUCTURAL INTEGRITY", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "HEAT OUTPUT: NEGLIGIBLE", -- The next state, its lukewarm, no cracks.
+			WARM = "AN AXE AND A HEATER. I RESPECT A MULTITASKER", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "SUPERHEATED FOR MAXIMUM EFFICIENCY", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEPICKAXE =
+		{
+			GENERIC = "WARNING: LOSING STRUCTURAL INTEGRITY", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "HEAT OUTPUT: NEGLIGIBLE", -- The next state, its lukewarm, no cracks.
+			WARM = "A PICKAXE AND A HEATER. I RESPECT A MULTITASKER", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "SUPERHEATED FOR MAXIMUM EFFICIENCY", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLEHAMMER =
+		{
+			GENERIC = "WARNING: LOSING STRUCTURAL INTEGRITY", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "HEAT OUTPUT: NEGLIGIBLE", -- The next state, its lukewarm, no cracks.
+			WARM = "A HAMMER AND A HEATER. I RESPECT A MULTITASKER", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "SUPERHEATED FOR MAXIMUM EFFICIENCY", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLESHOVEL =
+		{
+			GENERIC = "WARNING: LOSING STRUCTURAL INTEGRITY", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "HEAT OUTPUT: NEGLIGIBLE", -- The next state, its lukewarm, no cracks.
+			WARM = "A SHOVEL AND A HEATER. I RESPECT A MULTITASKER", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "SUPERHEATED FOR MAXIMUM EFFICIENCY", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        FUMAROLE_FARM_HOE =
+		{
+			GENERIC = "WARNING: LOSING STRUCTURAL INTEGRITY", -- This is the coldest state, the heat tool is about to break and shatter into the broken state if used a bit more, there are visible cracks.
+			LUKEWARM = "HEAT OUTPUT: NEGLIGIBLE", -- The next state, its lukewarm, no cracks.
+			WARM = "A GARDEN HOE AND A HEATER. I RESPECT A MULTITASKER", -- It's starting to get red hot, it's a bit more efficient in the action it does, and keeps the player cozy.
+			HOT = "SUPERHEATED FOR MAXIMUM EFFICIENCY", -- SUPER HOT, it's very efficient in the action it does, e.g. the axe fells trees in half the hits needed, keeps the player cozy, maybe too cozy! (e.g. overheat in summer)
+		},
+
+        -- This trap is a cluster of rocks gets heated and deals fire damage to creatures (including players!) on top
+        TRAP_FUMAROLE =
+        {
+            HELD = "READY TO DEPLOY BURNING ROCKS", -- When held in the inventory.
+            GENERIC = "TRAP IS IN COOLDOWN", -- Coldest state, the trap is ineffective.
+            WARM = "THE FLESHLING FOOT FRYER 5000", -- Warm, a bit red hot, it does some damage.
+            HOT = "HOT ENOUGH TO BURN THE MEAT FROM FLESHLING BONES", -- Super hot, it's doing full fire damage.
+        },
+
+        HEALINGSALVE_FUMAROLE = "THIS GROSS GOO PREVENTS OVERHEATING", -- Provides summer insulation and fire immunity/resistance when applied.
+
+		VAULT_PILLAR_GUARD = "GIVE UP YOUR PETTY ALLEGIANCES AND JOIN ME!",
+		VAULT_PILLAR_GUARD_DORMANT = "STRUCTURALLY SOUND",
+		VAULT_CRAWLER = "LOCATED MISSING COMPONENT",
+
+        VAULT_DECON_DOOR = "IT LOOKS LIKE A PRIMITIVE DECONTAMINATION ROOM",
+        VAULT_DECON_MISTER = "IT HAS IDENTIFIED SHADOWS AS A CONTAMINANT",
+		VAULT_KEY_ACTIVATOR = "POWER SOURCE REQUIRED",
+		VAULT_CRAWLER_LEVER = "ENGAGE!",
+        VAULT_KEY = "PASSKEY ACQUIRED",
+        VAULT_KEY_PEDESTAL =
+        {
+            GENERIC = "I CLAIM IT", -- Keystone is on it, ready to take
+            PICKED = "IT HAS BEEN CLAIMED", -- No more keystone on it, we already took it, or someone else did.
+        },
+        VAULT_ORB_FRAGMENT = "A POTENT FRAGMENT",
+        VAULT_ORB_REFINED = "TELEPORTATION COMPONENT",
+
+        VAULT_COMPASS =
+        {
+            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+        },
+
+        CEILING_ROPE = "PRIMITIVE BUT NECESSARY",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

@@ -354,18 +354,36 @@ SGWX78Common.AddWX78SpinStates = function(states)
 			end),
 			FrameEvent(2, function(inst)
 				if inst.sg.statemem.quickstart == nil then
-					inst.sg.statemem.targets = nil
-					inst.sg.statemem.canrelease = true
+					if inst.sg.statemem.updatedonce then
+						inst.sg.statemem.targets = nil
+						inst.sg.statemem.canrelease = true
+					else
+						inst.sg.statemem.cleartargetsafterupdate = true
+					end
 				end
 			end),
 			FrameEvent(3, function(inst)
-				inst.sg.statemem.targets = nil
-				inst.sg.statemem.canrelease = true
+				if inst.sg.statemem.updatedonce then
+					inst.sg.statemem.targets = nil
+					inst.sg.statemem.canrelease = true
+				else
+					inst.sg.statemem.cleartargetsafterupdate = true
+				end
 			end),
 		},
 
 		onupdate = function(inst, dt)
-			if inst.sg.statemem.targets then
+			--@V2C #HACK for switch >(
+			if inst.sg.statemem.cleartargetsafterupdate and inst.sg.statemem.updatedonce then
+				inst.sg.statemem.cleartargetsafterupdate = nil
+				inst.sg.statemem.targets = nil
+				inst.sg.statemem.canrelease = true
+			--
+			elseif inst.sg.statemem.targets then
+				--@V2C #HACK for switch >(
+				inst.sg.statemem.updatedonce = true
+				--
+
 				local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 				local canchop, canmine
 				if item and item.components.tool then

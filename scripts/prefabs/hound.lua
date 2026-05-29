@@ -898,6 +898,8 @@ local function fnhedge()
 
     MakeMediumFreezableCharacter(inst, "hound_body")
     MakeMediumBurnableCharacter(inst, "hound_body")
+    inst.components.burnable:SetBurnTime(8 * TUNING.PLANTMOB_BURNTIME_MULT)
+    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
 
     inst.components.health:SetMaxHealth(TUNING.HEDGEHOUND_HEALTH)
 
