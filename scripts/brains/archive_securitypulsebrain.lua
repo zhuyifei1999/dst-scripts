@@ -7,9 +7,17 @@ local MAX_FOLLOW = 2
 local TARGET_FOLLOW = 1
 local WAYPOINT_RANGE = 34
 
+local MIN_FOLLOW_LEADER_DIST = 1
+local TARGET_FOLLOW_LEADER_DIST = 2
+local MAX_FOLLOW_LEADER_DIST = 4
+
 local Archive_SecurityPulseBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
+
+local function GetLeader(inst)
+    return inst.components.follower and inst.components.follower:GetLeader()
+end
 
 local function testbetweenpoints(pt1,pt2)
     local x1,y1,z1 = pt1.Transform:GetWorldPosition()
@@ -77,23 +85,26 @@ end
 ---------------------------------------------------------------------------------------------------------
 
 local POWERPOINT_MUST_TAGS = { "security_powerpoint" }
-local POWERPOINT_CAN_TAGS =  { "INLIMBO", "FX" }
+local POWERPOINT_CANT_TAGS =  { "INLIMBO", "FX" }
 
 local function FindPowerPoint(inst)
+    local hasleader = GetLeader(inst) ~= nil
+
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 20, POWERPOINT_MUST_TAGS, POWERPOINT_CAN_TAGS)
-
-    for i=#ents, 1, -1 do
-        local ent = ents[i]
-
-        if ent.components.health ~= nil and ent.components.health:GetPercent() < (ent.MED_THRESHOLD_DOWN or 1) then
-            table.remove(ents, i)
+    local ents = TheSim:FindEntities(x, y, z, 20, POWERPOINT_MUST_TAGS, POWERPOINT_CANT_TAGS)
+    for _, ent in ipairs(ents) do
+        local skip = false
+        if ent.components.health then
+            if hasleader or (ent.components.health:GetPercent() < (ent.MED_THRESHOLD_DOWN or 1)) then
+                skip = true
+            end
+        end
+        if not skip then
+            return ent
         end
     end
 
-    if ents[1] ~= nil then
-        return ents[1]
-    end
+    return nil
 end
 
 function Archive_SecurityPulseBrain:OnStart()
@@ -104,8 +115,8 @@ function Archive_SecurityPulseBrain:OnStart()
 
     local root = PriorityNode(
     {
-        WhileNode(function() return self.inst.patrol == true end, "find power point",
-            Follow(self.inst, FindPowerPoint, MIN_FOLLOW_POWERPOINT, TARGET_FOLLOW_POWERPOINT, MAX_FOLLOW, false, nil, true)),
+        Follow(self.inst, FindPowerPoint, MIN_FOLLOW_POWERPOINT, TARGET_FOLLOW_POWERPOINT, MAX_FOLLOW, false, nil, true),
+        Follow(self.inst, GetLeader, MIN_FOLLOW_LEADER_DIST, TARGET_FOLLOW_LEADER_DIST, MAX_FOLLOW_LEADER_DIST, false),
         WhileNode(function() return self.inst.patrol == true end, "find waypoints",
             Follow(self.inst, findwaypoint, MIN_FOLLOW, TARGET_FOLLOW, MAX_FOLLOW, false)),
         StandStill(self.inst),

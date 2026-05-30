@@ -3149,7 +3149,8 @@ local states =
 			--     switch to server sound when action actually executes on server
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
             if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
-                inst.sg.statemem.dohighaction = inst.bufferedaction.target:HasTag("high_dolongaction") or false
+                local rider = inst.replica.rider
+                inst.sg.statemem.dohighaction = (inst.bufferedaction.target:HasTag("high_dolongaction") and (rider == nil or not rider:IsRiding())) or false
             end
             inst.AnimState:PlayAnimation(inst.sg.statemem.dohighaction and "construct_pre" or "build_pre")
             inst.AnimState:PushAnimation(inst.sg.statemem.dohighaction and "construct_loop" or "build_loop", true)

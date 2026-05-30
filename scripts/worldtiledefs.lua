@@ -135,7 +135,7 @@ function PlayFootstep(inst, volume, ispredicted)
                     )
             end
 		else
-            local x, y, z
+            local x, y, z = inst.Transform:GetWorldPosition()
 			local soundpath
 
 			if tileinfo == nil then
@@ -143,7 +143,6 @@ function PlayFootstep(inst, volume, ispredicted)
 				--see if we're walking on web/snow/mud
 				tile, tileinfo = inst:GetCurrentTileType()
 				if tile and tileinfo then
-					x, y, z = inst.Transform:GetWorldPosition()
 					local oncreep = TheWorld.GroundCreep:OnCreep(x, y, z)
 					local onsnow = not tileinfo.nogroundoverlays and TheWorld.state.snowlevel > 0.15
 					local onmud = not tileinfo.nogroundoverlays and TheWorld.state.wetness > 15

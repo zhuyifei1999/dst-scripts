@@ -2007,6 +2007,7 @@ function MakeFumaroleTool(inst, heatonuse, onbroken, onrepaired, onupdatetempera
     inst.components.inventoryitem:SetMaxTemperature(TUNING.FUMAROLETOOL_MAXTEMP)
     if inst.components.finiteuses ~= nil then
         inst.components.finiteuses:ClearAllConsumptions()
+        inst.components.finiteuses:SetIgnoreCombatDurabilityLoss(true)
     end
 
 	local function _onbroken(_, isloading)

@@ -21,12 +21,20 @@ local INVERTED = table.invert(DIRS)
 local KEY_ROOM_ID = "key1"
 
 local function OnUpdateDirection(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
     local vaultroommanager = TheWorld.components.vaultroommanager
-    if vaultroommanager then
+    if vaultroommanager and TheWorld.Map:IsPointInVaultRoom(x, y, z) then
         local vaultroomid = vaultroommanager:GetVaultRoomId()
         local direction = vaultroomid ~= nil and vaultroommanager:GetClosestDirectionFromRoomToRoom(vaultroomid, KEY_ROOM_ID) or nil
 
-        if direction then
+        if vaultroomid == KEY_ROOM_ID then
+            if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker_success") then
+                inst.marker_pointer.AnimState:PlayAnimation("idle_marker_success", true)
+            end
+        elseif direction then
+            if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker") then
+                inst.marker_pointer.AnimState:PlayAnimation("idle_marker", true)
+            end
             local shuffleddirections = vaultroommanager.rooms[vaultroomid].shuffleddirections
             local realdirection = shuffleddirections[direction]
 
@@ -39,23 +47,34 @@ local function OnUpdateDirection(inst)
 
             for teledirection, teleporter in pairs(vaultroommanager.teleporters) do
                 if teleporter.components.vault_teleporter:GetUnshuffledDirectionName() == realdirection then
-                    inst.marker_pointer.Transform:SetRotation(inst:GetAngleToPoint(teleporter.Transform:GetWorldPosition()) - 90)
+                    inst.marker_pointer.Transform:SetRotation(inst:GetAngleToPoint(teleporter.Transform:GetWorldPosition()))
                     break
                 end
             end
+        end
+    elseif vaultroommanager and TheWorld.Map:IsPointInVaultLobby(x, y, z) then
+        if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker") then
+            inst.marker_pointer.AnimState:PlayAnimation("idle_marker", true)
+        end
+
+        local teleporter = vaultroommanager:GetLobbyToVaultTeleporter()
+        inst.marker_pointer.Transform:SetRotation(inst:GetAngleToPoint(teleporter.Transform:GetWorldPosition()))
+    else
+        if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker_fail") then
+            inst.marker_pointer.AnimState:PlayAnimation("idle_marker_fail", true)
         end
     end
 end
 
 local function OnEquip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "vault_compass", "swap_vault_compass")
+    owner.AnimState:OverrideSymbol("swap_object", "vault_compass", "swap_compass")
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
     if inst.marker == nil then
         inst.marker = SpawnPrefab("vault_compass_marker")
         inst.marker.entity:SetParent(owner.entity)
-        inst.marker.Network:SetClassifiedTarget(owner)
+        -- inst.marker.Network:SetClassifiedTarget(owner)
 
         inst.marker_pointer = SpawnPrefab("vault_compass_visual")
         inst.marker_pointer.Follower:FollowSymbol(inst.marker.GUID, "empty", 0, 0, 0)
@@ -63,17 +82,9 @@ local function OnEquip(inst, owner)
         inst.update_direction_task = inst:DoPeriodicTask(0, OnUpdateDirection)
         OnUpdateDirection(inst)
     end
-
-    if owner.components.maprevealable ~= nil then
-        owner.components.maprevealable:AddRevealSource(inst, "compassbearer")
-    end
-    owner:AddTag("compassbearer")
 end
 
-local function OnUnequip(inst, owner)
-    owner.AnimState:Hide("ARM_carry")
-    owner.AnimState:Show("ARM_normal")
-
+local function ClearMarker(inst)
     if inst.marker ~= nil then
         inst.update_direction_task:Cancel()
         inst.marker:Remove()
@@ -82,22 +93,31 @@ local function OnUnequip(inst, owner)
         inst.marker = nil
         inst.marker_pointer = nil
     end
+end
 
-    if owner.components.maprevealable ~= nil then
-        owner.components.maprevealable:RemoveRevealSource(inst)
-    end
-    owner:RemoveTag("compassbearer")
+local function OnUnequip(inst, owner)
+    owner.AnimState:Hide("ARM_carry")
+    owner.AnimState:Show("ARM_normal")
+    ClearMarker(inst)
 end
 
 local function OnEquipToModel(inst, owner, from_ground)
-    if inst.pointer ~= nil then
-        inst.pointer:Remove()
-        inst.pointer = nil
+    ClearMarker(inst)
+end
+
+local function GetStatus(inst, viewer)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local invaultroom = TheWorld.Map:IsPointInVaultRoom(x, y, z)
+    local vaultroommanager = TheWorld.components.vaultroommanager
+    if vaultroommanager and invaultroom then
+        local vaultroomid = vaultroommanager:GetVaultRoomId()
+        if vaultroomid == KEY_ROOM_ID then
+            return "KEYROOM"
+        end
     end
-    if owner.components.maprevealable ~= nil then
-        owner.components.maprevealable:RemoveRevealSource(inst)
-    end
-    owner:RemoveTag("compassbearer")
+
+    return (not invaultroom and not TheWorld.Map:IsPointInVaultLobby(x, y, z) and "NOTVAULT")
+        or nil
 end
 
 local function fn()
@@ -105,6 +125,7 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddFollower()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -113,10 +134,10 @@ local function fn()
     inst.AnimState:SetBuild("vault_compass")
     inst.AnimState:PlayAnimation("idle", true)
 
-    -- inst:AddTag("compass")
-
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
+    --furnituredecor (from furnituredecor component) added to pristine state for optimization
+    inst:AddTag("furnituredecor")
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.6)
 
@@ -129,8 +150,10 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
+
     inst:AddComponent("inventoryitem")
-    --inst.components.inspectable.getstatus = GetStatus
+    inst:AddComponent("furnituredecor")
 
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(OnEquip)
@@ -179,8 +202,8 @@ local function visualpointerfn()
     inst.entity:AddFollower()
     inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("archive_resonator")
-    inst.AnimState:SetBuild("archive_resonator")
+    inst.AnimState:SetBank("vault_compass")
+    inst.AnimState:SetBuild("vault_compass")
     inst.AnimState:PlayAnimation("idle_marker", true)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)

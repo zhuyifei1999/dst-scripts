@@ -1250,6 +1250,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "not_used_by_wurt",
     ANNOUNCE_GOT_DECON_MISTED = "Oooh, feel good on scales, florp!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "What Shadowfolk doing?!",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Need more theer-mole bomb!",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6215,8 +6216,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
-            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+            GENERIC = "Show which way! Now!!", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "Glurgh. Why not working?", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "We here!", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "Climbing easy.",

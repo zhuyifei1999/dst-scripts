@@ -8238,7 +8238,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
             if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil then
-                inst.sg.statemem.dohighaction = inst.bufferedaction.target:HasTag("high_dolongaction") or false
+                inst.sg.statemem.dohighaction = (inst.bufferedaction.target:HasTag("high_dolongaction") and not inst.components.rider:IsRiding()) or false
             end
             inst.AnimState:PlayAnimation(inst.sg.statemem.dohighaction and "construct_pre" or "build_pre")
             inst.AnimState:PushAnimation(inst.sg.statemem.dohighaction and "construct_loop" or "build_loop", true)

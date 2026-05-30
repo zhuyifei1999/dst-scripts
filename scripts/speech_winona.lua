@@ -1256,6 +1256,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "I think I'll take a break from eatin' weird bug guts for a while.",
     ANNOUNCE_GOT_DECON_MISTED = "Huh. It actually chased away the shadows.",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "They're helpin'? I must be seein' things.",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "I think the Thermal Balm is wearin' off.",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6221,8 +6222,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
-            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+            GENERIC = "I like havin' clear instructions to work off of.", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "Seems like it only works in one place...", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "Worked like a charm!", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "Good to have a way out.",

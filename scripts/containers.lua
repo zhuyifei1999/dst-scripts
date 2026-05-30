@@ -1934,7 +1934,7 @@ end
 
 function params.beargerfur_sack.itemtestfn(container, item, slot)
     -- Prepared food.
-    return item:HasTag("beargerfur_sack_valid", "preparedfood")
+    return item:HasAnyTag("beargerfur_sack_valid", "preparedfood")
 end
 
 --------------------------------------------------------------------------

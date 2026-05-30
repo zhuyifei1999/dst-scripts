@@ -37,7 +37,14 @@ local function SetExitTarget(inst, targetinst)
 
     if inst.hadrope_fromload then
         inst.hadrope_fromload = nil
-        inst:AddRope()
+        inst.hadrope_callback = function()
+            inst:RemoveEventCallback("entitywake", inst.hadrope_callback, targetinst)
+            inst:RemoveEventCallback("entitysleep", inst.hadrope_callback, targetinst)
+            inst.hadrope_callback = nil
+            inst:AddRope()
+        end
+        inst:ListenForEvent("entitywake", inst.hadrope_callback, targetinst)
+        inst:ListenForEvent("entitysleep", inst.hadrope_callback, targetinst)
     end
     inst.components.teleporter:SetEnabled(true)
     inst:ListenForEvent("onremove", inst._exittarget_onremove, targetinst)

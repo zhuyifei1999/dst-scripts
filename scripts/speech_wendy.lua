@@ -1254,6 +1254,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "I survived. Oh well, there's always next time.",
     ANNOUNCE_GOT_DECON_MISTED = "Can it truly purge all the darkness from my heart?",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Strange... I wonder what price we shall pay for this assistance.",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "The flames may consume me once again.",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6219,8 +6220,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
+            GENERIC = "Where do we go from here?", -- Pointing us to the teleporters leading to the key room
             NOTVAULT = "It can't help me here.", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "We've arrived, Abigail.", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "A way out.",

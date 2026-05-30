@@ -4632,7 +4632,7 @@ STRINGS =
 
         TRAP_FUMAROLE = "Coals",
 
-        HEALINGSALVE_FUMAROLE = "Cooling Balm",
+        HEALINGSALVE_FUMAROLE = "Thermal Balm",
 
 		VAULT_PILLAR_GUARD = "Ancient Guard Tower",
 		VAULT_PILLAR_GUARD_DORMANT = "Ancient Tower",

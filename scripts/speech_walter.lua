@@ -1292,6 +1292,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "I-it's okay, Woby. I'm feeling better now!",
     ANNOUNCE_GOT_DECON_MISTED = "Huh. Is it just me, or does the atmosphere in here feel lighter?",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Wait a minute! They're helping us, Woby!",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "I've got to be careful, Woby. My Thermal Balm has worn off.",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6257,8 +6258,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "Now we'll find our way there for sure!", -- Pointing us to the teleporters leading to the key room
+            GENERIC = "Now we'll find our way for sure!", -- Pointing us to the teleporters leading to the key room
             NOTVAULT = "I don't think it works here, Woby.", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "Looks like we made it, Woby!", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "Good thing I have my climbing badge!",

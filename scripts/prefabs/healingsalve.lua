@@ -80,6 +80,10 @@ local function acid_OnHealFn(inst, target)
     target:AddDebuff("healingsalve_acidbuff", "healingsalve_acidbuff")
 end
 
+local function acid_common_postinit(inst)
+    inst:AddTag("healerbuffs")
+end
+
 local function acid_master_postinit(inst)
     inst.components.healer:SetOnHealFn(acid_OnHealFn)
 end
@@ -94,6 +98,10 @@ local FUMAROLE_DATA =
 
 local function fumarole_OnHealFn(inst, target)
     target:AddDebuff("healingsalve_fumarolebuff", "healingsalve_fumarolebuff")
+end
+
+local function fumarole_common_postinit(inst)
+    inst:AddTag("healerbuffs")
 end
 
 local function fumarole_master_postinit(inst)
@@ -221,6 +229,7 @@ local ACIDBUFF_DATA =
 
 --------------------------------------------
 
+-- NOTES(JBK): Do not apply health over time for this item because of healerbuffs tag.
 local function fumarolebuff_OnAttached(inst, target)
     if target.components.health ~= nil then
         target.components.health.externalfiredamagemultipliers:SetModifier(inst, 0)
@@ -257,7 +266,7 @@ local FUMAROLEBUFF_DATA =
 --------------------------------------------
 
 return MakeHealingSalve("healingsalve", nil, nil, nil, assets),
-    MakeHealingSalve("healingsalve_acid", nil, acid_master_postinit, ACID_DATA, assets_acid, prefabs_acid),
-    MakeHealingSalve("healingsalve_fumarole", nil, fumarole_master_postinit, FUMAROLE_DATA, assets_fumarole, prefabs_fumarole),
+    MakeHealingSalve("healingsalve_acid", acid_common_postinit, acid_master_postinit, ACID_DATA, assets_acid, prefabs_acid),
+    MakeHealingSalve("healingsalve_fumarole", fumarole_common_postinit, fumarole_master_postinit, FUMAROLE_DATA, assets_fumarole, prefabs_fumarole),
     MakeHealingSalveBuff("healingsalve_acidbuff", ACIDBUFF_DATA),
     MakeHealingSalveBuff("healingsalve_fumarolebuff", FUMAROLEBUFF_DATA)

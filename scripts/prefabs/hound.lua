@@ -776,7 +776,7 @@ local function fnclay()
 
 	inst.sounds = sounds_clay
 
-    MakeMediumFreezableCharacter(inst, "hound_body")
+	--MakeMediumFreezableCharacter(inst, "hound_body")
 
     inst.components.lootdropper:SetChanceLootTable('clayhound')
 

@@ -11,6 +11,7 @@ local prefabs =
 	"vault_pillar_guard_dormant",
 	"vault_key_activator_plate",
 	"vault_key_pedestal_plate",
+	"vault_ground_pattern_fx",
 }
 
 --------------------------------------------------------------------------
@@ -33,8 +34,18 @@ local function CheckPuzzleProgress(inst)
 
 	local function IncrementPuzzleProgress()
 		puzzleprogress = puzzleprogress + 1
+		if puzzleprogress >= 8 then
+			local pedestal = inst.components.entitytracker:GetEntity("keypedestal")
+			if pedestal then
+				pedestal:OpenPlate("vault_key_pedestal")
+			end
+			if inst.middle_ring then
+				inst.middle_ring:EnableOn(true)
+			end
+		end
 		if not POPULATING then
 			if puzzleprogress >= 8 then
+				KillSounds(inst)
 				inst.SoundEmitter:PlaySound("grotto/common/archive_orchestrina/8")
 			else
 				if not inst.SoundEmitter:PlayingSound("machine"..tostring(puzzleprogress)) then
@@ -57,6 +68,9 @@ local function CheckPuzzleProgress(inst)
 			end
 			local marker_bit = 2 ^ i
 			bitfield = bit.bor(bitfield, marker_bit)
+			if inst._rings and inst._rings[i] then
+				inst._rings[i]:EnableOn(true)
+			end
 			IncrementPuzzleProgress()
 		end
 	end
@@ -85,14 +99,6 @@ local function CheckAllSockets(inst)
 	CheckPuzzleProgress(inst)
 
 	_dbg_print(string.format("socketed %d/4", n))
-
-	if n == 4 then
-		KillSounds(inst)
-		local pedestal = inst.components.entitytracker:GetEntity("keypedestal")
-		if pedestal then
-			pedestal:OpenPlate("vault_key_pedestal")
-		end
-	end
 end
 
 local function OnLeverPulled(inst, activator, doer)
@@ -244,13 +250,25 @@ local function InitializeLayout(inst)
 	TrackLight(inst, SpawnTrackedPrefabAtXZ(inst, "light4", "vault_crawler_chandelier", x + r, z))
 
 	--pillars & sockets (grid aligned to register pathfinding)
+	inst._rings = {}
 	local i = 0
 	local sign = 1
+	local groundvars = { 3, 4, 5, math.random(3, 5) }
+	local groundvar2 = math.random(3, 4)
+	if groundvar2 >= groundvars[4] then
+		groundvar2 = groundvar2 + 1
+	end
+	local groundorientations = { 1, 2, 3, 4 }
 	for dx = -2.125, 2.125, 4.25 do
 		for dz = -2.125, 2.125, 4.25 do
 			i = i + 1
-			SpawnTrackedPrefabAtXZ(inst, "pillar"..tostring(i), "vault_pillar_guard_dormant", x + dx * TILE_SCALE, z + dz * sign * TILE_SCALE)
-			TrackSocket(inst, SpawnTrackedPrefabAtXZ(inst, "socket"..tostring(i), "vault_crawler_socket", x + dx * TILE_SCALE, z + dz * sign * TILE_SCALE))
+			local x1 = x + dx * TILE_SCALE
+			local z1 = z + dz * sign * TILE_SCALE
+			local ring = SpawnPrefab("vault_ground_pattern_fx"):SetVariation(table.remove(groundvars, math.random(#groundvars))):SetOrientation(table.remove(groundorientations, math.random(#groundorientations))):ChangeSortOrder(-2)
+			ring.Transform:SetPosition(x1, 0, z1)
+			table.insert(inst._rings, ring)
+			SpawnTrackedPrefabAtXZ(inst, "pillar"..tostring(i), "vault_pillar_guard_dormant", x1, z1)
+			TrackSocket(inst, SpawnTrackedPrefabAtXZ(inst, "socket"..tostring(i), "vault_crawler_socket", x1, z1))
 		end
 		sign = -sign
 	end
@@ -264,6 +282,9 @@ local function InitializeLayout(inst)
 	TrackActivator(inst, SpawnActivatorAtXZ(inst, "activator4", x + r, z))
 
 	-- key pedestal
+	local ring = SpawnPrefab("vault_ground_pattern_fx"):SetVariation(groundvar2):SetOrientation(math.random(4)):ChangeSortOrder(-2)
+	ring.Transform:SetPosition(x, 0, z)
+	inst.middle_ring = ring
 	SpawnTrackedPrefabAtXZ(inst, "keypedestal", "vault_key_pedestal_plate", x, z)
 end
 
@@ -393,7 +414,11 @@ local function fn()
 	--used for vault_pillar_guard and vault_crawler => both to share aggro other guards
 	--NOTE: crawler already handles sharing target to other crawlers
 	inst._onattacked = function(ent, data)
-		if data and data.attacker and data.attacker:IsValid() and not data.attacker:HasAnyTag("vault_pillar_guard") then
+		if data and data.attacker and data.attacker:IsValid() then
+			if data.attacker:HasAnyTag("vault_pillar_guard", "vault_crawler") and not data.attacker.components.combat:TargetIs(ent) then
+				--ignore stray hits from pillar guard and crawler AOE
+				return
+			end
 			for i = 1, 4 do
 				local guard = inst.components.entitytracker:GetEntity("guard"..tostring(i))
 				if guard and guard ~= ent and not guard.components.health:IsDead() then

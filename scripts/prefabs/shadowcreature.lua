@@ -156,7 +156,10 @@ local function OnDeath(inst, data)
 
     -- no loot in key room
     local vaultroommanager = TheWorld.components.vaultroommanager
-    if vaultroommanager ~= nil and vaultroommanager:GetVaultRoomId() == "key1" and TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition())  then
+    if vaultroommanager ~= nil
+        and vaultroommanager:GetVaultRoomId() == "key1"
+        and TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition())
+        and (data.afflicter == nil or not data.afflicter.isplayer) then
 		inst.components.lootdropper:SetLoot({})
 		inst.components.lootdropper:SetChanceLootTable(nil)
     end

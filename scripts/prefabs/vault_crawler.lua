@@ -44,6 +44,10 @@ local function OnAttacked(inst, data)
 	if data and data.attacker and data.attacker:IsValid() and
 		TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition()) == TheWorld.Map:IsPointInVaultRoom(data.attacker.Transform:GetWorldPosition())
 	then
+		if data.attacker.sg and data.attacker.sg:HasStateTag("vault_crawler_dropping") then
+			--ignore crawler AOE when they fall from ceiling
+			return
+		end
 		inst.components.combat:SetTarget(data.attacker)
 		inst.components.combat:ShareTarget(data.attacker, 30, function(dude) return dude.sg ~= nil end, 4, CRAWLER_TAGS)
 	end
@@ -246,7 +250,7 @@ local function fn()
 	inst:AddComponent("knownlocations")
 	inst:AddComponent("savedrotation")
 
-	MakeMediumFreezableCharacter(inst, "body")
+	--MakeMediumFreezableCharacter(inst, "body")
 	MakeHauntable(inst)
 
 	inst:ListenForEvent("attacked", OnAttacked)
@@ -279,7 +283,9 @@ local function socket_CreateFront()
 
 	inst.AnimState:SetBank("vault_crawler")
 	inst.AnimState:SetBuild("vault_crawler")
-	inst.AnimState:PlayAnimation("plate_open_front")
+	inst.AnimState:PlayAnimation("plate_open_activated_front", true)
+	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
 	return inst
 end
@@ -433,6 +439,7 @@ local function socket_SetIsSocketed(inst, socketed)
 			inst.issocketed:set(true)
 			inst:RemoveEventCallback("animover", socket_OnOpenAnimOver)
 			inst.AnimState:PlayAnimation("plate_open_back")
+			inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 			if not POPULATING then
 				inst.SoundEmitter:PlaySound("rifts7/plate/activate")
 			end
@@ -450,6 +457,7 @@ local function socket_SetIsSocketed(inst, socketed)
 		end
 	elseif inst.issocketed:value() then
 		inst.issocketed:set(false)
+		inst.AnimState:ClearBloomEffectHandle()
 		inst:AddTag("vault_crawler_socket")
 		socket_IsSocketedDirty(inst)
 		inst:PushEvent("ms_vaultsocketed_changed")

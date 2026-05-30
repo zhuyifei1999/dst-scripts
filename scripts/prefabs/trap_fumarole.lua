@@ -44,7 +44,7 @@ local function OnUpdate(inst)
 	if REGISTERED_AOE_TAGS == nil then
 		REGISTERED_AOE_TAGS = TheSim:RegisterFindTags(
 		    nil,
-			{ "FX", "DECOR", "INLIMBO", "flight", "noattack", "notarget", "invisible", "wall", "brightmare", "brightmareboss", "shadowcreature", "trap_fumarole" },
+			{ "FX", "DECOR", "INLIMBO", "flying", "noattack", "notarget", "invisible", "wall", "brightmare", "brightmareboss", "shadowcreature", "trap_fumarole" },
             nil
 		)
 	end
@@ -380,6 +380,7 @@ local function SetTrap(inst)
     if not inst.settrap then
         inst.components.inventoryitem:SetMaxTemperature(TUNING.TRAP_FUMAROLE_MAXTEMP)
         inst:AddTag("mineactive")
+        inst:AddTag("canpourwateron")
         if not inst:IsInLimbo() then
             inst.MiniMapEntity:SetEnabled(true)
         end
@@ -402,6 +403,7 @@ local function SetItem(inst)
         inst.components.inventoryitem:SetMaxTemperature(TUNING.TRAP_FUMAROLE_MAXTEMP_HELD)
         ClearPlayIdleTask(inst)
         inst:RemoveTag("mineactive")
+        inst:RemoveTag("canpourwateron")
         inst.components.inventoryitem.nobounce = false
         inst.MiniMapEntity:SetEnabled(false)
         inst.AnimState:PlayAnimation("item")

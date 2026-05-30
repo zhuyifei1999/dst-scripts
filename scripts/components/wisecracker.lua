@@ -475,7 +475,7 @@ local Wisecracker = Class(function(self, inst)
 	end
 	inst:ListenForEvent("ms_vaultshadowassist", function(inst)
 		local t = GetTime()
-		if lastshadowassist == nil or lastshadowassist + 300 < t then
+		if lastshadowassist == nil or lastshadowassist + 90 < t then
 			lastshadowassist = t
 			if shadowassisttask then
 				shadowassisttask:Cancel()

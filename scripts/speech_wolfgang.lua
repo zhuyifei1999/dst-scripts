@@ -1251,6 +1251,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "Ha! Could not burn through Wolfgang's stomach of steel!",
     ANNOUNCE_GOT_DECON_MISTED = "Strange mist feels good on skin... and in head!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Creepy shadow things helping Wolfgang?",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Need more Thermal Balm!",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6216,8 +6217,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
-            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+            GENERIC = "Wolfgang knows the way! ...But compass helps.", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "Is broken! How will Wolfgang know where to go?!", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "We are here! Just like Wolfgang said!", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "Wolfgang is mighty climber.",

@@ -9476,7 +9476,7 @@ function Tune(overrides)
         TRAP_FUMAROLE_TEMP_MODIFIER = -30,
         TRAP_FUMAROLE_TEMPS = { 0, 30, 60 },
         TRAP_FUMAROLE_LIGHTOVERRIDES = { 0, .125, .35 },
-        TRAP_FUMAROLE_IGNITE_TIME = seg_time, -- multiplied by mult below depending on temperature stage, this also cooks stuff.
+        TRAP_FUMAROLE_IGNITE_TIME = seg_time * 0.5, -- multiplied by mult below depending on temperature stage, this also cooks stuff.
         TRAP_FUMAROLE_IGNITE_MULTS = { 0, 0.5, 1 },
         TRAP_FUMAROLE_MAX_IGNITE_ITEMS = 2, -- max items we can cook/ignite per tile
         TRAP_FUMAROLE_TEMPERATURE_RATE = 3,

@@ -6,7 +6,7 @@ local VaultOrbTeleportDestination = Class(function(self, inst)
         self.hiddenglobalicon = nil
         self.inst:RemoveComponent("vaultorbteleportdestination")
     end
-    local closeicon = SpawnPrefab("globalmapicon")
+    local closeicon = SpawnPrefab("globalmapiconnoproxy")
     self.hiddenglobalicon = SpawnPrefab("globalmapicon")
     closeicon.entity:SetParent(self.hiddenglobalicon.entity)
 
@@ -15,7 +15,6 @@ local VaultOrbTeleportDestination = Class(function(self, inst)
     self.hiddenglobalicon:AddTag("vaultorbteleportdestinationtrackericon")
     self.hiddenglobalicon:TrackEntity(self.inst, "vaultorbteleportdestinationtracker", "vaultorbdestination_icon.png")
 
-    closeicon.MiniMapEntity:SetIsProxy(false)
     closeicon.MiniMapEntity:SetPriority(MINIMAP_DECORATION_PRIORITY)
     closeicon.MiniMapEntity:SetRestriction("vaultorbteleportdestinationtracker")
     closeicon.MiniMapEntity:SetIcon("vaultorbdestination_icon.png")

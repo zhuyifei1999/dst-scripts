@@ -1294,13 +1294,13 @@ end
 
 -- RIFTS 7
 
-Recipe2("fumaroleaxe",					{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO)
-Recipe2("fumarolepickaxe",				{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO)
-Recipe2("fumaroleshovel",				{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO)
-Recipe2("fumarolehammer",				{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO)
-Recipe2("fumarole_farm_hoe",			{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO)
+Recipe2("fumaroleaxe",					{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 3)},											TECH.SCIENCE_TWO)
+Recipe2("fumarolepickaxe",				{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 3)},											TECH.SCIENCE_TWO)
+Recipe2("fumaroleshovel",				{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 3)},											TECH.SCIENCE_TWO)
+Recipe2("fumarolehammer",				{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 3)},											TECH.SCIENCE_TWO)
+Recipe2("fumarole_farm_hoe",			{Ingredient("twigs", 4), Ingredient("mitegland", 2), Ingredient("nitre", 3)},											TECH.SCIENCE_TWO)
 
-Recipe2("trap_fumarole",				{Ingredient("flint", 6), Ingredient("mitegland", 2), Ingredient("nitre", 6)},											TECH.SCIENCE_TWO, { numtogive=4, })
+Recipe2("trap_fumarole",				{Ingredient("flint", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO, { numtogive=4, })
 Recipe2("healingsalve_fumarole",		{Ingredient("ash", 2),   Ingredient("flint", 1), Ingredient("mitegland", 1)},											TECH.SCIENCE_TWO)
 
 Recipe2("vault_orb_refined",			{Ingredient("vault_orb_fragment", 1)},															TECH.LOST)

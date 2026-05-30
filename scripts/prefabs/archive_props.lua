@@ -418,6 +418,15 @@ local POWERPOINT_POSSESSION_RANGE = 0.2
 local POWERPOINT_MUST_TAGS = { "security_powerpoint" }
 local POWERPOINT_CAN_TAGS =  { "INLIMBO", "FX" }
 
+local function is_security_pulse_lure(item)
+    return item.prefab == "vault_compass" -- TODO
+end
+
+local function FindFollowTargetTest(target)
+    return target.components.inventory ~= nil
+        and (#target.components.inventory:FindItems(is_security_pulse_lure) > 0)
+end
+
 local function FindSecurityPulseTarget(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, inst.possession_range, POWERPOINT_MUST_TAGS, POWERPOINT_CAN_TAGS)
@@ -432,6 +441,27 @@ local function FindSecurityPulseTarget(inst)
 
     if ents[1] ~= nil then
         ents[1]:PushEvent("possess", { possesser = inst })
+        return
+    end
+
+    if not inst:IsAsleep() then
+        local leader = inst.components.follower:GetLeader()
+        if leader ~= nil then
+            if FindFollowTargetTest(leader) then
+                return true
+            else
+                inst.patrol = true
+                inst.components.follower:SetLeader(nil)
+            end
+        end
+
+        for i, v in ipairs(FindPlayersInRangeSq(x, y, z, 9*9, true)) do
+            if FindFollowTargetTest(v) then
+                inst.patrol = false
+                inst.components.follower:SetLeader(v)
+                break
+            end
+        end
     end
 end
 
@@ -472,7 +502,7 @@ local function securitypulsefn()
     inst.AnimState:SetLightOverride(1)
 
     inst:AddTag("power_point")
-
+	inst:AddTag("flying")
 
     inst.entity:SetPristine()
 
@@ -485,6 +515,8 @@ local function securitypulsefn()
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = TUNING.ARCHIVE_SECURITY.WALK_SPEED
+
+    inst:AddComponent("follower")
 
     inst.OnLocomote = OnLocomote -- Mods
     inst.FindSecurityPulseTarget = FindSecurityPulseTarget -- Mods

@@ -26,14 +26,29 @@ local function OnActivateAnimOver(inst)
 	inst.plate:ClosePlate()
 end
 
+local function DisableLight(inst)
+	inst.Light:Enable(false)
+end
+
 local function OnDepositSpark(inst, spark)
 	if inst.AnimState:IsCurrentAnimation("activator_off_idle") then
 		inst:ListenForEvent("animover", OnActivateAnimOver)
 		inst.AnimState:PlayAnimation("activator_on")
+		inst.Light:Enable(true)
+		inst:DoTaskInTime(24 * FRAMES, DisableLight)
 		inst.SoundEmitter:PlaySound("rifts7/plate/activate")
 		inst:AddTag("NOCLICK")
+		inst:RemoveTag("security_powerpoint")
 		inst.plate:OnDepositSpark()
 	end
+end
+
+local function OnPossessed(inst, data)
+    local pulse = data.possesser
+    if pulse ~= nil and pulse:HasTag("power_point") then
+        pulse:Remove()
+	end
+	OnDepositSpark(inst)
 end
 
 local function IsEmpty(inst)
@@ -46,14 +61,23 @@ local function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
+	inst.entity:AddLight()
 	inst.entity:AddNetwork()
 
 	inst:SetPhysicsRadiusOverride(ACTIVATOR_PHYS_RAD)
+
+	inst.Light:SetFalloff(0.7)
+	inst.Light:SetIntensity(0.5)
+	inst.Light:SetRadius(1)
+	inst.Light:SetColour(237/255, 237/255, 209/255)
+	inst.Light:Enable(false)
 
 	inst.AnimState:SetBank("vault_activator")
 	inst.AnimState:SetBuild("vault_activator")
 	inst.AnimState:PlayAnimation("activator_off_idle")
 	inst.AnimState:SetFinalOffset(-1)
+
+	inst:AddTag("security_powerpoint")
 
 	inst.IsEmpty = IsEmpty
 
@@ -66,6 +90,7 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:ListenForEvent("ms_depositspark", OnDepositSpark)
+	inst:ListenForEvent("possess", OnPossessed)
 
 	inst.persists = false
 
@@ -132,6 +157,10 @@ local function lever_OnRemoveEntity(inst)
 	end
 end
 
+local function lever_GetActivateVerb(inst)--, doer)
+	return "PULL"
+end
+
 local function leverfn()
 	local inst = CreateEntity()
 
@@ -151,6 +180,8 @@ local function leverfn()
 
 	inst.OnEntityWake = lever_OnEntityWake
 	inst.OnRemoveEntity = lever_OnRemoveEntity
+
+	inst.GetActivateVerb = lever_GetActivateVerb
 
 	inst.entity:SetPristine()
 
@@ -217,7 +248,6 @@ local function pedestalfn()
     inst.Light:SetColour(112 / 255, 123 / 255, 243 / 255)
 
 	inst:AddTag("NOCLICK")
-	inst:AddTag("intense")
 	inst:AddTag("high_dolongaction")
 
 	inst.entity:SetPristine()

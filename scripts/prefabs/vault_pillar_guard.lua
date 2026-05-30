@@ -14,6 +14,7 @@ local assets_dormant =
 local prefabs =
 {
 	"vault_pillar_guard_swipe_fx",
+	"vault_pillar_guard_smash_fx",
 
 	--loot
 	"thulecite",
@@ -131,10 +132,8 @@ local function DetachDebris(inst, recycle) --recycle nil when triggered via pare
 	end
 end
 
-local function OnDebrisDirty(inst)
-	DetachDebris(inst, true)
-
-	if inst.debrisanim:value() ~= 0 then
+local function DoDebris(inst)
+	if inst.debrisanim:value() == inst.AnimState:GetCurrentAnimationHash() and not inst.AnimState:AnimDone() then
 		if inst.debrisfxpool and #inst.debrisfxpool > 0 then
 			inst.debrisfx = table.remove(inst.debrisfxpool)
 			inst.debrisfx:ReturnToScene()
@@ -150,7 +149,24 @@ local function OnDebrisDirty(inst)
 			inst.debrisfx.Transform:SetNoFaced()
 		end
 		inst.debrisfx.AnimState:PlayAnimation(inst.debrisanim:value())
+		inst.debrisfx.AnimState:SetTime(inst.AnimState:GetCurrentAnimationTime())
 		inst.debrisfx:ListenForEvent("onremove", DetachDebris, inst)
+	end
+end
+
+local function PostUpdateDebris_Client(inst)
+	inst._deferreddebris = false
+	inst.components.updatelooper:RemovePostUpdateFn(PostUpdateDebris_Client)
+
+	DoDebris(inst)
+end
+
+local function OnDebrisDirty_Client(inst)
+	DetachDebris(inst, true)
+
+	if not inst._deferreddebris then
+		inst._deferreddebris = true
+		inst.components.updatelooper:AddPostUpdateFn(PostUpdateDebris_Client)
 	end
 end
 
@@ -164,7 +180,8 @@ local function TriggerDebris(inst, show)
 	end
 
 	if not TheNet:IsDedicated() then
-		OnDebrisDirty(inst)
+		DetachDebris(inst, true)
+		DoDebris(inst)
 	end
 end
 
@@ -243,7 +260,12 @@ local function KeepTargetFn(inst, target)
 end
 
 local function OnAttacked(inst, data)
-	if data and data.attacker and data.attacker:IsValid() and not data.attacker:HasTag("vault_pillar_guard") then
+	if data and data.attacker and data.attacker:IsValid() then
+		if data.attacker:HasAnyTag("vault_pillar_guard", "vault_crawler") and not data.attacker.components.combat:TargetIs(inst) then
+			--ignore stray hits from pillar guard and crawler AOE
+			return
+		end
+
 		if inst.trial and data.attacker:HasTag("shadowcreature") then
 			for _, v in ipairs(AllPlayers) do
 				if not IsEntityDeadOrGhost(v) and v.entity:IsVisible() then
@@ -299,12 +321,8 @@ local PHASES =
 			inst.canspin = true
 			inst.canquickjump = true
 
-			if not POPULATING then
-				if not inst.components.timer:TimerExists("stunned") then
-					inst.components.timer:StartTimer("stunned", TUNING.VAULT_PILLAR_GUARD_MAX_STAGGER_TIME, true)
-				end
-			elseif not inst.components.timer:IsPaused("stunned") then
-				inst.sg:GoToState("stun_idle")
+			if not (POPULATING or inst.components.timer:TimerExists("stunned")) then
+				inst.components.timer:StartTimer("stunned", TUNING.VAULT_PILLAR_GUARD_MAX_STAGGER_TIME, true)
 			end
 		end,
 	},
@@ -337,6 +355,9 @@ local function OnLoad(inst, data)--, ents)
 			break
 		end
 	end
+	if inst.components.timer:TimerExists("stunned") and not inst.components.timer:IsPaused("stunned") then
+		inst.sg:GoToState("stun_idle")
+	end
 end
 
 local function fn()
@@ -364,6 +385,12 @@ local function fn()
 	inst.AnimState:SetBank("vault_pillar_guard")
 	inst.AnimState:SetBuild("vault_pillar_guard")
 	inst.AnimState:PlayAnimation("idle", true)
+	inst.AnimState:SetSymbolLightOverride("fx_blue_part", 0.5)
+	inst.AnimState:SetSymbolLightOverride("pg_eye_parts", 0.14)
+	inst.AnimState:SetSymbolLightOverride("pg_top", 0.12)
+	inst.AnimState:SetSymbolLightOverride("pg_shoulder", 0.09)
+	inst.AnimState:SetSymbolLightOverride("pg_chest", 0.08)
+	inst.AnimState:SetSymbolLightOverride("pg_pelvis", 0.05)
 
 	inst:SetPhysicsRadiusOverride(1.6)
 	MakeGiantCharacterPhysics(inst, 1000, inst.physicsradiusoverride)
@@ -379,7 +406,8 @@ local function fn()
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
-		inst:DoTaskInTime(0, inst.ListenForEvent, "debrisdirty", OnDebrisDirty)
+		inst:AddComponent("updatelooper")
+		inst:ListenForEvent("debrisdirty", OnDebrisDirty_Client)
 
 		return inst
 	end
@@ -431,7 +459,7 @@ local function fn()
 
 	inst:AddComponent("knownlocations")
 
-	MakeHugeFreezableCharacter(inst, "pg_pelvis")
+	--MakeHugeFreezableCharacter(inst, "pg_pelvis")
 	MakeHauntable(inst)
 
 	inst:ListenForEvent("attacked", OnAttacked)

@@ -777,7 +777,7 @@ end
 
 local function mitegland_oneaten(inst, eater)
     if not (eater.components.eater ~= nil and eater.components.eater.eatsrawmeat) then
-        eater:AddDebuff("firenettle_toxin", "firenettle_toxin")
+        eater:AddDebuff("mitegland_debuff", "mitegland_debuff")
     end
 end
 

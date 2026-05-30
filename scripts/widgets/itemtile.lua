@@ -323,12 +323,10 @@ local ItemTile = Class(Widget, function(self, invitem)
             end, invitem)
     end
 
-    if self.temperature ~= nil then
-        self.inst:ListenForEvent("temperaturedelta",
-            function(invitem, data)
-                self:UpdateTemperaturePercent(data.new, data.mintemp, data.maxtemp)
-            end, invitem)
-    end
+    self.inst:ListenForEvent("temperaturedelta",
+        function(invitem, data)
+            self:UpdateTemperaturePercent(data.new, data.mintemp, data.maxtemp)
+        end, invitem)
 
     self.inst:ListenForEvent("wetnesschange",
         function(invitem, wet)

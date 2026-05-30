@@ -1250,6 +1250,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "TEMPERATURE REGULATION RESTORED",
     ANNOUNCE_GOT_DECON_MISTED = "ELIMINATING CONTAMINANTS",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "I DO NOT REQUIRE ASSISTANCE",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "HEAT SHIELD FAILING",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6215,8 +6216,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
-            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+            GENERIC = "CALCULATING ROUTE", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "ERROR: INVALID LOCATION", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "ARRIVED AT DESTINATION", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "PRIMITIVE BUT NECESSARY",

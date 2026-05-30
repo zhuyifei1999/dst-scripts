@@ -88,7 +88,6 @@ local function common_server(inst)
     MakeMediumFreezableCharacter(inst, "fruit2")
     MakeMediumBurnableCharacter(inst, "fruit2")
     inst.components.burnable:SetBurnTime(8 * TUNING.PLANTMOB_BURNTIME_MULT)
-    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
 
     MakeHauntablePanic(inst)
 
@@ -239,6 +238,7 @@ local function fn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.LORDFRUITFLY_HEALTH)
+    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
 
     inst:AddComponent("knownlocations")
     inst:DoTaskInTime(0, RememberKnownLocation)
@@ -337,6 +337,7 @@ local function minifn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.FRUITFLY_HEALTH)
+    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
 
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
@@ -435,6 +436,7 @@ local function friendlyfn()
     inst:ListenForEvent("startfollowing", OnStartFollowing)
 
     inst:AddComponent("health")
+    inst.components.health.fire_damage_scale = TUNING.PLANTMOB_FIRE_DAMAGE_SCALE
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "fruit2"
     inst.components.combat:SetKeepTargetFunction(FriendlyShouldKeepTarget)

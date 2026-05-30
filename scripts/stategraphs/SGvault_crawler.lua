@@ -3,7 +3,7 @@ require("stategraphs/commonstates")
 local events =
 {
 	CommonHandlers.OnLocomote(false, true),
-	CommonHandlers.OnFreezeEx(),
+	--CommonHandlers.OnFreezeEx(),
 	EventHandler("minhealth", function(inst, data)
 		if not inst.sg:HasAnyStateTag("hiding", "hide_pre") then
 			inst.sg:GoToState("hide_pre")
@@ -99,6 +99,106 @@ local function EnablePushing(inst, enable)
 	end
 end
 
+--------------------------------------------------------------------------
+
+local AOE_RANGE_PADDING = 3
+local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
+
+local function _AOEAttack(inst, radius, targets)
+	inst.components.combat.ignorehitrange = true
+	local x, y, z = inst.Transform:GetWorldPosition()
+	for i, v in ipairs(TheSim:FindEntities(x, y, z, radius + AOE_RANGE_PADDING, AOE_TARGET_MUSTHAVE_TAGS, AOE_TARGET_CANT_TAGS)) do
+		if v ~= inst and not targets[v] and
+			v:IsValid() and not v:IsInLimbo() and
+			not (v.components.health and v.components.health:IsDead())
+		then
+			local range = radius + v:GetPhysicsRadius(0)
+			if v:GetDistanceSqToPoint(x, y, z) < range * range and inst.components.combat:CanTarget(v) then
+				inst.components.combat:DoAttack(v)
+				targets[v] = true
+			end
+		end
+	end
+	inst.components.combat.ignorehitrange = false
+end
+
+local WORK_RADIUS_PADDING = 0.5
+local COLLAPSIBLE_WORK_ACTIONS =
+{
+	CHOP = true,
+	HAMMER = true,
+	MINE = true,
+}
+local COLLAPSIBLE_TAGS = { "NPC_workable" }
+for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
+	table.insert(COLLAPSIBLE_TAGS, k.."_workable")
+end
+
+local NON_COLLAPSIBLE_TAGS = { "FX", --[["NOCLICK",]] "DECOR", "INLIMBO" }
+
+local function _AOEWork(inst, radius, targets)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	for i, v in ipairs(TheSim:FindEntities(x, y, z, radius + WORK_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)) do
+		if not targets[v] and v:IsValid() and not v:IsInLimbo() and v.components.workable then
+			local work_action = v.components.workable:GetWorkAction()
+			--V2C: nil action for NPC_workable (e.g. campfires)
+			if (	work_action == nil and v:HasTag("NPC_workable")	) or
+				(	v.components.workable:CanBeWorked() and
+					work_action and
+					COLLAPSIBLE_WORK_ACTIONS[work_action.id]
+				)
+			then
+				v.components.workable:Destroy(inst)
+				targets[v] = true
+			end
+		end
+	end
+end
+
+local TOSSITEM_MUST_TAGS = { "_inventoryitem" }
+local TOSSITEM_CANT_TAGS = { "locomotor", "INLIMBO" }
+
+local function TossLaunch(inst, launcher, basespeed, startheight, startradius)
+	local x0, y0, z0 = launcher.Transform:GetWorldPosition()
+	local x1, y1, z1 = inst.Transform:GetWorldPosition()
+	local dx, dz = x1 - x0, z1 - z0
+	local dsq = dx * dx + dz * dz
+	local angle
+	if dsq > 0 then
+		local dist = math.sqrt(dsq)
+		angle = math.atan2(dz / dist, dx / dist) + (math.random() * 20 - 10) * DEGREES
+		startradius = math.max(dist, startradius)
+	else
+		angle = TWOPI * math.random()
+	end
+	local sina, cosa = math.sin(angle), math.cos(angle)
+	local speed = basespeed + math.random()
+	inst.Physics:Teleport(x0 + startradius * cosa, startheight, z0 + startradius * sina)
+	inst.Physics:SetVel(cosa * speed, speed * 2.5 + math.random(), sina * speed)
+end
+
+local function TossItems(inst, radius)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + WORK_RADIUS_PADDING, TOSSITEM_MUST_TAGS, TOSSITEM_CANT_TAGS)) do
+		if v.components.mine then
+			v.components.mine:Deactivate()
+		end
+		if not v.components.inventoryitem.nobounce and v.Physics and v.Physics:IsActive() then
+			TossLaunch(v, inst, radius * 0.4, 0.5, radius)
+		end
+	end
+end
+
+local function DoDropAOE(inst)
+	local targets = {}
+	_AOEWork(inst, 1, targets)
+	_AOEAttack(inst, 1, targets)
+	TossItems(inst, 1)
+end
+
+--------------------------------------------------------------------------
+
 local states =
 {
 	State{
@@ -124,7 +224,7 @@ local states =
 
 	State{
 		name = "spawn",
-		tags = { "hiding", "busy", "noattack", "temp_invincible", "nofreeze" },
+		tags = { "vault_crawler_dropping", "hiding", "busy", "noattack", "temp_invincible", "nofreeze" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -151,6 +251,8 @@ local states =
 			FrameEvent(45, function(inst)
 				inst.sg:AddStateTag("caninterrupt")
 			end),
+
+			FrameEvent(0, DoDropAOE),
 		},
 
 		events =
@@ -682,6 +784,6 @@ CommonStates.AddWalkStates(states,
 		FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/footstep") end),
 	},
 })
-CommonStates.AddFrozenStates(states, SwitchToNoFaced, SwitchToFourFaced)
+--CommonStates.AddFrozenStates(states, SwitchToNoFaced, SwitchToFourFaced)
 
 return StateGraph("vault_crawler", states, events, "idle")

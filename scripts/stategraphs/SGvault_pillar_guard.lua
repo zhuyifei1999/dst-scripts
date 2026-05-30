@@ -21,7 +21,7 @@ end
 local events =
 {
 	CommonHandlers.OnLocomote(false, true),
-	CommonHandlers.OnFreezeEx(),
+	--CommonHandlers.OnFreezeEx(),
 	EventHandler("death", function(inst, data)
 		if not inst.sg:HasAnyStateTag("dead", "nointerrupt") then
 			inst.sg:GoToState("death", data)
@@ -41,9 +41,17 @@ local events =
 	end),
 	EventHandler("attacked", function (inst, data)
 		if not inst.components.health:IsDead() then
-			if not inst.sg:HasAnyStateTag("stunned", "nointerrupt") and inst.components.timer:TimerExists("stunned") then
-				inst.sg:GoToState("stun_pre")
-			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen") then
+			if not inst.sg:HasAnyStateTag("stunned", "nointerrupt") then
+				if inst.components.timer:TimerExists("stunned") then
+					inst.sg:GoToState("stun_pre")
+					return
+				elseif data and data.attacker and data.attacker.sg and data.attacker.sg:HasStateTag("vault_crawler_dropping") then
+					inst.components.timer:StartTimer("stunned", TUNING.VAULT_PILLAR_GUARD_MAX_STAGGER_TIME)
+					inst.sg:GoToState("stun_pre")
+					return
+				end
+			end
+			if not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen") then
 				if inst.sg:HasStateTag("stunned") then
 					inst.sg.statemem.stunned = true
 					inst.sg:GoToState("stun_hit")
@@ -238,7 +246,12 @@ local function _AOEWork(inst, dig, dist, radius, arc, targets)
 					if targets then
 						targets[v] = true
 					end
-				elseif dig and v.components.pickable and v.components.pickable:CanBePicked() and not v:HasTag("intense") then
+				elseif dig and
+					v.components.pickable and
+					v.components.pickable:CanBePicked() and
+					not v:HasTag("intense") and
+					v.prefab ~= "vault_key_pedestal"
+				then
 					v.components.pickable:Pick(inst)
 					if targets then
 						targets[v] = true
@@ -335,7 +348,13 @@ local function SpawnSwipeFX(inst, reverse)
 	end
 end
 
-local function KillSwipeFX(inst)
+local function SpawnSmashFx(inst)
+	--spawn 3 frames early (with 3 leading blank frames) since anim is super short, and tends to get lost with network timing
+	inst.sg.statemem.fx = SpawnPrefab("vault_pillar_guard_smash_fx")
+	inst.sg.statemem.fx.entity:SetParent(inst.entity)
+end
+
+local function KillSwipeOrSmashFx(inst)
 	if inst.sg.statemem.fx then
 		if inst.sg.statemem.fx:IsValid() then
 			inst.sg.statemem.fx:Remove()
@@ -645,7 +664,7 @@ local states =
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 			end
-			KillSwipeFX(inst)
+			KillSwipeOrSmashFx(inst)
 		end,
 	},
 
@@ -742,7 +761,7 @@ local states =
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 			end
-			KillSwipeFX(inst)
+			KillSwipeOrSmashFx(inst)
 		end,
 	},
 
@@ -865,6 +884,7 @@ local states =
 				inst.components.locomotor:Stop()
 				inst.Physics:SetMotorVelOverride(dist / ((44 - 30) * FRAMES), 0, 0)
 			end),
+			FrameEvent(43, SpawnSmashFx), --one frame later on purpose
 			FrameEvent(43, DoFootstep),
 			FrameEvent(44, function(inst)
 				inst.Physics:ClearMotorVelOverride()
@@ -912,6 +932,7 @@ local states =
 				ToggleOnAllObjectCollisionsAt(inst, x, z)
 			end
 			CancelDebris(inst)
+			KillSwipeOrSmashFx(inst)
 		end,
 	},
 
@@ -1329,6 +1350,6 @@ nil, nil, nil, --anims, softstop, delaystart
 	end,
 })
 
-CommonStates.AddFrozenStates(states, SwitchToNoFaced, SwitchToFourFaced)
+--CommonStates.AddFrozenStates(states, SwitchToNoFaced, SwitchToFourFaced)
 
 return StateGraph("vault_pillar_guard", states, events, "idle")

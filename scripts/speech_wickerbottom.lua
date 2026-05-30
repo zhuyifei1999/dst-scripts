@@ -1250,6 +1250,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "That was a lesson painfully learned.",
     ANNOUNCE_GOT_DECON_MISTED = "Ah... my mind feels clearer, somehow.",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "It would seem we are aligned with the shadowy beasts against a common foe.",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "It would seem I am vulnerable to the flames once more.",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6217,6 +6218,7 @@ return{
         {
             GENERIC = "It is guiding us toward something of great importance.", -- Pointing us to the teleporters leading to the key room
             NOTVAULT = "It is beyond its effective range.", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "It appears this is the intended destination.", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "A tried and true means of escape.",

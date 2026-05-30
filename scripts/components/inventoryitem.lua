@@ -105,6 +105,7 @@ nil,
 
 function InventoryItem:OnRemoveFromEntity()
     self:EnableMoisture(false)
+    self:EnableTemperature(false)
     self.inst:RemoveEventCallback("stacksizechange", OnStackSizeChange)
     self.inst:RemoveEventCallback("enterlimbo", OnEnterLimbo)
     self.inst:RemoveEventCallback("exitlimbo", OnExitLimbo)

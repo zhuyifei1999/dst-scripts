@@ -502,6 +502,10 @@ local function OnLoad(inst, data)
 end
 
 local function OnLoadPostPass(inst, ents, data)
+    -- Repair the gate automatically if shadow rifts are always on, otherwise the shadow hand never arrives
+    if TheWorld.topology.overrides ~= nil and TheWorld.topology.overrides.rifts_enabled_cave == "always" and not inst.components.charliecutscene:IsGateRepaired() then
+        inst.components.charliecutscene:RepairGate()
+    end
     if inst:IsDestabilizing() then
         StartDestabilizing(inst, true)
     elseif inst.components.worldsettingstimer:ActiveTimerExists("cooldown") then

@@ -11,7 +11,9 @@ local prefabs =
 {
     "gemsocket",
     "collapse_small",
-    "globalmapicon", -- From vaultorbteleportdestination component.
+    -- global icons from vaultorbteleportdestination component.
+    "globalmapiconnoproxy",
+    "globalmapicon",
     -- lootdropper from telebase_gemsocket.lua
     "purplegem",
     "vault_orb_refined",

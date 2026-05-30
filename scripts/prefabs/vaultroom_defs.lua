@@ -318,6 +318,7 @@ defs.lore1.LayoutNewRoomAtXZ = function(inst, x, z)
 	rune.Transform:SetPosition(x - 2.5 * TILE_SIZE, 0, z)
 	SpawnPrefab("vault_ground_pattern_fx"):HideCenter():SetVariation(groundvar == 1 and 2 or 1):SetOrientation(math.random(4)).Transform:SetPosition(x - 2.5 * TILE_SIZE, 0, z)
 	SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x - 2.5 * TILE_SIZE, 0, z)
+	SpawnPrefab("vault_compass").Transform:SetPosition(x - 3 * TILE_SCALE, 0, z + 0.5 * TILE_SCALE)
 
 	--statues
 	local statue = SpawnPrefab("vault_statue")
@@ -714,6 +715,7 @@ end
 defs.generator1.LayoutNewRoomAtXZ = function(inst, x, z)
 	--switch
 	SpawnPrefab("vault_switch_base").Transform:SetPosition(x, 0, z)
+	SpawnPrefab("vault_compass").Transform:SetPosition(x - 1.5 * TILE_SCALE, 0, z + 0.5 * TILE_SCALE)
 
 	--variations
 	local lightvar = math.random(3)
@@ -895,8 +897,7 @@ defs.playbill1.LayoutNewRoomAtXZ = function(inst, x, z)
 		if j == playbillvar then
 			decortable.components.furnituredecortaker:AcceptDecor(SpawnPrefab("playbill_the_vault"), TheWorld)
 		else
-			-- TODO add in vault compass
-			--decortable.components.furnituredecortaker:AcceptDecor(SpawnPrefab("vault_compass"), TheWorld)
+			decortable.components.furnituredecortaker:AcceptDecor(SpawnPrefab("vault_compass"), TheWorld)
 		end
 		SpawnPrefab("vault_chandelier"):SetVariation(j == lightvar and 2 or 1).Transform:SetPosition(x1, 0, z1)
 		local theta = math.random() * TWOPI

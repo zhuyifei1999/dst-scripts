@@ -1251,6 +1251,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "My stomach finally cooled off.",
     ANNOUNCE_GOT_DECON_MISTED = "Clears the head and opens up the pores!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "You see that, Luce? They're helping!",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Is it gettin' warm in here? Might be time for another dose of that balm.",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6216,11 +6217,12 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
-            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+            GENERIC = "I don't need directions, right Luce? ...What's that face for?", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "Huh. Can't seem to get a read on it here.", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "Looks like we're already here, eh?", -- We're already in the key room! Compass marker is in a success state.
         },
 
-        CEILING_ROPE = "That's a nice climbing rope/",
+        CEILING_ROPE = "That's a nice climbing rope.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

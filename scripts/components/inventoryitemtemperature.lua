@@ -5,7 +5,7 @@
 
 local UPDATE_TIME = 1.0
 local SLOW_UPDATE_TIME = 3 --switch to this period when we've reached target temperature
-local TARGET_DELTA_THRESHOLD = 0.5 -- we need to be above this value, or below the negative of this value to consider updating, otherwise we're considered at target temperature
+local TARGET_DELTA_THRESHOLD = 0.25 -- we need to be above this value, or below the negative of this value to consider updating, otherwise we're considered at target temperature
 
 local function ontemperature(self, temp)
     self._replica:SetTemperature(temp)
@@ -258,9 +258,14 @@ function InventoryItemTemperature:UpdateTemperature(dt)
     local target_temp, temperature_rate = self:GetTargetTemperature()
 	local target_delta = target_temp - self.temperature
     -- TODO custom rates
-    if target_delta > TARGET_DELTA_THRESHOLD then
+    -- only update if we have enough of a difference,
+    -- otherwise, also update if reaching a whole number (e.g. if current temp is 0.06, and target temp is 0, we want to get to 0 anyways for stuff that listens for 0)
+    -- in that case, make sure when using inventoryitemtemperature to always set things like mintemp, maxtemp, or certain behaviours to check for whole number of temperature
+    if (target_delta > TARGET_DELTA_THRESHOLD)
+        or (target_delta > 0 and (target_temp % 1 == 0)) then
         self:SetTemperature(math.min(target_temp, self.temperature + dt))
-    elseif target_delta < -TARGET_DELTA_THRESHOLD then
+    elseif (target_delta < -TARGET_DELTA_THRESHOLD)
+        or (target_delta < 0 and (target_temp % 1 == 0)) then
         self:SetTemperature(math.max(target_temp, self.temperature - 0.5 * dt))
 	else
 		return false --not enough change

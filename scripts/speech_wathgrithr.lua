@@ -1250,6 +1250,7 @@ return{
 	ANNOUNCE_MITEGLAND_DEBUFF_DONE = "The fire within hath subsided.",
     ANNOUNCE_GOT_DECON_MISTED = "It doth banish the shadows!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Lo! A dark warband doth come to mine aid!",
+    ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Once again may the fire scorch mine mortal hide.",--fire immunity expired
 
 	BATTLECRY =
 	{
@@ -6215,8 +6216,9 @@ return{
 
         VAULT_COMPASS =
         {
-            GENERIC = "TODO", -- Pointing us to the teleporters leading to the key room
-            NOTVAULT = "TODO", -- We're not in the vault, so its in an ineffective state.
+            GENERIC = "Guide me true, o infernal device!", -- Pointing us to the teleporters leading to the key room
+            NOTVAULT = "'Tis of no use to me here.", -- We're not in the vault, so its in an ineffective state.
+            KEYROOM = "I am arrived!", -- We're already in the key room! Compass marker is in a success state.
         },
 
         CEILING_ROPE = "With this, I shall make mine ascent!",

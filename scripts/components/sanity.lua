@@ -577,7 +577,7 @@ function Sanity:Recalc(dt)
 
     local mount = self.inst.components.rider and self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
     if mount ~= nil and mount.components.sanityaura ~= nil then
-        if not SCRATCHPAD_AURANAMES_HasBaseAuraNameBeenUsed(v) then
+        if not SCRATCHPAD_AURANAMES_HasBaseAuraNameBeenUsed(mount) then
             local aura_val = mount.components.sanityaura:GetAura(self.inst)
             aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self:GetAuraMultipliers() or aura_val)
             aura_delta = aura_delta + ((aura_val < 0 and self.neg_aura_immune_sources:Get()) and 0 or aura_val)

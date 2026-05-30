@@ -457,6 +457,7 @@ local function crawler_OnAnimOver(inst)
 	inst.detached = true
 	inst.Light:Enable(false)
 	inst.AnimState:ClearBloomEffectHandle()
+	inst.AnimState:SetFinalOffset(2)
 
 	local x, _, z = inst.Transform:GetWorldPosition()
 	local crawler = SpawnPrefab("vault_crawler")

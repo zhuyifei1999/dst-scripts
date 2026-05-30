@@ -1040,7 +1040,9 @@ local function MakeWarg(data)
             inst:ListenForEvent("spawnedforhunt", OnSpawnedForHunt_Normal)
         end
 
-        MakeLargeFreezableCharacter(inst)
+		if not is_clay then
+			MakeLargeFreezableCharacter(inst)
+		end
 
 		inst:SetStateGraph("SGwarg")
 		if is_clay or is_gingerbread then
