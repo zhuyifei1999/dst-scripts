@@ -60,6 +60,8 @@ local function smash_CreateFx()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 
+	inst.Transform:SetFourFaced()
+
 	inst.AnimState:SetBank("vault_pillar_guard_fx")
 	inst.AnimState:SetBuild("vault_pillar_guard_fx")
 	inst.AnimState:PlayAnimation("atk_smash")
@@ -84,6 +86,8 @@ local function smash_fn()
 
 	inst:AddTag("FX")
 	inst:AddTag("NOCLICK")
+
+	inst.Transform:SetFourFaced()
 
 	inst.AnimState:SetBank("vault_pillar_guard_fx")
 	inst.AnimState:SetBuild("vault_pillar_guard_fx")

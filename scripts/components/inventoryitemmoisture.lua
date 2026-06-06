@@ -47,7 +47,8 @@ local function DoUpdate(inst)
 	local self = inst.components.inventoryitemmoisture
 	local dt = self.moistureupdatetask.period
 	local nextdt = self:UpdateMoisture(dt) and UPDATE_TIME or SLOW_UPDATE_TIME
-	if dt ~= nextdt then
+	-- The entity could become invalid from UpdateMoisture, if something external deleted it from the onmoisturedeltacallback callback.
+	if dt ~= nextdt and inst:IsValid() then
 		self.moistureupdatetask:Cancel()
 		self.moistureupdatetask = inst:DoPeriodicTask(nextdt, DoUpdate)
 	end

@@ -1,9 +1,32 @@
 require("stategraphs/commonstates")
 
+local function IsAlly_Crafted(v, inst)
+	if not inst.components.combat:IsAlly(v) then
+		return false
+	end
+
+	--check if i'm fighting my allies
+	local target = inst.components.combat.target
+	if target and inst.components.combat:CanBeAlly(target) then
+		return false
+	end
+
+	--check if they're fighting my allies
+	target = v.components.combat and v.components.combat.target
+	if target and inst.components.combat:CanBeAlly(target) then
+		return false
+	end
+
+	return true
+end
+
+local SPIN_BLOCKER_TAGS = { "vault_pillar_guard" }
+local function IsSpinBlocker_Trial(v, inst) return v.trial ~= nil end --faster than checking "vault_key_trial_guardian" tag
+
 local function ChooseAttack(inst, target)
 	if target and target:IsValid() then
 		if inst.canspin and not inst.components.timer:TimerExists("spin_cd") and
-			FindEntity(inst, 7, nil, { "vault_pillar_guard" }) == nil
+			FindEntity(inst, 7, inst.trial and IsSpinBlocker_Trial or IsAlly_Crafted, SPIN_BLOCKER_TAGS) == nil
 		then
 			inst.sg:GoToState("spin_pre")
 			return true
@@ -21,6 +44,8 @@ end
 local events =
 {
 	CommonHandlers.OnLocomote(false, true),
+	CommonHandlers.OnSink(),
+	CommonHandlers.OnFallInVoid(),
 	--CommonHandlers.OnFreezeEx(),
 	EventHandler("death", function(inst, data)
 		if not inst.sg:HasAnyStateTag("dead", "nointerrupt") then
@@ -114,7 +139,12 @@ local function CancelDebris(inst)
 	inst:TriggerDebris(false)
 end
 
-local function IsInFrontOfMe(inst, target)
+local function ShouldCombo(inst, target)
+	if not (target and target:IsValid()) then
+		return false
+	elseif target.components.health and target.components.health:IsDead() then
+		return false
+	end
 	local rotation = inst.Transform:GetRotation()
 	local angle = inst:GetAngleToPoint(target.Transform:GetWorldPosition())
 	return DiffAngle(rotation, angle) < 75
@@ -124,7 +154,8 @@ end
 
 local AOE_RANGE_PADDING = 3
 local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
-local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "vault_crawler", "vault_pillar_guard" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
+local AOE_TRIAL_CANT_TAGS = ConcatArrays({ "vault_key_trial_guardian" }, AOE_TARGET_CANT_TAGS)
 
 local function _AOEAttack(inst, dig, dist, radius, arc, heavymult, mult, forcelanded, targets, repeatdelay)
 	inst.components.combat.ignorehitrange = true
@@ -144,14 +175,17 @@ local function _AOEAttack(inst, dig, dist, radius, arc, heavymult, mult, forcela
 		end
 	end
 	local t = repeatdelay and GetTime()
-	for i, v in ipairs(TheSim:FindEntities(x, y, z, radius + AOE_RANGE_PADDING, AOE_TARGET_MUSTHAVE_TAGS, AOE_TARGET_CANT_TAGS)) do
+	for i, v in ipairs(TheSim:FindEntities(x, y, z, radius + AOE_RANGE_PADDING, AOE_TARGET_MUSTHAVE_TAGS, inst.trial and AOE_TRIAL_CANT_TAGS or AOE_TARGET_CANT_TAGS)) do
 		if v ~= inst and
 			not (	targets and
 					targets[v] and
 					not (repeatdelay and type(targets[v]) == "number" and targets[v] < t)
 				) and
 			v:IsValid() and not v:IsInLimbo() and
-			not (v.components.health and v.components.health:IsDead())
+			not (v.components.health and v.components.health:IsDead()) and
+			(	inst.trial or --trial doesn't need ally check; excludes by tag "vault_key_trial_guardian"
+				not IsAlly_Crafted(v, inst)
+			)
 		then
 			local range = radius + v:GetPhysicsRadius(0)
 			local x1, y1, z1 = v.Transform:GetWorldPosition()
@@ -293,9 +327,7 @@ local function TossItems(inst, dist, radius, targets)
 	end
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + WORK_RADIUS_PADDING, TOSSITEM_MUST_TAGS, TOSSITEM_CANT_TAGS)) do
 		if not (targets and targets[v]) then
-			if v.components.mine then
-				v.components.mine:Deactivate()
-			end
+			DeactivateInventoryItemBeforeLaunch(v)
 			if not v.components.inventoryitem.nobounce and v.Physics and v.Physics:IsActive() then
 				TossLaunch(v, inst, radius * 0.4, 0.5, radius)
 			end
@@ -373,6 +405,8 @@ local function SetStunnedDamageMult(inst, stunned)
 	end
 end
 
+local SOCKET_TAGS
+
 local states =
 {
 	State{
@@ -397,6 +431,57 @@ local states =
 	},
 
 	State{
+		name = "alert",
+		tags = { "alert", "idle", "canrotate" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			local anim = "idle"..tostring(math.random(2, 3))
+			inst.AnimState:PlayAnimation(anim.."_pre")
+			inst.AnimState:PushAnimation(anim.."_loop")
+		end,
+
+		events =
+		{
+			EventHandler("locomote", function(inst)
+				if inst.components.locomotor:WantsToMoveForward() then
+					inst.sg:GoToState("alert_pst")
+				end
+				return true
+			end),
+		},
+	},
+
+	State{
+		name = "alert_pst",
+		tags = { "alert", "idle", "canrotate" },
+
+		onenter = function(inst)
+			inst.components.locomotor:StopMoving()
+			inst.AnimState:PlayAnimation("idle2_pst")
+		end,
+
+		timeline =
+		{
+			FrameEvent(9, function(inst)
+				inst.sg.statemem.canlocomote = true
+			end),
+		},
+
+		events =
+		{
+			EventHandler("locomote", function(inst)
+				return not inst.sg.statemem.canlocomote
+			end),
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
+
+	State{
 		name = "activate",
 		tags = { "busy", "noattack", "temp_invincible", "nofreeze" },
 
@@ -415,8 +500,9 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.8) end),
-			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts7/rocks/rumble") end),
-			FrameEvent(50, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.7) end),
+			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts4/worm_boss/rumble") end),
+			FrameEvent(50, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract") end),
+			FrameEvent(52, function(inst) inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_emerge") end),
 			FrameEvent(78, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/hit") end),
 			FrameEvent(92, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.6) end),
 			FrameEvent(101, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.6) end),
@@ -494,12 +580,15 @@ local states =
 
 			FrameEvent(0, TriggerDebris),
 			FrameEvent(12, function(inst)
-				if inst.sg.statemem.doattack == nil then
+				if not (inst.sg.statemem.doattack or inst.sg.statemem.quickjump) then
 					inst.sg:AddStateTag("caninterrupt")
 				end
 			end),
 			FrameEvent(20, function(inst)
 				if inst.sg.statemem.doattack and ChooseAttack(inst, inst.sg.statemem.doattack) then
+					return
+				elseif inst.sg.statemem.quickjump and inst.sg.statemem.quickjump:IsValid() then
+					inst.sg:GoToState("attack3", inst.sg.statemem.quickjump)
 					return
 				end
 				inst.sg:RemoveStateTag("busy")
@@ -510,7 +599,16 @@ local states =
 		{
 			EventHandler("doattack", function(inst, data)
 				if inst.sg:HasStateTag("busy") then
+					inst.sg.statemem.quickjump = nil
 					inst.sg.statemem.doattack = data and data.target
+					inst.sg:RemoveStateTag("caninterrupt")
+					return true
+				end
+			end),
+			EventHandler("ms_pillarguard_quickjump", function(inst, data)
+				if inst.sg:HasStateTag("busy") then
+					inst.sg.statemem.doattack = nil
+					inst.sg.statemem.quickjump = data and data.target
 					inst.sg:RemoveStateTag("caninterrupt")
 					return true
 				end
@@ -541,12 +639,10 @@ local states =
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/voice_death") end),
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.5) end),
 			FrameEvent(25, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/voice_hit", nil, 0.6) end),
-			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts7/rocks/rumble") end),
+			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts4/worm_boss/rumble") end),
 			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/destroy", nil, 0.8) end),
 			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_emerge") end),
-			--FrameEvent(36, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.6) end),
 			FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/hit", nil, 0.8) end),
-			--FrameEvent(54, function(inst) inst.SoundEmitter:PlaySound("rifts6/rock_tree/fall_bounce", nil, 0.8) end),
 
 			FrameEvent(0, TriggerDebris),
 			FrameEvent(32, Shake_Heavy),
@@ -623,10 +719,7 @@ local states =
 		{
 			--#SFX
 			FrameEvent(5, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.5) end),
-			--FrameEvent(6, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
-			--FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
-			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/whoosh") end),
-			--FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
+			FrameEvent(25, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/whoosh") end),
 
 			FrameEvent(1, DoWalkCollide),
 			FrameEvent(5, function(inst)
@@ -650,7 +743,7 @@ local states =
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					local target = inst.sg.statemem.target
-					if target and target:IsValid() and IsInFrontOfMe(inst, target) then
+					if ShouldCombo(inst, target) then
 						inst.sg:GoToState("attack2", target)
 					else
 						inst.sg:GoToState("attack1_pst")
@@ -681,7 +774,6 @@ local states =
 		{
 			--#SFX
 			FrameEvent(2, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.6) end),
-			--FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
 
 			FrameEvent(8, DoSmallstep),
 			FrameEvent(12, DoSmallstep),
@@ -747,7 +839,7 @@ local states =
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					local target = inst.sg.statemem.target
-					if target and target:IsValid() and IsInFrontOfMe(inst, target) then
+					if ShouldCombo(inst, target) then
 						inst.sg:GoToState("attack3", target)
 					else
 						inst.sg:GoToState("attack2_pst")
@@ -849,9 +941,9 @@ local states =
 			FrameEvent(30, Shake_Lift),
 			FrameEvent(30, function(inst)
 				local dist = 4
+				local x, _, z = inst.Transform:GetWorldPosition()
 				local target = inst.sg.statemem.target
 				if target and target:IsValid() then
-					local x, _, z = inst.Transform:GetWorldPosition()
 					local x1, _, z1 = target.Transform:GetWorldPosition()
 					local dx = x1 - x
 					local dz = z1 - z
@@ -866,10 +958,36 @@ local states =
 						dist = 0
 					end
 				end
+				if dist ~= 0 then
+					if SOCKET_TAGS == nil then
+						SOCKET_TAGS = { "vault_crawler_socket" }
+					end
+					local theta = inst.Transform:GetRotation() * DEGREES
+					local cos_theta = math.cos(theta)
+					local sin_theta = math.sin(theta)
+					local x1 = x + dist * cos_theta
+					local z1 = z - dist * sin_theta
+					local maxr = 2.6 --my radius 1.6 + socket radius 1
+					local seg = maxr / 8
+					for delta = 0, maxr, seg do
+						local dx2 = delta * cos_theta
+						local dz2 = -delta * sin_theta
+						local x2 = x1 + dx2
+						local z2 = z1 + dz2
+						if #TheSim:FindEntities(x1 + dx2, 0, z1 + dz2, maxr, SOCKET_TAGS) == 0 then
+							dist = dist + delta
+							break
+						elseif delta > 0 and delta <= dist and #TheSim:FindEntities(x1 - dx2, 0, z1 - dz2, maxr, SOCKET_TAGS) == 0 then
+							dist = dist - delta
+							break
+						end
+					end
+				end
 				inst.sg:AddStateTag("jumping")
 				inst.sg:AddStateTag("nofreeze")
 				inst.sg:AddStateTag("nointerrupt")
 				ToggleOffAllObjectCollisions(inst)
+				inst.Physics:ClearCollidesWith(COLLISION.BOAT_LIMITS) --to get thru vault_crawler_sockets
 				inst.components.combat:StartAttack()
 				if inst.sg.statemem.quickjump then
 					inst.components.timer:StopTimer("quickjump_cd")
@@ -903,6 +1021,7 @@ local states =
 			FrameEvent(45, function(inst)
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)
+				inst.Physics:CollidesWith(COLLISION.BOAT_LIMITS) --see vault_crawler_socket
 				_PlayFootstep(inst)
 				Shake_Pound(inst)
 				inst.sg.statemem.targets = {}
@@ -930,6 +1049,7 @@ local states =
 			if inst.sg.mem.isobstaclepassthrough then
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)
+				inst.Physics:CollidesWith(COLLISION.BOAT_LIMITS) --see vault_crawler_socket
 			end
 			CancelDebris(inst)
 			KillSwipeOrSmashFx(inst)
@@ -1260,7 +1380,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts7/rocks/rumble") end),
+			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts4/worm_boss/rumble") end),
 			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.5) end),
 			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
 			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
@@ -1350,6 +1470,8 @@ nil, nil, nil, --anims, softstop, delaystart
 	end,
 })
 
+CommonStates.AddSinkAndWashAshoreStates(states, { washashore = "hit" })
+CommonStates.AddVoidFallStates(states, { voiddrop = "hit" })
 --CommonStates.AddFrozenStates(states, SwitchToNoFaced, SwitchToFourFaced)
 
 return StateGraph("vault_pillar_guard", states, events, "idle")

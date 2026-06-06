@@ -1255,6 +1255,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Feel nice!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Shadow... friends?",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Hm. Cooling feeling gone...",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Hello, friend! Follow!", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2192,6 +2193,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Stone robot friend",
         CHESSPIECE_WAGBOSS_LUNAR = "Friend no hurt more",
         CHESSPIECE_YOTH = "Neigh machine?",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Little tall rock friend",
 
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
@@ -6199,11 +6201,19 @@ return{
             HOT = "Hot ground! Very hot!!", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "Ahhh. Feel nice", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "Ahhh. Feel nice",
 
 		VAULT_PILLAR_GUARD = "Mean rock!",
+		VAULT_PILLAR_GUARD_CRAFTED = "Tall rock friend nice!",
 		VAULT_PILLAR_GUARD_DORMANT = "Tall rock friend",
-		VAULT_CRAWLER = "Rolly glow bug",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "Why friend still sleeping?",
+		VAULT_PILLAR_GUARD_CONSTR = "Baby rock friend soon tall rock friend.",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Where put baby rock friend?",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Rolly glow bug",
+			SOCKETED = "Rolly glow bug home",
+		},
 
         VAULT_DECON_DOOR = "Up and down, up and down",
         VAULT_DECON_MISTER = "Spritz spritz!",
@@ -6215,8 +6225,9 @@ return{
             GENERIC = "Scared to take", -- Keystone is on it, ready to take
             PICKED = "Gone", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What for?",
         VAULT_ORB_REFINED = "Shiny friend!",
+        VAULT_PILLAR_GUARD_PIECE = "Whole friend",
+        VAULT_REFINER_PEDESTAL = "Make old things",
 
         VAULT_COMPASS =
         {
@@ -6226,6 +6237,7 @@ return{
         },
 
         CEILING_ROPE = "Helpful friend",
+        VAULT_KEY_EXIT = "Nowhere tie helpful friend?",
     },
 
     DESCRIBE_GENERIC = "Friend?",

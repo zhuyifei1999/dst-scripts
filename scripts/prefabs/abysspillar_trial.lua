@@ -35,7 +35,7 @@ local function RemoveGridPillar(inst, pillar)
 	local id = pillar.row and GridId(pillar.row, pillar.col)
 	if inst.grid[id] == pillar then
 		inst.grid[id] = nil
-		pillar.row, pillar.col = nil
+		pillar.row, pillar.col = nil, nil
 	end
 end
 

@@ -370,11 +370,11 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
         if self.inst.components.inventory ~= nil then
             for k, v in pairs(self.inst.components.inventory.equipslots) do
                 if v.components.heater ~= nil then
-                    local heat = v.components.heater:GetEquippedHeat()
+                    local heat, carriedmult = v.components.heater:GetEquippedHeat()
                     if heat ~= nil and
                         ((heat > self.current and v.components.heater:IsExothermic()) or
                         (heat < self.current and v.components.heater:IsEndothermic())) then
-                        self.delta = self.delta + heat - self.current
+                        self.delta = self.delta + (heat - self.current) * carriedmult
                     end
                 end
             end
@@ -400,6 +400,15 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
                         end
                     end
                 end
+            end
+            local activeitem = self.inst.components.inventory:GetActiveItem()
+            if activeitem ~= nil and activeitem.components.heater ~= nil then
+	        	local heat, carriedmult = activeitem.components.heater:GetCarriedHeat()
+	        	if heat ~= nil and
+	        		((heat > self.current and activeitem.components.heater:IsExothermic()) or
+	        		(heat < self.current and activeitem.components.heater:IsEndothermic())) then
+	        		self.delta = self.delta + (heat - self.current) * carriedmult
+	        	end
             end
         end
 

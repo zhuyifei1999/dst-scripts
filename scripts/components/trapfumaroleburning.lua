@@ -22,7 +22,6 @@ function TrapFumaroleBurning:OnRemoveFromEntity()
 end
 
 function TrapFumaroleBurning:SetFxEnabled(enable)
-	enable = false -- TODO #FIXME remove when fx is properly added.
 	if enable then
 		if self.fx == nil or self.fx._hidden then
 			if self.fx == nil then

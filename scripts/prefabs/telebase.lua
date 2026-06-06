@@ -14,16 +14,20 @@ local prefabs =
     -- global icons from vaultorbteleportdestination component.
     "globalmapiconnoproxy",
     "globalmapicon",
-    -- lootdropper from telebase_gemsocket.lua
-    "purplegem",
-    "vault_orb_refined",
+    -- lootdropper from telebase_gemsocket.lua --don't need? otherwise, exclude from scrapbook?
+    --"purplegem",
+    --"vault_orb_refined",
 }
 
-local function teleport_target(inst)
-    for k, v in pairs(inst.components.objectspawner.objects) do
-        if v.DestroyGemFn ~= nil then
-            v.DestroyGemFn(v)
-        end
+local function AddVaultOrbRefinedActions(inst)
+    if not inst.components.vaultorbteleportdestination then
+        inst:AddComponent("vaultorbteleportdestination")
+    end
+end
+
+local function RemoveVaultOrbRefinedActions(inst)
+    if inst.components.vaultorbteleportdestination then
+        inst:RemoveComponent("vaultorbteleportdestination")
     end
 end
 
@@ -34,6 +38,41 @@ local function validteleporttarget(inst)
         end
     end
     return true
+end
+
+local function OnGemChange(inst)
+    local requiredgem = nil
+    for k, v in pairs(inst.components.objectspawner.objects) do
+        if v.gemprefab then
+            requiredgem = v.gemprefab
+            break
+        end
+    end
+    for k, v in pairs(inst.components.objectspawner.objects) do
+        v.requiredgem = requiredgem
+    end
+    if validteleporttarget(inst) then
+        for k, v in pairs(inst.components.objectspawner.objects) do
+            v.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        end
+        if requiredgem == "vault_orb_refined" then
+            AddVaultOrbRefinedActions(inst)
+        end
+    else
+        for k, v in pairs(inst.components.objectspawner.objects) do
+            v.AnimState:ClearBloomEffectHandle()
+        end
+        RemoveVaultOrbRefinedActions(inst)
+    end
+end
+
+local function teleport_target(inst)
+    for k, v in pairs(inst.components.objectspawner.objects) do
+        if v.DestroyGemFn ~= nil then
+            v.DestroyGemFn(v)
+        end
+    end
+    OnGemChange(inst)
 end
 
 --------------------------------------------------------------------------
@@ -61,18 +100,6 @@ function FindNearestActiveTelebase(x, y, z, range, minrange)
 end
 
 --------------------------------------------------------------------------
-
-local function AddVaultOrbRefinedActions(inst)
-    if not inst.components.vaultorbteleportdestination then
-        inst:AddComponent("vaultorbteleportdestination")
-    end
-end
-
-local function RemoveVaultOrbRefinedActions(inst)
-    if inst.components.vaultorbteleportdestination then
-        inst:RemoveComponent("vaultorbteleportdestination")
-    end
-end
 
 local function getstatus(inst)
     return validteleporttarget(inst) and "VALID" or "GEMS"
@@ -123,32 +150,6 @@ local function onhit(inst)
     end
 end
 
-local function OnGemChange(inst)
-    local requiredgem = nil
-    for k, v in pairs(inst.components.objectspawner.objects) do
-        if v.gemprefab then
-            requiredgem = v.gemprefab
-            break
-        end
-    end
-    for k, v in pairs(inst.components.objectspawner.objects) do
-        v.requiredgem = requiredgem
-    end
-    if validteleporttarget(inst) then
-        for k, v in pairs(inst.components.objectspawner.objects) do
-            v.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-        end
-        if requiredgem == "vault_orb_refined" then
-            AddVaultOrbRefinedActions(inst)
-        end
-    else
-        for k, v in pairs(inst.components.objectspawner.objects) do
-            v.AnimState:ClearBloomEffectHandle()
-        end
-        RemoveVaultOrbRefinedActions(inst)
-    end
-end
-
 local function NewObject(inst, obj)
     local function OnGemChangeProxy()
         OnGemChange(inst)
@@ -158,7 +159,7 @@ local function NewObject(inst, obj)
     inst:ListenForEvent("picked", OnGemChangeProxy, obj)
     OnGemChange(inst)
 
-    --obj.proxy_destroy_entity = inst --FIXME(Omar): uncomment for next time.
+    obj.proxy_destroy_entity = inst
 end
 
 local function RevealPart(v)

@@ -2255,6 +2255,8 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "oceanfish"
     elseif t:HasTag("wagstafftool") then
         subcat = "wagstafftool"
+    elseif t:HasAnyTag("trap", "mine") then
+        subcat = "trap"
     elseif t:HasTag("pocketwatch") then
         subcat = "pocketwatch"
     elseif t:HasTag("groundtile") then
@@ -5064,4 +5066,29 @@ function d_scanlayout_export(filename)
     end
 
     return save_path
+end
+
+local TrapFumaroleUtil = require("prefabs/trap_fumarole_util")
+function d_spawnfumarolehash()
+    local inst = CreateEntity()
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst:AddTag("CLASSIFIED")
+    inst:AddTag("NOCLICK")
+
+    inst.AnimState:SetBank("trap_fumarole_ground_fx")
+    inst.AnimState:SetBuild("trap_fumarole_ground_fx")
+    inst.AnimState:PlayAnimation("ember"..math.random(4).."_ground")
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_BACKGROUND)
+	inst.AnimState:SetSortOrder(0)
+
+    inst.Transform:SetPosition(TrapFumaroleUtil.GetTrapCenterPoint(TheInput:GetWorldPosition():Get()))
+
+    return inst
 end

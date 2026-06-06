@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Whatever it did, my head feels much clearer now.",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "It looks like I have some shadowy sous chefs!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Oh non! I am flammable once more!",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Bonjour, mon ami! Are you following me?", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "The portable version.",
         CHESSPIECE_WAGBOSS_LUNAR = "That was a bad combination.",
         CHESSPIECE_YOTH = "It was really hot and cold with this one.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "It comes in petit!",
 
         CHESSJUNK1 = "Broken chess pieces?",
         CHESSJUNK2 = "More broken chess pieces?",
@@ -6195,11 +6197,19 @@ return{
             HOT = "My pursuers will be well roasted.", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "A heat-repelling glaze.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "A heat-repelling glaze.",
 
 		VAULT_PILLAR_GUARD = "How do I keep getting mixed up in these things...",
+		VAULT_PILLAR_GUARD_CRAFTED = "Keep out the unruly customers!",
 		VAULT_PILLAR_GUARD_DORMANT = "That is a bold design.",
-		VAULT_CRAWLER = "It seems we have company.",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "This appliance needs a power source.",
+		VAULT_PILLAR_GUARD_CONSTR = "What are the missing ingredients?",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Important ingredients for the big tower!",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "It seems we have company.",
+			SOCKETED = "That guest has been seated!",
+		},
 
         VAULT_DECON_DOOR = "It seems they were very particular about who was invited in.",
         VAULT_DECON_MISTER = "I suppose the way it works has been lost to time.",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "An ominous centerpiece!", -- Keystone is on it, ready to take
             PICKED = "It has been taken!", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What is this ingredient?",
         VAULT_ORB_REFINED = "Voila! Beautiful!",
+        VAULT_PILLAR_GUARD_PIECE = "Ah yes, the heart of the matter!",
+        VAULT_REFINER_PEDESTAL = "It looks like a fancy mixer.",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "If you can't take the heat, climb the rope!",
+        VAULT_KEY_EXIT = "I cannot climb back up!",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

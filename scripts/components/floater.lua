@@ -156,7 +156,8 @@ function Floater:OnLandedServer()
             local oldtemperature = self.inst.components.inventoryitem:GetTemperaturePercent()
             self.inst.components.inventoryitem:SetTemperaturePercentAtMost(TUNING.OCEAN_TEMPERATURE_PENALTY_PERCENT)
             local newtemperature = self.inst.components.inventoryitem:GetTemperaturePercent()
-            if oldtemperature - newtemperature > TUNING.FLOATER_HOT_SIZZLE_THRESHOLD then
+            if oldtemperature ~= nil and newtemperature ~= nil
+                and oldtemperature - newtemperature > TUNING.FLOATER_HOT_SIZZLE_THRESHOLD then
                 hotsplash = true
             end
         end

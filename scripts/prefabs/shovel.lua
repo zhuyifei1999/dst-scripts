@@ -133,6 +133,7 @@ local GOLD_DATA =
     bank = "goldenshovel",
     build = "goldenshovel",
     swap_build = "swap_goldenshovel",
+    sym_name = "swap_goldenshovel",
 }
 
 local function PlayGoldSound(inst, data)

@@ -118,7 +118,12 @@ local function EmptyCageCommonFn(inst)
 end
 
 local function FullCage_UseableTargetedItem_ValidTarget(inst, target, doer)
-	return target.prefab == "vault_key_activator" and target:IsEmpty()
+	if target.prefab == "vault_key_activator" then
+		return target:IsEmpty()
+	elseif target.prefab == "vault_pillar_guard_dormant" then
+		return target:IsCrafted()
+	end
+	return false
 end
 
 local function FullCageCommonFn(inst)
@@ -152,27 +157,33 @@ local function EmptyCageFn()
     return inst
 end
 
-local function OnUsedOnVaultKeyActivator(inst, target, doer)
+local function FullCage_OnUsedOnTargetedItem(inst, target, doer)
 	if target.prefab == "vault_key_activator" then
 		target:PushEvent("ms_depositspark", inst)
-
-		local cage = SpawnPrefab("security_pulse_cage")
-		cage.prevcontainer = inst.prevcontainer
-		cage.prevslot = inst.prevslot
-
-		if doer and doer.components.inventory then
-			doer.components.inventory:GiveItem(cage, nil, doer:GetPosition())
-		else
-			local ent = doer or target or inst
-			local x, y, z = ent.Transform:GetWorldPosition()
-			cage.components.inventoryitem:DoDropPhysics(x, y, z, true)
+	elseif target.prefab == "vault_pillar_guard_dormant" then
+		if TheWorld.Map:IsPointInVaultRoom(target.Transform:GetWorldPosition()) then
+			return false, "PILLARGUARD_INVAULT"
 		end
-
-		inst:Remove()
-
-		return true
+		target = target:ActivatePillarGuard()
+	else
+		return false
 	end
-	return false
+
+	local cage = SpawnPrefab("security_pulse_cage")
+	cage.prevcontainer = inst.prevcontainer
+	cage.prevslot = inst.prevslot
+
+	if doer and doer.components.inventory then
+		doer.components.inventory:GiveItem(cage, nil, doer:GetPosition())
+	else
+		local ent = doer or target or inst
+		local x, y, z = ent.Transform:GetWorldPosition()
+		cage.components.inventoryitem:DoDropPhysics(x, y, z, true)
+	end
+
+	inst:Remove()
+
+	return true
 end
 
 local function FullCageFn(full)
@@ -185,7 +196,7 @@ local function FullCageFn(full)
     inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
 	inst:AddComponent("useabletargeteditem")
-	inst.components.useabletargeteditem:SetOnUseFn(OnUsedOnVaultKeyActivator)
+	inst.components.useabletargeteditem:SetOnUseFn(FullCage_OnUsedOnTargetedItem)
 
     inst.OnEntityWake  = OnEntityWake
     inst.OnEntitySleep = OnEntitySleep

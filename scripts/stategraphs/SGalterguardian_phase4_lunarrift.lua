@@ -167,9 +167,7 @@ end
 
 local function _TossItems(inst, x, z, radius)
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + WORK_RADIUS_PADDING, TOSSITEM_MUST_TAGS, TOSSITEM_CANT_TAGS)) do
-		if v.components.mine then
-			v.components.mine:Deactivate()
-		end
+		DeactivateInventoryItemBeforeLaunch(v)
 		if not v.components.inventoryitem.nobounce and v.Physics and v.Physics:IsActive() then
 			_TossLaunch(v, x, z, 1.2, 0.1)
 		end

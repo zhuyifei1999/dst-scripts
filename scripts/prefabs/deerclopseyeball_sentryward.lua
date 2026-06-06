@@ -561,7 +561,8 @@ local function OnUpdateIceCircle(inst, x, z)
                     v.components.freezable:AddColdness(.1, 1, true)
                 end
             end
-            if TUNING.DEER_ICE_TEMPERATURE < GetEntityTemperature(v) then
+            local ent_temp = GetEntityTemperature(v)
+            if ent_temp and TUNING.DEER_ICE_TEMPERATURE < ent_temp then
                 SetEntityTemperature(v, TUNING.DEER_ICE_TEMPERATURE)
             end
             if v.components.grogginess ~= nil and not v.components.grogginess:IsKnockedOut() then

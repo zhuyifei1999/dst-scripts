@@ -1431,6 +1431,10 @@ local COMPONENT_ACTIONS =
 					if target:HasTag("alltrader") then
 						if not right then
 							table.insert(actions, ACTIONS.GIVE)
+						elseif doer.components.playercontroller and doer.components.playercontroller.isclientcontrollerattached then
+							--V2C: -added this for trading torch to warg shrine, conflicts with LIGHT action.
+							--     -kept this separate in case it breaks something else.
+							table.insert(actions, ACTIONS.GIVE)
 						end
 					elseif inst:HasTag("reviver") and target:HasTag("ghost") then
 						table.insert(actions, ACTIONS.GIVE)

@@ -2123,6 +2123,18 @@ end
 
 --------------------------------------------------------------------------
 
+function DeactivateInventoryItemBeforeLaunch(inst)
+    if inst.components.mine ~= nil then
+        inst.components.mine:Deactivate()
+        return true
+    elseif inst.inventoryitem_DeactivateBeforeLaunch then
+        inst:inventoryitem_DeactivateBeforeLaunch()
+        return true
+    end
+end
+
+--------------------------------------------------------------------------
+
 -- Setters and getters for moisture and temperature
 -- This supports the regular components and inventoryitem components
 
@@ -2135,6 +2147,12 @@ function DoDeltaMoistureToEntity(inst, amount, itemmult, skipwaterproof, no_anno
         inst.components.inventoryitem:AddMoisture(amount * (itemmult or 1))
         return true
     end
+end
+
+function GetEntityMoisture(inst)
+    return (inst.components.moisture ~= nil and inst.components.moisture:GetMoisture())
+        or (inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetMoisture())
+        or nil
 end
 
 function DoDeltaTemperatureToEntity(inst, amount)
@@ -2155,8 +2173,8 @@ function SetEntityTemperature(inst, newtemp)
     end
 end
 
-function GetEntityTemperature(inst)
+function GetEntityTemperature(inst) -- Purposely defaulting to nil. Account for it.
     return (inst.components.temperature ~= nil and inst.components.temperature:GetCurrent())
         or (inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetTemperature())
-        or 0
+        or nil
 end

@@ -1258,6 +1258,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Hey! What's with this weird spray?!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "What? Thanks guys!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "My Thermal Balm is wearing off. Oh well!",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "What is it following me for?", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2195,6 +2196,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Stupid killer robot.",
         CHESSPIECE_WAGBOSS_LUNAR = "That thing was the worst.",
         CHESSPIECE_YOTH = "It could be a real jerk sometimes.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Not so tall now, huh?",
 
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
@@ -6202,11 +6204,19 @@ return{
             HOT = "Ahhh, that's the stuff.", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "Why would I want anything to come between me and my beautiful flames?", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "Why would I want anything to come between me and my beautiful flames?",
 
 		VAULT_PILLAR_GUARD = "Come onnnn!",
+		VAULT_PILLAR_GUARD_CRAFTED = "Dumb as a ton of bricks, but I like you anyway.",
 		VAULT_PILLAR_GUARD_DORMANT = "What good is a tower that doesn't burn?",
-		VAULT_CRAWLER = "Hey! Think you can get the drop on me, huh?!",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "What is your problem? What do you want now?",
+		VAULT_PILLAR_GUARD_CONSTR = "Here we go!",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Who's ready to get crushed?!",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Hey! Think you can get the drop on me, huh?!",
+			SOCKETED = "Haha! Now stay put!",
+		},
 
         VAULT_DECON_DOOR = "Pfft. Some dumb wall isn't going to stop me.",
         VAULT_DECON_MISTER = "You'd better not spray anything at me again!",
@@ -6218,8 +6228,9 @@ return{
             GENERIC = "Looks like trouble... Think I'll take it.", -- Keystone is on it, ready to take
             PICKED = "And it's gone!", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What do we have here?",
         VAULT_ORB_REFINED = "So pretty. Now what do I do with it?",
+        VAULT_PILLAR_GUARD_PIECE = "Fixed it! Now what?",
+        VAULT_REFINER_PEDESTAL = "Does it have a burn function?",
 
         VAULT_COMPASS =
         {
@@ -6229,6 +6240,7 @@ return{
         },
 
         CEILING_ROPE = "Dibs!",
+        VAULT_KEY_EXIT = "Can't tie a rope? Who cares!",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

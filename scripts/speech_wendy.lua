@@ -1255,6 +1255,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Can it truly purge all the darkness from my heart?",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Strange... I wonder what price we shall pay for this assistance.",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "The flames may consume me once again.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Seems we have a new friend, Abigail.", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2192,6 +2193,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "It was built to bring death.",
         CHESSPIECE_WAGBOSS_LUNAR = "This doesn't capture its pain.",
         CHESSPIECE_YOTH = "Not quite the fairy tale version.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "There's no life in this small sentry.",
 
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
@@ -6199,11 +6201,19 @@ return{
             HOT = "The heat... it's unbearable...", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "What point is there in trying to avoid pain? It finds me eventually.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "What point is there in trying to avoid pain? It finds me eventually.",
 
 		VAULT_PILLAR_GUARD = "It doesn't want me here... I don't blame it...",
+		VAULT_PILLAR_GUARD_CRAFTED = "It was born to keep watch. One day, it will perish at its post.",
 		VAULT_PILLAR_GUARD_DORMANT = "They seem to stand vigil over something.",
-		VAULT_CRAWLER = "It casts a sickly glow over everything around it.",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It's missing the spark of life.",
+		VAULT_PILLAR_GUARD_CONSTR = "There's no life in it yet.",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Much potential in a small package.",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "It casts a sickly glow over everything around it.",
+			SOCKETED = "In its resting place.",
+		},
 
         VAULT_DECON_DOOR = "If only it was that easy to shut the world out...",
         VAULT_DECON_MISTER = "Even if you manage to chase away the darkness, it always comes back.",
@@ -6215,8 +6225,9 @@ return{
             GENERIC = "There it is...", -- Keystone is on it, ready to take
             PICKED = "I feel we have set off an irreversible chain of events.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "I wonder what purpose it serves.",
         VAULT_ORB_REFINED = "It won't take me to the one place I want to go.",
+        VAULT_PILLAR_GUARD_PIECE = "Whole, once more.",
+        VAULT_REFINER_PEDESTAL = "What can it make to help us?",
 
         VAULT_COMPASS =
         {
@@ -6226,6 +6237,7 @@ return{
         },
 
         CEILING_ROPE = "A way out.",
+        VAULT_KEY_EXIT = "It's a leap of faith.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

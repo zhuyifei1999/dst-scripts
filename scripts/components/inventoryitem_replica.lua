@@ -501,17 +501,17 @@ function InventoryItem:SetTemperature(temperature)
     end
 end
 
-function InventoryItem:SetMinTemperature(mintemperature)
-    if self.classified ~= nil then
-        self.classified:SerializeTemperature(nil, mintemperature)
-    end
-end
+-- function InventoryItem:SetMinTemperature(mintemperature)
+--     if self.classified ~= nil then
+--         self.classified:SerializeTemperature(nil, mintemperature)
+--     end
+-- end
 
-function InventoryItem:SetMaxTemperature(maxtemperature)
-    if self.classified ~= nil then
-        self.classified:SerializeTemperature(nil, nil, maxtemperature)
-    end
-end
+-- function InventoryItem:SetMaxTemperature(maxtemperature)
+--     if self.classified ~= nil then
+--         self.classified:SerializeTemperature(nil, nil, maxtemperature)
+--     end
+-- end
 
 function InventoryItem:GetTemperature()
     if self.inst.components.inventoryitemtemperature ~= nil then

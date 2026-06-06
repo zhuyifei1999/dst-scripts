@@ -1257,6 +1257,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Huh. It actually chased away the shadows.",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "They're helpin'? I must be seein' things.",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "I think the Thermal Balm is wearin' off.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Hey there, little tagalong!", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2194,6 +2195,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Glad this one ain't got no movin' parts.",
         CHESSPIECE_WAGBOSS_LUNAR = "Weirdest thing I ever saw. And I seen a lotta weird stuff.",
         CHESSPIECE_YOTH = "There were good and bad times with this fella.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Hey there, shorty!",
 
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
@@ -6201,11 +6203,19 @@ return{
             HOT = "Watch out, hazardous spill!", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "Slather on a nice, thick layer and you're basically fireproof.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "Slather on a nice, thick layer and you're basically fireproof.",
 
 		VAULT_PILLAR_GUARD = "C'mon you pile of bricks!",
+		VAULT_PILLAR_GUARD_CRAFTED = "Now that's impressive.",
 		VAULT_PILLAR_GUARD_DORMANT = "They sure built 'em to last back then.",
-		VAULT_CRAWLER = "Hey, I think you're the missing piece I need!",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "Needs juice to run it.",
+		VAULT_PILLAR_GUARD_CONSTR = "I can see it already.",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Where's a good spot for it?",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Hey, I think you're the missing piece I need!",
+			SOCKETED = "In ya go!",
+		},
 
         VAULT_DECON_DOOR = "Pretty heavy-duty. They must've really wanted to keep this place secure.",
         VAULT_DECON_MISTER = "Seems like a pretty fancy setup.",
@@ -6217,8 +6227,9 @@ return{
             GENERIC = "I've got an uneasy feeling about this.", -- Keystone is on it, ready to take
             PICKED = "Yup, it's empty.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "Needs a polish.",
         VAULT_ORB_REFINED = "I've seen something like this before.",
+        VAULT_PILLAR_GUARD_PIECE = "Looks like the core of that lumbering tower of bricks.",
+        VAULT_REFINER_PEDESTAL = "Never seen anything like it, but I'll make it work.",
 
         VAULT_COMPASS =
         {
@@ -6228,6 +6239,7 @@ return{
         },
 
         CEILING_ROPE = "Good to have a way out.",
+        VAULT_KEY_EXIT = "Well, looks like it's exit only.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

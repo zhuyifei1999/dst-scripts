@@ -1996,7 +1996,6 @@ function MakeFumaroleToolPristine(inst)
     --inventoryitemtemperature (from inventoryitem component) added to pristine state for optimization
 	inst:AddTag("inventoryitemtemperature")
     inst:AddTag("show_broken_ui")
-    inst:AddTag("hide_temperature")
 end
 
 function MakeFumaroleTool(inst, heatonuse, onbroken, onrepaired, onupdatetemperature)

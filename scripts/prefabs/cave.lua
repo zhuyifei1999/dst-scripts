@@ -196,7 +196,6 @@ local prefabs =
     "vault_lobby_exit",
     "vault_chandelier",
     "vault_teleporter",
-	"vault_key_trial",
 }
 
 local monsters =

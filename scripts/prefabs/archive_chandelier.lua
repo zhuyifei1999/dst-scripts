@@ -328,7 +328,7 @@ local function OnInit(inst)
 	end
 end
 
-local function MakeChandelier(name, build, light_params, flamedata, sfxheight, master_postinit, assets, prefabs)
+local function MakeChandelier(name, build, light_params, flamedata, sfxheight, common_postinit, master_postinit, assets, prefabs)
 	local function fn()
 		local inst = CreateEntity()
 
@@ -372,6 +372,10 @@ local function MakeChandelier(name, build, light_params, flamedata, sfxheight, m
 		end
 
 		inst:DoTaskInTime(0, OnInit)
+
+		if common_postinit then
+			common_postinit(inst)
+		end
 
 		inst.entity:SetPristine()
 
@@ -441,6 +445,22 @@ end
 
 --------------------------------------------------------------------------
 
+local function crawler_OnClawSfxDirty(inst)
+	if inst.sfxprop then
+		if inst.clawsfx:value() == 1 then
+			inst.sfxprop.SoundEmitter:PlaySound("rifts7/vault_claw/open")
+		elseif inst.clawsfx:value() == 2 then
+			inst.sfxprop.SoundEmitter:PlaySound("rifts7/vault_claw/withdraw")
+		end
+	end
+end
+
+local function crawler_TriggerClawSfx(inst, id)
+	inst.clawsfx:set_local(id)
+	inst.clawsfx:set(id)
+	crawler_OnClawSfxDirty(inst)
+end
+
 local function crawler_UpdateLight(inst)
 	if not inst.dropped then
 		_updatelight(inst)
@@ -451,20 +471,32 @@ local function crawler_UpdateLight(inst)
 end
 
 local function crawler_OnAnimOver(inst)
-	inst:RemoveEventCallback("animover", crawler_OnAnimOver)
-	inst:ListenForEvent("animqueueover", inst.Remove)
-	inst.persists = false
-	inst.detached = true
-	inst.Light:Enable(false)
-	inst.AnimState:ClearBloomEffectHandle()
-	inst.AnimState:SetFinalOffset(2)
+	if inst.AnimState:IsCurrentAnimation("fall") then
+		inst.persists = false
+		inst.detached = true
+		inst.Light:Enable(false)
+		inst.AnimState:ClearBloomEffectHandle()
+		inst.AnimState:SetFinalOffset(2)
 
-	local x, _, z = inst.Transform:GetWorldPosition()
-	local crawler = SpawnPrefab("vault_crawler")
-	crawler.Transform:SetPosition(x, 0, z)
-	crawler.sg:GoToState("spawn")
+		local x, _, z = inst.Transform:GetWorldPosition()
+		local crawler = SpawnPrefab("vault_crawler")
+		crawler.Transform:SetPosition(x, 0, z)
+		crawler.sg:GoToState("spawn")
 
-	inst:PushEvent("ms_vaultcrawler_dropped", crawler)
+		inst:PushEvent("ms_vaultcrawler_dropped", crawler)
+
+		if inst:IsAsleep() then
+			inst:Remove()
+		else
+			inst.OnEntitySleep = inst.Remove
+			inst.AnimState:PlayAnimation("fall_pst")
+		end
+	elseif inst.AnimState:IsCurrentAnimation("fall_pst") then
+		inst.AnimState:PlayAnimation("withdraw")
+		crawler_TriggerClawSfx(inst, 2)
+	elseif inst.AnimState:IsCurrentAnimation("withdraw") then
+		inst:Remove()
+	end
 end
 
 local function crawler_DropCrawler(inst)
@@ -474,10 +506,16 @@ local function crawler_DropCrawler(inst)
 	inst.dropped = true
 	inst:ListenForEvent("animover", crawler_OnAnimOver)
 	inst.AnimState:PlayAnimation("fall")
-	inst.AnimState:PushAnimation("fall_pst")
-	--inst.AnimState:PushAnimation("empty_idle")
-	inst.AnimState:PushAnimation("withdraw", false)
+	crawler_TriggerClawSfx(inst, 1)
 	inst:updatelight()
+end
+
+local function crawler_common_postinit(inst)
+	inst.clawsfx = net_tinybyte(inst.GUID, "vault_crawler_chandelier.clawsfx", "clawsfxdirty")
+
+	if not TheWorld.ismastersim then
+		inst:DoTaskInTime(0, inst.ListenForEvent, "clawsfxdirty", crawler_OnClawSfxDirty)
+	end
 end
 
 local function crawler_master_postinit(inst)
@@ -492,6 +530,6 @@ end
 
 --------------------------------------------------------------------------
 
-return MakeChandelier("archive_chandelier", "chandelier_archives", LIGHT_PARAMS, FLAMEDATA, 8, archive_master_postinit, assets),
-	MakeChandelier("vault_chandelier", "chandelier_vault", LIGHT_PARAMS_VAULT, nil, 6, vault_master_postinit, assets_vault),
-	MakeChandelier("vault_crawler_chandelier", "chandelier_vault2", LIGHT_PARAMS_VAULT, nil, 6, crawler_master_postinit, assets_crawler, prefabs_crawler)
+return MakeChandelier("archive_chandelier", "chandelier_archives", LIGHT_PARAMS, FLAMEDATA, 8, nil, archive_master_postinit, assets),
+	MakeChandelier("vault_chandelier", "chandelier_vault", LIGHT_PARAMS_VAULT, nil, 6, nil, vault_master_postinit, assets_vault),
+	MakeChandelier("vault_crawler_chandelier", "chandelier_vault2", LIGHT_PARAMS_VAULT, nil, 6, crawler_common_postinit, crawler_master_postinit, assets_crawler, prefabs_crawler)

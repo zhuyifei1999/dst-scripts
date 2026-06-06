@@ -2511,6 +2511,7 @@ STRINGS =
         CHESSPIECE_WAGBOSS_ROBOT = "W.A.R.B.O.T. Figure",
         CHESSPIECE_WAGBOSS_LUNAR = "Celestial Scion Figure",
         CHESSPIECE_YOTH = "Gilded Knight Figure",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Ancient Guard Tower Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -2557,6 +2558,7 @@ STRINGS =
         CHESSPIECE_WAGBOSS_ROBOT_BUILDER = "W.A.R.B.O.T. Figure",
         CHESSPIECE_WAGBOSS_LUNAR_BUILDER = "Celestial Scion Figure",
         CHESSPIECE_YOTH_BUILDER = "Gilded Knight Figure",
+        CHESSPIECE_VAULT_PILLAR_GUARD_BUILDER = "Ancient Guard Tower Figure",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
         CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
@@ -2580,6 +2582,7 @@ STRINGS =
         CHESSPIECE_WAGBOSS_ROBOT_SKETCH = "W.A.R.B.O.T. Figure Sketch",
         CHESSPIECE_WAGBOSS_LUNAR_SKETCH = "Celestial Scion Figure Sketch",
         CHESSPIECE_YOTH_SKETCH = "Gilded Knight Figure Sketch",
+        CHESSPIECE_VAULT_PILLAR_GUARD_SKETCH = "Ancient Guard Tower Figure Sketch",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -4624,19 +4627,23 @@ STRINGS =
         MITEGLAND = "Heat Gland",
         MITEGLAND_COOKED = "Cooked Heat Gland",
 
-        FUMAROLEAXE = "Thermic Axe",
-        FUMAROLEPICKAXE = "Thermic Pickaxe",
-        FUMAROLESHOVEL = "Thermic Shovel",
-        FUMAROLEHAMMER = "Thermic Hammer",
-        FUMAROLE_FARM_HOE = "Thermic Garden Hoe",
+        FUMAROLEAXE = "Ardent Axe",
+        FUMAROLEPICKAXE = "Pyretic Pickaxe",
+        FUMAROLESHOVEL = "Searing Shovel",
+        FUMAROLEHAMMER = "Hotheaded Hammer",
+        FUMAROLE_FARM_HOE = "Heated Garden Hoe",
 
         TRAP_FUMAROLE = "Coals",
 
         HEALINGSALVE_FUMAROLE = "Thermal Balm",
 
 		VAULT_PILLAR_GUARD = "Ancient Guard Tower",
+        VAULT_PILLAR_GUARD_CRAFTED = "Guard Tower",
 		VAULT_PILLAR_GUARD_DORMANT = "Ancient Tower",
+		VAULT_PILLAR_GUARD_CONSTR = "Guard Tower Site",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Guard Tower Kit",
 		VAULT_CRAWLER = "Lustrous Weevil", --NOTE: "Sanctum Lustre" is the name of the lights
+        VAULT_CRAWLER_SOCKET = "Lustrous Socket", -- FOR SCRAPBOOK.
 
         VAULT_DECON_DOOR = "Inner Sanctum Barrier",
         VAULT_DECON_MISTER = "Sanctum Purifier",
@@ -4644,11 +4651,16 @@ STRINGS =
 		VAULT_CRAWLER_LEVER = "Lever",
         VAULT_KEY = "Keystone",
         VAULT_KEY_PEDESTAL = "Reliquary",
-        VAULT_ORB_FRAGMENT = "Orb Fragment",
-        VAULT_ORB_REFINED = "Polished Orb Fragment",
+        VAULT_ORB_REFINED = "Portation Orb Fragment",
         VAULT_COMPASS = "Waymark Compass",
+		VAULT_PILLAR_GUARD_PIECE_1 = "Tower Core",
+		VAULT_PILLAR_GUARD_PIECE_2 = "Tower Spark Cradle",
+		VAULT_PILLAR_GUARD_PIECE_3 = "Tower Articulator",
+
+        VAULT_REFINER_PEDESTAL = "Sanctum Smithy",
 
         CEILING_ROPE = "Rope",
+        VAULT_KEY_EXIT = "Chasm",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5095,6 +5107,7 @@ STRINGS =
         CHESSPIECE_WAGBOSS_ROBOT_BUILDER = "The automation.",
         CHESSPIECE_WAGBOSS_LUNAR_BUILDER = "The abomination.",
         CHESSPIECE_YOTH_BUILDER = "Shining armor included.",
+        CHESSPIECE_VAULT_PILLAR_GUARD_BUILDER = "Imposing presence not included.",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
         CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",
@@ -5885,7 +5898,9 @@ STRINGS =
         TRAP_FUMAROLE = "Rake your enemies over the coals.",
 
         HEALINGSALVE_FUMAROLE = "Smear on some heat protection.",
-        VAULT_ORB_REFINED = "Polish to a shine and let it move you.",
+
+		VAULT_ORB_REFINED = "It pleases when broken into pieces.",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Something big is coming up!",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -8873,6 +8888,7 @@ STRINGS.UI =
         NEEDSCARTOGRAPHYDESK = "Use a Cartographer's Desk to write this.",
         NEEDSROBOTSHADOWFUEL = "Implant a dark fuel to unlock this recipe.",
         NEEDSROBOTSHADOWHEART = "Implant a dark heart to unlock this recipe.",
+        NEEDSVAULT_REFINER_PEDESTAL = "Find an ancient smithy to craft this at.",
 
 		NEEDSYOTG = "Available during Year of the Gobbler!",
 		NEEDSYOTV = "Available during Year of the Varg!",
@@ -10100,6 +10116,7 @@ STRINGS.UI =
         WAGPUNK_WORKSTATION = "Fabrication",
         CARPENTRY = "Carpentry",
         HERMITCRAB_TEASHOP = "Tea Brewing",
+        VAULT_REFINER_PEDESTAL = "Sanctum Smithy",
 
         SHADOW = "Codex Umbra",
         FOODPROCESSING = "Seasonings",
@@ -17914,6 +17931,7 @@ STRINGS.SCRAPBOOK = {
         SLINGSHOTPART = "Slingshot Part",
         GESTALT = "Gestalt",
         DRONE = "Drone",
+        TRAP = "Trap",
     },
 
     SANITYDESC ={
@@ -18625,18 +18643,24 @@ STRINGS.SCRAPBOOK = {
 
         -- Rifts 7
 
-        TRAP_FUMAROLE = "Scatter these on the floor and heat them up for a hot trap that deals fire damage and ignite/cooks objects on top.",
-        HEALINGSALVE_FUMAROLE = "TODO",
+        FUMAROLEAXE = "Gains heat when near something hot, and cools near something cold.\n\nIt will warm the holder depending on its temperature.\n\nWhen hot, it chops a bit more efficiently, and does extra damage towards freezing targets.\n\nDurability is used when breaking from cooling down fully, it can be mended back into a functional state by heating it back up again.",
+        FUMAROLEPICKAXE = "Gains heat when near something hot, and cools near something cold.\n\nIt will warm the holder depending on its temperature.\n\nWhen hot, it mines a bit more efficiently, and does extra damage towards freezing targets.\n\nDurability is used when breaking from cooling down fully, it can be mended back into a functional state by heating it back up again.",
+        FUMAROLEHAMMER = "Gains heat when near something hot, and cools near something cold.\n\nIt will warm the holder depending on its temperature.\n\nWhen hot, it hammers a bit more efficiently, and does extra damage towards freezing targets.\n\nDurability is used when breaking from cooling down fully, it can be mended back into a functional state by heating it back up again.",
+        FUMAROLESHOVEL = "Gains heat when near something hot, and cools near something cold.\n\nIt will warm the holder depending on its temperature.\n\nWhen hot, it does extra damage towards freezing targets.\n\nDurability is used when breaking from cooling down fully, it can be mended back into a functional state by heating it back up again.",
+        FUMAROLE_FARM_HOE = "Gains heat when near something hot, and cools near something cold.\n\nIt will warm the holder depending on its temperature.\n\nWhen hot, it does extra damage towards freezing targets.\n\nDurability is used when breaking from cooling down fully, it can be mended back into a functional state by heating it back up again.",
 
-        VAULT_DECON_MISTER = "TODO",
-        VAULT_DECON_DOOR = "TODO",
-        VAULT_CRAWLER = "TODO",
-        VAULT_CRAWLER_SOCKET = "TODO",
-        VAULT_PILLAR_GUARD = "TODO",
-        VAULT_KEY_ACTIVATOR = "TODO",
-        VAULT_CRAWLER_LEVER = "TODO",
-        VAULT_ORB_FRAGMENT = "TODO",
-        VAULT_ORB_REFINED = "TODO",
+        TRAP_FUMAROLE = "Scatter these on the floor and heat them up for a hot trap that deals fire damage, and also cooks food.",
+        HEALINGSALVE_FUMAROLE = "Provides a bit of protection against overheating, and fire immunity for a duration of 4 minutes.",
+
+        VAULT_DECON_MISTER = "Cleanses the rotten nightmares right out of you. What's so important here it must be kept away from the shadows?",
+        VAULT_DECON_DOOR = "Keeps the nightmares out.",
+        VAULT_CRAWLER_SOCKET = "It looks like an orb could fit right in.",
+        VAULT_KEY_ACTIVATOR = "A spark of energy could revitalize it.",
+        VAULT_CRAWLER_LEVER = "The urge to pull this lever is... even stronger this time.",
+        VAULT_ORB_REFINED = "A refined piece of a Portation Orb. It can be socketed at the Telelocator Focus, and used to teleport to one by focusing.",
+        VAULT_COMPASS = "A compass left by one of the last builders of this place. It could lead somewhere important.",
+        VAULT_KEY_PEDESTAL = "Maybe this one will help you get home.",
+        VAULT_REFINER_PEDESTAL = "Break down some orbs in the mean time.",
     },
 
     -- Full name: "{name} Scrapbook Page"

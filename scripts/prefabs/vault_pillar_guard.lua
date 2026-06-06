@@ -1,3 +1,5 @@
+require("prefabutil")
+
 local assets =
 {
 	Asset("ANIM", "anim/vault_pillar_guard.zip"),
@@ -11,6 +13,18 @@ local assets_dormant =
 	Asset("ANIM", "anim/vault_pillar_guard.zip"),
 }
 
+local assets_constr =
+{
+	Asset("ANIM", "anim/vault_pillar_guard.zip"),
+	Asset("ANIM", "anim/vault_pillar_guard_kit.zip"),
+	Asset("MINIMAP_IMAGE", "vault_pillar_guard_dormant"),
+}
+
+local assets_plans =
+{
+	Asset("ANIM", "anim/vault_pillar_guard_kit.zip"),
+}
+
 local prefabs =
 {
 	"vault_pillar_guard_swipe_fx",
@@ -21,14 +35,23 @@ local prefabs =
 	"thulecite_pieces",
 	"rocks",
 	"moonrocknugget",
-    "vault_orb_fragment", -- FIXME(JBK): rifts7: vault_orb_fragment
-	"vault_orb_refined_blueprint",
 	"temp_beta_msg", --#TEMP_BETA
+	"vault_pillar_guard_piece_1",
+	"vault_pillar_guard_piece_2",
+	"vault_pillar_guard_piece_3",
+	"chesspiece_vault_pillar_guard_sketch",
 }
 
 local prefabs_dormant =
 {
 	"vault_pillar_guard",
+	"collapse_big",
+}
+
+local prefabs_constr =
+{
+	"vault_pillar_guard_dormant",
+	"collapse_big",
 }
 
 local brain = require("brains/vault_pillar_guardbrain")
@@ -50,16 +73,19 @@ SetSharedLootTable("vault_pillar_guard",
 	{ "moonrocknugget",		1 },
 	{ "moonrocknugget",		1 },
 	{ "moonrocknugget",		0.5 },
-    --
-    { "vault_orb_fragment", 1 }, -- FIXME(JBK): rifts7: vault_orb_fragment
-    { "vault_orb_fragment", 1 },
-    { "vault_orb_fragment", 0.5 },
 })
 
-local VAULT_LOOT =
+local VAULT_GOLEM_PIECE_LOOT = --golem drops core piece according to index in trial
 {
-	"vault_orb_refined_blueprint",
-	"temp_beta_msg", --#TEMP_BETA
+	"vault_pillar_guard_piece_1",
+	"vault_pillar_guard_piece_2",
+	"vault_pillar_guard_piece_3",
+	"vault_pillar_guard_piece_3",
+}
+
+local VAULT_LOOT_FINAL = --drops for the last guard in the vault key room
+{
+	"chesspiece_vault_pillar_guard_sketch",
 }
 
 --------------------------------------------------------------------------
@@ -185,8 +211,6 @@ local function TriggerDebris(inst, show)
 	end
 end
 
---------------------------------------------------------------------------
-
 local function teleport_override_fn(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	if TheWorld.Map:IsPointInVaultRoom(x, y, z) then
@@ -194,7 +218,9 @@ local function teleport_override_fn(inst)
 	end
 end
 
---------------------------------------------------------------------------
+local function OnTeleported(inst)
+	inst.components.knownlocations:RememberLocation("spawnpoint", inst:GetPosition())
+end
 
 local function IsClosestToTarget(inst, target, x1, z1, mindsq)
 	for i = 1, 4 do
@@ -207,6 +233,15 @@ local function IsClosestToTarget(inst, target, x1, z1, mindsq)
 		end
 	end
 	return true
+end
+
+local CRAFTED_AGGRO_TAGS = { "_combat" }
+local CRAFTED_AGGRO_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "player" }
+local function Crafted_CanAggro(v, inst)
+	return v.components.combat.target
+		and v.components.combat.target.isplayer
+		and not (v.components.health and v.components.health:IsDead())
+		or false
 end
 
 local function RetargetFn(inst)
@@ -250,52 +285,76 @@ local function RetargetFn(inst)
 		end
 		return closest2 or closest, true
 	end
+
+	if not (target or inst.trial) then
+		--for crafted, look for nearby player combat to engage in
+		return FindEntity(inst, TUNING.VAULT_PILLAR_GUARD_COMBAT_RANGE + 8, Crafted_CanAggro, CRAFTED_AGGRO_TAGS, CRAFTED_AGGRO_CANT_TAGS)
+	end
 end
 
 local function KeepTargetFn(inst, target)
 	if not inst.components.combat:CanTarget(target) then
 		return false
+	elseif inst.trial then
+		return TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition()) == TheWorld.Map:IsPointInVaultRoom(target.Transform:GetWorldPosition())
 	end
-	return TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition()) == TheWorld.Map:IsPointInVaultRoom(target.Transform:GetWorldPosition())
+	return inst:IsNear(target, TUNING.VAULT_PILLAR_GUARD_DEAGGRO_DIST)
 end
 
 local function OnAttacked(inst, data)
 	if data and data.attacker and data.attacker:IsValid() then
-		if data.attacker:HasAnyTag("vault_pillar_guard", "vault_crawler") and not data.attacker.components.combat:TargetIs(inst) then
-			--ignore stray hits from pillar guard and crawler AOE
-			return
-		end
+		local x, y, z = inst.Transform:GetWorldPosition()
 
-		if inst.trial and data.attacker:HasTag("shadowcreature") then
-			for _, v in ipairs(AllPlayers) do
-				if not IsEntityDeadOrGhost(v) and v.entity:IsVisible() then
-					local x1, y1, z1 = v.Transform:GetWorldPosition()
-					if data.attacker:GetDistanceSqToPoint(x1, y1, z1) < 100 and TheWorld.Map:IsPointInVaultRoom(x1, y1, z1) then
-						v:PushEvent("ms_vaultshadowassist")
+		if inst.trial then
+			if data.attacker:HasTag("vault_key_trial_guardian") then
+				return --ignore stray hits from pillar guard and crawler AOE
+			end
+
+			if data.attacker:HasTag("shadowcreature") then
+				for _, v in ipairs(AllPlayers) do
+					if not IsEntityDeadOrGhost(v) and v.entity:IsVisible() then
+						local x1, y1, z1 = v.Transform:GetWorldPosition()
+						if data.attacker:GetDistanceSqToPoint(x1, y1, z1) < 100 and TheWorld.Map:IsPointInVaultRoom(x1, y1, z1) then
+							v:PushEvent("ms_vaultshadowassist")
+						end
 					end
 				end
 			end
-		end
 
-		local x, y, z = inst.Transform:GetWorldPosition()
-		local target = inst.components.combat.target
-		if target and target.isplayer then
-			local range = TUNING.VAULT_PILLAR_GUARD_ATTACK_RANGE + target:GetPhysicsRadius(0)
-			if target:GetDistanceSqToPoint(x, y, z) < range * range then
-				return --don't switch targets
+			if TheWorld.Map:IsPointInVaultRoom(x, y, z) ~= TheWorld.Map:IsPointInVaultRoom(data.attacker.Transform:GetWorldPosition()) then
+				return --not in same room?
 			end
 		end
-		if TheWorld.Map:IsPointInVaultRoom(x, y, z) == TheWorld.Map:IsPointInVaultRoom(data.attacker.Transform:GetWorldPosition()) then
-			inst.components.combat:SetTarget(data.attacker)
+
+		local target = inst.components.combat.target
+		if target and (target.isplayer or target:HasTag("epic")) then
+			local range = TUNING.VAULT_PILLAR_GUARD_ATTACK_RANGE + target:GetPhysicsRadius(0)
+			if target:GetDistanceSqToPoint(x, y, z) < range * range then
+				return --don't switch off priority targets that are within melee range
+			end
 		end
+
+		inst.components.combat:SetTarget(data.attacker)
 	end
 	--share target for the room is done in vault_key_trial
 end
 
 local function LootSetupFn(lootdropper)
-	if lootdropper.inst._vault_death_loot then
-		lootdropper:SetLoot(VAULT_LOOT)
+	local inst = lootdropper.inst
+	local loot
+	if inst.trial then
+		for i = 1, 4 do
+			local guard = inst.trial.components.entitytracker:GetEntity("guard"..tostring(i))
+			if guard == inst then
+				loot = { VAULT_GOLEM_PIECE_LOOT[i] }
+				if inst._vault_death_loot then
+					loot = ConcatArrays(loot, VAULT_LOOT_FINAL)
+				end
+				break
+			end
+		end
 	end
+	lootdropper:SetLoot(loot)
 	lootdropper:SetChanceLootTable("vault_pillar_guard")
 end
 
@@ -346,18 +405,102 @@ local PHASES =
 	},
 }
 
+local function PushMusic(inst)
+	if ThePlayer then
+		ThePlayer:PushEvent("vault_pillar_guard_aggro")
+	end
+end
+
+local function OnMusicDirty(inst)
+	if inst.music:value() then
+		if inst._musictask == nil then
+			inst._musictask = inst:DoPeriodicTask(1, PushMusic, 0)
+		end
+	elseif inst._musictask then
+		inst._musictask:Cancel()
+		inst._musictask = nil
+	end
+end
+
+local function EnableMusic(inst, enable)
+	if inst.music:value() == not enable then
+		inst.music:set(enable)
+
+		--Dedicated server does not need to trigger music
+		if not TheNet:IsDedicated() then
+			OnMusicDirty(inst)
+		end
+	end
+end
+
+local function OnNewTarget(inst, data)
+	if data then
+		if inst.trial and data.target then
+			EnableMusic(inst, true)
+		end
+		if data.oldtarget == nil then
+			if inst.canspin then
+				local cd = inst.components.timer:GetTimeLeft("spin_cd") or 0
+				inst.components.timer:StopTimer("spin_cd")
+				inst.components.timer:StartTimer("spin_cd", math.max(cd, (1 + math.random()) / 4 * TUNING.VAULT_PILLAR_GUARD_SPIN_CD))
+			end
+			if inst.canquickjump then
+				local cd = inst.components.timer:GetTimeLeft("quickjump_cd") or 0
+				inst.components.timer:StopTimer("quickjump_cd")
+				inst.components.timer:StartTimer("quickjump_cd", math.max(cd, (1 + math.random()) / 8 * TUNING.VAULT_PILLAR_GUARD_QUICKJUMP_CD))
+			end
+		end
+	end
+end
+
+local function OnDroppedTarget(inst)--, data)
+	EnableMusic(inst, false)
+end
+
+local function MakeCrafted(inst)
+	inst.crafted = true
+	inst.AnimState:Hide("moss")
+	inst:RemoveTag("hostile")
+	inst:RemoveTag("noepicmusic")
+	inst:AddTag("player_aligned")
+	inst.components.inspectable:SetNameOverride("vault_pillar_guard_crafted")
+	EnableMusic(inst, false)
+
+	inst:RemoveComponent("healthtrigger")
+	inst.components.timer:StopTimer("stunned")
+	inst.canspin = true
+	inst.canquickjump = true
+end
+
+local function IsCrafted(inst)
+	return inst:HasTag("player_aligned")
+end
+
+local function OnSave(inst, data)
+	data.crafted = inst.crafted or nil
+end
+
 local function OnLoad(inst, data)--, ents)
-	local healthpct = inst.components.health:GetPercent()
-	for i = #PHASES, 2, -1 do
-		local v = PHASES[i]
-		if healthpct <= v.hp then
-			v.fn(inst)
-			break
+	if data and data.crafted then
+		inst:MakeCrafted()
+	end
+	if inst.components.healthtrigger then
+		local healthpct = inst.components.health:GetPercent()
+		for i = #PHASES, 2, -1 do
+			local v = PHASES[i]
+			if healthpct <= v.hp then
+				v.fn(inst)
+				break
+			end
 		end
 	end
 	if inst.components.timer:TimerExists("stunned") and not inst.components.timer:IsPaused("stunned") then
 		inst.sg:GoToState("stun_idle")
 	end
+end
+
+local function DisplayNameFn(inst)
+	return inst:HasTag("player_aligned") and STRINGS.NAMES.VAULT_PILLAR_GUARD_CRAFTED or nil
 end
 
 local function fn()
@@ -370,11 +513,14 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	inst:AddTag("monster")
+	inst:AddTag("largecreature")
 	inst:AddTag("hostile")
 	inst:AddTag("soulless")
 	inst:AddTag("mech")
 	inst:AddTag("electricdamageimmune")
 	inst:AddTag("epic")
+	inst:AddTag("noepicmusic")
+	inst:AddTag("scarytoprey")
 	inst:AddTag("crazy") -- so they can attack shadow creatures
 	inst:AddTag("vault_pillar_guard")
 
@@ -397,17 +543,22 @@ local function fn()
 
 	inst.debrisanim = net_hash(inst.GUID, "vault_pillar_guard.debrisanim", "debrisdirty")
 	inst.debrisnofaced = net_bool(inst.GUID, "vault_pillar_guard.debrisnofaced")
+	inst.music = net_bool(inst.GUID, "vault_pillar_guard.music", "musicdirty")
 
 	if not TheNet:IsDedicated() then
 		inst.debrisfxpool = {}
 		inst.highlightchildren = {}
 	end
 
+	inst.displaynamefn = DisplayNameFn
+	inst.IsCrafted = IsCrafted
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		inst:AddComponent("updatelooper")
 		inst:ListenForEvent("debrisdirty", OnDebrisDirty_Client)
+		inst:ListenForEvent("musicdirty", OnMusicDirty)
 
 		return inst
 	end
@@ -417,10 +568,13 @@ local function fn()
 	inst:AddComponent("locomotor")
 	inst.components.locomotor.walkspeed = TUNING.VAULT_PILLAR_GUARD_SPEED
 	inst.components.locomotor.runspeed = TUNING.VAULT_PILLAR_GUARD_SPEED
+	inst.components.locomotor.pathcaps = { ignorebridges = true }
 
 	inst:AddComponent("health")
 	inst.components.health:SetMaxHealth(TUNING.VAULT_PILLAR_GUARD_HEALTH)
 	inst.components.health.nofadeout = true
+
+	inst:AddComponent("drownable")
 
 	inst:AddComponent("damagetypebonus")
 	inst:AddComponent("damagetyperesist")
@@ -462,19 +616,50 @@ local function fn()
 	--MakeHugeFreezableCharacter(inst, "pg_pelvis")
 	MakeHauntable(inst)
 
+	inst:ListenForEvent("teleported", OnTeleported)
 	inst:ListenForEvent("attacked", OnAttacked)
+	inst:ListenForEvent("newcombattarget", OnNewTarget)
+	inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 
 	inst.TriggerDebris = TriggerDebris
 
 	inst:SetStateGraph("SGvault_pillar_guard")
 	inst:SetBrain(brain)
 
+	inst.MakeCrafted = MakeCrafted
+	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 
 	return inst
 end
 
-local function ActivatePillarGuard(inst, trial)
+--------------------------------------------------------------------------
+
+local function OnEntityWake_Pathfinding(inst)
+	if inst._pfx == nil and inst:GetCurrentPlatform() == nil then
+		local _
+		inst._pfx, _, inst._pfz = inst.Transform:GetWorldPosition()
+		for dx = -1, 1 do
+			for dz = -1, 1 do
+				TheWorld.Pathfinder:AddWall(inst._pfx + dx, 0, inst._pfz + dz)
+			end
+		end
+	end
+end
+
+local function OnRemoveEntity_Pathfinding(inst)
+	if inst._pfx then
+		for dx = -1, 1 do
+			for dz = -1, 1 do
+				TheWorld.Pathfinder:RemoveWall(inst._pfx + dx, 0, inst._pfz + dz)
+			end
+		end
+		inst._pfx, inst._pfz = nil, nil
+	end
+end
+
+local function dormant_ActivatePillarGuard(inst, trial)
+	local crafted = inst.crafted
 	inst = ReplacePrefab(inst, "vault_pillar_guard")
 	if trial then
 		local x, y, z = inst.Transform:GetWorldPosition()
@@ -487,9 +672,78 @@ local function ActivatePillarGuard(inst, trial)
 			inst.Transform:SetRotation(math.atan2(-dz, dx) * RADIANS)
 			inst.components.knownlocations:RememberLocation("spawnpoint", home)
 		end
+	elseif crafted then
+		inst:MakeCrafted()
 	end
 	inst.sg:GoToState("activate")
 	return inst
+end
+
+--Also used by vault_pillar_guard_constr
+local function dormant_OnHammered(inst, worker)
+	local pt = inst:GetPosition()
+	inst.components.lootdropper:DropLoot(pt)
+
+	if inst.components.constructionsite then
+		inst.components.constructionsite:DropAllMaterials(pt)
+	end
+
+	local fx = SpawnPrefab("collapse_big")
+	fx.Transform:SetPosition(pt:Get())
+	fx:SetMaterial("metal")
+	inst:Remove()
+end
+
+local function dormant_OnPossessed(inst, data)
+    local pulse = data.possesser
+    if pulse ~= nil and pulse:HasTag("power_point") then
+        pulse:Despawn()
+	end
+	inst:ActivatePillarGuard()
+end
+
+local function dormant_MakeCrafted(inst)
+	inst.crafted = true
+	inst.AnimState:Hide("moss")
+
+	inst:RemoveTag("nomagic")
+	inst:AddTag("structure")
+
+	inst.components.inspectable:SetNameOverride("vault_pillar_guard_dormant_crafted")
+
+	-- dormant_MakeCrafted always runs when proper position is set (OnLoad or on constructionsite being repaired)
+	-- if that assumption changes, account for this here.
+	if not TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition()) then
+		inst:AddTag("security_powerpoint")
+		inst.pulse_findrange = 6
+		inst:ListenForEvent("possess", dormant_OnPossessed)
+	end
+
+	inst:AddComponent("workable")
+	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+	inst.components.workable:SetWorkLeft(5)
+	inst.components.workable:SetOnFinishCallback(dormant_OnHammered)
+
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper.spawn_loot_inside_prefab = true
+end
+
+local function dormant_IsCrafted(inst)
+	return inst:HasTag("structure")
+end
+
+local function dormant_OnSave(inst, data)
+	data.crafted = inst.crafted or nil
+end
+
+local function dormant_OnLoad(inst, data)--, ents)
+	if data and data.crafted then
+		inst:MakeCrafted()
+	end
+end
+
+local function dormant_DisplayNameFn(inst)
+	return inst:HasTag("structure") and STRINGS.NAMES.VAULT_PILLAR_GUARD_CRAFTED or nil
 end
 
 local function dormantfn()
@@ -497,14 +751,19 @@ local function dormantfn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddMiniMapEntity()
 	inst.entity:AddNetwork()
+
+	inst.MiniMapEntity:SetIcon("vault_pillar_guard_dormant.png")
 
 	inst.AnimState:SetBank("vault_pillar_guard")
 	inst.AnimState:SetBuild("vault_pillar_guard")
 	inst.AnimState:PlayAnimation("pillar_idle")
 
 	inst:SetDeploySmartRadius(1.5)
-	MakeObstaclePhysics(inst, 1.3)
+	inst:SetPhysicsRadiusOverride(1.3)
+	MakeObstaclePhysics(inst, inst.physicsradiusoverride)
+	inst.Physics:SetDontRemoveOnSleep(true)
 
 	--Not using NOCLICK because we do want to block mouse
 	--Not using decor/FX because we do want to block placement
@@ -514,6 +773,12 @@ local function dormantfn()
 	inst:AddTag("nomagic")
 	inst:AddTag("nohighlight")
 
+	inst.OnEntityWake = OnEntityWake_Pathfinding
+	inst.OnRemoveEntity = OnRemoveEntity_Pathfinding
+
+	inst.displaynamefn = dormant_DisplayNameFn
+	inst.IsCrafted = dormant_IsCrafted
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -522,10 +787,192 @@ local function dormantfn()
 
 	inst:AddComponent("inspectable")
 
-	inst.ActivatePillarGuard = ActivatePillarGuard
+	inst.ActivatePillarGuard = dormant_ActivatePillarGuard
+	inst.MakeCrafted = dormant_MakeCrafted
+	inst.OnSave = dormant_OnSave
+	inst.OnLoad = dormant_OnLoad
 
 	return inst
 end
 
+--------------------------------------------------------------------------
+
+local function constr_CalcProgress(inst)
+	local materialsin, materialsneeded = 0, 0
+	for _, v in ipairs(CONSTRUCTION_PLANS[inst.prefab] or {}) do
+		materialsneeded = materialsneeded + v.amount
+		materialsin = materialsin + inst.components.constructionsite:GetMaterialCount(v.type)
+	end
+	return materialsin / materialsneeded
+end
+
+local function constr_InstantUpdate(inst)
+	local pct = constr_CalcProgress(inst)
+	if pct < 1 then
+		inst.AnimState:PlayAnimation(
+			(pct <= 0.3 and "construction_small") or
+			(pct <= 0.6 and "construction_med") or
+			"construction_large")
+	elseif not inst.AnimState:IsCurrentAnimation("construction_large_to_off") then
+		inst.AnimState:PlayAnimation("construction_large")
+		inst.AnimState:SetFrame(inst.AnimState:GetCurrentAnimationNumFrames() - 2)
+	end
+end
+
+local function constr_OnAnimOver(inst)
+	if inst.AnimState:IsCurrentAnimation("construction_small_place") then
+		inst.AnimState:PlayAnimation(
+			constr_CalcProgress(inst) > 0.3 and
+			"construction_small_to_med" or
+			"construction_small")
+	elseif inst.AnimState:IsCurrentAnimation("construction_small_to_med") then
+		inst.AnimState:PlayAnimation(
+			constr_CalcProgress(inst) > 0.6 and
+			"construction_med_to_large" or
+			"construction_med")
+	elseif inst.AnimState:IsCurrentAnimation("construction_med_to_large") then
+		if inst.components.constructionsite:IsComplete() then
+			inst.AnimState:PlayAnimation("construction_large_to_off")
+			inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/build")
+		else
+			inst.AnimState:PlayAnimation("construction_large")
+		end
+	elseif inst.AnimState:IsCurrentAnimation("construction_large_to_off") and inst.components.constructionsite:IsComplete() then
+		inst = ReplacePrefab(inst, "vault_pillar_guard_dormant")
+		inst:MakeCrafted()
+		PreventCharacterCollisionsWithPlacedObjects(inst)
+	end
+end
+
+local function constr_OnConstructed(inst)--, doer)
+	if inst:IsAsleep() then
+		constr_InstantUpdate(inst)
+	elseif inst.AnimState:IsCurrentAnimation("construction_small") then
+		if constr_CalcProgress(inst) > 0.3 then
+			inst.AnimState:PlayAnimation("construction_small_to_med")
+		end
+	elseif inst.AnimState:IsCurrentAnimation("construction_med") then
+		if constr_CalcProgress(inst) > 0.6 then
+			inst.AnimState:PlayAnimation("construction_med_to_large")
+		end
+	elseif inst.AnimState:IsCurrentAnimation("construction_large") and inst.components.constructionsite:IsComplete() then
+		inst.AnimState:PlayAnimation("construction_large_to_off")
+		inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/build")
+	end
+end
+
+local function constr_OnBuilt(inst, data)
+	if not inst:IsAsleep() then
+		inst.AnimState:PlayAnimation("construction_small_place")
+		inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/place")
+		PreventCharacterCollisionsWithPlacedObjects(inst)
+	end
+end
+
+local function constr_OnLoad(inst)--, data, ents)
+	constr_InstantUpdate(inst)
+end
+
+local function constrfn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddMiniMapEntity()
+	inst.entity:AddNetwork()
+
+	inst.AnimState:SetBank("vault_pillar_guard")
+	inst.AnimState:SetBuild("vault_pillar_guard")
+	inst.AnimState:PlayAnimation("construction_small")
+	inst.AnimState:OverrideSymbol("vault_pillar_cover", "vault_pillar_guard_kit", "vault_pillar_cover")
+	inst.AnimState:Hide("moss")
+
+	inst:SetDeploySmartRadius(1.5)
+	inst:SetPhysicsRadiusOverride(1.3)
+	MakeObstaclePhysics(inst, inst.physicsradiusoverride)
+	inst.Physics:SetDontRemoveOnSleep(true)
+
+	inst.MiniMapEntity:SetIcon("vault_pillar_guard_dormant.png")
+
+	inst:AddTag("structure")
+
+	--constructionsite (from constructionsite component) added to pristine state for optimization
+	inst:AddTag("constructionsite")
+
+	inst.OnEntityWake = OnEntityWake_Pathfinding
+	inst.OnRemoveEntity = OnRemoveEntity_Pathfinding
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("constructionsite")
+	inst.components.constructionsite:SetConstructionPrefab("construction_container")
+	inst.components.constructionsite:SetOnConstructedFn(constr_OnConstructed)
+
+	inst:AddComponent("inspectable")
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper.spawn_loot_inside_prefab = true
+
+	inst:AddComponent("workable")
+	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+	inst.components.workable:SetWorkLeft(5)
+	inst.components.workable:SetOnFinishCallback(dormant_OnHammered) --shared fn
+
+	inst:ListenForEvent("onsink", dormant_OnHammered) --shared fn
+	inst:ListenForEvent("onbuilt", constr_OnBuilt)
+	inst:ListenForEvent("animover", constr_OnAnimOver)
+
+	inst.OnLoad = constr_OnLoad
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
 return Prefab("vault_pillar_guard", fn, assets, prefabs),
-	Prefab("vault_pillar_guard_dormant", dormantfn, assets_dormant, prefabs_dormant)
+	Prefab("vault_pillar_guard_dormant", dormantfn, assets_dormant, prefabs_dormant),
+	Prefab("vault_pillar_guard_constr", constrfn, assets_constr, prefabs_constr),
+	MakePlacer("vault_pillar_guard_constr_plans_placer",
+		"vault_pillar_guard",			-- bank
+		"vault_pillar_guard",			-- build
+		"pillar_idle",					-- anim
+		false,							-- onground
+		false,							-- snap
+		true,							-- metersnap
+		nil,							-- scale
+		nil,							-- fixedcameraoffset
+		nil,							-- facing
+		function(inst)					-- postinit_fn
+			inst.AnimState:Hide("moss")
+		end),
+	MakeDeployableKitItem("vault_pillar_guard_constr_plans",
+		"vault_pillar_guard_constr",	-- prefab_to_deploy
+		"vault_pillar_guard_kit",		-- bank
+		"vault_pillar_guard_kit",		-- build
+		"idle",							-- anim
+		assets_plans,					-- assets
+		{								-- floatable_data
+			size = "med",
+			y_offset = 0.2,
+			scale = 0.95,
+		},
+		nil,							-- tags
+		nil,							-- burnable
+		{								-- deployable_data
+			common_postinit = function(inst)
+				inst.pickupsound = "metal"
+			end,
+			custom_candeploy_fn = function(inst, pt, mouseover, deployer, rot)
+				--Don't use GetValidRecipe, since validity doesn't apply here.
+				--This recipe exists as a DeconstructionRecipe, but is configured with the proper testfn for use here.
+				local rec = AllRecipes["vault_pillar_guard_constr"]
+				return rec ~= nil
+					and TheWorld.Map:CanDeployRecipeAtPoint(pt, rec, rot)
+					and not TheWorld.Map:IsPointInVaultRoom(pt:Get())
+			end,
+			deploymode = DEPLOYMODE.CUSTOM,
+		})

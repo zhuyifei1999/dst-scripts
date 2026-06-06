@@ -20,6 +20,12 @@ local INVERTED = table.invert(DIRS)
 
 local KEY_ROOM_ID = "key1"
 
+local function ChangeToAnim(inst, animname)
+    if not inst.marker_pointer.AnimState:IsCurrentAnimation(animname) then
+        inst.marker_pointer.AnimState:PlayAnimation(animname, true)
+    end
+end
+
 local function OnUpdateDirection(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local vaultroommanager = TheWorld.components.vaultroommanager
@@ -28,13 +34,9 @@ local function OnUpdateDirection(inst)
         local direction = vaultroomid ~= nil and vaultroommanager:GetClosestDirectionFromRoomToRoom(vaultroomid, KEY_ROOM_ID) or nil
 
         if vaultroomid == KEY_ROOM_ID then
-            if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker_success") then
-                inst.marker_pointer.AnimState:PlayAnimation("idle_marker_success", true)
-            end
+            ChangeToAnim(inst, "idle_marker_success")
         elseif direction then
-            if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker") then
-                inst.marker_pointer.AnimState:PlayAnimation("idle_marker", true)
-            end
+            ChangeToAnim(inst, "idle_marker")
             local shuffleddirections = vaultroommanager.rooms[vaultroomid].shuffleddirections
             local realdirection = shuffleddirections[direction]
 
@@ -47,21 +49,26 @@ local function OnUpdateDirection(inst)
 
             for teledirection, teleporter in pairs(vaultroommanager.teleporters) do
                 if teleporter.components.vault_teleporter:GetUnshuffledDirectionName() == realdirection then
-                    inst.marker_pointer.Transform:SetRotation(inst:GetAngleToPoint(teleporter.Transform:GetWorldPosition()))
+                    inst.marker_pointer:FacePoint(teleporter.Transform:GetWorldPosition())
                     break
                 end
             end
         end
     elseif vaultroommanager and TheWorld.Map:IsPointInVaultLobby(x, y, z) then
-        if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker") then
-            inst.marker_pointer.AnimState:PlayAnimation("idle_marker", true)
-        end
-
+        ChangeToAnim(inst, "idle_marker")
         local teleporter = vaultroommanager:GetLobbyToVaultTeleporter()
-        inst.marker_pointer.Transform:SetRotation(inst:GetAngleToPoint(teleporter.Transform:GetWorldPosition()))
+        inst.marker_pointer:FacePoint(teleporter.Transform:GetWorldPosition())
     else
-        if not inst.marker_pointer.AnimState:IsCurrentAnimation("idle_marker_fail") then
-            inst.marker_pointer.AnimState:PlayAnimation("idle_marker_fail", true)
+        local exittarget = vaultroommanager and vaultroommanager:GetVaultLobbyExitTarget()
+        if exittarget then
+            if inst:GetDistanceSqToInst(exittarget) < 2.5 * 2.5 then
+                ChangeToAnim(inst, "idle_marker_success")
+            else
+                ChangeToAnim(inst, "idle_marker")
+                inst.marker_pointer:FacePoint(exittarget.Transform:GetWorldPosition())
+            end
+        else
+            ChangeToAnim(inst, "idle_marker_fail")
         end
     end
 end

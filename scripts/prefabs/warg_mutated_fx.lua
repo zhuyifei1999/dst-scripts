@@ -88,7 +88,8 @@ local function OnUpdateHitbox(inst)
 					if target_data.tick ~= tick then
 						target_data.tick = tick
 						--Supercool
-						if TUNING.MUTATED_WARG_COLDFIRE_TEMPERATURE < GetEntityTemperature(v) then
+						local ent_temp = GetEntityTemperature(v)
+						if ent_temp and TUNING.MUTATED_WARG_COLDFIRE_TEMPERATURE < ent_temp then
             			    SetEntityTemperature(v, TUNING.MUTATED_WARG_COLDFIRE_TEMPERATURE)
             			end
 						--Hit

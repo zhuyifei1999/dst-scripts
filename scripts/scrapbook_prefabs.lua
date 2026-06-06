@@ -2058,26 +2058,35 @@ local PREFABS =
 
     -- [[ Rifts 7 ]]
 
-    -- ["fumaroleaxe"] = true,
-    -- ["fumarolepickaxe"] = true,
-    -- ["fumaroleshovel"] = true,
-    -- ["fumarolehammer"] = true,
-    -- ["fumarole_farm_hoe"] = true,
+    ["mitegland"] = true,
+    ["mitegland_cooked"] = true,
 
-    -- ["trap_fumarole"] = true,
+    ["fumaroleaxe"] = true,
+    ["fumarolepickaxe"] = true,
+    ["fumaroleshovel"] = true,
+    ["fumarolehammer"] = true,
+    ["fumarole_farm_hoe"] = true,
 
-    -- ["vault_key"] = true,
-    -- ["vault_decon_door"] = true,
-    -- ["vault_decon_mister"] = true,
-    -- ["vault_decon_switch"] = true,
-    -- ["vault_crawler"] = true,
-    -- ["vault_crawler_socket"] = true,
-    -- ["vault_pillar_guard"] = true,
-    -- ["vault_key_activator"] = true,
-    -- ["vault_crawler_lever"] = true,
-    -- ["vault_compass"] = true,
+    ["trap_fumarole"] = true,
 
-    -- ["healingsalve_fumarole"] = true,
+    ["vault_key"] = true,
+    ["vault_decon_door"] = true,
+    ["vault_decon_mister"] = true,
+    ["vault_crawler"] = true,
+    ["vault_crawler_socket"] = true,
+    ["vault_pillar_guard"] = true,
+    ["vault_key_activator"] = true,
+    ["vault_crawler_lever"] = true,
+    ["vault_compass"] = true,
+    ["vault_key_pedestal"] = true,
+    ["vault_refiner_pedestal"] = true,
+    ["vault_orb_refined"] = true,
+    ["vault_pillar_guard_piece_1"] = true,
+    ["vault_pillar_guard_piece_2"] = true,
+    ["vault_pillar_guard_piece_3"] = true,
+
+    ["healingsalve_fumarole"] = true,
+    ["chesspiece_vault_pillar_guard"] = true,
 
     -----------------------------------------------
 

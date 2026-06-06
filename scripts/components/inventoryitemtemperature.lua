@@ -11,13 +11,13 @@ local function ontemperature(self, temp)
     self._replica:SetTemperature(temp)
 end
 
-local function onmintemp(self, mintemp)
-    self._replica:SetMinTemperature(mintemp)
-end
+-- local function onmintemp(self, mintemp)
+--     self._replica:SetMinTemperature(mintemp)
+-- end
 
-local function onmaxtemp(self, maxtemp)
-    self._replica:SetMaxTemperature(maxtemp)
-end
+-- local function onmaxtemp(self, maxtemp)
+--     self._replica:SetMaxTemperature(maxtemp)
+-- end
 
 local function DoUpdate(inst)
 	local self = inst.components.inventoryitemtemperature
@@ -27,7 +27,8 @@ local function DoUpdate(inst)
         self.initialtemperatureupdatedelay = nil
     end
 	local nextdt = self:UpdateTemperature(dt) and UPDATE_TIME or SLOW_UPDATE_TIME
-	if dt ~= nextdt then
+    -- The entity could become invalid from UpdateTemperature, if something external deleted it from the temperaturedelta event
+	if dt ~= nextdt and inst:IsValid() then
 		self.temperatureupdatetask:Cancel()
 		self.temperatureupdatetask = inst:DoPeriodicTask(nextdt, DoUpdate)
 	end
@@ -37,15 +38,15 @@ local InventoryItemTemperature = Class(function(self, inst)
     self.inst = inst
 
     self._replica = nil
-    --Don't initialize .temperature, .mintemp, .maxtemp, .maxmoisturepenalty until we have a link to inventoryitem replica
+    --Don't initialize .temperature, .mintemp, .maxtemp, .maxmoisturepenalty, self.save_min_and_max_temp until we have a link to inventoryitem replica
 
     inst:AddTag("inventoryitemtemperature")
 end,
 nil,
 {
     temperature = ontemperature,
-	mintemp = onmintemp,
-	maxtemp = onmaxtemp,
+	-- mintemp = onmintemp,
+	-- maxtemp = onmaxtemp,
 })
 
 --Used internally by inventoryitem component
@@ -55,6 +56,7 @@ function InventoryItemTemperature:AttachReplica(replica)
     self.maxtemp = TUNING.MAX_ENTITY_TEMP
     self.mintemp = TUNING.MIN_ENTITY_TEMP
     self.maxmoisturepenalty = TUNING.MOISTURE_TEMP_PENALTY
+    --self.save_min_and_max_temp = nil
     --Cached update values
     self.totalmodifiers = 0
 end
@@ -274,11 +276,22 @@ function InventoryItemTemperature:UpdateTemperature(dt)
 end
 
 function InventoryItemTemperature:OnSave()
-	return { temperature = self.temperature }
+    local data = { temperature = self.temperature }
+    if self.save_min_and_max_temp then
+        data.mintemp = self.mintemp
+        data.maxtemp = self.maxtemp
+    end
+	return data
 end
 
 function InventoryItemTemperature:OnLoad(data)
     if data ~= nil then
+        if data.mintemp ~= nil then
+            self:SetMinTemperature(data.mintemp)
+        end
+        if data.maxtemp ~= nil then
+            self:SetMaxTemperature(data.maxtemp)
+        end
 		self:SetTemperature(data.temperature)
     end
 end

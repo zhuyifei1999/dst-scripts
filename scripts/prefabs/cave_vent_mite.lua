@@ -182,7 +182,7 @@ local function fn()
     inst:SetBrain(brain)
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddRandomLoot("monstermeat", 2)
+    inst.components.lootdropper:AddRandomLoot("monstermeat", 1)
     inst.components.lootdropper:AddRandomLoot("mitegland", 1)
     inst.components.lootdropper.numrandomloot = 1
 

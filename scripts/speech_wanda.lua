@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "It chases off the shadows. Good.",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "I don't remember them being so helpful.",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "My protection against burning has expired.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Looks like I have a follower. Try to keep up.", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Do we really need a reminder of this?",
         CHESSPIECE_WAGBOSS_LUNAR = "Can't we just leave this monstrosity in the past?",
         CHESSPIECE_YOTH = "I have mixed emotions about this one.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "I'll not soon forget this brute.",
 
         CHESSJUNK1 = "I don't see much in the way of proper clockwork in there.",
         CHESSJUNK2 = "I have a suspicion these were held together with more magic than craftsmanship.",
@@ -6195,11 +6197,19 @@ return{
             HOT = "You wouldn't catch me walking over that.", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "A quick application couldn't hurt.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "A quick application couldn't hurt.",
 
 		VAULT_PILLAR_GUARD = "Oh botheration. I knew I was forgetting something important.",
+		VAULT_PILLAR_GUARD_CRAFTED = "Most of the time it just stands around.",
 		VAULT_PILLAR_GUARD_DORMANT = "There's something about these...",
-		VAULT_CRAWLER = "Wait a tick... you might be just what I need to solve this!",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "I remember! it needs a power source.",
+		VAULT_PILLAR_GUARD_CONSTR = "What else am I forgetting?",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Where did I leave this last time?",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Wait a tick... you might be just what I need to solve this!",
+			SOCKETED = "Got it!",
+		},
 
         VAULT_DECON_DOOR = "A bit claustrophobic, isn't it?",
         VAULT_DECON_MISTER = "Quite a handy device. I wonder if it would be possible to build a portable version.",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "I never thought I'd see this again.", -- Keystone is on it, ready to take
             PICKED = "Now we've done it.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What were these for again?",
-        VAULT_ORB_REFINED = "Ah yes, shortcuts.",
+        VAULT_ORB_REFINED = "I remember these... shortcuts.",
+        VAULT_PILLAR_GUARD_PIECE = "This is what makes it tick.",
+        VAULT_REFINER_PEDESTAL = "Time to put it to work.",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "Always prudent to have a way back.",
+        VAULT_KEY_EXIT = "I can't tie a rope here.",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

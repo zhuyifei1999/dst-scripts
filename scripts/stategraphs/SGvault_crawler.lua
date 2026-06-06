@@ -3,6 +3,8 @@ require("stategraphs/commonstates")
 local events =
 {
 	CommonHandlers.OnLocomote(false, true),
+	CommonHandlers.OnSink(),
+	CommonHandlers.OnFallInVoid(),
 	--CommonHandlers.OnFreezeEx(),
 	EventHandler("minhealth", function(inst, data)
 		if not inst.sg:HasAnyStateTag("hiding", "hide_pre") then
@@ -181,9 +183,7 @@ end
 local function TossItems(inst, radius)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + WORK_RADIUS_PADDING, TOSSITEM_MUST_TAGS, TOSSITEM_CANT_TAGS)) do
-		if v.components.mine then
-			v.components.mine:Deactivate()
-		end
+		DeactivateInventoryItemBeforeLaunch(v)
 		if not v.components.inventoryitem.nobounce and v.Physics and v.Physics:IsActive() then
 			TossLaunch(v, inst, radius * 0.4, 0.5, radius)
 		end
@@ -236,9 +236,11 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(21, function(inst) inst.SoundEmitter: PlaySound("dontstarve/common/together/electricity/light") end),
-			FrameEvent(26, function(inst) inst.SoundEmitter: PlaySound("dontstarve/common/together/electricity/electrocute_sml_longer") end),
-			FrameEvent(38, function(inst) inst.SoundEmitter: PlaySound("rifts7/vault_crawler/voice_spawn") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/turtillus/shell_impact") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/movement/foley/thud") end),
+			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/electricity/light") end),
+			FrameEvent(26, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/electricity/electrocute_sml_longer") end),
+			FrameEvent(38, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/voice_spawn") end),
 
 			FrameEvent(41, function(inst)
 				inst.sg:RemoveStateTag("hiding")
@@ -285,8 +287,8 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter: PlaySound("dontstarve/creatures/lava_arena/turtillus/shell_impactXXXX", nil, 0.6) end),
-			FrameEvent(0, function(inst) inst.SoundEmitter: PlaySound("dontstarve/common/together/electricity/light") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/turtillus/shell_impact", nil, 0.6) end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/electricity/light") end),
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/voice_hit") end),
 
 			FrameEvent(14, function(inst)
@@ -431,7 +433,7 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/voice_attack") end),
 			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/spiderqueen/swipe", nil, 0.5) end),
-			FrameEvent(13, function(inst) inst.SoundEmitter: PlaySound("dontstarve/common/together/electricity/light") end),
+			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/electricity/light") end),
 
 			FrameEvent(7, function(inst)
 				inst.sg.statemem.tracking = false
@@ -490,7 +492,6 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/hide") end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/voice_hide_pre") end),
 
 			FrameEvent(20, function(inst)
@@ -537,7 +538,7 @@ local states =
 			SetHidingMass(inst, true)
 			SetHidingRadius(inst, true)
 			EnablePushing(inst, true)
-			inst.sg:SetTimeout(3)
+			inst.sg:SetTimeout(6)
 		end,
 
 		ontimeout = function(inst)
@@ -677,7 +678,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter: PlaySound("dontstarve/creatures/lava_arena/turtillus/shell_impactXXXX", nil, 0.8) end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/turtillus/shell_impactXXXX", nil, 0.8) end),
 
 			FrameEvent(6, function(inst)
 				inst.sg:AddStateTag("caninterrupt")
@@ -725,7 +726,7 @@ local states =
 
 			FrameEvent(10, function(inst)
 				inst.sg:RemoveStateTag("hiding")
-				inst.components.health:SetPercent(0.75)
+				inst.components.health:SetPercent(0.5)
 				SetHidingMass(inst, false)
 				SetHidingRadius(inst, false)
 			end),
@@ -751,7 +752,7 @@ local states =
 			if not inst.sg.statemem.hiding then
 				inst.components.health:SetAbsorptionAmount(0)
 				if inst.sg:HasStateTag("hiding") then
-					inst.components.health:SetPercent(0.75)
+					inst.components.health:SetPercent(0.5)
 					SetHidingMass(inst, false)
 					SetHidingRadius(inst, false)
 				end
@@ -784,6 +785,9 @@ CommonStates.AddWalkStates(states,
 		FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts7/vault_crawler/footstep") end),
 	},
 })
+
+CommonStates.AddSinkAndWashAshoreStates(states, { washashore = "hit" })
+CommonStates.AddVoidFallStates(states, { voiddrop = "hit" })
 --CommonStates.AddFrozenStates(states, SwitchToNoFaced, SwitchToFourFaced)
 
 return StateGraph("vault_crawler", states, events, "idle")

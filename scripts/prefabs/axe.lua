@@ -139,6 +139,7 @@ local GOLD_DATA =
     bank = "goldenaxe",
     build = "goldenaxe",
     swap_build = "swap_goldenaxe",
+    sym_name = "swap_goldenaxe",
 }
 
 local function PlayGoldSound(inst, data)
@@ -172,6 +173,7 @@ local GLASS_DATA =
     bank = "glassaxe",
     build = "glassaxe",
     swap_build = "swap_glassaxe",
+    sym_name = "swap_glassaxe",
 }
 
 local function glass_master_postinit(inst)

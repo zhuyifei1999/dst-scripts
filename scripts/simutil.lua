@@ -41,6 +41,7 @@ function FindEntity(inst, radius, fn, musttags, canttags, mustoneoftags)
     end
 end
 
+--V2C: why does this exist? TheSim:FindEntities already returns sorted by distance
 function FindClosestEntity(inst, radius, ignoreheight, musttags, canttags, mustoneoftags, fn)
     if inst ~= nil and inst:IsValid() then
         local x, y, z = inst.Transform:GetWorldPosition()

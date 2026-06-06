@@ -39,6 +39,8 @@ local prefabs =
     "vault_sanity_adjuster_alwaysincreasing",
     "vault_sanity_adjuster_alwaysdecreasing",
     "vault_key",
+	"vault_key_trial",
+	"vault_security_desk",
 }
 
 local function UpdateNetvars(inst)

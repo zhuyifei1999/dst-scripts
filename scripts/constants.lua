@@ -1012,9 +1012,17 @@ FESTIVAL_EVENT_MUSIC =
 
 DEFAULT_FE_MUSIC =
 {
+	bank = "music_frontend_rifts7.fsb",
+	sound = "dontstarve/music/music_FE_rifts7",
+
 	--bank = "music_frontend_WX.fsb",
-	bank = "music_frontend.fsb",
-	sound = "dontstarve/music/music_FE_cavepuzzle",
+	--sound = "dontstarve/music/music_FE_WX",
+
+	--bank = "music.fsb",
+	--sound = "dontstarve/music/music_epicfight_eot",
+
+	--bank = "music_frontend.fsb",
+	--sound = "dontstarve/music/music_FE_cavepuzzle",
 	--sound = "dontstarve/music/music_FE_cavepuzzle",
 	--sound = "dontstarve/music/music_FE_wagboss",
 	--sound = "dontstarve/music/music_FE_balatro",
@@ -1031,11 +1039,9 @@ DEFAULT_FE_MUSIC =
 	--sound = "dontstarve/music/music_FE_wickerbottom",
 	--sound = "dontstarve/music/music_FE",
 	--sound = "dontstarve/music/music_FE_pirates",
-	--sound = "dontstarve/music/music_FE_WX",
 	--sound = "dontstarve/music/music__moonstorm_FE",
 	--sound = "dontstarve/music/musicFE_webber",
 	--sound = "dontstarve/music/music_FE_wanda",
-	--sound = "terraria1/common/music_main_eot",
 	--sound = "dontstarve/music/music_FE",
 }
 
@@ -1325,6 +1331,8 @@ TECH =
 
     CARPENTRY_TWO = { CARPENTRY = 2 },
     CARPENTRY_THREE = { CARPENTRY = 3 },
+
+    VAULT_REFINE_ONE = { VAULT_REFINE = 1 },
 }
 
 -- See cell_data.h

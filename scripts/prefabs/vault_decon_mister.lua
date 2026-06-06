@@ -37,6 +37,7 @@ local function StartMisting(inst)
     inst:RemoveEventCallback("animover", OnAnimOver_Misting)
     inst:ListenForEvent("animover", OnAnimOver_Misting)
     inst.AnimState:PlayAnimation("misting_activate")
+    inst.SoundEmitter:PlaySound("rifts7/mister/active_LP", "misting_lp")
     if not inst.mistfx then
         inst.mistfx = SpawnPrefab("vault_decon_mister_fx")
         inst.mistfx.entity:SetParent(inst.entity)
@@ -49,6 +50,8 @@ local function StopMisting(inst)
         inst.misttask = nil
     end
     inst:RemoveEventCallback("animover", OnAnimOver_Misting)
+    inst.SoundEmitter:KillSound("misting_lp")
+    inst.SoundEmitter:PlaySound("rifts7/mister/close")
     if inst.AnimState:IsCurrentAnimation("misting_activate") or inst.AnimState:IsCurrentAnimation("misting_loop") then
         inst.AnimState:PushAnimation("misting_deactivated")
         inst.AnimState:PushAnimation("misting_closed", true)

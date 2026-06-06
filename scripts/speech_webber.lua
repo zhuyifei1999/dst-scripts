@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "That spray tickles!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Aw, they're helping us!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "We'd better not play near fire anymore!",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Hey! It's following us!", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Can we keep it?",
         CHESSPIECE_WAGBOSS_LUNAR = "Yes! Three-legged space spider!",
         CHESSPIECE_YOTH = "Were we friends?",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "A toy tower!",
 
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
@@ -6195,11 +6197,19 @@ return{
             HOT = "The floor's lava!", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "We should remember to put a little extra on our nose.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "We should remember to put a little extra on our nose.",
 
 		VAULT_PILLAR_GUARD = "Aaah!! Don't squish us!",
+		VAULT_PILLAR_GUARD_CRAFTED = "Will you play with us?",
 		VAULT_PILLAR_GUARD_DORMANT = "So tall! Hope it doesn't fall on us!",
-		VAULT_CRAWLER = "Hey, you're not a real spider!",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "Why won't it turn on? What's missing?",
+		VAULT_PILLAR_GUARD_CONSTR = "We're building something fun!",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "We'll put it in the best spot!",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Hey, you're not a real spider!",
+			SOCKETED = "We did it!",
+		},
 
         VAULT_DECON_DOOR = "It's way too high for us to climb over.",
         VAULT_DECON_MISTER = "That was fun!",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "Can we take it?", -- Keystone is on it, ready to take
             PICKED = "It's gone!", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What do we do with that?",
         VAULT_ORB_REFINED = "Ooh we know a fun game with this.",
+        VAULT_PILLAR_GUARD_PIECE = "What does it do now?",
+        VAULT_REFINER_PEDESTAL = "What does it make? Toys?",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "We love climbing!",
+        VAULT_KEY_EXIT = "We can't climb out? Okay!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

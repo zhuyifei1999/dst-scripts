@@ -213,9 +213,7 @@ end
 
 --------------------------------------------------------------------------
 
-local halldef = {}
-
-halldef.TerraformRoomAtXZ = function(inst, x, z)
+local function hall_TerraformRoomAtXZ(inst, x, z)
 	local terraformer = Terraformer()
 	for row = -4, 4 do
 		for col = -4, 4 do
@@ -227,7 +225,7 @@ halldef.TerraformRoomAtXZ = function(inst, x, z)
 	terraformer:ApplyAtXZ(x, z)
 end
 
-halldef.LayoutNewRoomAtXZ = function(inst, x, z)
+local function hall_LayoutNewRoomAtXZ(inst, x, z, issecurity)
 	--variations
 	local seed = TheWorld.components.vaultroommanager and TheWorld.components.vaultroommanager:GetPRNGSeed() or hash(TheNet:GetSessionIdentifier())
 	local groundvar = bit.band(seed, 1) == 1
@@ -255,7 +253,7 @@ halldef.LayoutNewRoomAtXZ = function(inst, x, z)
 
 	--lights
 	if lightvar > 2 then
-		local r = 1 + math.random()
+		local r = issecurity and 2 or 1 + math.random()
 		local theta = math.random() * TWOPI
 		SpawnPrefab("vault_chandelier_broken").Transform:SetPosition(x + math.cos(theta) * r, 0, z - math.sin(theta) * r)
 		SpawnPrefab("vault_chandelier_decor"):SetVariation(math.random() < 0.5 and 1 or 3).Transform:SetPosition(x, 0, z)
@@ -263,22 +261,39 @@ halldef.LayoutNewRoomAtXZ = function(inst, x, z)
 		SpawnPrefab("vault_chandelier"):SetVariation(lightvar).Transform:SetPosition(x, 0, z)
 	end
 
-	--ground
-	local roomid = inst.components.vaultroom.roomid
-	if roomid then
-		local _, n = string.match(roomid, "^(hall)(%d+)")
-		roomid = tonumber(n)
-	end
-	if roomid then
-		if (roomid == 1 or roomid == 4 or roomid == 7) == groundvar then
+	if issecurity then
+		--spark
+		SpawnPrefab("vault_security_desk").Transform:SetPosition(x, 0, z)
+		SpawnPrefab("vault_ground_pattern_fx"):HideCenter():SetVariation(math.random(2)):SetOrientation(math.random(4)).Transform:SetPosition(x, 0, z)
+	else
+		--ground
+		local roomid = inst.components.vaultroom.roomid
+		if roomid then
+			local _, n = string.match(roomid, "^(hall)(%d+)")
+			roomid = tonumber(n)
+		end
+		if roomid then
+			if (roomid == 1 or roomid == 4 or roomid == 7) == groundvar then
+				SpawnPrefab("vault_ground_pattern_fx"):SetVariation(math.random(2)):SetOrientation(math.random(4)).Transform:SetPosition(x, 0, z)
+			end
+		elseif math.random() < 0.5 then
 			SpawnPrefab("vault_ground_pattern_fx"):SetVariation(math.random(2)):SetOrientation(math.random(4)).Transform:SetPosition(x, 0, z)
 		end
-	elseif math.random() < 0.5 then
-		SpawnPrefab("vault_ground_pattern_fx"):SetVariation(math.random(2)):SetOrientation(math.random(4)).Transform:SetPosition(x, 0, z)
 	end
 end
 
-for i = 1, 7 do
+local halldef = {}
+local securityhalldef = {}
+halldef.TerraformRoomAtXZ = hall_TerraformRoomAtXZ
+securityhalldef.TerraformRoomAtXZ = hall_TerraformRoomAtXZ
+halldef.LayoutNewRoomAtXZ = function(inst, x, z) hall_LayoutNewRoomAtXZ(inst, x, z, false) end
+securityhalldef.LayoutNewRoomAtXZ = function(inst, x, z) hall_LayoutNewRoomAtXZ(inst, x, z, true) end
+
+--NOTE: hall4 is not used in the current map version
+for i = 1, 3 do
+	defs["hall"..tostring(i)] = securityhalldef
+end
+for i = 4, 7 do
 	defs["hall"..tostring(i)] = halldef
 end
 
@@ -715,7 +730,11 @@ end
 defs.generator1.LayoutNewRoomAtXZ = function(inst, x, z)
 	--switch
 	SpawnPrefab("vault_switch_base").Transform:SetPosition(x, 0, z)
-	SpawnPrefab("vault_compass").Transform:SetPosition(x - 1.5 * TILE_SCALE, 0, z + 0.5 * TILE_SCALE)
+
+	--spark
+	SpawnPrefab("vault_security_desk").Transform:SetPosition(x + 2 * TILE_SCALE, 0, z - 1 * TILE_SCALE)
+	SpawnPrefab("vault_security_desk").Transform:SetPosition(x - 2 * TILE_SCALE, 0, z - 1 * TILE_SCALE)
+	SpawnPrefab("vault_compass").Transform:SetPosition(x + (math.random() < 0.5 and 1.5 or -1.5) * TILE_SCALE, 0, z - 0.75 * TILE_SCALE)
 
 	--variations
 	local lightvar = math.random(3)

@@ -195,12 +195,12 @@ function InventoryItem:EnableTemperature(enable)
     end
 end
 
-function InventoryItem:GetTemperature()
-    return self.inst.components.inventoryitemtemperature ~= nil and self.inst.components.inventoryitemtemperature.temperature or 0
+function InventoryItem:GetTemperature() -- Purposefully defaulting to nil
+    return self.inst.components.inventoryitemtemperature ~= nil and self.inst.components.inventoryitemtemperature.temperature or nil
 end
 
-function InventoryItem:GetTemperaturePercent()
-    return self.inst.components.inventoryitemtemperature ~= nil and self.inst.components.inventoryitemtemperature:GetPercent() or 0
+function InventoryItem:GetTemperaturePercent() -- Purposefully defaulting to nil
+    return self.inst.components.inventoryitemtemperature ~= nil and self.inst.components.inventoryitemtemperature:GetPercent() or nil
 end
 
 function InventoryItem:GetMinTemperature()
@@ -226,6 +226,12 @@ end
 function InventoryItem:SetMaxTemperature(temp)
     if self.inst.components.inventoryitemtemperature ~= nil then
         self.inst.components.inventoryitemtemperature:SetMaxTemperature(temp)
+    end
+end
+
+function InventoryItem:SetSaveMinAndMaxTemperature(boolval)
+    if self.inst.components.inventoryitemtemperature ~= nil then
+        self.inst.components.inventoryitemtemperature.save_min_and_max_temp = boolval or nil
     end
 end
 

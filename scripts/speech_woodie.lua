@@ -1252,6 +1252,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Clears the head and opens up the pores!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "You see that, Luce? They're helping!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Is it gettin' warm in here? Might be time for another dose of that balm.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "It's following us, Luce!", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2189,6 +2190,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Remember when it tried to kill us, Luce?",
         CHESSPIECE_WAGBOSS_LUNAR = "That was a bad one... and weird.",
         CHESSPIECE_YOTH = "It could be really mean when it wanted to be.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Kinda sad now, eh?",
 
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
@@ -6196,11 +6198,19 @@ return{
             HOT = "I wouldn't wanna be the unlucky hoser who steps on that.", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "If you can't stand the heat, put on some weird bug cream, eh?", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "If you can't stand the heat, put on some weird bug cream, eh?",
 
 		VAULT_PILLAR_GUARD = "A big stone hoser.",
+		VAULT_PILLAR_GUARD_CRAFTED = "I'm glad it's friendly.",
 		VAULT_PILLAR_GUARD_DORMANT = "No, Luce. I don't think you could.",
-		VAULT_CRAWLER = "You're not just here to bug me, eh?",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It needs some sort of energy, Luce.",
+		VAULT_PILLAR_GUARD_CONSTR = "It needs work, Luce.",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Where shall we put it, Luce?",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "You're not just here to bug me, eh?",
+			SOCKETED = "And stay there!",
+		},
 
         VAULT_DECON_DOOR = "I don't like feelin' penned in.",
         VAULT_DECON_MISTER = "Reminds me a bit of a sweat lodge.",
@@ -6212,8 +6222,9 @@ return{
             GENERIC = "It's there for the taking.", -- Keystone is on it, ready to take
             PICKED = "It's gone.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "Wonder what we do with that?",
         VAULT_ORB_REFINED = "It sure cleans up nicely.",
+        VAULT_PILLAR_GUARD_PIECE = "Good as new.",
+        VAULT_REFINER_PEDESTAL = "I'm sure it's not a table saw.",
 
         VAULT_COMPASS =
         {
@@ -6223,6 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "That's a nice climbing rope.",
+        VAULT_KEY_EXIT = "Can't tie a rope here, eh?",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

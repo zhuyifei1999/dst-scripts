@@ -429,6 +429,8 @@ self.inst:ListenForEvent("ms_register_vault_lobby_exit_target", function(inst, e
 self.inst:ListenForEvent("arhivepoweron", function(inst) self:OnArchivesPowered(true) end, _world)
 self.inst:ListenForEvent("arhivepoweroff", function(inst) self:OnArchivesPowered(false) end, _world)
 self.inst:ListenForEvent("resetvault", function(inst) self:ResetVault() end, _world)
+self.inst:ListenForEvent("ms_register_vault_key_exit", function(inst, ent) self:OnVaultKeyExitCreated(ent) end, _world)
+self.inst:ListenForEvent("ms_register_vault_key_exit_target", function(inst, ent) self:OnVaultKeyExitTargetCreated(ent) end, _world)
 
 function self:OnArchivesPowered(powered)
     self.archivespowered = powered or nil
@@ -471,6 +473,42 @@ function self:OnVaultLobbyExitTargetCreated(ent)
     self:TryToLinkLobbyExit()
 end
 
+function self:TryToBreakKeyExit()
+    if self.keyexit then
+        self.keyexit:SetExitTarget(nil)
+    end
+end
+function self:TryToLinkKeyExit()
+    if self.keyexit and self.keyexittarget then
+        self.keyexit:SetExitTarget(self.keyexittarget)
+    end
+end
+function self:OnVaultKeyExitCreated(ent)
+    if self.keyexit then
+        self.keyexit:Remove()
+    end
+    self.keyexit = ent
+    ent:ListenForEvent("onremove", function()
+        self.keyexit = nil
+        self:TryToBreakKeyExit()
+    end)
+    self:TryToLinkKeyExit()
+end
+function self:OnVaultKeyExitTargetCreated(ent)
+    if self.keyexittarget then
+        self.keyexittarget:Remove()
+    end
+    self.keyexittarget = ent
+    ent:ListenForEvent("onremove", function()
+        self.keyexittarget = nil
+        self:TryToBreakKeyExit()
+    end)
+    self:TryToLinkKeyExit()
+end
+
+function self:GetVaultLobbyExitTarget()
+    return self.lobbyexittarget
+end
 
 function self:GetVaultCenterMarker()
     return self.markers["vaultmarker_vault_center"]

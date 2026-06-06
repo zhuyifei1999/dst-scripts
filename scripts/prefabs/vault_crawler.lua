@@ -169,6 +169,10 @@ local function OnLoadPostPass(inst, ents, data)
 	end
 end
 
+local function GetStatus(inst)--, viewer)
+	return inst.sg == nil and "SOCKETED" or nil
+end
+
 local HIGHLIGHT_OVERRIDE = { 0.09, 0.09, 0.09 }
 local function fn()
 	local inst = CreateEntity()
@@ -186,10 +190,6 @@ local function fn()
 	inst:AddTag("mech")
 	inst:AddTag("electricdamageimmune")
 	inst:AddTag("vault_crawler")
-
-	if CRAWLER_TAGS == nil then
-		CRAWLER_TAGS = { "vault_crawler" }
-	end
 
 	inst.DynamicShadow:SetSize(2.5, 1.5)
 
@@ -222,6 +222,7 @@ local function fn()
 	end
 
 	inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = GetStatus
 
 	inst:AddComponent("locomotor")
 	inst.components.locomotor.walkspeed = TUNING.VAULT_CRAWLER_SPEED
@@ -241,6 +242,8 @@ local function fn()
 	inst.components.combat:SetRetargetFunction(3, RetargetFn)
 	inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
 
+	inst:AddComponent("drownable")
+
 	inst:AddComponent("damagetypebonus")
 	inst:AddComponent("damagetyperesist")
 
@@ -253,6 +256,9 @@ local function fn()
 	--MakeMediumFreezableCharacter(inst, "body")
 	MakeHauntable(inst)
 
+	if CRAWLER_TAGS == nil then
+		CRAWLER_TAGS = { "vault_crawler" }
+	end
 	inst:ListenForEvent("attacked", OnAttacked)
 
 	inst:SetStateGraph("SGvault_crawler")
@@ -515,6 +521,9 @@ end
 
 local function socket_OnLoadPostPass(inst, ents, data)
 	if data and data.socketed and not inst.issocketed:value() then
+		if CRAWLER_TAGS == nil then
+			CRAWLER_TAGS = { "vault_crawler" }
+		end
 		local crawler = FindEntity(inst, 0.2, nil, CRAWLER_TAGS)
 		if crawler then
 			crawler:SetSocketed(inst)
@@ -567,6 +576,8 @@ local function socketfn()
 
 		return inst
 	end
+
+	inst.scrapbook_anim = "plate_open_back"
 
 	inst.SetSocketRadius = socket_SetSocketRadius
 	inst.SetIsSocketed = socket_SetIsSocketed

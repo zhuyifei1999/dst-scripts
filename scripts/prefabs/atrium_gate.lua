@@ -484,6 +484,7 @@ end
 
 local function OnSave(inst, data)
     data.vault_key_socketed = inst:IsVaultKeySocketed()
+    data.can_spawn_charlie_hand_keystone = inst.can_spawn_charlie_hand_keystone
     if inst._launchkeytask ~= nil then
         data.launch_key = true
     end
@@ -493,6 +494,9 @@ local function OnLoad(inst, data)
     if data ~= nil then
         if data.vault_key_socketed then
             inst:SocketVaultKey()
+        end
+        if data.can_spawn_charlie_hand_keystone then
+            inst.can_spawn_charlie_hand_keystone = data.can_spawn_charlie_hand_keystone
         end
         if data.launch_key then
             local key = SpawnPrefab("atrium_key")
@@ -559,7 +563,7 @@ end
 
 local function UpdateCharlieHandKeyStone(inst)
     local charliehand = inst.components.entitytracker:GetEntity("charlie_hand")
-    local canspawn = inst.components.charliecutscene:IsGateRepaired() and not inst:IsVaultKeySocketed()
+    local canspawn = inst.can_spawn_charlie_hand_keystone and inst.components.charliecutscene:IsGateRepaired() and not inst:IsVaultKeySocketed()
 
     if charliehand == nil and canspawn then
         local keystone = FindKeyStone(inst)
@@ -804,13 +808,16 @@ local function fn()
             --IsAtriumDecay means "killed" to reset the fight (off-screen, or moved too far away from gate)
             Destabilize(inst, stalker:IsAtriumDecay())
 
-            if not stalker:IsAtriumDecay() and
-                TUNING.SPAWN_RIFTS == 1 and 
-                not inst.components.entitytracker:GetEntity("charlie_hand") and
-                TheWorld.components.riftspawner ~= nil and
-                not TheWorld.components.riftspawner:GetShadowRiftsEnabled()
+            if not stalker:IsAtriumDecay()
+                and not inst.components.entitytracker:GetEntity("charlie_hand")
             then
-                inst.components.charliecutscene:SpawnCharlieHand()
+                -- TODO #FIXME charlie hand keystone spawns after killing fuelweaver again for now.
+                inst.can_spawn_charlie_hand_keystone = true
+                if TUNING.SPAWN_RIFTS == 1
+                    and TheWorld.components.riftspawner ~= nil and
+                    not TheWorld.components.riftspawner:GetShadowRiftsEnabled() then
+                    inst.components.charliecutscene:SpawnCharlieHand()
+                end
             end
         end
     end

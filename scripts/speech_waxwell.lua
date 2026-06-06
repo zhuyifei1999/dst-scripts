@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Ugh! It burns!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "They're here to help... I'm beginning to understand.",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "There goes my protection against the fire.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Ugh, are you going to follow me everywhere?", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "I loathe it.",
         CHESSPIECE_WAGBOSS_LUNAR = "It was a culmination of terrible decisions.",
         CHESSPIECE_YOTH = "Make up your mind! Friend or foe?",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Now who's afraid of getting crushed?",
 
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",
@@ -6195,11 +6197,19 @@ return{
             HOT = "Step right up, who wants to be raked over the coals?", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "My skin has always been prone to burning.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "My skin has always been prone to burning.",
 
 		VAULT_PILLAR_GUARD = "Oh goody. I should have known it wouldn't be so easy.",
+		VAULT_PILLAR_GUARD_CRAFTED = "Well, make yourself useful.",
 		VAULT_PILLAR_GUARD_DORMANT = "Lucky it's just an inanimate tower.",
-		VAULT_CRAWLER = "Hmph. I'll put you in your place.",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It won't wake up without power.",
+		VAULT_PILLAR_GUARD_CONSTR = "Why doesn't it come with all the parts?",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Hmm, where shall I place it?",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Hmph. I'll put you in your place.",
+			SOCKETED = "Don't you move!",
+		},
 
         VAULT_DECON_DOOR = "Impressive. I'm starting to see why our assistance was necessary...",
         VAULT_DECON_MISTER = "How troublesome.",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "No turning back now.", -- Keystone is on it, ready to take
             PICKED = "It's already been taken.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "I sense its magic.",
         VAULT_ORB_REFINED = "Those crafty old bugs...",
+        VAULT_PILLAR_GUARD_PIECE = "You'd better not turn on me!",
+        VAULT_REFINER_PEDESTAL = "It's powered by ancient magic.",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "Is it time to leave this accursed place?",
+        VAULT_KEY_EXIT = "Can't tie a rope? How exciting.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

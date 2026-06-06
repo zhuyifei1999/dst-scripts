@@ -1252,6 +1252,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Strange mist feels good on skin... and in head!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Creepy shadow things helping Wolfgang?",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Need more Thermal Balm!",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Aw, little spark ball follow Wolfgang!", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2189,6 +2190,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Machine guy kind of cute.",
         CHESSPIECE_WAGBOSS_LUNAR = "Wolfgang not understand what, how... and most of all, why.",
         CHESSPIECE_YOTH = "Tough little horsey.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "It is only little mighty now.",
 
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
@@ -6196,11 +6198,19 @@ return{
             HOT = "Is burny floor. Very bad for walking.", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "Keeps Wolgang's skin from burning!", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "Keeps Wolgang's skin from burning!",
 
 		VAULT_PILLAR_GUARD = "Wolfgang does not like ancient interior decorating.",
-		VAULT_PILLAR_GUARD_DORMANT = "Ancient pillar looks mighty.",
-		VAULT_CRAWLER = "Rock bug needs little push!",
+		VAULT_PILLAR_GUARD_CRAFTED = "But is it as mighty as Wolfgang? Of course not!",
+		VAULT_PILLAR_GUARD_DORMANT = "Ancient tower looks mighty.",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It need power source to become mighty!",
+		VAULT_PILLAR_GUARD_CONSTR = "Wolfgang can't wait!",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Wolfgang need good spot to put.",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Rock bug needs little push!",
+			SOCKETED = "You stay there, rock bug!",
+		},
 
         VAULT_DECON_DOOR = "Would be hard for even mighty Wolfgang to break down.",
         VAULT_DECON_MISTER = "Chases scary shadows away. Wolfgang like!",
@@ -6212,8 +6222,9 @@ return{
             GENERIC = "Time for Wolfgang to claim prize!", -- Keystone is on it, ready to take
             PICKED = "Nothing there for Wolfgang.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "Maybe Wolfgang find use for this.",
-        VAULT_ORB_REFINED = "So pretty and shiny now.",
+        VAULT_ORB_REFINED = "So pretty and shiny.",
+        VAULT_PILLAR_GUARD_PIECE = "Big brick guy's heart one piece again.",
+        VAULT_REFINER_PEDESTAL = "What will Wolfgang make here?",
 
         VAULT_COMPASS =
         {
@@ -6223,6 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "Wolfgang is mighty climber.",
+        VAULT_KEY_EXIT = "Nowhere for Wolfgang to tie rope!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

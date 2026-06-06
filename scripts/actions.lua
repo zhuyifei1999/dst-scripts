@@ -1620,11 +1620,12 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("gatebuilder") and "GATE") or
                 (act.invobject:HasTag("portableitem") and "PORTABLE") or
                 (act.invobject:HasTag("boatbuilder") and "WATER") or
+                (act.invobject:HasTag("trap_fumarole") and "HOT_ROCKS") or
+                (act.invobject:HasTag("trap") and "TURRET") or
                 (act.invobject:HasTag("deploykititem") and "TURRET") or
                 (act.invobject:HasTag("eyeturret") and "TURRET") or
                 (act.invobject:HasTag("fertilizer") and "FERTILIZE_GROUND") or
-                (act.invobject:HasTag("graveplanter") and "GRAVEPLANT") or
-                (act.invobject:HasTag("trap_fumarole") and "HOT_ROCKS")    )
+                (act.invobject:HasTag("graveplanter") and "GRAVEPLANT")  )
         or nil
 end
 
@@ -6730,6 +6731,8 @@ ACTIONS.MAPSCOUT_MAP.maponly_checkvalidpos_fn = function(act)
 		return false
 	elseif not (act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("wx78_scoutdrone_1")) then
 		return false
+    elseif not act.target.GetDroneRange then
+        return false
 	end
 
 	local x, y, z = act:GetActionPoint():Get()

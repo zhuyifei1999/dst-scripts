@@ -14,6 +14,7 @@ local function ExtendWall(inst, instantly)
     if instantly or inst:IsAsleep() then
         inst.AnimState:PlayAnimation("idle", true)
     else
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.6)
         inst.AnimState:PlayAnimation("activate")
         inst.AnimState:PushAnimation("idle", true)
     end
@@ -29,6 +30,7 @@ local function RetractWall(inst, instantly)
     if instantly or inst:IsAsleep() then
         inst.AnimState:PlayAnimation("idle_off", true)
     else
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.6)
         inst.AnimState:PlayAnimation("deactivated")
         inst.AnimState:PushAnimation("idle_off", true)
     end
@@ -62,6 +64,8 @@ local function fn()
         inst.OnEntityReplicated = OnEntityReplicated
         return inst
     end
+
+    inst.scrapbook_anim = "scrapbook"
 
     inst.persists = false -- This is a visual.
 

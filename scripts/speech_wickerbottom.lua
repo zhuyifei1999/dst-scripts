@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Ah... my mind feels clearer, somehow.",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "It would seem we are aligned with the shadowy beasts against a common foe.",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "It would seem I am vulnerable to the flames once more.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "It is attracted to this device.", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "A miniature of the homicidal automaton. Hm.",
         CHESSPIECE_WAGBOSS_LUNAR = "This dreadful amalgamation was unprecedented.",
         CHESSPIECE_YOTH = "This mechanical knight demonstrates loyalty to whomever dons the garb of its charge.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "It proved a marvel of ancient architecture.",
 
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
@@ -6195,11 +6197,19 @@ return{
             HOT = "Stepping on that would be quite detrimental to one's health.", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "It should provide adequate insulation against high temperatures.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "It should provide adequate insulation against high temperatures.",
 
 		VAULT_PILLAR_GUARD = "Goodness, it appears I've activated an ancient security mechanism.",
+		VAULT_PILLAR_GUARD_CRAFTED = "It will guard the surrounding area.",
 		VAULT_PILLAR_GUARD_DORMANT = "At first glance, it appears little more than an ornate pillar.",
-		VAULT_CRAWLER = "Ah! I believe the solution to my quandary has presented itself.",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It clearly requires an energy source.",
+		VAULT_PILLAR_GUARD_CONSTR = "Some materials are still outstanding.",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "One must be strategic in its placement.",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Ah! I believe the solution to my quandary has presented itself.",
+			SOCKETED = "A perfect fit, naturally.",
+		},
 
         VAULT_DECON_DOOR = "These walls must have been constructed with utmost care to remain in such pristine condition.",
         VAULT_DECON_MISTER = "It seems designed to expel contaminants from the area.",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "The measures employed to contain it suggest the key is of no small importaince.", -- Keystone is on it, ready to take
             PICKED = "The key has been taken.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "It thrums with energy.",
         VAULT_ORB_REFINED = "The ancients tapped the orbs power for teleportation.",
+        VAULT_PILLAR_GUARD_PIECE = "This is obviously the heart of the ancient security tower.",
+        VAULT_REFINER_PEDESTAL = "A mill of sorts employed by the ancients.",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "A tried and true means of escape.",
+        VAULT_KEY_EXIT = "Since there is no place to tie a rope, one may not climb back up.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

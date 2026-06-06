@@ -36,7 +36,7 @@ local function OnDepositSpark(inst, spark)
 		inst.AnimState:PlayAnimation("activator_on")
 		inst.Light:Enable(true)
 		inst:DoTaskInTime(24 * FRAMES, DisableLight)
-		inst.SoundEmitter:PlaySound("rifts7/plate/activate")
+		inst.SoundEmitter:PlaySound("rifts7/vault_pedestal/activate")
 		inst:AddTag("NOCLICK")
 		inst:RemoveTag("security_powerpoint")
 		inst.plate:OnDepositSpark()
@@ -66,10 +66,10 @@ local function fn()
 
 	inst:SetPhysicsRadiusOverride(ACTIVATOR_PHYS_RAD)
 
-	inst.Light:SetFalloff(0.7)
+	inst.Light:SetFalloff(0.8)
 	inst.Light:SetIntensity(0.5)
-	inst.Light:SetRadius(1)
-	inst.Light:SetColour(237/255, 237/255, 209/255)
+	inst.Light:SetRadius(5)
+	inst.Light:SetColour(186/255, 234/255, 255/255)
 	inst.Light:Enable(false)
 
 	inst.AnimState:SetBank("vault_activator")
@@ -92,6 +92,7 @@ local function fn()
 	inst:ListenForEvent("ms_depositspark", OnDepositSpark)
 	inst:ListenForEvent("possess", OnPossessed)
 
+	inst.pulse_findrange = 6
 	inst.persists = false
 
 	return inst
@@ -209,28 +210,49 @@ end
 
 --------------------------------------------------------------------------
 
+local function OnKeyTakenAnimOver(inst)
+	inst.plate:OpenPlate("vault_refiner_pedestal")
+end
+
 local function pedestal_OnKeyTaken(inst)
-    inst.Light:Enable(false)
-	inst.AnimState:PlayAnimation("pedestal_idle_nokey")
+	inst.OnEntityWake = nil
+	inst.AnimState:PlayAnimation("pedestal_disappear")
+	inst:ListenForEvent("animover", OnKeyTakenAnimOver)
+	inst:AddTag("NOCLICK")
+	inst.SoundEmitter:KillSound("loop")
+	inst.SoundEmitter:PlaySound("rifts7/vault_key_pedestal/deactivate")
 	inst.components.pickable.caninteractwith = false
 	inst.components.pickable.canbepicked = false -- for onload
 end
 
 local function pedestal_OnAppearAnimOver(inst)
 	inst:RemoveEventCallback("animover", pedestal_OnAppearAnimOver)
+	inst.OnEntityWake = nil
 	inst.AnimState:PlayAnimation("pedestal_idle_key", true)
 	inst:RemoveTag("NOCLICK")
+	inst.SoundEmitter:PlaySound("rifts7/vault_key_pedestal/idle_LP", "loop")
 end
 
-local function pedestal_EnableLight(inst)
-    inst.Light:Enable(true)
+local function pedestal_OnEntityWake(inst)
+	inst.OnEntityWake = nil
+	if inst.AnimState:IsCurrentAnimation("pedestal_appear") then
+		inst.SoundEmitter:PlaySound("rifts7/vault_key_pedestal/activate")
+	else
+		inst.SoundEmitter:PlaySound("rifts7/vault_key_pedestal/idle_LP", "loop")
+	end
 end
+
+local KEYLIGHT_RADIUS = 4.5
+local KEYLIGHT_INTENSITY = 0.7
+local KEYLIGHT_FALLOFF = 0.8
+local KEYLIGHT_COLOUR = RGB(180, 240, 255)
 
 local function pedestalfn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
     inst.entity:AddLight()
 	inst.entity:AddNetwork()
 
@@ -241,11 +263,11 @@ local function pedestalfn()
 	inst.AnimState:PlayAnimation("pedestal_appear")
 	inst.AnimState:SetFinalOffset(-1)
 
-    inst.Light:SetIntensity(.85)
-    inst.Light:SetRadius(2)
-    inst.Light:SetFalloff(.5)
+	inst.Light:SetRadius(KEYLIGHT_RADIUS)
+	inst.Light:SetIntensity(KEYLIGHT_INTENSITY)
+	inst.Light:SetFalloff(KEYLIGHT_FALLOFF)
+	inst.Light:SetColour(unpack(KEYLIGHT_COLOUR))
     inst.Light:Enable(true)
-    inst.Light:SetColour(112 / 255, 123 / 255, 243 / 255)
 
 	inst:AddTag("NOCLICK")
 	inst:AddTag("high_dolongaction")
@@ -255,6 +277,8 @@ local function pedestalfn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst.scrapbook_anim = "pedestal_idle_key"
 
 	inst:AddComponent("inspectable")
 
@@ -268,11 +292,125 @@ local function pedestalfn()
 	inst.persists = false
 
 	if POPULATING then
-		pedestal_OnAppearAnimOver(inst)
+		inst.AnimState:PlayAnimation("pedestal_idle_key", true)
+		inst:RemoveTag("NOCLICK")
 	else
-		inst.Light:Enable(false)
-		inst:DoTaskInTime(61 * FRAMES, pedestal_EnableLight)
 		inst:ListenForEvent("animover", pedestal_OnAppearAnimOver)
+	end
+	inst.OnEntityWake = pedestal_OnEntityWake
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+local function refiner_OnTurnOn(inst)
+	if inst._activetask == nil then
+    	if inst.AnimState:IsCurrentAnimation("refiner_proximity_loop")
+			or inst.AnimState:IsCurrentAnimation("use") then
+    	    inst.AnimState:PushAnimation("refiner_proximity_loop", true)
+    	else
+    	    inst.AnimState:PlayAnimation("refiner_proximity_loop", true)
+    	end
+
+    	if not inst.SoundEmitter:PlayingSound("loop_sound") then
+    	    inst.SoundEmitter:PlaySound("rifts7/refiner/proximity_lp", "loop_sound")
+    	end
+	end
+end
+
+local function refiner_OnTurnOff(inst)
+	if inst._activetask == nil then
+    	inst.AnimState:PushAnimation("refiner_idle", false)
+    	inst.SoundEmitter:KillSound("loop_sound")
+	end
+end
+
+local function refiner_DoneAct(inst)
+    inst._activetask = nil
+    if inst.components.prototyper.on then
+        inst.AnimState:PlayAnimation("refiner_proximity_loop", true)
+        if not inst.SoundEmitter:PlayingSound("loop_sound") then
+            inst.SoundEmitter:PlaySound("rifts7/refiner/proximity_lp", "loop_sound")
+        end
+    else
+		inst.AnimState:PushAnimation("refiner_idle")
+		inst.SoundEmitter:KillSound("loop_sound")
+    end
+end
+
+local function refiner_OnActivate(inst, doer, recipe)
+    inst.AnimState:PlayAnimation("refiner_use")
+    inst.SoundEmitter:PlaySound("rifts7/refiner/use")
+    if inst._activetask ~= nil then
+        inst._activetask:Cancel()
+    end
+    inst._activetask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), refiner_DoneAct)
+end
+
+local function refiner_OnAppearAnimOver(inst)
+	inst:AddTag("prototyper") -- Now it's active.
+	inst:RemoveEventCallback("animover", refiner_OnAppearAnimOver)
+	inst.OnEntityWake = nil
+	inst.AnimState:PlayAnimation("refiner_idle", true)
+	inst:RemoveTag("NOCLICK")
+end
+
+local function refiner_OnEntityWake(inst)
+	inst.OnEntityWake = nil
+	inst.SoundEmitter:PlaySound("rifts7/refiner/appear")
+end
+
+local function refinerpedestalfn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+    inst.entity:AddLight()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	inst:SetPhysicsRadiusOverride(PEDESTAL_PHYS_RAD)
+
+	inst.AnimState:SetBank("vault_key_pedestal")
+	inst.AnimState:SetBuild("vault_key_pedestal")
+	inst.AnimState:PlayAnimation("refiner_appear")
+	inst.AnimState:SetFinalOffset(-1)
+
+	inst.Light:SetRadius(KEYLIGHT_RADIUS)
+	inst.Light:SetIntensity(KEYLIGHT_INTENSITY)
+	inst.Light:SetFalloff(KEYLIGHT_FALLOFF)
+	inst.Light:SetColour(unpack(KEYLIGHT_COLOUR))
+    inst.Light:Enable(true)
+
+	inst:AddTag("NOCLICK")
+	inst:AddTag("high_dolongaction")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+    inst._activetask = nil
+	inst.scrapbook_anim = "refiner_idle"
+
+	inst:AddComponent("inspectable")
+
+	inst:AddComponent("prototyper")
+	inst.components.prototyper.onturnon = refiner_OnTurnOn
+	inst.components.prototyper.onturnoff = refiner_OnTurnOff
+	inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.VAULT_REFINER_PEDESTAL
+	inst.components.prototyper.onactivate = refiner_OnActivate
+	inst:RemoveTag("prototyper") -- Not active yet.
+
+	inst.persists = false
+
+	if POPULATING then
+		refiner_OnAppearAnimOver(inst)
+	else
+		inst:ListenForEvent("animover", refiner_OnAppearAnimOver)
+		inst.OnEntityWake = refiner_OnEntityWake
 	end
 
 	return inst
@@ -340,6 +478,7 @@ local function plate_OnOpenAnimOver(inst)
 	inst.Physics:SetActive(true)
 	plate_ShowFront(inst, true)
 	plate_SpawnOpenPrefab(inst)
+	LaunchArea(inst, inst.plateradius, 1, 0.75, 0.3, 0.5)
 end
 
 local function plate_Open(inst, prefab)
@@ -404,18 +543,24 @@ end
 
 local function plate_OnSave(inst, data)
 	data.gotspark = inst.gotspark
-	if inst.activator ~= nil and inst.activator.components.pickable ~= nil then
-		data.pedestal = true
+	if inst.activator ~= nil then
+		if inst.activator.components.pickable ~= nil then
+			data.pedestal = true
 
-		if not inst.activator.components.pickable:CanBePicked() then
-			data.pedestal_picked = true
+			if not inst.activator.components.pickable:CanBePicked() then
+				data.pedestal_picked = true
+			end
+		elseif inst.activator.components.prototyper ~= nil then
+			data.refiner = true
 		end
 	end
 end
 
 local function plate_OnLoad(inst, data, ents)
 	if data then
-		if data.pedestal then
+		if data.refiner then
+			inst:OpenPlate("vault_refiner_pedestal")
+		elseif data.pedestal then
 			inst:OpenPlate("vault_key_pedestal")
 			if data.pedestal_picked then
 				inst.activator:OnKeyTaken()
@@ -440,6 +585,7 @@ local function MakePlate(name, build, radius, assets, prefabs)
 
 		inst:SetDeploySmartRadius(radius + 0.15)
 		MakeSmallObstaclePhysics(inst, radius)
+		inst.plateradius = radius
 		inst.Physics:SetActive(false)
 
 		inst.build = build
@@ -488,5 +634,6 @@ end
 return Prefab("vault_key_activator", fn, assets),
 	Prefab("vault_crawler_lever", leverfn, assets),
 	Prefab("vault_key_pedestal", pedestalfn, assets_pedestal),
+	Prefab("vault_refiner_pedestal", refinerpedestalfn, assets_pedestal),
 	MakePlate("vault_key_activator_plate", "vault_activator", ACTIVATOR_PHYS_RAD, assets, prefabs),
 	MakePlate("vault_key_pedestal_plate", "vault_key_pedestal", PEDESTAL_PHYS_RAD, assets_pedestal, prefabs_pedestal)

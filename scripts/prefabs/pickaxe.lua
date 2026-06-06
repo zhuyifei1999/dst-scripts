@@ -128,6 +128,7 @@ local GOLD_DATA =
     bank = "goldenpickaxe",
     build = "goldenpickaxe",
     swap_build = "swap_goldenpickaxe",
+    sym_name = "swap_goldenpickaxe",
 }
 
 local function PlayGoldSound(inst, data)

@@ -260,6 +260,8 @@ local function KeyStone_ConstructionSite_OnConstructed(inst, doer)
             atrium.components.entitytracker:ForgetEntity("charlie_hand")
 
             -- atrium:SocketVaultKey(doer)
+
+            atrium.can_spawn_charlie_hand_keystone = false -- TODO #FIXME
             TheWorld:PushEvent("resetvault")
 
             -- atrium:DoTaskInTime(was_destabilizing and 2 or 0, inst.StartCutScene)

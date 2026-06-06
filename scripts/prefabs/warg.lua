@@ -241,9 +241,7 @@ local function TossItems(inst, x, z, minradius, maxradius)
         local dsq = dx * dx + dz * dz
         local range = GetRandomMinMax(minradius, maxradius) + v:GetPhysicsRadius(.5)
         if dsq < range * range and y1 < .2 then
-            if v.components.mine ~= nil then
-                v.components.mine:Deactivate()
-            end
+            DeactivateInventoryItemBeforeLaunch(v)
             if dsq > 0 then
                 range = range / math.sqrt(dsq)
                 x1 = x + dx * range

@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "It doth banish the shadows!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Lo! A dark warband doth come to mine aid!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Once again may the fire scorch mine mortal hide.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "It seemeth I have a new companion.", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "The iron golem was indeed misguided.",
         CHESSPIECE_WAGBOSS_LUNAR = "This tribute to the unhallowed giant is an abomination unto itself.",
         CHESSPIECE_YOTH = "This warrior's loyalty was as fleeting as the wind.",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Ah yes, the once towering golem!",
 
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
@@ -6195,11 +6197,19 @@ return{
             HOT = "Woe to the toes of all who pursue me!", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "A ward against flame. 'Tis also quite moisturizing for the skin.", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "A ward against flame. 'Tis also quite moisturizing for the skin.",
 
 		VAULT_PILLAR_GUARD = "Thine charge is a noble one, but I cannot let thee stand in my way!",
+		VAULT_PILLAR_GUARD_CRAFTED = "Stand watch, noble sentry!",
 		VAULT_PILLAR_GUARD_DORMANT = "A formidable structure.",
-		VAULT_CRAWLER = "Art thou my enemy, or my guiding light?",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It doth slumber 'til the spark of life be bestowed upon it!",
+		VAULT_PILLAR_GUARD_CONSTR = "It hath the makings of a formidable thing!",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Where shall I fortify mine defenses?",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Art thou my enemy, or my guiding light?",
+			SOCKETED = "Ha! Right on the mark!",
+		},
 
         VAULT_DECON_DOOR = "No barricade can contain me!",
         VAULT_DECON_MISTER = "Defenses against dark magicks.",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "'Tis my bounty to claim.", -- Keystone is on it, ready to take
             PICKED = "There is nought.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What foul magic lies within this fragment?",
         VAULT_ORB_REFINED = "'Tis a potent orb of old.",
+        VAULT_PILLAR_GUARD_PIECE = "Behold! The heart of the golem!",
+        VAULT_REFINER_PEDESTAL = "Though battle be my calling, I do not loathe the smith's craft.",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "With this, I shall make mine ascent!",
+        VAULT_KEY_EXIT = "Nowhere to anchor a rope? A true warrior needeth no second plan.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

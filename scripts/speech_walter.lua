@@ -1293,6 +1293,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Huh. Is it just me, or does the atmosphere in here feel lighter?",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "Wait a minute! They're helping us, Woby!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "I've got to be careful, Woby. My Thermal Balm has worn off.",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "We have a new buddy, Woby!", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2230,6 +2231,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "My very own model robot!",
         CHESSPIECE_WAGBOSS_LUNAR = "Like a robot possessed!",
         CHESSPIECE_YOTH = "It's a chess piece of a chess piece!",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Don't even think about it, Woby!",
 
         CHESSJUNK1 = "I don't think they're going to get up anytime soon.",
         CHESSJUNK2 = "I don't think they're going to get up anytime soon.",
@@ -6237,11 +6239,19 @@ return{
             HOT = "Watch out Woby, that's hot!", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "Can't be too careful when it comes to fire safety!", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "Can't be too careful when it comes to fire safety!",
 
 		VAULT_PILLAR_GUARD = "Wow! The pillar came to life!",
+		VAULT_PILLAR_GUARD_CRAFTED = "Whoa, big fella!",
 		VAULT_PILLAR_GUARD_DORMANT = "That sure is some neat architecture!",
-		VAULT_CRAWLER = "This would've made a great Midnight Broadcast episode! \"Attack of the subterranean spider-bots!\"",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It needs that glowing energy ball wake up, Woby!",
+		VAULT_PILLAR_GUARD_CONSTR = "Are you as excited as I am, Woby?",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "It'll be like setting up a tent, but it's a tower.",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "This would've made a great Midnight Broadcast episode! \"Attack of the subterranean spider-bots!\"",
+			SOCKETED = "It's a hole-in-one, Woby! Or is it one-in-a-hole?",
+		},
 
         VAULT_DECON_DOOR = "There's just gotta be something important inside!",
         VAULT_DECON_MISTER = "Excuse me, mister! Heh. Get it? Because it sprays that misty stuff!",
@@ -6253,8 +6263,9 @@ return{
             GENERIC = "It's so mysterious!", -- Keystone is on it, ready to take
             PICKED = "I sure that key wasn't cursed!", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "What do ya think that's for, Woby?",
         VAULT_ORB_REFINED = "Pinetree Pioneers don't normally take shortcuts, but this might come in handy.",
+        VAULT_PILLAR_GUARD_PIECE = "Before this, it was resting in pieces! Right, Woby?",
+        VAULT_REFINER_PEDESTAL = "What should we make, Woby?",
 
         VAULT_COMPASS =
         {
@@ -6264,6 +6275,7 @@ return{
         },
 
         CEILING_ROPE = "Good thing I have my climbing badge!",
+        VAULT_KEY_EXIT = "Looks like a one-way, Woby!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

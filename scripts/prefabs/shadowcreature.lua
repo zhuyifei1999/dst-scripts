@@ -19,7 +19,7 @@ local TARGET_DIST_SQ = TARGET_DIST * TARGET_DIST
 local VAULT_TARGET_MUST_TAGS = { "epic" }
 local VAULT_TARGET_CANT_TAGS = { "INLIMBO" }
 local function IsVaultTargetValid(guy, inst)
-    return guy.prefab == "vault_pillar_guard" and inst.components.combat:CanTarget(guy)
+	return guy:HasAllTag("vault_pillar_guard", "vault_key_trial_guardian") and inst.components.combat:CanTarget(guy)
 end
 
 local function retargetfn(inst)

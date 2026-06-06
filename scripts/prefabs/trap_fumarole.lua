@@ -4,6 +4,7 @@ local SourceModifierList = require("util/sourcemodifierlist")
 local assets =
 {
     Asset("ANIM", "anim/trap_fumarole.zip"),
+    Asset("ANIM", "anim/trap_fumarole_ground_fx.zip"),
     Asset("SCRIPT", "scripts/prefabs/trap_fumarole_util.lua"),
     Asset("MINIMAP_IMAGE", "trap_fumarole"),
 }
@@ -17,7 +18,7 @@ local prefabs =
 
 local assets_burn_fx =
 {
-	Asset("ANIM", "anim/wagboss_lunar_blast.zip"), -- TODO
+	Asset("ANIM", "anim/trap_fumarole_burn_fx.zip"),
 }
 
 local TrapFumaroleUtil = require("prefabs/trap_fumarole_util")
@@ -128,6 +129,62 @@ local function CanMouseThrough(inst) -- So that we can drop items on the hot roc
         and ThePlayer ~= nil and ThePlayer.replica.inventory ~= nil and ThePlayer.replica.inventory:GetActiveItem() ~= nil, true
 end
 
+local function hash_OnUpdate(inst, dt)
+    local delta = dt * inst.rate
+	if inst.targetalpha > inst.alpha then
+		inst.alpha = inst.alpha + delta
+		if inst.alpha >= inst.targetalpha then
+			inst.alpha = inst.targetalpha
+			inst:RemoveComponent("updatelooper")
+		end
+	else
+		inst.alpha = inst.alpha - delta
+		if inst.alpha <= inst.targetalpha then
+			inst.alpha = inst.targetalpha
+			inst:RemoveComponent("updatelooper")
+		end
+	end
+    inst.AnimState:SetMultColour(1, 1, 1, inst.alpha)
+    if inst.alpha == 0 then
+        inst:Remove()
+    end
+end
+
+local function hash_SetTargetAlpha(inst, targetalpha)
+    inst.targetalpha = targetalpha
+    if inst.targetalpha ~= inst.alpha and inst.components.updatelooper == nil then
+        inst:AddComponent("updatelooper")
+        inst.components.updatelooper:AddOnUpdateFn(hash_OnUpdate)
+    end
+end
+
+local function CreateHash()
+    local inst = CreateEntity()
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("trap_fumarole_ground_fx")
+    inst.AnimState:SetBuild("trap_fumarole_ground_fx")
+    inst.AnimState:PlayAnimation("ember"..math.random(4).."_ground")
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetMultColour(1, 1, 1, 0)
+
+    inst:AddTag("DECOR")
+    inst:AddTag("NOCLICK")
+
+    inst.rate = .16 + math.random() * 0.16
+    inst.targetalpha = 0
+    inst.alpha = 0
+    inst.SetTargetAlpha = hash_SetTargetAlpha
+
+    return inst
+end
+
 local function CreateRock(isplacer)
 	local inst = CreateEntity()
 
@@ -150,7 +207,7 @@ local function CreateRock(isplacer)
 	return inst
 end
 
-local ROCK_MINDIST_SQ = 0.401 * 0.401
+local ROCK_MINDIST_SQ = 0.400 * 0.400
 local MAP_WIDTH, MAP_HEIGHT
 
 local function RefreshRocks(inst, isplacer) -- Also used for the placer, keep in mind.
@@ -282,10 +339,14 @@ local function DoSyncAnim(inst)
 		    end
         end
     else
-        local temprange = (inst.AnimState:IsCurrentAnimation("idle_3") and 3)
-            or (inst.AnimState:IsCurrentAnimation("idle_2") and 2)
-            or (inst.AnimState:IsCurrentAnimation("idle_1") and 1)
-            or nil
+        local temprange
+        if inst.AnimState:IsCurrentAnimation("idle_3") then
+            temprange = 3
+        elseif inst.AnimState:IsCurrentAnimation("idle_2") then
+            temprange = 2
+        elseif inst.AnimState:IsCurrentAnimation("idle_1") then
+            temprange = 1
+        end
         if not TheWorld.ismastersim then
             inst._temperaturerange = temprange
             TrapFumaroleUtil.UnsetTrap(inst)
@@ -460,6 +521,12 @@ local function OnLoad(inst, data)
     end
 end
 
+local function GetStatus(inst)
+    return inst._temperaturerange == 3 and "HOT"
+        or inst._temperaturerange == 2 and "WARM"
+        or nil
+end
+
 local function DisplayAdjectiveFn(inst)
 	return (inst._temperaturerange and inst._temperaturerange >= 2 and STRINGS.TEMPERATURE_PREFIX.TRAP_FUMAROLE.HOT)
         or nil
@@ -503,7 +570,7 @@ local function fn()
     inst:AddTag("trap_fumarole")
     --inventoryitemtemperature (from inventoryitem component) added to pristine state for optimization
 	inst:AddTag("inventoryitemtemperature")
-    inst:AddTag("hide_temperature")
+    -- inst:AddTag("hide_temperature")
 
     inst.extra_deploy_distance = .9
 
@@ -528,13 +595,15 @@ local function fn()
     inst.scrapbook_damage = TUNING.TRAP_FUMAROLE_DAMAGE
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:EnableTemperature(true)
-    inst.components.inventoryitem:SetTemperature(TUNING.TRAP_FUMAROLE_TEMPS[2])
-    inst.components.inventoryitem:SetTemperatureModifier("fumaroletool_mod", TUNING.TRAP_FUMAROLE_TEMP_MODIFIER)
     inst.components.inventoryitem:SetMinTemperature(TUNING.TRAP_FUMAROLE_MINTEMP)
-    inst.components.inventoryitem:SetMaxTemperature(TUNING.TRAP_FUMAROLE_MAXTEMP)
+    inst.components.inventoryitem:SetMaxTemperature(TUNING.TRAP_FUMAROLE_MAXTEMP_HELD)
+    inst.components.inventoryitem:SetTemperature(TUNING.TRAP_FUMAROLE_MAXTEMP_HELD)
+    inst.components.inventoryitem:SetTemperatureModifier("fumaroletool_mod", TUNING.TRAP_FUMAROLE_TEMP_MODIFIER)
+    inst.components.inventoryitem:SetSaveMinAndMaxTemperature(true)
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
@@ -562,6 +631,8 @@ local function fn()
 
     inst.SetTrap = SetTrap
     inst.SetItem = SetItem
+
+    inst.inventoryitem_DeactivateBeforeLaunch = SetItem
 
     inst.IsItem = IsItem
     inst.IsActiveTrap = IsActiveTrap
@@ -598,7 +669,7 @@ end
 --------------------------------------------------------------------------
 
 local function fx_SetFxSize(inst, size)
-	local anim = "fissure_hit_"..size -- TODO "burn_hit_"..size
+	local anim = "burn_hit_"..size
 	if not inst.AnimState:IsCurrentAnimation(anim) then
 		inst.AnimState:PlayAnimation(anim, true)
 	end
@@ -614,11 +685,10 @@ local function fxfn()
 	inst:AddTag("DECOR")
 	inst:AddTag("NOCLICK")
 
-	inst.AnimState:SetBank("wagboss_lunar_blast")
-	inst.AnimState:SetBuild("wagboss_lunar_blast")
-	inst.AnimState:PlayAnimation("fissure_hit_small", true)
+	inst.AnimState:SetBank("trap_fumarole_burn_fx")
+	inst.AnimState:SetBuild("trap_fumarole_burn_fx")
+	inst.AnimState:PlayAnimation("burn_hit_small", true)
 	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-	inst.AnimState:SetLightOverride(0.3)
 	inst.AnimState:SetFinalOffset(3)
 
 	inst.entity:SetPristine()

@@ -484,6 +484,24 @@ local Wisecracker = Class(function(self, inst)
 		end
 	end)
 
+	local lastsparkfollow
+	local sparkfollowtask
+	local function onsecuritysparkfollow(inst)
+		sparkfollowtask = nil
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_SECURITY_PULSE_FOLLOWING"))
+	end
+    inst:ListenForEvent("ms_securitysparkfollowing", function(inst)
+		local t = GetTime()
+		if lastsparkfollow == nil or lastsparkfollow + 100 < t
+            and (inst.components.leader == nil or (inst.components.leader:CountFollowers("power_point") == 0) ) then
+			lastsparkfollow = t
+			if sparkfollowtask then
+				sparkfollowtask:Cancel()
+			end
+			sparkfollowtask = inst:DoTaskInTime(1 + math.random() * 1.5, onsecuritysparkfollow)
+		end
+    end)
+
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)
     end

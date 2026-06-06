@@ -1251,6 +1251,7 @@ return{
     ANNOUNCE_GOT_DECON_MISTED = "Oooh, feel good on scales, florp!",
 	ANNOUNCE_VAULT_SHADOW_ASSIST = "What Shadowfolk doing?!",
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Need more theer-mole bomb!",--fire immunity expired
+    ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Glorp! Why you following me?", -- Security spark attached to us due to us holding Waymark Compass.
 
 	BATTLECRY =
 	{
@@ -2188,6 +2189,7 @@ return{
         CHESSPIECE_WAGBOSS_ROBOT = "Little big Ironfolk.",
         CHESSPIECE_WAGBOSS_LUNAR = "Moon stuff made big Ironfolk bad.",
         CHESSPIECE_YOTH = "Where spring now, springy Ironfolk?",
+        CHESSPIECE_VAULT_PILLAR_GUARD = "Cute tiny horns! Florp!",
 
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
@@ -6195,11 +6197,19 @@ return{
             HOT = "Come here! Good place for stepping! Hee-hee...", -- Super hot, it's doing full fire damage.
         },
 
-        HEALINGSALVE_FUMAROLE = "Fire lady right! Fire fun when don't hurt, florp!", -- Provides summer insulation and fire immunity/resistance when applied.
+        HEALINGSALVE_FUMAROLE = "Fire lady right! Fire fun when don't hurt, florp!",
 
 		VAULT_PILLAR_GUARD = "Glorp! Didn't do it!!",
+		VAULT_PILLAR_GUARD_CRAFTED = "You be good!",
 		VAULT_PILLAR_GUARD_DORMANT = "Nice horns, florp!",
-		VAULT_CRAWLER = "Weird bug fun to roll around, florp!",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "I know, florp! Needs floaty glowy!",
+		VAULT_PILLAR_GUARD_CONSTR = "Glorp? What else it want?",
+		VAULT_PILLAR_GUARD_CONSTR_PLANS = "Me decide where put!",
+		VAULT_CRAWLER =
+		{
+			GENERIC = "Weird bug fun to roll around, florp!",
+			SOCKETED = "I win!",
+		},
 
         VAULT_DECON_DOOR = "Glurgh. Big wall not gonna keep me out!",
         VAULT_DECON_MISTER = "Do again! Do again!",
@@ -6211,8 +6221,9 @@ return{
             GENERIC = "Mine!", -- Keystone is on it, ready to take
             PICKED = "Gone.", -- No more keystone on it, we already took it, or someone else did.
         },
-        VAULT_ORB_FRAGMENT = "Mine! But what for?",
         VAULT_ORB_REFINED = "Prettiest rock! Glorp!",
+        VAULT_PILLAR_GUARD_PIECE = "See? Fixed.",
+        VAULT_REFINER_PEDESTAL = "Glurph. Makes old stuff.",
 
         VAULT_COMPASS =
         {
@@ -6222,6 +6233,7 @@ return{
         },
 
         CEILING_ROPE = "Climbing easy.",
+        VAULT_KEY_EXIT = "What mean can't climb out?",
     },
 
     DESCRIBE_GENERIC = "What that?",

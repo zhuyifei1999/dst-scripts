@@ -201,7 +201,7 @@ function Tune(overrides)
         BLUEAMULET_FUEL = total_day_time * 0.75,
         BLUEGEM_COOLER = -20,
 
-        PURPLEAMULET_FUEL = total_day_time * 0.4,
+        PURPLEAMULET_FUEL = seg_time * 8,
 
         YELLOWAMULET_FUEL = total_day_time,
         YELLOWSTAFF_USES = 20,
@@ -1455,6 +1455,10 @@ function Tune(overrides)
 
             CARPENTRY_STATION_STONE = TechTree.Create({
                 CARPENTRY = 3,
+            }),
+
+            VAULT_REFINER_PEDESTAL = TechTree.Create({
+                VAULT_REFINE = 1,
             }),
 		},
 
@@ -9469,10 +9473,10 @@ function Tune(overrides)
         FUMAROLEHAMMER_EFFECTIVENESS = { 1, 1, 1.25, 1.5 },
         -- no effectiveness for garden hoe!
 
-        TRAP_FUMAROLE_DAMAGE = 7.5, -- 7.5 fire damage every second
+        TRAP_FUMAROLE_DAMAGE = 10, -- 10 fire damage every second
         TRAP_FUMAROLE_MINTEMP = 0,
         TRAP_FUMAROLE_MAXTEMP = 90,
-        TRAP_FUMAROLE_MAXTEMP_HELD = 30,
+        TRAP_FUMAROLE_MAXTEMP_HELD = 25, -- a little under the threshold so we have time to be placed before changing threshold.
         TRAP_FUMAROLE_TEMP_MODIFIER = -30,
         TRAP_FUMAROLE_TEMPS = { 0, 30, 60 },
         TRAP_FUMAROLE_LIGHTOVERRIDES = { 0, .125, .35 },
@@ -9495,6 +9499,9 @@ function Tune(overrides)
 		VAULT_PILLAR_GUARD_STAGGER_DAMAGE_MULT = 1.5,
 		VAULT_PILLAR_GUARD_SPIN_CD = 16,
 		VAULT_PILLAR_GUARD_QUICKJUMP_CD = 12,
+		--for crafted ones (distances from home pt)
+		VAULT_PILLAR_GUARD_COMBAT_RANGE = 20,
+		VAULT_PILLAR_GUARD_DEAGGRO_DIST = 35,
 
 		VAULT_CRAWLER_HEALTH = 1000,
 		VAULT_CRALWER_DAMAGE = 40,
@@ -9506,6 +9513,11 @@ function Tune(overrides)
 		VAULT_CRAWLER_ROLLING_SPEED = 2.5,
 
 		VAULT_SHADOW_SUPPRESSION_MULT = 0.025, --dmg mult for combat btwn guards/crawlers vs shadowcreatures
+
+        MAX_SECURITY_PULSE_FOLLOWING = 4,
+
+        VAULT_PILLAR_GUARD_PIECE_GOLD_VALUE = 15,
+        VAULT_PILLAR_GUARD_PIECE_ROCK_VALUE = 18, -- appease value for antlion, 6 days
     }
 
     TUNING_MODIFIERS = {}

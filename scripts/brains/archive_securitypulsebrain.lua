@@ -7,10 +7,6 @@ local MAX_FOLLOW = 2
 local TARGET_FOLLOW = 1
 local WAYPOINT_RANGE = 34
 
-local MIN_FOLLOW_LEADER_DIST = 1
-local TARGET_FOLLOW_LEADER_DIST = 2
-local MAX_FOLLOW_LEADER_DIST = 4
-
 local Archive_SecurityPulseBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -84,6 +80,41 @@ end
 
 ---------------------------------------------------------------------------------------------------------
 
+local function GetLeaderPos(inst)
+    local leader = GetLeader(inst)
+    return leader and leader:GetPosition() or nil
+end
+
+local function GetFormationOffset(inst)
+    return inst.components.knownlocations:GetLocation("formationoffset")
+end
+
+local function ShouldHoldFormation(inst)
+    return GetFormationOffset(inst) ~= nil and GetLeader(inst) ~= nil
+end
+
+local function GetSparkFormationPos(inst)
+    local pos = GetLeaderPos(inst)
+    if pos then
+        local offset = GetFormationOffset(inst)
+        return offset and (pos + offset) or pos
+    end
+end
+
+local HOME_MUST_TAGS = { "security_desk" }
+local function GoHomeAction(inst)
+    local home = FindEntity(inst, 10, nil, HOME_MUST_TAGS)
+    if home ~= nil
+        and home.components.childspawner ~= nil
+        and home.components.childspawner.childreninside == 0
+        and (home.components.health == nil or not home.components.health:IsDead())
+        then
+        local buffaction = BufferedAction(inst, home, ACTIONS.GOHOME)
+        buffaction.distance = 0.1
+        return buffaction
+    end
+end
+
 local POWERPOINT_MUST_TAGS = { "security_powerpoint" }
 local POWERPOINT_CANT_TAGS =  { "INLIMBO", "FX" }
 
@@ -99,7 +130,7 @@ local function FindPowerPoint(inst)
                 skip = true
             end
         end
-        if not skip then
+        if not skip and (ent.pulse_findrange == nil or ent:GetDistanceSqToInst(inst) <= ent.pulse_findrange*ent.pulse_findrange) then
             return ent
         end
     end
@@ -107,18 +138,41 @@ local function FindPowerPoint(inst)
     return nil
 end
 
+local function GetDespawnTime()
+    return 12 + math.random() * 4
+end
+
+local WANDER_TIMES =
+{
+    minwalktime = 0.8,
+    randwalktime = .4,
+    minwaittime = 0.2,
+    randwaittime = 0.8,
+}
+
 function Archive_SecurityPulseBrain:OnStart()
     local possession_range = self.inst.possession_range
 
-    local MIN_FOLLOW_POWERPOINT    = possession_range
+    local MIN_FOLLOW_POWERPOINT    = possession_range / 3
     local TARGET_FOLLOW_POWERPOINT = possession_range
 
     local root = PriorityNode(
     {
         Follow(self.inst, FindPowerPoint, MIN_FOLLOW_POWERPOINT, TARGET_FOLLOW_POWERPOINT, MAX_FOLLOW, false, nil, true),
-        Follow(self.inst, GetLeader, MIN_FOLLOW_LEADER_DIST, TARGET_FOLLOW_LEADER_DIST, MAX_FOLLOW_LEADER_DIST, false),
+        WhileNode(function() return ShouldHoldFormation(self.inst) end, "HoldFormation",
+            PriorityNode({
+	        	NotDecorator(FailIfSuccessDecorator(Leash(self.inst, GetSparkFormationPos, 0.5, 0.5))),
+            }, .25)),
         WhileNode(function() return self.inst.patrol == true end, "find waypoints",
             Follow(self.inst, findwaypoint, MIN_FOLLOW, TARGET_FOLLOW, MAX_FOLLOW, false)),
+        DoAction(self.inst, GoHomeAction),
+        ParallelNodeAny{
+			SequenceNode{
+				WaitNode(GetDespawnTime),
+				ActionNode(function() self.inst:Despawn() end),
+			},
+			Wander(self.inst, nil, nil, WANDER_TIMES),
+		},
         StandStill(self.inst),
     }, .25)
     self.bt = BT(self.inst, root)

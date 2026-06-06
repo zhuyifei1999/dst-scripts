@@ -135,7 +135,7 @@ local precision_factor = 4
 local coarse_factor = 1
 local pivot = math.floor((256 - (max_precision_temp + min_precision_temp) * precision_factor) / 2)
 
-local function SerializeTemperature(inst, temperature, mintemperature, maxtemperature)
+local function SerializeTemperature(inst, temperature)
     if temperature ~= nil then
         if temperature >= max_precision_temp then
             inst.temperature:set(pivot + max_precision_temp * precision_factor + math.floor((temperature - max_precision_temp) * coarse_factor + .5))
@@ -144,14 +144,6 @@ local function SerializeTemperature(inst, temperature, mintemperature, maxtemper
         else
             inst.temperature:set(pivot + math.floor(temperature * precision_factor + .5))
         end
-    end
-
-    if mintemperature ~= nil then
-        inst.temperaturemin:set(mintemperature + 128)
-    end
-
-    if maxtemperature ~= nil then
-        inst.temperaturemax:set(maxtemperature + 128)
     end
 end
 
@@ -165,11 +157,8 @@ local function DeserializeTemperature(inst)
         temperature = (inst.temperature:value() - pivot) / precision_factor
     end
 
-    local mintemperature = inst.temperaturemin:value() - 128
-    local maxtemperature = inst.temperaturemax:value() - 128
-
     if inst._parent ~= nil then
-        inst._parent:PushEvent("temperaturedelta", { new = temperature, mintemp = mintemperature, maxtemp = maxtemperature })
+        inst._parent:PushEvent("temperaturedelta", { new = temperature })
     end
 end
 
@@ -218,8 +207,6 @@ local function fn()
     inst.walkspeedmult = net_byte(inst.GUID, "equippable.walkspeedmult")
     inst.moisture = net_float(inst.GUID, "inventoryitemmoisture.moisture")
     inst.temperature = net_byte(inst.GUID, "inventoryitemtemperature.temperature", "temperaturedirty")
-    inst.temperaturemin = net_byte(inst.GUID, "inventoryitemtemperature.temperaturemin", "temperaturedirty")
-    inst.temperaturemax = net_byte(inst.GUID, "inventoryitemtemperature.temperaturemax", "temperaturedirty")
     inst.equiprestrictedtag = net_hash(inst.GUID, "equippable.restrictedtag")
     inst.islockedinslot = net_bool(inst.GUID, "inventoryitem.islockedinslot")
 
@@ -241,8 +228,6 @@ local function fn()
     inst.walkspeedmult:set(1)
     inst.moisture:set(0)
     inst.temperature:set(0)
-    inst.temperaturemin:set(TUNING.MIN_ENTITY_TEMP + 128)
-    inst.temperaturemax:set(TUNING.MAX_ENTITY_TEMP + 128)
     inst.equiprestrictedtag:set(0)
 	inst.islockedinslot:set(false)
 

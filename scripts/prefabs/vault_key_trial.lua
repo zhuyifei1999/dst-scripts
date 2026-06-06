@@ -28,6 +28,22 @@ local function KillSounds(inst)
 	end
 end
 
+local function RevealKey(inst)
+	inst.task = nil
+	local pedestal = inst.components.entitytracker:GetEntity("keypedestal")
+	if pedestal and pedestal.activator == nil then
+		pedestal:OpenPlate("vault_key_pedestal")
+	end
+end
+
+local function RevealChasm(inst)
+	inst.chasmtask = nil
+	local keyexit = inst.components.entitytracker:GetEntity("exit")
+	if keyexit then
+		keyexit:Open()
+	end
+end
+
 local function CheckPuzzleProgress(inst)
 	local bitfield = 0
 	local puzzleprogress = 0
@@ -35,12 +51,23 @@ local function CheckPuzzleProgress(inst)
 	local function IncrementPuzzleProgress()
 		puzzleprogress = puzzleprogress + 1
 		if puzzleprogress >= 8 then
-			local pedestal = inst.components.entitytracker:GetEntity("keypedestal")
-			if pedestal then
-				pedestal:OpenPlate("vault_key_pedestal")
+			if inst.task == nil then
+				if POPULATING then
+					RevealKey(inst)
+				else
+					inst.task = inst:DoTaskInTime(1, RevealKey)
+				end
 			end
-			if inst.middle_ring then
-				inst.middle_ring:EnableOn(true)
+			if inst.chasmtask == nil then
+				if POPULATING then
+					RevealChasm(inst)
+				else
+					inst.chasmtask = inst:DoTaskInTime(3.5, RevealChasm)
+				end
+			end
+			local middlering = inst.components.entitytracker:GetEntity("middlering")
+			if middlering then
+				middlering:EnableOn(true)
 			end
 		end
 		if not POPULATING then
@@ -48,10 +75,20 @@ local function CheckPuzzleProgress(inst)
 				KillSounds(inst)
 				inst.SoundEmitter:PlaySound("grotto/common/archive_orchestrina/8")
 			else
+				inst.SoundEmitter:PlaySound("grotto/common/archive_orchestrina/"..  tostring(puzzleprogress) .."_OS")
 				if not inst.SoundEmitter:PlayingSound("machine"..tostring(puzzleprogress)) then
-					inst.SoundEmitter:PlaySound("grotto/common/archive_orchestrina/"..  tostring(puzzleprogress) .."_LP", "machine"..tostring(puzzleprogress))
+					inst.SoundEmitter:PlaySound("grotto/common/archive_orchestrina/"..  tostring(puzzleprogress) .."_LP_only", "machine"..tostring(puzzleprogress))
 				end
 			end
+		else
+			if puzzleprogress <= 7 then
+				if not inst.SoundEmitter:PlayingSound("machine"..tostring(puzzleprogress)) then
+					inst.SoundEmitter:PlaySound("grotto/common/archive_orchestrina/"..  tostring(puzzleprogress) .."_LP_only", "machine"..tostring(puzzleprogress))
+				end
+			else
+				KillSounds(inst)
+			end
+
 			for i = puzzleprogress+1, 7 do -- If we lose progress somehow
 				inst.SoundEmitter:KillSound("machine"..tostring(i))
 			end
@@ -68,8 +105,9 @@ local function CheckPuzzleProgress(inst)
 			end
 			local marker_bit = 2 ^ i
 			bitfield = bit.bor(bitfield, marker_bit)
-			if inst._rings and inst._rings[i] then
-				inst._rings[i]:EnableOn(true)
+			local ring = inst.components.entitytracker:GetEntity("pillarring"..tostring(i))
+			if ring then
+				ring:EnableOn(true)
 			end
 			IncrementPuzzleProgress()
 		end
@@ -144,6 +182,7 @@ local function TrackGuard(inst, guard)
 	inst:ListenForEvent("death", inst._onguarddied, guard)
 
 	guard.trial = inst
+	guard:AddTag("vault_key_trial_guardian")
 	guard.components.damagetypebonus:AddBonus("shadowcreature", inst, TUNING.VAULT_SHADOW_SUPPRESSION_MULT, "vault_shadow_suppression")
 	guard.components.damagetyperesist:AddResist("shadowcreature", inst, TUNING.VAULT_SHADOW_SUPPRESSION_MULT, "vault_shadow_suppression")
 end
@@ -151,6 +190,8 @@ end
 local function TrackCrawler(inst, crawler)
 	inst:ListenForEvent("attacked", inst._onattacked, crawler)
 
+	crawler.trial = inst
+	crawler:AddTag("vault_key_trial_guardian")
 	crawler.components.damagetypebonus:AddBonus("shadowcreature", inst, TUNING.VAULT_SHADOW_SUPPRESSION_MULT, "vault_shadow_suppression")
 	crawler.components.damagetyperesist:AddResist("shadowcreature", inst, TUNING.VAULT_SHADOW_SUPPRESSION_MULT, "vault_shadow_suppression")
 end
@@ -250,7 +291,6 @@ local function InitializeLayout(inst)
 	TrackLight(inst, SpawnTrackedPrefabAtXZ(inst, "light4", "vault_crawler_chandelier", x + r, z))
 
 	--pillars & sockets (grid aligned to register pathfinding)
-	inst._rings = {}
 	local i = 0
 	local sign = 1
 	local groundvars = { 3, 4, 5, math.random(3, 5) }
@@ -264,9 +304,7 @@ local function InitializeLayout(inst)
 			i = i + 1
 			local x1 = x + dx * TILE_SCALE
 			local z1 = z + dz * sign * TILE_SCALE
-			local ring = SpawnPrefab("vault_ground_pattern_fx"):SetVariation(table.remove(groundvars, math.random(#groundvars))):SetOrientation(table.remove(groundorientations, math.random(#groundorientations))):ChangeSortOrder(-2)
-			ring.Transform:SetPosition(x1, 0, z1)
-			table.insert(inst._rings, ring)
+			SpawnTrackedPrefabAtXZ(inst, "pillarring"..tostring(i), "vault_ground_pattern_fx", x1, z1):SetVariation(table.remove(groundvars, math.random(#groundvars))):SetOrientation(table.remove(groundorientations, math.random(#groundorientations))):ChangeSortOrder(-2)
 			SpawnTrackedPrefabAtXZ(inst, "pillar"..tostring(i), "vault_pillar_guard_dormant", x1, z1)
 			TrackSocket(inst, SpawnTrackedPrefabAtXZ(inst, "socket"..tostring(i), "vault_crawler_socket", x1, z1))
 		end
@@ -282,10 +320,12 @@ local function InitializeLayout(inst)
 	TrackActivator(inst, SpawnActivatorAtXZ(inst, "activator4", x + r, z))
 
 	-- key pedestal
-	local ring = SpawnPrefab("vault_ground_pattern_fx"):SetVariation(groundvar2):SetOrientation(math.random(4)):ChangeSortOrder(-2)
-	ring.Transform:SetPosition(x, 0, z)
-	inst.middle_ring = ring
+	SpawnTrackedPrefabAtXZ(inst, "middlering", "vault_ground_pattern_fx", x, z):SetVariation(groundvar2):SetOrientation(math.random(4)):ChangeSortOrder(-2)
 	SpawnTrackedPrefabAtXZ(inst, "keypedestal", "vault_key_pedestal_plate", x, z)
+
+	-- key exit
+	local r = 5 * TILE_SCALE
+	SpawnTrackedPrefabAtXZ(inst, "exit", "vault_key_exit", x, z + r):SetCracks()
 end
 
 local function OnLoadPostPass(inst, ents, data)
@@ -370,7 +410,7 @@ local function fn()
 	inst.AnimState:Hide("center")
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
-	inst.AnimState:SetSortOrder(-4)
+	inst.AnimState:SetSortOrder(-3)
 	inst.AnimState:SetFinalOffset(-1)
 
 	inst.puzzle_progress = net_ushortint(inst.GUID, "vault_key_trial.puzzle_progress", "puzzleprogressdirty")
@@ -415,7 +455,7 @@ local function fn()
 	--NOTE: crawler already handles sharing target to other crawlers
 	inst._onattacked = function(ent, data)
 		if data and data.attacker and data.attacker:IsValid() then
-			if data.attacker:HasAnyTag("vault_pillar_guard", "vault_crawler") and not data.attacker.components.combat:TargetIs(ent) then
+			if data.attacker:HasTag("vault_key_trial_guardian") and not data.attacker.components.combat:TargetIs(ent) then
 				--ignore stray hits from pillar guard and crawler AOE
 				return
 			end

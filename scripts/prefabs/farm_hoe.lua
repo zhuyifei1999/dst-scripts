@@ -88,7 +88,6 @@ local function MakeFarmHoe(name, common_postinit, master_postinit, data, _assets
         MakeInventoryFloatable(inst, "med", 0.05, floater_scale, true, -7, floater_swap_data)
 
         inst.scrapbook_subcat = "tool"
-        inst.scrapbook_specialinfo = "HOE"
 
         if common_postinit ~= nil then
             common_postinit(inst)

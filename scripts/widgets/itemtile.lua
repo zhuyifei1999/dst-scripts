@@ -99,7 +99,7 @@ local ItemTile = Class(Widget, function(self, invitem)
     DoInspected(invitem)
 
 	local show_spoiled_meter = self:HasSpoilage() or self.item:HasTag("show_broken_ui")
-    local has_temperature = self.item:HasTag("inventoryitemtemperature") and not self.item:HasTag("hide_temperature")
+    local has_temperature = false --self.item:HasTag("inventoryitemtemperature") and not self.item:HasTag("hide_temperature")
 
 	if has_temperature or show_spoiled_meter or self.item:HasTag("show_spoiled") then
 		self.bg = self:AddChild(Image(HUD_ATLAS, "inv_slot_spoiled.tex"))
@@ -338,7 +338,7 @@ local ItemTile = Class(Widget, function(self, invitem)
                 end
             end
         end, invitem)
-        
+
     self.inst:ListenForEvent("acidsizzlingchange",
         function(invitem, isacidsizzling)
             if not self.isactivetile then
@@ -941,11 +941,6 @@ function ItemTile:HandleBuffFX(invitem, fromchanged, data)
 end
 
 function ItemTile:UpdateTemperaturePercent(temperature, mintemp, maxtemp)
-    local percent = Remap(temperature, mintemp, maxtemp, 0, 1)
-    self:SetTemperaturePercent(percent)
-end
-
-function ItemTile:SetTemperaturePercent(percent)
     -- Haack. we need to update broken state for fumarole tool, so do it hereeeee :)
 	if not self.dragging and self.item:HasTag("show_broken_ui") then
         if self.item:HasTag("broken") then
@@ -957,11 +952,22 @@ function ItemTile:SetTemperaturePercent(percent)
             end
 			self:SetPerishPercent(0)
         else
+            if self.bg then
+				self.bg:Hide()
+			end
 			if self.spoilage then
 				self.spoilage:Hide()
 			end
 		end
 	end
+
+    if temperature ~= nil and mintemp ~= nil and maxtemp ~= nil then
+        local percent = Remap(temperature, mintemp, maxtemp, 0, 1)
+        self:SetTemperaturePercent(percent)
+    end
+end
+
+function ItemTile:SetTemperaturePercent(percent)
     if self.temperature ~= nil then
         self.temperature:GetAnimState():SetPercent("idle", percent)
     end

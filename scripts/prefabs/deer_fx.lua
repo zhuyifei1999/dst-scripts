@@ -176,7 +176,8 @@ local function OnUpdateIceCircle(inst, x, z)
                 end
             end
 
-            if TUNING.DEER_ICE_TEMPERATURE < GetEntityTemperature(v) then
+            local ent_temp = GetEntityTemperature(v)
+            if ent_temp and TUNING.DEER_ICE_TEMPERATURE < ent_temp then
                 SetEntityTemperature(v, TUNING.DEER_ICE_TEMPERATURE)
             end
 
@@ -304,7 +305,8 @@ local function OnUpdateFireCircle(inst, x, z)
                     end
                 end
 
-                if TUNING.DEER_FIRE_TEMPERATURE > GetEntityTemperature(v) then
+                local ent_temp = GetEntityTemperature(v)
+                if ent_temp and TUNING.DEER_FIRE_TEMPERATURE > ent_temp then
                     SetEntityTemperature(v, TUNING.DEER_FIRE_TEMPERATURE)
                 end
             end

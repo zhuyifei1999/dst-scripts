@@ -570,6 +570,10 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
     "wagpunk_workstation_moonstorm_static_catcher",
     "wagpunk_workstation_security_pulse_cage",
 
+	-- vault_refiner_pedestal
+    "vault_orb_refined",
+	"vault_pillar_guard_constr_plans",
+
 	-- waxwelljournal
 	"shadowlumber_builder",
 	"shadowminer_builder",
@@ -639,6 +643,7 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	"chesspiece_wagboss_robot_builder",
 	"chesspiece_wagboss_lunar_builder",
 	"chesspiece_yoth_builder",
+	"chesspiece_vault_pillar_guard_builder",
 
 	-- wintersfeastoven
 	"wintercooking_berrysauce",
@@ -962,7 +967,6 @@ CRAFTING_FILTERS.REFINE.recipes =
 	"moonrockcrater",
 	"malbatross_feathered_weave",
 	"refined_dust",
-    "vault_orb_refined",
 }
 
 CRAFTING_FILTERS.WEAPONS.recipes =

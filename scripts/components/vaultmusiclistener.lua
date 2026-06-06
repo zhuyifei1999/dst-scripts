@@ -15,15 +15,23 @@ local function OnChangeArea(inst, data)
 	end
 end
 
+local function OnPillarGuardAggro(inst)
+	local self = inst.components.vaultmusiclistener
+	self.lastaggrotime = GetTime()
+end
+
 local VaultMusicListener = Class(function(self, inst)
 	self.inst = inst
 	--self.delay = nil
+	--self.lastaggrotime = nil
 
 	inst:ListenForEvent("changearea", OnChangeArea)
+	inst:ListenForEvent("vault_pillar_guard_aggro", OnPillarGuardAggro)
 end)
 
 function VaultMusicListener:OnRemoveFromEntity()
 	self.inst:RemoveEventCallback("changearea", OnChangeArea)
+	self.inst:RemoveEventCallback("vault_pillar_guard_aggro", OnPillarGuardAggro)
 end
 
 function VaultMusicListener:IsMusicPlaying()
@@ -50,7 +58,19 @@ function VaultMusicListener:OnUpdate(dt)
 		self.delay = self.delay - dt
 	else
 		self.delay = 1
-		self.inst:PushEvent("triggeredevent", { name = "vault", duration = 5 })
+
+		local level
+		local duration = 5
+		if self.lastaggrotime then
+			if self.lastaggrotime + 1.5 > GetTime() then
+				level = 2
+				duration = nil
+			else
+				self.lastaggrotime = nil
+			end
+		end
+
+		self.inst:PushEvent("triggeredevent", { name = "vault", level = level, duration = duration })
 	end
 end
 
