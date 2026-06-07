@@ -354,9 +354,14 @@ function self:CreateLayoutV2()
     self:LinkRooms("hall7", DIRECTIONS.W, "generator1", DIRECTIONS.E)
 end
 
+function self:ResetAllRepairedLinks()
+	self.repairedlinks = {}
+	self.roomsdirectioncache = {}
+end
 function self:DeleteLayout()
     self.maxroomindex = 0
     self.rooms = {}
+	self:ResetAllRepairedLinks()
 end
 local CURRENT_VERSION = 2
 self.version = CURRENT_VERSION
@@ -1174,7 +1179,9 @@ function self:OnUpdate(dt)
                 end
                 if self.version ~= CURRENT_VERSION then
                     self.version = CURRENT_VERSION
-                    self:CreateLayout(self.version)
+					self:CreateLayout(self.version) --this already calls ResetAllRepairedLinks()
+				else
+					self:ResetAllRepairedLinks()
                 end
                 self:SetPRNGSeed(self:GetPRNGSeed() + 1)
                 targetroom = 1

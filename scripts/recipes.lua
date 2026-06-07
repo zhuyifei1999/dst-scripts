@@ -1074,7 +1074,7 @@ Recipe2("fumarole_farm_hoe",			{Ingredient("twigs", 4), Ingredient("mitegland", 
 Recipe2("trap_fumarole",				{Ingredient("flint", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO, { numtogive = 4 })
 Recipe2("healingsalve_fumarole",		{Ingredient("ash", 2),   Ingredient("flint", 1), Ingredient("mitegland", 1)},											TECH.SCIENCE_TWO)
 
-Recipe2("vault_orb_refined",			{Ingredient("vault_orb", 1)},																							TECH.VAULT_REFINE_ONE, { nounlock = true, numtogive = 2 })
+Recipe2("vault_orb_refined",			{Ingredient("vault_orb", 1)},																							TECH.VAULT_REFINE_ONE, { nounlock = true, no_deconstruction = true, numtogive = 2 })
 Recipe2("vault_pillar_guard_constr_plans", {Ingredient("vault_pillar_guard_piece_1", 1), Ingredient("vault_pillar_guard_piece_2", 1), Ingredient("vault_pillar_guard_piece_3", 2)}, TECH.VAULT_REFINE_ONE, { nounlock = true })
 
 ------------------------------- SPECIAL EVENTS -------------------------------
