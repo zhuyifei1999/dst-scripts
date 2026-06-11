@@ -8,6 +8,12 @@ local prefabs_empty =
     "security_pulse_cage_full",
 }
 
+local prefabs_full =
+{
+	"security_pulse_cage",
+	"archive_security_pulse",
+}
+
 local SOUND_LOOP_NAME = "soundloop"
 
 local FULL_IDLE_ANIMNAME      = "idle_full2"
@@ -164,6 +170,7 @@ local function FullCage_OnUsedOnTargetedItem(inst, target, doer)
 		if TheWorld.Map:IsPointInVaultRoom(target.Transform:GetWorldPosition()) then
 			return false, "PILLARGUARD_INVAULT"
 		end
+		SpawnPrefab("archive_security_pulse"):Despawn(target)
 		target = target:ActivatePillarGuard()
 	else
 		return false
@@ -207,4 +214,4 @@ local function FullCageFn(full)
 end
 
 return Prefab("security_pulse_cage", EmptyCageFn, assets, prefabs_empty),
-	Prefab("security_pulse_cage_full", FullCageFn, assets)
+	Prefab("security_pulse_cage_full", FullCageFn, assets, prefabs_full)

@@ -7,6 +7,36 @@ local prefabs = {
     "rope",
 }
 
+local function OnCameraFocusDirty(inst)
+	local player = TheFocalPoint.entity:GetParent()
+	if inst.camerafocus:value() and player and
+		TheWorld.Map:IsPointInVaultRoom(player.Transform:GetWorldPosition()) and
+		TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition())
+	then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 20, 200, 5)
+	else
+		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	end
+end
+
+local function EnableCameraFocus(inst, enable)
+	if enable and inst.trial and inst.trial:IsPillarGuardAggro() then
+		enable = false --don't use camera focus if pillar guards are still in combat
+	end
+	if inst.camerafocustask then
+		inst.camerafocustask:Cancel()
+		inst.camerafocustask = nil
+	end
+	if enable ~= inst.camerafocus:value() then
+		inst.camerafocus:set(enable)
+
+		--Dedicated server does not need to focus camera
+		if not TheNet:IsDedicated() then
+			OnCameraFocusDirty(inst)
+		end
+	end
+end
+
 local function StartTravelSound(inst, doer)
     inst.SoundEmitter:PlaySound("dontstarve/cave/tentapiller_hole_enter") -- FIXME(JBK): rifts6 sounds
     doer:PushEvent("wormholetravel", WORMHOLETYPE.VAULTLOBBYEXIT) --Event for playing local travel sound
@@ -135,24 +165,79 @@ local function OnUsedRope(inst, rope, doer)
     return false
 end
 
--- for key room exit
-local function SetCracks(inst)
-    inst.cracks = true
-    inst:AddTag("NOCLICK")
-    inst.AnimState:PlayAnimation("idle_crack")
-    inst.Physics:SetActive(false)
-    inst.components.teleporter:SetEnabled(false)
+local function SetOpen(inst)
+	if inst.opentask then
+		inst.opentask:Cancel()
+		inst.opentask = nil
+	end
+	inst:RemoveEventCallback("animover", SetOpen)
+    inst.cracks = nil
+    inst:RemoveTag("NOCLICK")
+	inst.AnimState:PlayAnimation("idle")
+	if inst.Light then
+		inst.Light:Enable(true)
+	end
+    inst.Physics:SetActive(true)
+    inst.components.teleporter:SetEnabled(true)
+	if inst.camerafocustask == nil and inst.camerafocus then
+		EnableCameraFocus(inst, false)
+	end
+end
+
+local function IsInVault(v)
+	return TheWorld.Map:IsPointInVaultRoom(v.Transform:GetWorldPosition())
+end
+
+local function DoOpenAnim(inst)
+	if inst.Light then
+		inst.Light:Enable(true)
+	end
+	inst.Physics:SetActive(true)
+	inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack")
+	inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_emerge")
+	inst.AnimState:PlayAnimation("open")
+	LaunchArea(inst, 1.8, 1, 0.75, 0.5, 1.5)
+	inst:RemoveEventCallback("animover", SetOpen)
+	inst:ListenForEvent("animover", SetOpen)
+	if inst.camerafocus and IsInVault(inst) then
+		EnableCameraFocus(inst, true)
+		inst.camerafocustask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 0.4, EnableCameraFocus, false)
+		ShakeAllCamerasWithFilter(IsInVault, CAMERASHAKE.FULL, 0.9, 0.03, 0.22, inst, 1000)
+	elseif inst.camerafocustask then
+		inst.camerafocustask:Cancel()
+		inst.camerafocustask = nil
+	end
 end
 
 local function Open(inst)
-    inst.cracks = nil
-    inst:RemoveTag("NOCLICK")
-    inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack")
-    inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_emerge")
-    inst.AnimState:PlayAnimation("open")
-    inst.AnimState:PushAnimation("idle", false)
-    inst.Physics:SetActive(true)
-    inst.components.teleporter:SetEnabled(true)
+	if POPULATING then
+		SetOpen(inst)
+	elseif inst.opentask == nil then
+		inst.opentask = inst:DoTaskInTime(1, DoOpenAnim)
+		if inst.camerafocus and IsInVault(inst) then
+			EnableCameraFocus(inst, true)
+			ShakeAllCamerasWithFilter(IsInVault, CAMERASHAKE.FULL, 2, 0.025, 0.1, inst, 1000)
+		end
+	end
+end
+
+-- for key room exit
+local function SetCracks(inst)
+	if inst.opentask then
+		inst.opentask:Cancel()
+		inst.opentask = nil
+	end
+	inst:RemoveEventCallback("animover", SetOpen)
+	inst.cracks = true
+	inst:AddTag("NOCLICK")
+	inst.AnimState:PlayAnimation("idle_crack")
+	inst.Physics:SetActive(false)
+	if inst.Light then
+		inst.Light:Enable(false)
+	end
+	inst.components.teleporter:SetEnabled(false)
+	EnableCameraFocus(inst, false)
+	return inst
 end
 
 local function OnSave(inst, data)
@@ -189,6 +274,19 @@ local function MakeChasm(name, canrope, lobbyexit, keyroomexit)
         inst.entity:AddSoundEmitter()
         inst.entity:AddMiniMapEntity()
         inst.entity:AddNetwork()
+
+		if keyroomexit then
+			inst.entity:AddLight()
+			inst.Light:SetRadius(1.5)
+			inst.Light:SetIntensity(0.2)
+			inst.Light:SetFalloff(0.7)
+			inst.Light:SetColour(180/255, 240/255, 255/255)
+			inst.Light:Enable(false)
+
+			inst.AnimState:SetLightOverride(0.25)
+
+			inst.camerafocus = net_bool(inst.GUID, name..".camerafocus", "camerafocusdirty")
+		end
 
         inst:AddTag("groundhole")
         inst:AddTag("blocker")
@@ -235,6 +333,9 @@ local function MakeChasm(name, canrope, lobbyexit, keyroomexit)
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
+        	if inst.camerafocus then
+        		inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+        	end
             return inst
         end
 

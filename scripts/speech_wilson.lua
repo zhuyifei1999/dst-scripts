@@ -2241,6 +2241,7 @@ return {
         CRITTER_PERDLING = "My feathered friend.",
 		CRITTER_LUNARMOTHLING = "I keep her around because she's good at mothematics.",
         CRITTER_BULBIN = "You'd never do anything rotten, would you?",
+        CRITTER_EETS = "Behold, a man.",
 
 		CROW =
 		{

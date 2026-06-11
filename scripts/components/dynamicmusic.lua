@@ -185,6 +185,7 @@ local TRIGGERED_DANGER_MUSIC =
 	vault =
 	{
 		"dontstarve/music/music_cavepuzzle",
+		"", --silence
 		"dontstarve/music/music_epicfight_pillarguard",
 	},
 

@@ -334,7 +334,7 @@ local COMPONENT_ACTIONS =
                             table.insert(actions, ACTIONS.ABANDON)
                         end
                     end
-                elseif inst.replica.container == nil then
+                elseif inst.replica.container == nil and not inst:HasTag("nopet") then
                     table.insert(actions, ACTIONS.PET)
                 end
             end

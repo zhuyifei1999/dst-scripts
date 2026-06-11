@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "I would never eat you.",
 		CRITTER_LUNARMOTHLING = "The light of my life!",
         CRITTER_BULBIN = "It never hurts to have a little onion on hand.",
+        CRITTER_EETS = "Woah! You can jump REALLY high!",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "It has been taken!", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "Voila! Beautiful!",
-        VAULT_PILLAR_GUARD_PIECE = "Ah yes, the heart of the matter!",
+        VAULT_PILLAR_GUARD_PIECE = "Ah yes, an ingredient for the tower!",
         VAULT_REFINER_PEDESTAL = "It looks like a fancy mixer.",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "If you can't take the heat, climb the rope!",
-        VAULT_KEY_EXIT = "I cannot climb back up!",
+        VAULT_KEY_EXIT = "I cannot climb back up!",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

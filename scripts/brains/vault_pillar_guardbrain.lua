@@ -56,21 +56,20 @@ local function KeepFaceTargetFn(inst, target)
 end
 
 local function GetHomeBetweenTargetPos(inst)
+	local target = inst.components.combat.target
 	local home = GetHomePos(inst)
-	if home then
-		local target = inst.components.combat.target
-		if target then
-			local physrad = target:GetPhysicsRadius(0)
-			local x, y, z = inst.Transform:GetWorldPosition()
+	if target and home then
+		local x, y, z = inst.Transform:GetWorldPosition()
+		local dx = home.x - x
+		local dz = home.z - z
+		if dx * dx + dz * dz >= 4 then
 			local x1, y1, z1 = target.Transform:GetWorldPosition()
-			local dx = x1 - x
-			local dz = z1 - z
-			local dsq = dx * dx + dz * dz
-			if dsq >= 64 then
-				local dx2 = home.x - x
-				local dz2 = home.z - z
-				local dsq2 = dx2 * dx2 + dz2 * dz2
-				if dsq2 < dsq and dsq2 > 0 and DiffAngleRad(math.atan2(-dz, dx), math.atan2(-dz2, dx2)) < HALFPI then
+			local dx1 = x1 - x
+			local dz1 = z1 - z
+			if dx1 * dx1 + dz1 * dz1 >= 64 then
+				local dir = math.atan2(-dz, dx)
+				local dir1 = math.atan2(-dz1, dx1)
+				if DiffAngleRad(dir, dir1) < HALFPI then
 					return home
 				end
 			end
@@ -78,29 +77,66 @@ local function GetHomeBetweenTargetPos(inst)
 	end
 end
 
-local function ShouldChase(inst)
+local function ShouldChase(self)
+	local inst = self.inst
 	local home = GetHomePos(inst)
 	if home and inst.trial then
 		local target = inst.components.combat.target
 		if target then
+			local t = GetTime()
+
+			--prevent going in and out of alert too quickly
+			if self.nextalert then
+				if self.nextalert > t then
+					return true
+				end
+				self.nextalert = nil
+			end
+
+			local alerttime = inst.sg.currentstate.name == "alert" and inst.sg:GetTimeInState() or 0
+
 			local x, y, z = inst.Transform:GetWorldPosition()
 			local x1, y1, z1 = target.Transform:GetWorldPosition()
 			local mindsq = math2d.DistSq(x, z, x1, z1)
-			local range = TUNING.VAULT_PILLAR_GUARD_ATTACK_RANGE + target:GetPhysicsRadius(0)
-			if mindsq < range * range and not inst.components.combat:InCooldown() then
-				return true --within melee range, attack
-			else
-				local homedsq = math2d.DistSq(x, z, home.x, home.z)
-				if inst.sg.currentstate.name == "alert" then
-					--add some buffer if currently alert, so we don't keep taking tiny steps
-					homedsq = math.sqrt(homedsq) + 3
-					homedsq = homedsq * homedsq
+
+			--attack within melee range (extends the longer we've been on alert)
+			if not inst.components.combat:InCooldown() then
+				local range = 2 + TUNING.VAULT_PILLAR_GUARD_ATTACK_RANGE + target:GetPhysicsRadius(0)
+				if self.atkrangetime == nil then
+					self.atkrangetime = math.random() * 4
 				end
-				if homedsq < mindsq then
-					return true --closer to home than to target, chase
+				range = range + math.clamp((alerttime - self.atkrangetime) / 4, 0, 4)
+				if mindsq < range * range then
+					if alerttime > 0 then
+						self.nextalert = t + 3 + math.random() * 2
+						self.atkrangetime = nil
+					end
+					return true
 				end
 			end
 
+			local alertdsq = math2d.DistSq(x1, z1, home.x, home.z) / 4
+			if alerttime <= 0 and inst.sg:HasStateTag("moving") then
+				--keep chasing until reached alert distance
+				if alertdsq < mindsq then
+					return true
+				end
+			else
+				--cancel alert if target moves too far
+				local dist = math.sqrt(mindsq)
+				local alertdist = math.sqrt(alertdsq)
+				if self.minalerttime == nil then
+					self.minalerttime = 5 + math.random() * 4
+				end
+				alertdist = alertdist + (alerttime < self.minalerttime and 3 or -4)
+				if alertdist < dist then
+					self.nextalert = t + 2 + math.random()
+					self.minalerttime = nil
+					return true
+				end
+			end
+
+			--attack if we're closest, otherwise move on to alert nodes
 			local closest = inst
 			for i = 1, 4 do
 				local guard = inst.trial.components.entitytracker:GetEntity("guard"..tostring(i))
@@ -210,7 +246,7 @@ function Vault_Pillar_GuardBrain:OnStart()
 				"<busy state guard>",
 				PriorityNode({
 					Leash(self.inst, GetHomeBetweenTargetPos, 1, 1),
-					WhileNode(function() return ShouldChase(self.inst) end, "chase and attack",
+					WhileNode(function() return ShouldChase(self) end, "chase and attack",
 						_ChaseAndAttackOrJump),
 					FaceEntity(self.inst, GetPointAtTargetFn, KeepPointAtTargetFn),
 					FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn, 3), -- 3s refresh timer to pick new target (or same one again).

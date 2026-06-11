@@ -16,10 +16,15 @@ end
 local TARGET_DIST = TUNING.SHADOWCREATURE_TARGET_DIST
 local TARGET_DIST_SQ = TARGET_DIST * TARGET_DIST
 
-local VAULT_TARGET_MUST_TAGS = { "epic" }
-local VAULT_TARGET_CANT_TAGS = { "INLIMBO" }
-local function IsVaultTargetValid(guy, inst)
-	return guy:HasAllTags("vault_pillar_guard", "vault_key_trial_guardian") and inst.components.combat:CanTarget(guy)
+local VAULT_TARGET_MUST_TAGS, VAULT_SHADOWCREATURE_TAGS
+
+local function IsPriorityVaultTargetAtXZ(inst, target, x, z)
+	for _, v in ipairs(TheSim:FindEntities(x, 0, z, TARGET_DIST, VAULT_SHADOWCREATURE_TAGS)) do
+		if v ~= inst and v.components.combat:TargetIs(target) then
+			return false
+		end
+	end
+	return true
 end
 
 local function retargetfn(inst)
@@ -50,11 +55,32 @@ local function retargetfn(inst)
     end
 
     if invault then -- Vault targetting. Get the guard towers!
-        local vaulttarget = FindEntity(inst, TARGET_DIST, IsVaultTargetValid, VAULT_TARGET_MUST_TAGS, VAULT_TARGET_CANT_TAGS)
-        if vaulttarget ~= nil then
-            inst.ignorecombatonkeeptarget = true
-            return vaulttarget, inst.components.combat.target ~= nil and not IsVaultTargetValid(inst.components.combat.target, inst)
-        end
+		if VAULT_TARGET_MUST_TAGS == nil then
+			VAULT_TARGET_MUST_TAGS = { "vault_pillar_guard", "vault_key_trial_guardian" }
+			VAULT_SHADOWCREATURE_TAGS = { "shadowcreature", "_combat" }
+		end
+
+		local x, y, z = inst.Transform:GetWorldPosition()
+		local vaulttarget = inst.components.combat.target
+		if vaulttarget and vaulttarget:HasAllTags(VAULT_TARGET_MUST_TAGS) and IsPriorityVaultTargetAtXZ(inst, vaulttarget, x, z) then
+			inst.ignorecombatonkeeptarget = true
+			return
+		end
+
+		local ents = TheSim:FindEntities(x, y, z, TARGET_DIST, VAULT_TARGET_MUST_TAGS)
+		if #ents > 0 then
+			vaulttarget = ents[1]
+			for _, v in ipairs(ents) do
+				if v.entity:IsVisible() and inst.components.combat:CanTarget(v) and IsPriorityVaultTargetAtXZ(inst, v, x, z) then
+					vaulttarget = v
+					break
+				end
+			end
+			inst.ignorecombatonkeeptarget = true
+			return vaulttarget, true
+		end
+
+		inst.ignorecombatonkeeptarget = nil
     end
 
 	local forcechange = inst.forceretarget

@@ -648,6 +648,7 @@ STRINGS =
 			CARTOGRAPHY = "Draw at",
 			STUDY = "Study at",
 			FORGE = "Forge at",
+            OPERATE = "Operate",
 		},
 
         JUMPIN =
@@ -2356,6 +2357,7 @@ STRINGS =
         CRITTER_GLOMLING = "Glomglom",
 		CRITTER_LUNARMOTHLING = "Mothling",
         CRITTER_BULBIN = "Bulbin",
+        CRITTER_EETS = "Eets",
 
         CRITTER_LAMB_BUILDER = "Ewelet",
         CRITTER_PUPPY_BUILDER = "Vargling",
@@ -2365,6 +2367,7 @@ STRINGS =
         CRITTER_GLOMLING_BUILDER = "Glomglom",
 		CRITTER_LUNARMOTHLING_BUILDER = "Mothling",
         CRITTER_BULBIN_BUILDER = "Bulbin",
+        CRITTER_EETS_BUILDER = "Eets",
 
         BEARGERVEST = "Hibearnation Vest",
         ARMORDRAGONFLY = "Scalemail",
@@ -4653,9 +4656,9 @@ STRINGS =
         VAULT_KEY_PEDESTAL = "Reliquary",
         VAULT_ORB_REFINED = "Portation Orb Fragment",
         VAULT_COMPASS = "Waymark Compass",
-		VAULT_PILLAR_GUARD_PIECE_1 = "Tower Core",
-		VAULT_PILLAR_GUARD_PIECE_2 = "Tower Spark Cradle",
-		VAULT_PILLAR_GUARD_PIECE_3 = "Tower Articulator",
+		VAULT_PILLAR_GUARD_PIECE_1 = "Guard Tower Core",
+		VAULT_PILLAR_GUARD_PIECE_2 = "Spark Socket",
+		VAULT_PILLAR_GUARD_PIECE_3 = "Cranky Articulator",
 
         VAULT_REFINER_PEDESTAL = "Sanctum Smithy",
 
@@ -5131,6 +5134,7 @@ STRINGS =
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
 		CRITTER_LUNARMOTHLING_BUILDER = "Befriend a delicate Mothling.",
 		CRITTER_BULBIN_BUILDER = "Befriend a rolling Bulbin.",
+		CRITTER_EETS_BUILDER = "Befriend a hungry Eets.\nIt's emotional.",
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
 
@@ -8923,6 +8927,7 @@ STRINGS.UI =
 
         CANTRESEARCH = "Some things must be discovered on your own.",
         LIMITEDAMOUNTFMT = "{name} ({number} available)",
+        NUMTOGIVEFMT = "{name} (x{number})",
         DEFAULT = "Classic",
     },
 

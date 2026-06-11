@@ -2232,6 +2232,7 @@ return{
         CRITTER_PERDLING = "Look, it's not you. It's me.",
 		CRITTER_LUNARMOTHLING = "That's my little forest buddy.",
         CRITTER_BULBIN = "Sure got a spring in your step, eh?",
+        CRITTER_EETS = "You're a little pudgy, eh?",
 
 		CROW =
 		{
@@ -6223,7 +6224,7 @@ return{
             PICKED = "It's gone.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "It sure cleans up nicely.",
-        VAULT_PILLAR_GUARD_PIECE = "Good as new.",
+        VAULT_PILLAR_GUARD_PIECE = "Must be a part for that stone hoser",
         VAULT_REFINER_PEDESTAL = "I'm sure it's not a table saw.",
 
         VAULT_COMPASS =
@@ -6234,7 +6235,7 @@ return{
         },
 
         CEILING_ROPE = "That's a nice climbing rope.",
-        VAULT_KEY_EXIT = "Can't tie a rope here, eh?",
+        VAULT_KEY_EXIT = "Can't tie a rope here, eh?",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

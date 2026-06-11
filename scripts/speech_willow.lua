@@ -2238,6 +2238,7 @@ return{
         CRITTER_PERDLING = "I could just eat you up.",
 		CRITTER_LUNARMOTHLING = "She loves flames!",
         CRITTER_BULBIN = "My bulbous little buddy.",
+        CRITTER_EETS = "Aww, you're weird! It's kind of cute.",
 
 		CROW =
 		{
@@ -6229,7 +6230,7 @@ return{
             PICKED = "And it's gone!", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "So pretty. Now what do I do with it?",
-        VAULT_PILLAR_GUARD_PIECE = "Fixed it! Now what?",
+        VAULT_PILLAR_GUARD_PIECE = "Great, now where does it go?",
         VAULT_REFINER_PEDESTAL = "Does it have a burn function?",
 
         VAULT_COMPASS =
@@ -6240,7 +6241,7 @@ return{
         },
 
         CEILING_ROPE = "Dibs!",
-        VAULT_KEY_EXIT = "Can't tie a rope? Who cares!",
+        VAULT_KEY_EXIT = "Can't tie a rope? Who cares!",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

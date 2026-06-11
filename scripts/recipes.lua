@@ -15,8 +15,8 @@ PROTOTYPER_DEFS =
 	turfcraftingstation			= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_turfcrafting.tex",		is_crafting_station = false},
 	bookstation					= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_books.tex",				is_crafting_station = false,	action_str = "STUDY"},
 	
-	ancient_altar				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_crafting_table.tex",	is_crafting_station = true,									filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.ANCIENT},
-	ancient_altar_broken		= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_crafting_table.tex",	is_crafting_station = true,									filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.ANCIENT},
+	ancient_altar				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_crafting_table.tex",	is_crafting_station = true,		action_str = "USE",			filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.ANCIENT},
+	ancient_altar_broken		= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_crafting_table.tex",	is_crafting_station = true,		action_str = "USE",			filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.ANCIENT},
 	critterlab					= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_orphanage.tex",			is_crafting_station = true,		action_str = "CRITTERS",	filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.ORPHANAGE},
 	cartographydesk				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_cartography.tex",		is_crafting_station = true,		action_str = "CARTOGRAPHY",	filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.CARTOGRAPHY},
 	sculptingtable				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_sculpt.tex",			is_crafting_station = true,		action_str = "SCULPTING",	filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.SCULPTING},
@@ -31,8 +31,8 @@ PROTOTYPER_DEFS =
 	shellweaver					= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_shellweaver.tex",		is_crafting_station = true,		action_str = "FORGE",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.SHELLWEAVER},
 	rabbitking_passive			= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_rabbitking.tex",		is_crafting_station = true,		action_str = "TRADE",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.RABBITKINGSHOP},
 	wanderingtrader				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_wanderingtrader.tex",	is_crafting_station = true,		action_str = "TRADE",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.WANDERINGTRADERSHOP},
-	wagpunk_workstation			= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_wagpunk_workstation.tex",is_crafting_station = true,								filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.WAGPUNK_WORKSTATION},
-	carpentry_station			= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_carpentry.tex",			is_crafting_station = true,									filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.CARPENTRY},
+	wagpunk_workstation			= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_wagpunk_workstation.tex",is_crafting_station = true,	action_str = "OPERATE",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.WAGPUNK_WORKSTATION},
+	carpentry_station			= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_carpentry.tex",			is_crafting_station = true,		action_str = "OPERATE",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.CARPENTRY},
 
 	waxwelljournal				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_shadow.tex",			is_crafting_station = true,		action_str = "READ",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.SHADOW},
 	portableblender				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_foodprocessing.tex",	is_crafting_station = true,		action_str = "USE",			filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.FOODPROCESSING},
@@ -43,7 +43,7 @@ PROTOTYPER_DEFS =
 	madscience_lab				= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_madscience_lab.tex",	is_crafting_station = true,		action_str = "EXPERIEMENT",	filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.MADSCIENCE},
 	perdshrine					= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "station_perd_offering.tex",		is_crafting_station = true,		action_str = "OFFERING",	filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.YOT_SHRINE_DOFFERING},
 
-	vault_refiner_pedestal		= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "vault_refiner_pedestal.tex",	is_crafting_station = true,									filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.VAULT_REFINER_PEDESTAL},
+	vault_refiner_pedestal		= {icon_atlas = CRAFTING_ICONS_ATLAS, icon_image = "vault_refiner_pedestal.tex",	is_crafting_station = true,		action_str = "OPERATE",		filter_text = STRINGS.UI.CRAFTING_STATION_FILTERS.VAULT_REFINER_PEDESTAL},
 }
 PROTOTYPER_DEFS.wargshrine = PROTOTYPER_DEFS.perdshrine
 PROTOTYPER_DEFS.pigshrine = PROTOTYPER_DEFS.perdshrine
@@ -124,19 +124,21 @@ Recipe2("wurt_swampitem_shadow",		{Ingredient("driftwood_log", 1), Ingredient("t
 Recipe2("wurt_swampitem_lunar",			{Ingredient("driftwood_log", 1), Ingredient("turf_marsh", 1), Ingredient("purebrilliance", 1)},	TECH.NONE,				{builder_skill="wurt_lunar_allegiance_2"})
 
 -- Wendy
-local function elixir_numtogive(recipe, doer)
+local function elixir_numtogive(recipe, doer, ui)
 	local total = 1
 	if doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("wendy_potion_yield") then
-		if TryLuckRoll(doer, TUNING.GHOSTLYELIXIR_EXTRA1_CHANCE, LuckFormulas.LootDropperChance) then
-			total = total + 1
-		end
+		if not ui then
+			if TryLuckRoll(doer, TUNING.GHOSTLYELIXIR_EXTRA1_CHANCE, LuckFormulas.LootDropperChance) then
+				total = total + 1
+			end
 
-		if TryLuckRoll(doer, TUNING.GHOSTLYELIXIR_EXTRA2_CHANCE, LuckFormulas.LootDropperChance) then
-			total = total + 1
-		end
+			if TryLuckRoll(doer, TUNING.GHOSTLYELIXIR_EXTRA2_CHANCE, LuckFormulas.LootDropperChance) then
+				total = total + 1
+			end
 
-		if total > 1 then
-			doer:PushEvent("craftedextraelixir",total)
+			if total > 1 then
+				doer:PushEvent("craftedextraelixir", total)
+			end
 		end
 	end
 	return total
@@ -823,6 +825,7 @@ Recipe2("critter_glomling_builder",			{Ingredient("glommerfuel", 1), Ingredient(
 Recipe2("critter_lunarmothling_builder",	{Ingredient("moonbutterfly", 1), Ingredient("flowersalad", 1)},											TECH.ORPHANAGE_ONE,			{nounlock=true, actionstr="ORPHANAGE"})
 Recipe2("critter_eyeofterror_builder",		{Ingredient("milkywhites", 1), Ingredient("baconeggs", 1)},												TECH.ORPHANAGE_ONE,			{nounlock=true, actionstr="ORPHANAGE"})
 Recipe2("critter_bulbin_builder",			{Ingredient("onion", 1, nil, nil, "quagmire_onion.tex"), Ingredient("stuffedeggplant", 1)},				TECH.ORPHANAGE_ONE,			{unlocks_from_skin=true, nounlock=true, actionstr="ORPHANAGE"})
+Recipe2("critter_eets_builder",				{Ingredient("garlic", 1), Ingredient("butterflymuffin", 1)},											TECH.ORPHANAGE_ONE,			{unlocks_from_skin=true, nounlock=true, actionstr="ORPHANAGE"})
 
 ----CELESTIAL----
 Recipe2("moonrockidol",								{Ingredient("moonrocknugget", 1), Ingredient("purplegem", 1)},									TECH.CELESTIAL_ONE,			{nounlock=true})
@@ -1074,7 +1077,7 @@ Recipe2("fumarole_farm_hoe",			{Ingredient("twigs", 4), Ingredient("mitegland", 
 Recipe2("trap_fumarole",				{Ingredient("flint", 4), Ingredient("mitegland", 2), Ingredient("nitre", 4)},											TECH.SCIENCE_TWO, { numtogive = 4 })
 Recipe2("healingsalve_fumarole",		{Ingredient("ash", 2),   Ingredient("flint", 1), Ingredient("mitegland", 1)},											TECH.SCIENCE_TWO)
 
-Recipe2("vault_orb_refined",			{Ingredient("vault_orb", 1)},																							TECH.VAULT_REFINE_ONE, { nounlock = true, no_deconstruction = true, numtogive = 2 })
+Recipe2("vault_orb_refined",			{Ingredient("vault_orb", 1)},																							TECH.VAULT_REFINE_ONE, { nounlock = true, no_deconstruction = true, numtogive = 3 })
 Recipe2("vault_pillar_guard_constr_plans", {Ingredient("vault_pillar_guard_piece_1", 1), Ingredient("vault_pillar_guard_piece_2", 1), Ingredient("vault_pillar_guard_piece_3", 2)}, TECH.VAULT_REFINE_ONE, { nounlock = true })
 
 ------------------------------- SPECIAL EVENTS -------------------------------
@@ -1474,6 +1477,10 @@ DeconstructRecipe("oar_monkey",						{Ingredient("log", 1), Ingredient("palmcone
 DeconstructRecipe("eyeturret",						{Ingredient("deerclops_eyeball", 1), Ingredient("minotaurhorn", 1), Ingredient("thulecite", 5)})
 DeconstructRecipe("scrap_monoclehat",				{Ingredient("wagpunk_bits", 2), Ingredient("transistor", 1), Ingredient("trinket_6", 1)})
 DeconstructRecipe("scraphat",						{Ingredient("wagpunk_bits", 3)})
+DeconstructRecipe("vault_compass",					{Ingredient("thulecite_pieces", 1), Ingredient("moonrocknugget", 1)})
+DeconstructRecipe("vault_pillar_guard_piece_1",		{Ingredient("thulecite_pieces", 1), Ingredient("moonrocknugget", 2)})
+DeconstructRecipe("vault_pillar_guard_piece_2",		{Ingredient("thulecite_pieces", 2), Ingredient("trinket_6", 1)})
+DeconstructRecipe("vault_pillar_guard_piece_3",		{Ingredient("thulecite_pieces", 1), Ingredient("moonrocknugget", 1)})
 
 for k = 1, NUM_HALLOWEEN_PUMPKINCARVERS do
 	DeconstructRecipe("pumpkincarver"..tostring(k),	{Ingredient("pumpkin_seeds", 1), Ingredient("flint", 1)})

@@ -697,7 +697,7 @@ end
 local function dormant_OnPossessed(inst, data)
     local pulse = data.possesser
     if pulse ~= nil and pulse:HasTag("power_point") then
-        pulse:Despawn()
+		pulse:Despawn(inst)
 	end
 	inst:ActivatePillarGuard()
 end
@@ -819,21 +819,30 @@ local function constr_InstantUpdate(inst)
 	end
 end
 
+local function DoTarpSound(inst)
+	inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5)
+	inst.SoundEmitter:PlaySound("hookline_2/common/hotspring/tarp")
+end
+
 local function constr_OnAnimOver(inst)
 	if inst.AnimState:IsCurrentAnimation("construction_small_place") then
-		inst.AnimState:PlayAnimation(
-			constr_CalcProgress(inst) > 0.3 and
-			"construction_small_to_med" or
-			"construction_small")
+		if constr_CalcProgress(inst) > 0.3 then
+			inst.AnimState:PlayAnimation("construction_small_to_med")
+			DoTarpSound(inst)
+		else
+			inst.AnimState:PlayAnimation("construction_small")
+		end
 	elseif inst.AnimState:IsCurrentAnimation("construction_small_to_med") then
-		inst.AnimState:PlayAnimation(
-			constr_CalcProgress(inst) > 0.6 and
-			"construction_med_to_large" or
-			"construction_med")
+		if constr_CalcProgress(inst) > 0.6 then
+			inst.AnimState:PlayAnimation("construction_med_to_large")
+			DoTarpSound(inst)
+		else
+			inst.AnimState:PlayAnimation("construction_med")
+		end
 	elseif inst.AnimState:IsCurrentAnimation("construction_med_to_large") then
 		if inst.components.constructionsite:IsComplete() then
 			inst.AnimState:PlayAnimation("construction_large_to_off")
-			inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/build")
+			DoTarpSound(inst)
 		else
 			inst.AnimState:PlayAnimation("construction_large")
 		end
@@ -850,21 +859,23 @@ local function constr_OnConstructed(inst)--, doer)
 	elseif inst.AnimState:IsCurrentAnimation("construction_small") then
 		if constr_CalcProgress(inst) > 0.3 then
 			inst.AnimState:PlayAnimation("construction_small_to_med")
+			DoTarpSound(inst)
 		end
 	elseif inst.AnimState:IsCurrentAnimation("construction_med") then
 		if constr_CalcProgress(inst) > 0.6 then
 			inst.AnimState:PlayAnimation("construction_med_to_large")
+			DoTarpSound(inst)
 		end
 	elseif inst.AnimState:IsCurrentAnimation("construction_large") and inst.components.constructionsite:IsComplete() then
 		inst.AnimState:PlayAnimation("construction_large_to_off")
-		inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/build")
+		DoTarpSound(inst)
 	end
 end
 
 local function constr_OnBuilt(inst, data)
 	if not inst:IsAsleep() then
 		inst.AnimState:PlayAnimation("construction_small_place")
-		inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/place")
+		inst.SoundEmitter:PlaySound("rifts7/pillar_guard/kit_place")
 		PreventCharacterCollisionsWithPlacedObjects(inst)
 	end
 end
@@ -964,7 +975,7 @@ return Prefab("vault_pillar_guard", fn, assets, prefabs),
 		nil,							-- burnable
 		{								-- deployable_data
 			common_postinit = function(inst)
-				inst.pickupsound = "metal"
+				inst.pickupsound = "rock"
 			end,
 			custom_candeploy_fn = function(inst, pt, mouseover, deployer, rot)
 				--Don't use GetValidRecipe, since validity doesn't apply here.

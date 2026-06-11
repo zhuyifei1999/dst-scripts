@@ -545,12 +545,21 @@ local function SetSfxPosition(inst)
     end
 end
 
-local function Despawn(inst)
+local function Despawn(inst, opt_target)
+	if inst:IsAsleep() then
+		inst:Remove()
+		return
+	end
+	inst:StopBrain("despawn")
     inst.components.locomotor:StopMoving()
     inst.components.locomotor.walkspeed = 0
     inst.persists = false
     inst.SoundEmitter:PlaySound("grotto/creatures/centipede/electricity/small_explode")
     inst.AnimState:PlayAnimation("despawn")
+	if opt_target then
+		inst.Physics:Teleport(opt_target.Transform:GetWorldPosition())
+		inst.AnimState:SetFinalOffset(4)
+	end
     inst:ListenForEvent("animover", inst.Remove)
     inst:ListenForEvent("entitysleep", inst.Remove)
 end

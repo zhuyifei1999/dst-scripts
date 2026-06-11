@@ -497,6 +497,7 @@ local states =
 			FrameEvent(20, function(inst)
 				inst.sg:AddStateTag("nofreeze")
 				inst.sg:AddStateTag("hiding")
+				inst.components.locomotor:Stop()
 				inst.components.health:SetAbsorptionAmount(1)
 				SetHidingMass(inst, true)
 				SetHidingRadius(inst, true)

@@ -912,13 +912,14 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(3, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.5) end),
-			FrameEvent(7, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.7) end),
-			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.6) end),
-			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/whoosh") end),
-			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("daywalker/action/attack_slam_whoosh") end), 
-			FrameEvent(30, function(inst) inst.SoundEmitter:PlaySound("daywalker/action/attack_slam_down") end),
-			FrameEvent(30, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/hit") end),
+			FrameEvent(3, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.6) end),
+			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.4) end),
+			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack", nil, 0.5) end),
+			FrameEvent(26, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/whoosh") end),
+			FrameEvent(29, function(inst) inst.SoundEmitter:PlaySound("daywalker/action/attack_slam_whoosh") end), 
+			FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("daywalker/action/attack_slam_down") end),
+			FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/crack") end),
+			--FrameEvent(30, function(inst) inst.SoundEmitter:PlaySound("rifts7/pillar_guard/footstep") end),
 
 			FrameEvent(8, function(inst)
 				if not inst.sg:HasStateTag("jumping") then
@@ -1068,7 +1069,7 @@ local states =
 		timeline =
 		{
 			FrameEvent(5, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium/retract", nil, 0.6) end),
-			FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
+			--FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/rocks/move", nil, 0.5) end),
 
 			FrameEvent(12, DoSmallstep),
 			FrameEvent(19, DoSmallstep),

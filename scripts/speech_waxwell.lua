@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "You're as fowl as I am!",
 		CRITTER_LUNARMOTHLING = "You had better not chew holes in my suit.",
         CRITTER_BULBIN = "You're not from around here, are you pal?",
+        CRITTER_EETS = "Would you stay still, you jittering thing?",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "It's already been taken.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "Those crafty old bugs...",
-        VAULT_PILLAR_GUARD_PIECE = "You'd better not turn on me!",
+        VAULT_PILLAR_GUARD_PIECE = "That blasted tower needs so many parts.",
         VAULT_REFINER_PEDESTAL = "It's powered by ancient magic.",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "Is it time to leave this accursed place?",
-        VAULT_KEY_EXIT = "Can't tie a rope? How exciting.",
+        VAULT_KEY_EXIT = "Can't tie a rope? How exciting.",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "You tell me.",

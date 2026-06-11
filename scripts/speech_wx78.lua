@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "...YOU MAY LIVE",
 		CRITTER_LUNARMOTHLING = "IT HAS NO OFFENSIVE USAGE, YET I AM COMPELLED TO KEEP IT",
         CRITTER_BULBIN = "CORRUPTION DETECTED. EXCELLENT",
+        CRITTER_EETS = "YES, JUMP AND SPIN FOR MY ENTERTAINMENT, FOOL",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "IT HAS BEEN CLAIMED", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "TELEPORTATION COMPONENT",
-        VAULT_PILLAR_GUARD_PIECE = "SENTRY UNIT CORE COMPLETED",
+        VAULT_PILLAR_GUARD_PIECE = "SENTRY UNIT COMPONENT",
         VAULT_REFINER_PEDESTAL = "YOU'VE CHANGED",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "PRIMITIVE BUT NECESSARY",
-        VAULT_KEY_EXIT = "NO RETURN FUNCTION",
+        VAULT_KEY_EXIT = "NO RETURN FUNCTION",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

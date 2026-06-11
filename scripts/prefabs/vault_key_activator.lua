@@ -223,6 +223,11 @@ local function pedestal_OnKeyTaken(inst)
 	inst.SoundEmitter:PlaySound("rifts7/vault_key_pedestal/deactivate")
 	inst.components.pickable.caninteractwith = false
 	inst.components.pickable.canbepicked = false -- for onload
+	if inst.camerafocustask then
+		inst.camerafocustask:Cancel()
+		inst.camerafocustask = nil
+	end
+	inst.plate:EnableCameraFocus(true)
 end
 
 local function pedestal_OnAppearAnimOver(inst)
@@ -231,6 +236,14 @@ local function pedestal_OnAppearAnimOver(inst)
 	inst.AnimState:PlayAnimation("pedestal_idle_key", true)
 	inst:RemoveTag("NOCLICK")
 	inst.SoundEmitter:PlaySound("rifts7/vault_key_pedestal/idle_LP", "loop")
+	if inst.plate and inst.camerafocustask == nil then
+		inst.plate:EnableCameraFocus(false)
+	end
+end
+
+local function pedestal_DisableCameraFocus(inst)
+	inst.camerafocustask = nil
+	inst.plate:EnableCameraFocus(false)
 end
 
 local function pedestal_OnEntityWake(inst)
@@ -296,6 +309,7 @@ local function pedestalfn()
 		inst:RemoveTag("NOCLICK")
 	else
 		inst:ListenForEvent("animover", pedestal_OnAppearAnimOver)
+		inst.camerafocustask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 0.6, pedestal_DisableCameraFocus)
 	end
 	inst.OnEntityWake = pedestal_OnEntityWake
 
@@ -354,6 +368,10 @@ local function refiner_OnAppearAnimOver(inst)
 	inst.OnEntityWake = nil
 	inst.AnimState:PlayAnimation("refiner_idle", true)
 	inst:RemoveTag("NOCLICK")
+	if inst.plate then --we CAN reach here during construction, when plate hasn't be set
+		inst.plate:EnableCameraFocus(false)
+		inst.plate:PushEvent("ms_vaultrefiner_revealed")
+	end
 end
 
 local function refiner_OnEntityWake(inst)
@@ -418,6 +436,32 @@ end
 
 --------------------------------------------------------------------------
 
+local function plate_OnCameraFocusDirty(inst)
+	local player = TheFocalPoint.entity:GetParent()
+	if inst.camerafocus:value() and player and
+		TheWorld.Map:IsPointInVaultRoom(player.Transform:GetWorldPosition()) and
+		TheWorld.Map:IsPointInVaultRoom(inst.Transform:GetWorldPosition())
+	then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 6, 75, 4)
+	else
+		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	end
+end
+
+local function plate_EnableCameraFocus(inst, enable)
+	if enable and inst.trial and inst.trial:IsPillarGuardAggro() then
+		enable = false --don't use camera focus if pillar guards are still in combat
+	end
+	if enable ~= inst.camerafocus:value() then
+		inst.camerafocus:set(enable)
+
+		--Dedicated server does not need to focus camera
+		if not TheNet:IsDedicated() then
+			plate_OnCameraFocusDirty(inst)
+		end
+	end
+end
+
 local function plate_SpawnOpenPrefab(inst)
 	local prefab = inst._openprefab
 	inst._openprefab = nil
@@ -478,7 +522,6 @@ local function plate_OnOpenAnimOver(inst)
 	inst.Physics:SetActive(true)
 	plate_ShowFront(inst, true)
 	plate_SpawnOpenPrefab(inst)
-	LaunchArea(inst, inst.plateradius, 1, 0.75, 0.3, 0.5)
 end
 
 local function plate_Open(inst, prefab)
@@ -488,12 +531,18 @@ local function plate_Open(inst, prefab)
 			plate_SpawnOpenPrefab(inst)
 		elseif inst.AnimState:IsCurrentAnimation("plate_open_pre") then
 			--already opening
-		elseif POPULATING then
-			plate_OnOpenAnimOver(inst)
 		else
-			inst:ListenForEvent("animover", plate_OnOpenAnimOver)
-			inst.AnimState:PlayAnimation("plate_open_pre")
-			inst.SoundEmitter:PlaySound("rifts7/plate/open")
+			if POPULATING then
+				plate_OnOpenAnimOver(inst)
+			else
+				if inst.camerafocus then
+					inst:EnableCameraFocus(true)
+				end
+				inst:ListenForEvent("animover", plate_OnOpenAnimOver)
+				inst.AnimState:PlayAnimation("plate_open_pre")
+				inst.SoundEmitter:PlaySound("rifts7/plate/open")
+			end
+			LaunchArea(inst, inst.plateradius, 1, 0.75, 0.3, 0.8 * inst.plateradius)
 		end
 	end
 end
@@ -574,7 +623,7 @@ local function plate_OnLoad(inst, data, ents)
 	end
 end
 
-local function MakePlate(name, build, radius, assets, prefabs)
+local function MakePlate(name, build, radius, camerafocus, assets, prefabs)
 	local function fn()
 		local inst = CreateEntity()
 
@@ -605,12 +654,17 @@ local function MakePlate(name, build, radius, assets, prefabs)
 		inst:AddTag("blocker")
 
 		inst.showfront = net_bool(inst.GUID, "vault_key_activator_plate.showfront", "showfrontdirty")
+		if camerafocus then
+			inst.camerafocus = net_bool(inst.GUID, "vault_key_activator_plate.camerafocus", "camerafocusdirty")
+		end
 
 		inst.entity:SetPristine()
 
 		if not TheWorld.ismastersim then
 			inst:ListenForEvent("showfrontdirty", plate_OnShowFrontDirty)
-
+			if camerafocus then
+				inst:ListenForEvent("camerafocusdirty", plate_OnCameraFocusDirty)
+			end
 			return inst
 		end
 
@@ -619,6 +673,7 @@ local function MakePlate(name, build, radius, assets, prefabs)
 		inst.GotSpark = plate_GotSpark
 		inst.OpenPlate = plate_Open
 		inst.ClosePlate = plate_Close
+		inst.EnableCameraFocus = camerafocus and plate_EnableCameraFocus or nil
 		inst.GetOpenPrefab = plate_GetOpenPrefab
 		inst.OnSave = plate_OnSave
 		inst.OnLoad = plate_OnLoad
@@ -635,5 +690,5 @@ return Prefab("vault_key_activator", fn, assets),
 	Prefab("vault_crawler_lever", leverfn, assets),
 	Prefab("vault_key_pedestal", pedestalfn, assets_pedestal),
 	Prefab("vault_refiner_pedestal", refinerpedestalfn, assets_pedestal),
-	MakePlate("vault_key_activator_plate", "vault_activator", ACTIVATOR_PHYS_RAD, assets, prefabs),
-	MakePlate("vault_key_pedestal_plate", "vault_key_pedestal", PEDESTAL_PHYS_RAD, assets_pedestal, prefabs_pedestal)
+	MakePlate("vault_key_activator_plate", "vault_activator", ACTIVATOR_PHYS_RAD, false, assets, prefabs),
+	MakePlate("vault_key_pedestal_plate", "vault_key_pedestal", PEDESTAL_PHYS_RAD, true, assets_pedestal, prefabs_pedestal)

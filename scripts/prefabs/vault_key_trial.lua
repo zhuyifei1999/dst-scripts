@@ -36,11 +36,13 @@ local function RevealKey(inst)
 	end
 end
 
-local function RevealChasm(inst)
-	inst.chasmtask = nil
-	local keyexit = inst.components.entitytracker:GetEntity("exit")
-	if keyexit then
-		keyexit:Open()
+local function CheckChasm(inst)
+	local pedestal = inst.components.entitytracker:GetEntity("keypedestal")
+	if pedestal and pedestal:GetOpenPrefab() == "vault_refiner_pedestal" then
+		local keyexit = inst.components.entitytracker:GetEntity("exit")
+		if keyexit then
+			keyexit:Open()
+		end
 	end
 end
 
@@ -56,13 +58,6 @@ local function CheckPuzzleProgress(inst)
 					RevealKey(inst)
 				else
 					inst.task = inst:DoTaskInTime(1, RevealKey)
-				end
-			end
-			if inst.chasmtask == nil then
-				if POPULATING then
-					RevealChasm(inst)
-				else
-					inst.chasmtask = inst:DoTaskInTime(3.5, RevealChasm)
 				end
 			end
 			local middlering = inst.components.entitytracker:GetEntity("middlering")
@@ -266,6 +261,15 @@ local function TrackActivator(inst, activator)
 	inst:ListenForEvent("ms_vaultcrawlerlever_pulled", inst._onvaultcrawlerlever_pulled, activator)
 end
 
+local function TrackKeyPedestal(inst, keypedestal)
+	inst:ListenForEvent("ms_vaultrefiner_revealed", inst._onvaultrefiner_revealed, keypedestal)
+	keypedestal.trial = inst
+end
+
+local function TrackExit(inst, exit)
+	exit.trial = inst
+end
+
 local function SpawnTrackedPrefabAtXZ(inst, id, prefab, x, z)
 	local ent = SpawnPrefab(prefab)
 	ent.Transform:SetPosition(x, 0, z)
@@ -321,11 +325,11 @@ local function InitializeLayout(inst)
 
 	-- key pedestal
 	SpawnTrackedPrefabAtXZ(inst, "middlering", "vault_ground_pattern_fx", x, z):SetVariation(groundvar2):SetOrientation(math.random(4)):ChangeSortOrder(-2)
-	SpawnTrackedPrefabAtXZ(inst, "keypedestal", "vault_key_pedestal_plate", x, z)
+	TrackKeyPedestal(inst, SpawnTrackedPrefabAtXZ(inst, "keypedestal", "vault_key_pedestal_plate", x, z))
 
 	-- key exit
-	local r = 5 * TILE_SCALE
-	SpawnTrackedPrefabAtXZ(inst, "exit", "vault_key_exit", x, z + r):SetCracks()
+	local r = 4.75 * TILE_SCALE
+	TrackExit(inst, SpawnTrackedPrefabAtXZ(inst, "exit", "vault_key_exit", x, z + r):SetCracks())
 end
 
 local function OnLoadPostPass(inst, ents, data)
@@ -355,8 +359,20 @@ local function OnLoadPostPass(inst, ents, data)
 			TrackCrawler(inst, ent)
 		end
 	end
+
+	local ent = inst.components.entitytracker:GetEntity("keypedestal")
+	if ent then
+		TrackKeyPedestal(inst, ent)
+	end
+
+	ent = inst.components.entitytracker:GetEntity("exit")
+	if ent then
+		TrackExit(inst, ent)
+	end
+
 	CheckAllActivators(inst)
 	CheckAllSockets(inst)
+	CheckChasm(inst)
 end
 
 local function CreateMarking()
@@ -390,6 +406,15 @@ local function OnPuzzleProgressDirty(inst)
 			(bit.band(bitfield, 2 ^ i) > 0 and "idle1_halfon") or
 			"idle1"
 		)
+	end
+end
+
+local function IsPillarGuardAggro(inst)
+	for i = 1, 4 do
+		local guard = inst.components.entitytracker:GetEntity("guard"..tostring(i))
+		if guard and guard.components.combat:HasTarget() then
+			return true
+		end
 	end
 end
 
@@ -450,6 +475,7 @@ local function fn()
 	inst._onvaultsocketed_changed = function() CheckAllSockets(inst) end
 	inst._onvaultactivator_changed = function() CheckAllActivators(inst) end
 	inst._onvaultcrawlerlever_pulled = function(activator, doer) OnLeverPulled(inst, activator, doer) end
+	inst._onvaultrefiner_revealed = function() CheckChasm(inst) end
 
 	--used for vault_pillar_guard and vault_crawler => both to share aggro other guards
 	--NOTE: crawler already handles sharing target to other crawlers
@@ -528,6 +554,7 @@ local function fn()
 	end
 
 	inst.InitializeLayout = InitializeLayout
+	inst.IsPillarGuardAggro = IsPillarGuardAggro
 	inst.OnLoadPostPass = OnLoadPostPass
 
 	return inst

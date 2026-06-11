@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "Not a raven, but wise nonetheless.",
 		CRITTER_LUNARMOTHLING = "Mine lunar friend!",
         CRITTER_BULBIN = "I forgive her vegetable ways.",
+        CRITTER_EETS = "How can you fight with no arms?",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "There is nought.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "'Tis a potent orb of old.",
-        VAULT_PILLAR_GUARD_PIECE = "Behold! The heart of the golem!",
+        VAULT_PILLAR_GUARD_PIECE = "Behold! A piece of the golem!",
         VAULT_REFINER_PEDESTAL = "Though battle be my calling, I do not loathe the smith's craft.",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "With this, I shall make mine ascent!",
-        VAULT_KEY_EXIT = "Nowhere to anchor a rope? A true warrior needeth no second plan.",
+        VAULT_KEY_EXIT = "Nowhere to anchor a rope? A true warrior needeth no second plan.",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

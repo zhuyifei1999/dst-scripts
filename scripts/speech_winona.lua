@@ -2237,6 +2237,7 @@ return{
         CRITTER_PERDLING = "Hey there, feathers.",
 		CRITTER_LUNARMOTHLING = "You sure are fragile, aren'tcha lil fella?",
         CRITTER_BULBIN = "You're a sweet little fella, but your breath is terrible.",
+        CRITTER_EETS = "Quite a bouncy fella.",
 
 		CROW =
 		{
@@ -6228,7 +6229,7 @@ return{
             PICKED = "Yup, it's empty.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "I've seen something like this before.",
-        VAULT_PILLAR_GUARD_PIECE = "Looks like the core of that lumbering tower of bricks.",
+        VAULT_PILLAR_GUARD_PIECE = "Looks like that lumbering tower of bricks needs this to lumber.",
         VAULT_REFINER_PEDESTAL = "Never seen anything like it, but I'll make it work.",
 
         VAULT_COMPASS =
@@ -6239,7 +6240,7 @@ return{
         },
 
         CEILING_ROPE = "Good to have a way out.",
-        VAULT_KEY_EXIT = "Well, looks like it's exit only.",
+        VAULT_KEY_EXIT = "Well, looks like it's exit only.",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

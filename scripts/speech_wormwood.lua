@@ -2235,6 +2235,7 @@ return{
         CRITTER_PERDLING = "Wee Tweeter is friend now",
 		CRITTER_LUNARMOTHLING = "Flap flap Flappy friend",
         CRITTER_BULBIN = "Don't worry, friend! Safe now",
+        CRITTER_EETS = "Jump friend!",
 
 		CROW =
 		{
@@ -6226,7 +6227,7 @@ return{
             PICKED = "Gone", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "Shiny friend!",
-        VAULT_PILLAR_GUARD_PIECE = "Whole friend",
+        VAULT_PILLAR_GUARD_PIECE = "For tall friend",
         VAULT_REFINER_PEDESTAL = "Make old things",
 
         VAULT_COMPASS =
@@ -6237,7 +6238,7 @@ return{
         },
 
         CEILING_ROPE = "Helpful friend",
-        VAULT_KEY_EXIT = "Nowhere tie helpful friend?",
+        VAULT_KEY_EXIT = "Nowhere tie helpful friend?",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "Friend?",

@@ -2018,7 +2018,13 @@ local function OnUserPickedCharacter(char, skin_base, clothing_body, clothing_ha
             selection = nil
         end
 
-        TheNet:SendSpawnRequestToServer(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet, starting_skins, selection)
+        -- FIXME(JBK): skinoverrides: Player selections from UI.
+        local skinoverrides = {}
+        if char == "wx78" and TheInventory:CheckOwnership("idleanimations_wx78_headadjust") then -- FIXME(JBK): skinoverrides: HACK
+            table.insert(skinoverrides, "idleanimations_wx78_headadjust")
+        end
+
+        TheNet:SendSpawnRequestToServer(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet, starting_skins, selection, skinoverrides)
     end
 
     TheFrontEnd:Fade(FADE_OUT, 1, doSpawn, nil, nil, "white")

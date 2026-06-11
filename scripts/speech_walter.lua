@@ -2273,6 +2273,7 @@ return{
         CRITTER_PERDLING = "What a funny little turkey.",
 		CRITTER_LUNARMOTHLING = "Mom would never let me keep a pet bug this big!",
         CRITTER_BULBIN = "I didn't know vegetables could be monsters too!",
+        CRITTER_EETS = "Woah! You can jump REALLY high!",
 
 		CROW =
 		{
@@ -6241,10 +6242,10 @@ return{
 
         HEALINGSALVE_FUMAROLE = "Can't be too careful when it comes to fire safety!",
 
-		VAULT_PILLAR_GUARD = "Wow! The pillar came to life!",
+		VAULT_PILLAR_GUARD = "Wow! The tower came to life!",
 		VAULT_PILLAR_GUARD_CRAFTED = "Whoa, big fella!",
 		VAULT_PILLAR_GUARD_DORMANT = "That sure is some neat architecture!",
-		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It needs that glowing energy ball wake up, Woby!",
+		VAULT_PILLAR_GUARD_DORMANT_CRAFTED = "It needs that glowing energy ball to wake up, Woby!",
 		VAULT_PILLAR_GUARD_CONSTR = "Are you as excited as I am, Woby?",
 		VAULT_PILLAR_GUARD_CONSTR_PLANS = "It'll be like setting up a tent, but it's a tower.",
 		VAULT_CRAWLER =
@@ -6264,7 +6265,7 @@ return{
             PICKED = "I sure that key wasn't cursed!", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "Pinetree Pioneers don't normally take shortcuts, but this might come in handy.",
-        VAULT_PILLAR_GUARD_PIECE = "Before this, it was resting in pieces! Right, Woby?",
+        VAULT_PILLAR_GUARD_PIECE = "It's a part to build the tower robot, Woby!",
         VAULT_REFINER_PEDESTAL = "What should we make, Woby?",
 
         VAULT_COMPASS =
@@ -6275,7 +6276,7 @@ return{
         },
 
         CEILING_ROPE = "Good thing I have my climbing badge!",
-        VAULT_KEY_EXIT = "Looks like a one-way, Woby!",
+        VAULT_KEY_EXIT = "Looks like a one-way, Woby!",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

@@ -350,6 +350,7 @@ local function fn()
 	inst.MiniMapEntity:SetIcon("vault_teleporter.png")
 
     MakeObstaclePhysics(inst, 0.1)
+	inst.Physics:ClearCollidesWith(COLLISION.GIANTS)
 
 	inst.AnimState:SetBank("vault_portal")
 	inst.AnimState:SetBuild("vault_portal")

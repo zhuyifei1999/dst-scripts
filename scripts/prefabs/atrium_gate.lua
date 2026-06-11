@@ -563,7 +563,11 @@ end
 
 local function UpdateCharlieHandKeyStone(inst)
     local charliehand = inst.components.entitytracker:GetEntity("charlie_hand")
-    local canspawn = inst.can_spawn_charlie_hand_keystone and inst.components.charliecutscene:IsGateRepaired() and not inst:IsVaultKeySocketed()
+    local canspawn = inst.can_spawn_charlie_hand_keystone
+        and inst.components.charliecutscene:IsGateRepaired()
+        and not inst:IsVaultKeySocketed()
+        and not inst:HasTag("intense")
+        and not inst.AnimState:IsCurrentAnimation("idle_fight")
 
     if charliehand == nil and canspawn then
         local keystone = FindKeyStone(inst)

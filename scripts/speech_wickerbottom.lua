@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "What a handsome poult you are!",
 		CRITTER_LUNARMOTHLING = "Who wuvs their widdle specimen?",
         CRITTER_BULBIN = "Are you animal or vegetable, dear?",
+        CRITTER_EETS = "It seems to have a liking for confectionary treats such as cakes.",
 
 		CROW =
 		{
@@ -6218,11 +6219,11 @@ return{
         VAULT_KEY = "I'm wary of just what it might unlock...",
         VAULT_KEY_PEDESTAL =
         {
-            GENERIC = "The measures employed to contain it suggest the key is of no small importaince.", -- Keystone is on it, ready to take
+            GENERIC = "The measures employed to contain it suggest the key is of no small importance.", -- Keystone is on it, ready to take
             PICKED = "The key has been taken.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "The ancients tapped the orbs power for teleportation.",
-        VAULT_PILLAR_GUARD_PIECE = "This is obviously the heart of the ancient security tower.",
+        VAULT_PILLAR_GUARD_PIECE = "This is obviously a component of the ancient security tower.",
         VAULT_REFINER_PEDESTAL = "A mill of sorts employed by the ancients.",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "A tried and true means of escape.",
-        VAULT_KEY_EXIT = "Since there is no place to tie a rope, one may not climb back up.",
+        VAULT_KEY_EXIT = "Since there is no place to tie a rope, one may not climb back up.",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

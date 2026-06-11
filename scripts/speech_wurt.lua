@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "Hello birdy!",
 		CRITTER_LUNARMOTHLING = "You ugly, but me love you.",
         CRITTER_BULBIN = "Little, smelly and green. You perfect, florp.",
+        CRITTER_EETS = "You jump weird, florp.",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "Gone.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "Prettiest rock! Glorp!",
-        VAULT_PILLAR_GUARD_PIECE = "See? Fixed.",
+        VAULT_PILLAR_GUARD_PIECE = "Me always have spare parts.",
         VAULT_REFINER_PEDESTAL = "Glurph. Makes old stuff.",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "Climbing easy.",
-        VAULT_KEY_EXIT = "What mean can't climb out?",
+        VAULT_KEY_EXIT = "What mean can't climb out?",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "What that?",

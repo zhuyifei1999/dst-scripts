@@ -403,6 +403,7 @@ local function socket_DoOpenSocket(inst)
 			inst.AnimState:PlayAnimation("plate_open_pre")
 			inst.SoundEmitter:PlaySound("rifts7/plate/open")
 		end
+		LaunchArea(inst, 1, 0.75, 0.5, 0.3, 0.75)
 	end
 end
 

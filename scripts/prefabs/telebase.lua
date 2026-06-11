@@ -51,6 +51,7 @@ local function OnGemChange(inst)
     for k, v in pairs(inst.components.objectspawner.objects) do
         v.requiredgem = requiredgem
     end
+    inst.gemtype = requiredgem
     if validteleporttarget(inst) then
         for k, v in pairs(inst.components.objectspawner.objects) do
             v.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
@@ -80,22 +81,29 @@ end
 local TELEBASES = {}
 
 --Global
-function FindNearestActiveTelebase(x, y, z, range, minrange)
+function FindNearestActiveTelebase(x, y, z, range, minrange, prioritizetype)
     range = (range == nil and math.huge) or (range > 0 and range * range) or 0
     minrange = math.min(range, minrange ~= nil and minrange > 0 and minrange * minrange or 0)
     if minrange < range then
+        local prioritymindistsq = math.huge
+        local prioritynearest = nil
         local mindistsq = math.huge
         local nearest = nil
         for k, v in pairs(TELEBASES) do
             if validteleporttarget(k) then
                 local distsq = k:GetDistanceSqToPoint(x, y, z)
-                if distsq < mindistsq and distsq >= minrange and distsq < range then
+                if prioritizetype and k.gemtype == prioritizetype then
+                    if distsq < prioritymindistsq and distsq >= minrange and distsq < range then
+                        prioritymindistsq = distsq
+                        prioritynearest = k
+                    end
+                elseif distsq < mindistsq and distsq >= minrange and distsq < range then
                     mindistsq = distsq
                     nearest = k
                 end
             end
         end
-        return nearest
+        return prioritynearest or nearest
     end
 end
 

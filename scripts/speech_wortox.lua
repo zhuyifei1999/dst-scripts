@@ -2251,6 +2251,7 @@ return{
         CRITTER_PERDLING = "You're so sweet, I could just gobble you up.",
 		CRITTER_LUNARMOTHLING = "On wings alight comes a fuzzy delight!",
         CRITTER_BULBIN = "Once you dwelt in a rotten wood, now it seems you're here for good!",
+        CRITTER_EETS = "Jumped a little too far from home now, haven't you mortal?",
 
 		CROW =
 		{
@@ -6242,7 +6243,7 @@ return{
             PICKED = "It's been taken! Shall we be foresaken?", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "For imitation of my teleportaion.",
-		VAULT_PILLAR_GUARD_PIECE = "The core of that giant eyesore!",
+        VAULT_PILLAR_GUARD_PIECE = "It won't start until it has every part.",
         VAULT_REFINER_PEDESTAL = "Be patient! It's ancient!",
 
         VAULT_COMPASS =
@@ -6253,7 +6254,7 @@ return{
         },
 
         CEILING_ROPE = "For when it's time to climb!",
-        VAULT_KEY_EXIT = "There's no hope for a rope!",
+        VAULT_KEY_EXIT = "There's no hope for a rope!",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

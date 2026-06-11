@@ -595,7 +595,9 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	"critter_glomling_builder",
 	"critter_lunarmothling_builder",
 	"critter_eyeofterror_builder",
+	-- skins for critterlab
     "critter_bulbin_builder",
+    "critter_eets_builder",
 
 	-- Sculpting
 	"chesspiece_hornucopia_builder",

@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "Gobble gobble!",
 		CRITTER_LUNARMOTHLING = "A spider and an insect, what a pair!",
         CRITTER_BULBIN = "It's our little onion friend!",
+        CRITTER_EETS = "Can you teach us how to jump like you?",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "It's gone!", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "Ooh we know a fun game with this.",
-        VAULT_PILLAR_GUARD_PIECE = "What does it do now?",
+        VAULT_PILLAR_GUARD_PIECE = "What does it do?",
         VAULT_REFINER_PEDESTAL = "What does it make? Toys?",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "We love climbing!",
-        VAULT_KEY_EXIT = "We can't climb out? Okay!",
+        VAULT_KEY_EXIT = "We can't climb out? Okay!",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

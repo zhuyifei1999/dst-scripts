@@ -18,11 +18,15 @@ end
 local function OnPillarGuardAggro(inst)
 	local self = inst.components.vaultmusiclistener
 	self.lastaggrotime = GetTime()
+	if self.delay and self.level == nil then
+		self.delay = 0
+	end
 end
 
 local VaultMusicListener = Class(function(self, inst)
 	self.inst = inst
 	--self.delay = nil
+	--self.level = nil
 	--self.lastaggrotime = nil
 
 	inst:ListenForEvent("changearea", OnChangeArea)
@@ -49,6 +53,7 @@ end
 function VaultMusicListener:StopVaultMusic()
 	if self.delay then
 		self.delay = nil
+		self.level = nil
 		self.inst:StopUpdatingComponent(self)
 	end
 end
@@ -57,20 +62,39 @@ function VaultMusicListener:OnUpdate(dt)
 	if dt < self.delay then
 		self.delay = self.delay - dt
 	else
-		self.delay = 1
-
-		local level
-		local duration = 5
+		local isaggro = false
 		if self.lastaggrotime then
 			if self.lastaggrotime + 1.5 > GetTime() then
-				level = 2
-				duration = nil
+				isaggro = true
 			else
 				self.lastaggrotime = nil
 			end
 		end
 
-		self.inst:PushEvent("triggeredevent", { name = "vault", level = level, duration = duration })
+		local duration
+		if isaggro then
+			if self.level == nil then
+				--transition thru silence first
+				self.level = 2
+				self.delay = 1
+			else
+				self.level = 3
+				self.delay = 1
+			end
+		else
+			if self.level == 3 then
+				--transition thru silence first
+				self.level = 2
+				self.delay = 3
+				duration = 5
+			else
+				self.level = nil
+				self.delay = 1
+				duration = 5
+			end
+		end
+
+		self.inst:PushEvent("triggeredevent", { name = "vault", level = self.level, duration = duration })
 	end
 end
 

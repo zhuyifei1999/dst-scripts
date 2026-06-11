@@ -2232,6 +2232,7 @@ return{
         CRITTER_PERDLING = "Bird baby is weak, but good.",
 		CRITTER_LUNARMOTHLING = "Strong Wolfgang will protect soft flutterby.",
         CRITTER_BULBIN = "Onions are Wolfgang's best friend! Second to potato!",
+        CRITTER_EETS = "Its legs look weak and scrawny, but jump good!",
 
 		CROW =
 		{
@@ -6223,7 +6224,7 @@ return{
             PICKED = "Nothing there for Wolfgang.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "So pretty and shiny.",
-        VAULT_PILLAR_GUARD_PIECE = "Big brick guy's heart one piece again.",
+        VAULT_PILLAR_GUARD_PIECE = "This must belong to big brick guy.",
         VAULT_REFINER_PEDESTAL = "What will Wolfgang make here?",
 
         VAULT_COMPASS =
@@ -6234,7 +6235,7 @@ return{
         },
 
         CEILING_ROPE = "Wolfgang is mighty climber.",
-        VAULT_KEY_EXIT = "Nowhere for Wolfgang to tie rope!",
+        VAULT_KEY_EXIT = "Nowhere for Wolfgang to tie rope!",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

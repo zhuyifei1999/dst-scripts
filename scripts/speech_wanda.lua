@@ -2231,6 +2231,7 @@ return{
         CRITTER_PERDLING = "I'm teaching her to chirp the hour.",
 		CRITTER_LUNARMOTHLING = "Time flies, and so do you!",
         CRITTER_BULBIN = "Aren't you a little far from home?",
+        CRITTER_EETS = "This timeline is starting to get ridiculous.",
 
 		CROW =
 		{
@@ -6222,7 +6223,7 @@ return{
             PICKED = "Now we've done it.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "I remember these... shortcuts.",
-        VAULT_PILLAR_GUARD_PIECE = "This is what makes it tick.",
+        VAULT_PILLAR_GUARD_PIECE = "Intricate, not unlike the parts of my clock.",
         VAULT_REFINER_PEDESTAL = "Time to put it to work.",
 
         VAULT_COMPASS =
@@ -6233,7 +6234,7 @@ return{
         },
 
         CEILING_ROPE = "Always prudent to have a way back.",
-        VAULT_KEY_EXIT = "I can't tie a rope here.",
+        VAULT_KEY_EXIT = "I can't tie a rope here.",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

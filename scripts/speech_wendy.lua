@@ -2235,6 +2235,7 @@ return{
         CRITTER_PERDLING = "It's so happy.",
 		CRITTER_LUNARMOTHLING = "Your beauty will fade too, you know.",
         CRITTER_BULBIN = "Its adorable face nearly brings me to tears.",
+        CRITTER_EETS = "It likes to bounce along with Abigail.",
 
 		CROW =
 		{
@@ -6226,7 +6227,7 @@ return{
             PICKED = "I feel we have set off an irreversible chain of events.", -- No more keystone on it, we already took it, or someone else did.
         },
         VAULT_ORB_REFINED = "It won't take me to the one place I want to go.",
-        VAULT_PILLAR_GUARD_PIECE = "Whole, once more.",
+        VAULT_PILLAR_GUARD_PIECE = "I'm not the only one missing pieces.",
         VAULT_REFINER_PEDESTAL = "What can it make to help us?",
 
         VAULT_COMPASS =
@@ -6237,7 +6238,7 @@ return{
         },
 
         CEILING_ROPE = "A way out.",
-        VAULT_KEY_EXIT = "It's a leap of faith.",
+        VAULT_KEY_EXIT = "It's a leap of faith.",--There's no where to tie a rope. Exit, but no re-entry.
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

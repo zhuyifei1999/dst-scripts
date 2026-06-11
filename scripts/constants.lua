@@ -504,6 +504,7 @@ require("clothing")
 require("beefalo_clothing")
 require("misc_items")
 require("emote_items")
+require("idleanimations_items")
 require("item_blacklist")
 require("entitlementlookups")
 

@@ -1592,11 +1592,11 @@ function ToggleOffAllObjectCollisions(inst)
 		newmask = bit.bxor(newmask, COLLISION.CHARACTERS)
 	end
 	if not inst.sg.mem.isobstaclepassthrough then
-		local obstaclepassthroughmask = bit.band(newmask, bit.bor(
-			COLLISION.OBSTACLES,
-			COLLISION.SMALLOBSTACLES,
-			COLLISION.GIANTS
-		))
+		local obstaclepassthroughmask = bit.band(newmask,
+			bit.bor(COLLISION.OBSTACLES,
+			bit.bor(COLLISION.SMALLOBSTACLES,
+					COLLISION.GIANTS))
+		)
 		if obstaclepassthroughmask ~= 0 then
 			newmask = bit.bxor(newmask, obstaclepassthroughmask)
 			inst.sg.mem.isobstaclepassthrough = true
@@ -1618,11 +1618,11 @@ end
 function ToggleOnAllObjectCollisionsAt(inst, x, z)
     if inst.sg.mem.isobstaclepassthrough then
         inst.sg.mem.isobstaclepassthrough = nil
-		inst.Physics:CollidesWith(inst.sg.mem.obstaclepassthroughmask or bit.bor(
-        	COLLISION.OBSTACLES,
-			COLLISION.SMALLOBSTACLES,
-			COLLISION.GIANTS
-        ))
+		inst.Physics:CollidesWith(inst.sg.mem.obstaclepassthroughmask or
+			bit.bor(COLLISION.OBSTACLES,
+			bit.bor(COLLISION.SMALLOBSTACLES,
+					COLLISION.GIANTS))
+		)
 		inst.sg.mem.obstaclepassthroughmask = nil
     end
     inst.Physics:Teleport(x, 0, z)
