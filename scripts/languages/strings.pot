@@ -1438,6 +1438,11 @@ msgctxt "STRINGS.ACTIONS.OPEN_CRAFTING.GENERIC"
 msgid "Research at"
 msgstr ""
 
+#. STRINGS.ACTIONS.OPEN_CRAFTING.GOLFPROPS
+msgctxt "STRINGS.ACTIONS.OPEN_CRAFTING.GOLFPROPS"
+msgid "Get Props at"
+msgstr ""
+
 #. STRINGS.ACTIONS.OPEN_CRAFTING.OFFERING
 msgctxt "STRINGS.ACTIONS.OPEN_CRAFTING.OFFERING"
 msgid "Make offering at"
@@ -335575,12 +335580,12 @@ msgstr ""
 
 #. STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE
 msgctxt "STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE"
-msgid "Mini Wormhole"
+msgid "Mini Worm Hole"
 msgstr ""
 
 #. STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE_LIMITED
 msgctxt "STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE_LIMITED"
-msgid "Sick Mini Wormhole"
+msgid "Sick Mini Worm Hole"
 msgstr ""
 
 #. STRINGS.NAMES.CARNIVALGAME_GOLF_HOLE
@@ -350975,17 +350980,17 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_EASY
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_EASY"
-msgid "Bring on the beginner!"
+msgid "Bring on the beginner!\nComes with four variations!"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_HARD
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_HARD"
-msgid "For the professional putter."
+msgid "For the professional putter.\nComes with four variations!"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_MEDIUM
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_MEDIUM"
-msgid "For the casual mini-golfer."
+msgid "For the casual mini-golfer.\nComes with four variations!"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFPROP_CUTOUT1
