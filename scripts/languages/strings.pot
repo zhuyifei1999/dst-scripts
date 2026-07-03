@@ -317365,12 +317365,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_BLUE
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_BLUE"
-msgid "PERFORMS OPTIMALLY IN DAYLIGHT"
+msgid "PERFORMS OPTIMALLY AT NIGHT"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_GREEN
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_GREEN"
-msgid "PERFORMS OPTIMALLY IN DAYLIGHT"
+msgid "PERFORMS OPTIMALLY AT DUSK"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_RED
@@ -381763,6 +381763,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_ceremonial"
 msgid "The height of Highland sophistication."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_green
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_green"
+msgid "Let everyone know your head's in the game."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_purple
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_purple"
+msgid "Let everyone know your head's in the game."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_red
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_red"
+msgid "Let everyone know your head's in the game."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.walrushat_party
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_party"
 msgid "Stays on tight for battle or jigs."
@@ -401826,6 +401841,21 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.walrushat_ceremonial
 msgctxt "STRINGS.SKIN_NAMES.walrushat_ceremonial"
 msgid "Dapper Tammie"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.walrushat_minigolf_green
+msgctxt "STRINGS.SKIN_NAMES.walrushat_minigolf_green"
+msgid "Egg Caddy Cap"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.walrushat_minigolf_purple
+msgctxt "STRINGS.SKIN_NAMES.walrushat_minigolf_purple"
+msgid "Bow Caddy Cap"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.walrushat_minigolf_red
+msgctxt "STRINGS.SKIN_NAMES.walrushat_minigolf_red"
+msgid "Flag Caddy Cap"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.walrushat_party
