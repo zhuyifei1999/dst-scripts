@@ -1441,6 +1441,11 @@ msgctxt "STRINGS.ACTIONS.OPEN_CRAFTING.GENERIC"
 msgid "Research at"
 msgstr "研究"
 
+#. STRINGS.ACTIONS.OPEN_CRAFTING.GOLFPROPS
+msgctxt "STRINGS.ACTIONS.OPEN_CRAFTING.GOLFPROPS"
+msgid "Get Props at"
+msgstr "在此获取道具："
+
 #. STRINGS.ACTIONS.OPEN_CRAFTING.OFFERING
 msgctxt "STRINGS.ACTIONS.OPEN_CRAFTING.OFFERING"
 msgid "Make offering at"
@@ -317363,13 +317368,13 @@ msgstr "日间功效最佳"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_BLUE
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_BLUE"
-msgid "PERFORMS OPTIMALLY IN DAYLIGHT"
-msgstr "日间功效最佳"
+msgid "PERFORMS OPTIMALLY AT NIGHT"
+msgstr "夜晚功效最佳"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_GREEN
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_GREEN"
-msgid "PERFORMS OPTIMALLY IN DAYLIGHT"
-msgstr "日间功效最佳"
+msgid "PERFORMS OPTIMALLY AT DUSK"
+msgstr "黄昏功效最佳"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_RED
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.OCEANFISHINGLURE_SPOON_RED"
@@ -335578,12 +335583,12 @@ msgstr "定向弹板"
 
 #. STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE
 msgctxt "STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE"
-msgid "Mini Wormhole"
+msgid "Mini Worm Hole"
 msgstr "迷你虫洞"
 
 #. STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE_LIMITED
 msgctxt "STRINGS.NAMES.CARNIVALGAME_GOLFPROP_WORMHOLE_LIMITED"
-msgid "Sick Mini Wormhole"
+msgid "Sick Mini Worm Hole"
 msgstr "生病的迷你虫洞"
 
 #. STRINGS.NAMES.CARNIVALGAME_GOLF_HOLE
@@ -350978,18 +350983,18 @@ msgstr "创建一个自定义球场！"
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_EASY
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_EASY"
-msgid "Bring on the beginner!"
-msgstr "有请初学者上场！"
+msgid "Bring on the beginner!\nComes with four variations!"
+msgstr "有请初学者上场！\n拥有四种变体！"
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_HARD
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_HARD"
-msgid "For the professional putter."
-msgstr "为专业推杆手准备。"
+msgid "For the professional putter.\nComes with four variations!"
+msgstr "为专业推杆手准备。\n拥有四种变体！"
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_MEDIUM
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFGAME_KIT_MEDIUM"
-msgid "For the casual mini-golfer."
-msgstr "为迷你高尔夫的休闲玩家准备。"
+msgid "For the casual mini-golfer.\nComes with four variations!"
+msgstr "为迷你高尔夫的休闲玩家准备。\n拥有四种变体！"
 
 #. STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFPROP_CUTOUT1
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALGAME_GOLFPROP_CUTOUT1"
@@ -381761,6 +381766,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_ceremonial"
 msgid "The height of Highland sophistication."
 msgstr "高地风尚的巅峰。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_green
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_green"
+msgid "Let everyone know your head's in the game."
+msgstr "让所有人知道，你的脑袋已经进入比赛状态。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_purple
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_purple"
+msgid "Let everyone know your head's in the game."
+msgstr "让所有人知道，你的脑袋已经进入比赛状态。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_red
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_minigolf_red"
+msgid "Let everyone know your head's in the game."
+msgstr "让所有人知道，你的脑袋已经进入比赛状态。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.walrushat_party
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.walrushat_party"
 msgid "Stays on tight for battle or jigs."
@@ -401825,6 +401845,21 @@ msgstr "鸦年华贝雷帽"
 msgctxt "STRINGS.SKIN_NAMES.walrushat_ceremonial"
 msgid "Dapper Tammie"
 msgstr "雅仕扁帽"
+
+#. STRINGS.SKIN_NAMES.walrushat_minigolf_green
+msgctxt "STRINGS.SKIN_NAMES.walrushat_minigolf_green"
+msgid "Egg Caddy Cap"
+msgstr "蛋形球童帽"
+
+#. STRINGS.SKIN_NAMES.walrushat_minigolf_purple
+msgctxt "STRINGS.SKIN_NAMES.walrushat_minigolf_purple"
+msgid "Bow Caddy Cap"
+msgstr "蝴蝶结球童帽"
+
+#. STRINGS.SKIN_NAMES.walrushat_minigolf_red
+msgctxt "STRINGS.SKIN_NAMES.walrushat_minigolf_red"
+msgid "Flag Caddy Cap"
+msgstr "旗帜球童帽"
 
 #. STRINGS.SKIN_NAMES.walrushat_party
 msgctxt "STRINGS.SKIN_NAMES.walrushat_party"
