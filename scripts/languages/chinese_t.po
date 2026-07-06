@@ -375358,8 +375358,8 @@ msgstr "這個盛夏鴉年華箱子包含下列皮膚物品：鴉年華包裝紙
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_cawnival_items2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_cawnival_items2"
-msgid "This Cawnival Mini-Golf Chest contains the following skin items: Cawnival Putter's Pack, Tee Time Sweater Vest, Par None Sweater Vest, Fairway Sweater Vest, Mulligan Sweater Vest, Chipper Sweater Vest, Lucky Stroke Sweater Vest, Black Birdie Pants, Plum Birdie Pants, Red Birdie Pants, Black Mini-Golf Skirt, Green Mini-Golf Skirt, Red Mini-Golf Skirt, Egg Caddy Cap, Bow Caddy Cap, Flag Caddy Cap, Cawnival Torch, Cawnival Plaque, and Cawnival Egg Lamp."
-msgstr "這個鴉年華迷你高爾夫箱子包含了以下皮膚物品：鴉年華推杆手包、開球時間小巧背心、無與倫比小巧背心、球道小巧背心、重打小巧背心、切杆小巧背心、幸運一擊小巧背心、黑色小鳥球長褲、梅色小鳥球長褲、紅色小鳥球長褲、黑色迷你高爾夫裙、綠色迷你高爾夫裙、紅色迷你高爾夫裙、鳥蛋球童帽、蝴蝶結球童帽、旗幟球童帽、鴉年華火炬、鴉年華路牌，以及鴉年華蛋燈。"
+msgid "This Cawnival Mini-Golf Chest contains a set of mini-golf themed clothing and item skins."
+msgstr "這個鴉年華迷你高爾夫箱子內含一套迷你高爾夫主題的服裝和物品皮膚。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_character_wanda
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_character_wanda"
@@ -400983,13 +400983,13 @@ msgstr "魷魚方向舵"
 
 #. STRINGS.SKIN_NAMES.steeringwheel_tesla
 msgctxt "STRINGS.SKIN_NAMES.steeringwheel_tesla"
-msgid "Tesla Coil Helm"
-msgstr "特斯拉線圈頭盔"
+msgid "Arc Welded Helm"
+msgstr "電弧焊接方向舵"
 
 #. STRINGS.SKIN_NAMES.steeringwheel_tesla_item
 msgctxt "STRINGS.SKIN_NAMES.steeringwheel_tesla_item"
-msgid "Tesla Coil Helm"
-msgstr "特斯拉線圈頭盔"
+msgid "Arc Welded Helm"
+msgstr "電弧焊接方向舵"
 
 #. STRINGS.SKIN_NAMES.steeringwheel_wagstaff
 msgctxt "STRINGS.SKIN_NAMES.steeringwheel_wagstaff"
