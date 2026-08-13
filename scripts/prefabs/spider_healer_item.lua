@@ -10,7 +10,7 @@ local prefabs =
 }
 
 local SPIDER_TAGS = { "spider" }
-local SPIDER_IGNORE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local SPIDER_IGNORE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "creaturecorpse" }
 
 local function SpawnFx(inst, fx_prefab, scale)
     local x,y,z = inst.Transform:GetWorldPosition()

@@ -45,6 +45,7 @@ local function launch_away(inst, position, use_variant_angle)
     inst.Physics:SetVel(SPEED_XZ * cosa, SPEED_Y, SPEED_XZ * sina)
 
     if inst.components.inventoryitem ~= nil then
+        DeactivateInventoryItemBeforeLaunch(inst)
         inst.components.inventoryitem:SetLanded(false, true)
     end
 end

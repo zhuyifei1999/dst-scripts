@@ -8460,6 +8460,16 @@ table.insert(prefs, CreatePrefabSkin("panflute_swamp",
 	release_group = 171,
 }))
 
+table.insert(prefs, CreatePrefabSkin("parasol_polkadot",
+{
+	base_prefab = "grass_umbrella",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst, skin_custom) grass_umbrella_init_fn(inst, "parasol_polkadot", skin_custom) end,
+	skin_tags = { "GRASS_UMBRELLA", "CRAFTABLE", },
+	release_group = 184,
+}))
+
 table.insert(prefs, CreatePrefabSkin("parasol_spring",
 {
 	base_prefab = "grass_umbrella",
@@ -8734,6 +8744,16 @@ table.insert(prefs, CreatePrefabSkin("pighouse_logcabin",
 	init_fn = function(inst, skin_custom) pighouse_init_fn(inst, "pighouse_logcabin", skin_custom) end,
 	skin_tags = { "HOCKEY", "PIGHOUSE", "CRAFTABLE", },
 	release_group = 73,
+}))
+
+table.insert(prefs, CreatePrefabSkin("pitchfork_fork",
+{
+	base_prefab = "pitchfork",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst, skin_custom) pitchfork_init_fn(inst, "pitchfork_fork", skin_custom) end,
+	skin_tags = { "PITCHFORK", "CRAFTABLE", },
+	release_group = 184,
 }))
 
 table.insert(prefs, CreatePrefabSkin("pitchfork_invisible",
@@ -10421,6 +10441,16 @@ table.insert(prefs, CreatePrefabSkin("shovel_rose",
 	init_fn = function(inst, skin_custom) shovel_init_fn(inst, "shovel_rose", skin_custom) end,
 	skin_tags = { "SHOVEL", "CRAFTABLE", "ROSE", },
 	release_group = 182,
+}))
+
+table.insert(prefs, CreatePrefabSkin("shovel_spoon",
+{
+	base_prefab = "shovel",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst, skin_custom) shovel_init_fn(inst, "shovel_spoon", skin_custom) end,
+	skin_tags = { "SHOVEL", "CRAFTABLE", },
+	release_group = 184,
 }))
 
 table.insert(prefs, CreatePrefabSkin("shovel_victorian",
@@ -14063,6 +14093,16 @@ table.insert(prefs, CreatePrefabSkin("warly_yule",
 	bigportrait_anim = { build = "bigportraits/warly_yule.xml", symbol = "warly_yule_oval.tex"},
 	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_yule", },
 	release_group = 160,
+}))
+
+table.insert(prefs, CreatePrefabSkin("waterballoon_insect",
+{
+	base_prefab = "waterballoon",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) waterballoon_init_fn(inst, "waterballoon_insect", skin_custom) end,
+	skin_tags = { "WATERBALLOON", "CRAFTABLE", "INSECT", },
+	release_group = 184,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wateringcan_cactus",

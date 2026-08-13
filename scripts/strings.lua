@@ -9743,6 +9743,7 @@ STRINGS.UI =
 
         ITEMCOLLECTION_DISABLE = "You must be logged in to view your Profile or Item Collection.",
 		STORE_DISABLE = "You must be logged in to use the Klei Store.",
+        STORE_DISABLE_CONSOLE = "You must be logged in to use the Klei Store.\nDo you want to log in now?",
 
         LOGIN = "Login",
 
@@ -10872,7 +10873,7 @@ STRINGS.UI =
         ACCEPT = "Accept",
         DECLINE = "Decline",
         DECLINE_CONFIRMATION_TITLE = "Decline the EULA?",
-        DECLINE_CONFIRMATION_BODY = "You will not be able to play online. Are you sure?",
+        DECLINE_CONFIRMATION_BODY = "You will not be able to log into a Klei account or play online. Are you sure?",
 		AGREEMENT_UPDATED = "The EULA has been updated and needs your review.",
     },
 
@@ -11949,6 +11950,7 @@ STRINGS.UI =
         MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy not scooch over and ask your friend?",
         OFFLINE_MODE_TITLE = "Offline",
         OFFLINE_MODE_BODY = "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in.",
+        OFFLINE_MODE_BODY_PROMPT = "You must be logged in to play online.\nDo you want to log in now?",
         OFFLINE_MODE_TITLE_PS4 = "Online Not Available",
         OFFLINE_MODE_BODY_PS4 = "You are currently in offline mode and cannot join online worlds. Please log in and try again.",
         OFFLINEWARNINGTITLE = "Offline World",
@@ -12156,16 +12158,19 @@ STRINGS.UI =
         EVENT = "Event:",
         GAMEMODE = "Game Mode:",
         MAXPLAYERS = "Players:",
+        PLAYONLINE = "Play Online",
         ONLINEONYTITLE = "Online World",
         ONLINEONLYBODY = "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again.",
         ONLINEONLYBODY_RAIL = "You can only resume an online world when you have a connection to the game servers. Please log in and try again.",
         ONLINEONLYBODY_PS4 = "You are currently in offline mode and cannot resume an online world. Please log in and try again.",
-        ONLINEONLYBODY_SPLITSCREEN = "You are currently in offline mode and cannot resume an online world. Please log in and try again.",
+        ONLINEONLYBODY_PROMPT = "You are currently in offline mode and cannot resume an online world. Do you want to continue in offline mode?",
         OFFLINEMODETITLE = "Offline Mode",
         OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join. Players will not be able to receive or use Collection Items in this world.",
         OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world. Players will not be able to receive or use Collection Items in this world.",
         OFFLINEMODEBODYCREATE_CANSKIN = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join.",
         OFFLINEMODEBODYRESUME_CANSKIN = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world.",
+        CONVERT_OFFLINE_TO_ONLINE = "This world was last saved as offline. Are you sure you want to play online?",
+        CONVERT_ONLINE_TO_OFFLINE = "This world was last saved as online. Are you sure you want to play offline? Only users on your Local Area Network will be able to join.",
         FULLSLOTSTITLE = "No Slots Available",
         FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load from, or delete a slot and start a new world.",
         OK = "OK",
@@ -15557,6 +15562,16 @@ STRINGS.UI =
         BODY   = "The Shadow Queen is pleased with your progress. She will begin the final preparations, and call upon you when the time is right. Be ready.\nP.S. For now, this will only reset the Sanctum. Continue?",
         OK     = "Ok",
         CANCEL = "Let me think about it.",
+    },
+
+    PREMIUM_ONLINE = 
+    {
+        NOT_REQUIRED_TEXT = "Skins and the Klei Shop are now available to everyone without a %s membership.\n\n You must be logged in to a Klei Account to use these features.",
+        UPSELL_TEXT = "Online play requires an active\n%s membership\n Do you want to become a member?",
+        PLAYSTATION_PLUS = "PlayStation®Plus",
+        NINTENDO_ONLINE = "Nintendo Switch Online",
+        YES = "Subscribe",
+        NO = "Cancel",
     },
 }
 

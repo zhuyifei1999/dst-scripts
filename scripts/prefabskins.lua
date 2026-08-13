@@ -899,6 +899,7 @@ PREFAB_SKINS = {
 	},
 	grass_umbrella =
 	{
+		"parasol_polkadot",
 		"parasol_spring",
 	},
 	gravestone =
@@ -1387,6 +1388,7 @@ PREFAB_SKINS = {
 	},
 	pitchfork =
 	{
+		"pitchfork_fork",
 		"pitchfork_invisible",
 		"pitchfork_rose",
 	},
@@ -1631,6 +1633,7 @@ PREFAB_SKINS = {
 		"shovel_invisible",
 		"shovel_northern",
 		"shovel_rose",
+		"shovel_spoon",
 		"shovel_victorian",
 	},
 	siestahut =
@@ -2140,6 +2143,10 @@ PREFAB_SKINS = {
 		"warly_survivor",
 		"warly_victorian",
 		"warly_yule",
+	},
+	waterballoon =
+	{
+		"waterballoon_insect",
 	},
 	wateringcan =
 	{
