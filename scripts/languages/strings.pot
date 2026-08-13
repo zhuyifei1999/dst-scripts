@@ -366238,6 +366238,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_minigolf_redtie"
 msgid "Be dashingly dressed while you putter around."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_onepiece2_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_onepiece2_beach"
+msgid "Spring into some beach day action!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_onepiece3_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_onepiece3_beach"
+msgid "Spring into some beach day action!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_onepiece_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_onepiece_beach"
+msgid "Spring into some beach day action!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_oni_001
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_oni_001"
 msgid "Made from a fabric so fine, you'll swear it's from the future!"
@@ -366378,6 +366393,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_redjacket"
 msgid "Torn from a rift between measures, this will harmonize your overall appearance."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_sailor2_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sailor2_beach"
+msgid "It's your solemn duty to have some seaside fun!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sailor3_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sailor3_beach"
+msgid "It's your solemn duty to have some seaside fun!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sailor_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sailor_beach"
+msgid "It's your solemn duty to have some seaside fun!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost"
 msgid "So smooth, you'll never want to let go of this 'high elevation blue' colored robe."
@@ -366421,6 +366451,21 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_silkbrocade_coat_green_laurel
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silkbrocade_coat_green_laurel"
 msgid "A silken brocade coat in a lovely 'willful green' shade."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_skirt2_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_skirt2_beach"
+msgid "I fear you'll never find a finer frock for festive fun and frivolous frolicking."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_skirt3_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_skirt3_beach"
+msgid "I fear you'll never find a finer frock for festive fun and frivolous frolicking."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_skirt_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_skirt_beach"
+msgid "I fear you'll never find a finer frock for festive fun and frivolous frolicking."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_blue_ice
@@ -375013,6 +375058,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_balatro"
 msgid "This chest contains a gift to make a fool out of you!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.mysterybox_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_beach"
+msgid "This chest contains a bounty of beachwear."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.mysterybox_beards
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_beards"
 msgid "This chest contains something magnificent."
@@ -377723,6 +377773,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.panflute_swamp"
 msgid "Play a timeless tune."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.parasol_polkadot
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.parasol_polkadot"
+msgid "Pretty moderate protection."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.parasol_spring
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.parasol_spring"
 msgid "\"April showers bring May flowers.\""
@@ -377846,6 +377901,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.pighouse_logcabin
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pighouse_logcabin"
 msgid "Perfect for weathering those cold winters up North."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pitchfork_fork
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pitchfork_fork"
+msgid "When did Bearger start using utensils?"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.pitchfork_invisible
@@ -378485,6 +378545,11 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_wardrobeyule
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_wardrobeyule"
+msgid "Equip this item to change your character's background portrait."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_waterballoon_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_waterballoon_insect"
 msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
@@ -379808,6 +379873,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_wardrobe_yule"
 msgid "Set your profile icon to match your cozy winter wardrobe."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_waterballoon_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_waterballoon_insect"
+msgid "Set your profile icon to a Bugburst Waterballoon."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_watermelonhat_pumpkin
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_watermelonhat_pumpkin"
 msgid "Set your profile icon to a fashionable way to wander this world."
@@ -380566,6 +380636,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.shovel_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.shovel_rose"
 msgid "For those tough rose to hoe."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.shovel_spoon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.shovel_spoon"
+msgid "Must be for a big bowl of soup."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.shovel_victorian
@@ -382146,6 +382221,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.warly_yule
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.warly_yule"
 msgid "Warly's Winter Feast ensemble is never half-baked."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.waterballoon_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.waterballoon_insect"
+msgid "Put out fires with a splashy splat."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wateringcan_cactus
@@ -386318,6 +386398,21 @@ msgctxt "STRINGS.SKIN_NAMES.body_minigolf_redtie"
 msgid "Lucky Stroke Sweater Vest"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_onepiece2_beach
+msgctxt "STRINGS.SKIN_NAMES.body_onepiece2_beach"
+msgid "Blue-Striped Swimsie"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_onepiece3_beach
+msgctxt "STRINGS.SKIN_NAMES.body_onepiece3_beach"
+msgid "Green-Striped Swimsie"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_onepiece_beach
+msgctxt "STRINGS.SKIN_NAMES.body_onepiece_beach"
+msgid "Red-Striped Swimsie"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_oni_001
 msgctxt "STRINGS.SKIN_NAMES.body_oni_001"
 msgid "Red Space-age Sweater"
@@ -386458,6 +386553,21 @@ msgctxt "STRINGS.SKIN_NAMES.body_redjacket"
 msgid "Harmonic Riftwear"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_sailor2_beach
+msgctxt "STRINGS.SKIN_NAMES.body_sailor2_beach"
+msgid "Charcoal Sailor Suit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sailor3_beach
+msgctxt "STRINGS.SKIN_NAMES.body_sailor3_beach"
+msgid "Classic Combo Sailor Suit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sailor_beach
+msgctxt "STRINGS.SKIN_NAMES.body_sailor_beach"
+msgid "Navy Blue Sailor Suit"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost
 msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost"
 msgid "Silk Robe"
@@ -386501,6 +386611,21 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_silkbrocade_coat_green_laurel
 msgctxt "STRINGS.SKIN_NAMES.body_silkbrocade_coat_green_laurel"
 msgid "Silk Brocade Coat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_skirt2_beach
+msgctxt "STRINGS.SKIN_NAMES.body_skirt2_beach"
+msgid "Blue Swimming Frock"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_skirt3_beach
+msgctxt "STRINGS.SKIN_NAMES.body_skirt3_beach"
+msgid "Green Swimming Frock"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_skirt_beach
+msgctxt "STRINGS.SKIN_NAMES.body_skirt_beach"
+msgid "Red Swimming Frock"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_sleepgown_blue_ice
@@ -395093,6 +395218,11 @@ msgctxt "STRINGS.SKIN_NAMES.mysterybox_balatro"
 msgid "Jovial Chest"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.mysterybox_beach
+msgctxt "STRINGS.SKIN_NAMES.mysterybox_beach"
+msgid "Beach Day Chest"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.mysterybox_beards
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_beards"
 msgid "Magnificent Chest"
@@ -397803,6 +397933,11 @@ msgctxt "STRINGS.SKIN_NAMES.panflute_swamp"
 msgid "Primal Panflute"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.parasol_polkadot
+msgctxt "STRINGS.SKIN_NAMES.parasol_polkadot"
+msgid "Polka Dot Parasol"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.parasol_spring
 msgctxt "STRINGS.SKIN_NAMES.parasol_spring"
 msgid "Rosy Posy Parasol"
@@ -397926,6 +398061,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.pighouse_logcabin
 msgctxt "STRINGS.SKIN_NAMES.pighouse_logcabin"
 msgid "Rustic Cabin"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pitchfork_fork
+msgctxt "STRINGS.SKIN_NAMES.pitchfork_fork"
+msgid "Giant's Fork"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.pitchfork_invisible
@@ -398566,6 +398706,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.playerportrait_bg_wardrobeyule
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_wardrobeyule"
 msgid "Winter Wardrobe Portrait"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.playerportrait_bg_waterballoon_insect
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_waterballoon_insect"
+msgid "Bugburst Waterballoon Portrait"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_winter
@@ -399888,6 +400033,11 @@ msgctxt "STRINGS.SKIN_NAMES.profileflair_wardrobe_yule"
 msgid "Winter Wardrobe"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.profileflair_waterballoon_insect
+msgctxt "STRINGS.SKIN_NAMES.profileflair_waterballoon_insect"
+msgid "Bugburst Waterballoon"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.profileflair_watermelonhat_pumpkin
 msgctxt "STRINGS.SKIN_NAMES.profileflair_watermelonhat_pumpkin"
 msgid "Fashionable Pumpkin Hat"
@@ -400646,6 +400796,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.shovel_rose
 msgctxt "STRINGS.SKIN_NAMES.shovel_rose"
 msgid "Blooming Shovel"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.shovel_spoon
+msgctxt "STRINGS.SKIN_NAMES.shovel_spoon"
+msgid "Giant's Spoon"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.shovel_victorian
@@ -402226,6 +402381,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.warly_yule
 msgctxt "STRINGS.SKIN_NAMES.warly_yule"
 msgid "The Merrymaker"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.waterballoon_insect
+msgctxt "STRINGS.SKIN_NAMES.waterballoon_insect"
+msgid "Bugburst Waterballoon"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wateringcan_cactus
@@ -408561,6 +408721,11 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WARDROBE
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WARDROBE"
 msgid "Wardrobe"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERBALLOON
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERBALLOON"
+msgid "Waterballoon"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERINGCAN
@@ -422875,7 +423040,7 @@ msgstr ""
 
 #. STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_BODY
 msgctxt "STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_BODY"
-msgid "You will not be able to play online. Are you sure?"
+msgid "You will not be able to log into a Klei account or play online. Are you sure?"
 msgstr ""
 
 #. STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_TITLE
@@ -425756,6 +425921,11 @@ msgstr ""
 #. STRINGS.UI.MAINSCREEN.STORE_DISABLE
 msgctxt "STRINGS.UI.MAINSCREEN.STORE_DISABLE"
 msgid "You must be logged in to use the Klei Store."
+msgstr ""
+
+#. STRINGS.UI.MAINSCREEN.STORE_DISABLE_CONSOLE
+msgctxt "STRINGS.UI.MAINSCREEN.STORE_DISABLE_CONSOLE"
+msgid "You must be logged in to use the Klei Store.\nDo you want to log in now?"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.SURE
@@ -430098,6 +430268,36 @@ msgctxt "STRINGS.UI.PORTRAIT.ITEMS"
 msgid "Items"
 msgstr ""
 
+#. STRINGS.UI.PREMIUM_ONLINE.NINTENDO_ONLINE
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.NINTENDO_ONLINE"
+msgid "Nintendo Switch Online"
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.NO
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.NO"
+msgid "Cancel"
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.NOT_REQUIRED_TEXT
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.NOT_REQUIRED_TEXT"
+msgid "Skins and the Klei Shop are now available to everyone without a %s membership.\n\n You must be logged in to a Klei Account to use these features."
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.PLAYSTATION_PLUS
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.PLAYSTATION_PLUS"
+msgid "PlayStation®Plus"
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.UPSELL_TEXT
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.UPSELL_TEXT"
+msgid "Online play requires an active\n%s membership\n Do you want to become a member?"
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.YES
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.YES"
+msgid "Subscribe"
+msgstr ""
+
 #. STRINGS.UI.PRESENCE.INVITATION
 msgctxt "STRINGS.UI.PRESENCE.INVITATION"
 msgid "Let's play Don't Starve Together.... together!"
@@ -431993,6 +432193,16 @@ msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_LOCAL"
 msgid "local"
 msgstr ""
 
+#. STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_OFFLINE_TO_ONLINE
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_OFFLINE_TO_ONLINE"
+msgid "This world was last saved as offline. Are you sure you want to play online?"
+msgstr ""
+
+#. STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_ONLINE_TO_OFFLINE
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_ONLINE_TO_OFFLINE"
+msgid "This world was last saved as online. Are you sure you want to play offline? Only users on your Local Area Network will be able to join."
+msgstr ""
+
 #. STRINGS.UI.SERVERCREATIONSCREEN.COPY_OF_SLOT_NAME
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.COPY_OF_SLOT_NAME"
 msgid "Copy of {worldname}"
@@ -432318,6 +432528,11 @@ msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY"
 msgid "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again."
 msgstr ""
 
+#. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PROMPT
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PROMPT"
+msgid "You are currently in offline mode and cannot resume an online world. Do you want to continue in offline mode?"
+msgstr ""
+
 #. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PS4
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PS4"
 msgid "You are currently in offline mode and cannot resume an online world. Please log in and try again."
@@ -432326,11 +432541,6 @@ msgstr ""
 #. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_RAIL
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_RAIL"
 msgid "You can only resume an online world when you have a connection to the game servers. Please log in and try again."
-msgstr ""
-
-#. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_SPLITSCREEN
-msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_SPLITSCREEN"
-msgid "You are currently in offline mode and cannot resume an online world. Please log in and try again."
 msgstr ""
 
 #. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE
@@ -432346,6 +432556,11 @@ msgstr ""
 #. STRINGS.UI.SERVERCREATIONSCREEN.OPENSAVEFOLDER
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.OPENSAVEFOLDER"
 msgid "Open World Folder"
+msgstr ""
+
+#. STRINGS.UI.SERVERCREATIONSCREEN.PLAYONLINE
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.PLAYONLINE"
+msgid "Play Online"
 msgstr ""
 
 #. STRINGS.UI.SERVERCREATIONSCREEN.PLAYSTYLE_TITLE
@@ -433066,6 +433281,11 @@ msgstr ""
 #. STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY"
 msgid "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in."
+msgstr ""
+
+#. STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PROMPT
+msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PROMPT"
+msgid "You must be logged in to play online.\nDo you want to log in now?"
 msgstr ""
 
 #. STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PS4

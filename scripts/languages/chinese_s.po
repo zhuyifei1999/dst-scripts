@@ -29414,7 +29414,7 @@ msgstr "这里就是球要进去的地方，沃比！"
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CARNIVALGAME_GOLF_HOLE_KIT
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CARNIVALGAME_GOLF_HOLE_KIT"
 msgid "Where should the flaghole go, Wobes?"
-msgstr "旗洞该放在哪里呢，沃比？\r\n"
+msgstr "旗洞该放哪儿，沃比？"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CARNIVALGAME_GOLF_TEE.GENERIC
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CARNIVALGAME_GOLF_TEE.GENERIC"
@@ -170034,7 +170034,7 @@ msgstr "我是遗传信息携带者的携带者。"
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SPORE_TALL.GENERIC
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SPORE_TALL.GENERIC"
 msgid "A soft blue carrier of genetic information."
-msgstr "遗传信息的淡绿携带者。"
+msgstr "遗传信息的淡蓝携带者。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SPORE_TALL.HELD
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SPORE_TALL.HELD"
@@ -276644,7 +276644,7 @@ msgstr "死的很踏实了！"
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.HAMBAT
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.HAMBAT"
 msgid "I'll bring it down with a mighty hamTHWACK!"
-msgstr "我要那它去猛击我的敌人！"
+msgstr "我要拿它去猛击我的敌人！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.HAMMER
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.HAMMER"
@@ -308099,7 +308099,7 @@ msgstr "天上掉下的小礼物"
 #. STRINGS.CHARACTERS.WX78.ANNOUNCE_LUNARHAIL_BIRD_SOUNDS
 msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_LUNARHAIL_BIRD_SOUNDS"
 msgid "I LOVE THAT SOUND"
-msgstr "我爱那个声音了"
+msgstr "我太爱那个声音了"
 
 #. STRINGS.CHARACTERS.WX78.ANNOUNCE_LUNAR_RIFT_MAX
 msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_LUNAR_RIFT_MAX"
@@ -342524,7 +342524,7 @@ msgstr "面粉"
 #. STRINGS.NAMES.QUAGMIRE_FOLIAGE_COOKED
 msgctxt "STRINGS.NAMES.QUAGMIRE_FOLIAGE_COOKED"
 msgid "Cooked Foliage"
-msgstr "熟叶子"
+msgstr "熟蕨叶"
 
 #. STRINGS.NAMES.QUAGMIRE_FOOD_001
 msgctxt "STRINGS.NAMES.QUAGMIRE_FOOD_001"
@@ -350949,12 +350949,12 @@ msgstr "这个神秘的绿盒子里会有什么呢？"
 #. STRINGS.RECIPE_DESC.CARNIVALDECOR_FIGURE_KIT_SEASON2
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALDECOR_FIGURE_KIT_SEASON2"
 msgid "What could be inside this mysterious yellow box?"
-msgstr "这个神秘的黄色盒子里会有什么呢？"
+msgstr "这个神秘的黄盒子里会有什么呢？"
 
 #. STRINGS.RECIPE_DESC.CARNIVALDECOR_FIGURE_KIT_SEASON3
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALDECOR_FIGURE_KIT_SEASON3"
 msgid "What could be inside this mysterious red box?"
-msgstr "这个神秘的红色盒子里会有什么呢？"
+msgstr "这个神秘的红盒子里会有什么呢？"
 
 #. STRINGS.RECIPE_DESC.CARNIVALDECOR_LAMP_KIT
 msgctxt "STRINGS.RECIPE_DESC.CARNIVALDECOR_LAMP_KIT"
@@ -366241,6 +366241,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_minigolf_redtie"
 msgid "Be dashingly dressed while you putter around."
 msgstr "推杆时着装必须潇洒。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_onepiece2_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_onepiece2_beach"
+msgid "Spring into some beach day action!"
+msgstr "一头扎进海滩日的活动吧！"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_onepiece3_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_onepiece3_beach"
+msgid "Spring into some beach day action!"
+msgstr "一头扎进海滩日的活动吧！"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_onepiece_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_onepiece_beach"
+msgid "Spring into some beach day action!"
+msgstr "一头扎进海滩日的活动吧！"
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_oni_001
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_oni_001"
 msgid "Made from a fabric so fine, you'll swear it's from the future!"
@@ -366381,6 +366396,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_redjacket"
 msgid "Torn from a rift between measures, this will harmonize your overall appearance."
 msgstr "从小节之间的裂隙中撕裂而出，让你的整体造型变得和谐。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_sailor2_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sailor2_beach"
+msgid "It's your solemn duty to have some seaside fun!"
+msgstr "去海边玩个痛快，这是你庄严的职责所在！"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sailor3_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sailor3_beach"
+msgid "It's your solemn duty to have some seaside fun!"
+msgstr "去海边玩个痛快，这是你庄严的职责所在！"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sailor_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sailor_beach"
+msgid "It's your solemn duty to have some seaside fun!"
+msgstr "去海边玩个痛快，这是你庄严的职责所在！"
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost"
 msgid "So smooth, you'll never want to let go of this 'high elevation blue' colored robe."
@@ -366425,6 +366455,21 @@ msgstr "披上大理石白丝绸装在新月下沐浴很舒服，也很奢侈。
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silkbrocade_coat_green_laurel"
 msgid "A silken brocade coat in a lovely 'willful green' shade."
 msgstr "一件颜色为\"任性绿\"的可爱的丝织外套。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_skirt2_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_skirt2_beach"
+msgid "I fear you'll never find a finer frock for festive fun and frivolous frolicking."
+msgstr "绝不可能找到比它更适合节日嬉戏的漂亮裙装。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_skirt3_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_skirt3_beach"
+msgid "I fear you'll never find a finer frock for festive fun and frivolous frolicking."
+msgstr "绝不可能找到比它更适合节日嬉戏的漂亮裙装。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_skirt_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_skirt_beach"
+msgid "I fear you'll never find a finer frock for festive fun and frivolous frolicking."
+msgstr "绝不可能找到比它更适合节日嬉戏的漂亮裙装。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_blue_ice
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_blue_ice"
@@ -375016,6 +375061,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_balatro"
 msgid "This chest contains a gift to make a fool out of you!"
 msgstr "箱子中的礼物会让你变成小丑！"
 
+#. STRINGS.SKIN_DESCRIPTIONS.mysterybox_beach
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_beach"
+msgid "This chest contains a bounty of beachwear."
+msgstr "这个箱子里装有大量海滩服饰。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.mysterybox_beards
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_beards"
 msgid "This chest contains something magnificent."
@@ -378491,6 +378541,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_wardrobeyule"
 msgid "Equip this item to change your character's background portrait."
 msgstr "装备此物品以更改你的角色背景画像。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_waterballoon_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_waterballoon_insect"
+msgid "Equip this item to change your character's background portrait."
+msgstr "装备此物品以更改你的角色背景画像。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_winter
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_winter"
 msgid "Equip this item to change your character's background portrait.\n\nWhere do the birds go in spring?"
@@ -379810,6 +379865,11 @@ msgstr "将你的头像设置为闪闪发亮的水晶。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_wardrobe_yule"
 msgid "Set your profile icon to match your cozy winter wardrobe."
 msgstr "把你的角色头像设为与你舒适的冬季衣柜匹配的东西。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_waterballoon_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_waterballoon_insect"
+msgid "Set your profile icon to a Bugburst Waterballoon."
+msgstr "将你的头像设为一只爆虫水球。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_watermelonhat_pumpkin
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_watermelonhat_pumpkin"
@@ -382150,6 +382210,11 @@ msgstr "沃利喜欢上了冒险，正向大海出发。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.warly_yule"
 msgid "Warly's Winter Feast ensemble is never half-baked."
 msgstr "沃利的冬季盛宴套装从来都不会不温不火。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.waterballoon_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.waterballoon_insect"
+msgid "Put out fires with a splashy splat."
+msgstr "\"啪一声就把火扑灭了。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wateringcan_cactus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wateringcan_cactus"
@@ -386321,6 +386386,21 @@ msgctxt "STRINGS.SKIN_NAMES.body_minigolf_redtie"
 msgid "Lucky Stroke Sweater Vest"
 msgstr "幸运一击小巧背心"
 
+#. STRINGS.SKIN_NAMES.body_onepiece2_beach
+msgctxt "STRINGS.SKIN_NAMES.body_onepiece2_beach"
+msgid "Blue-Striped Swimsie"
+msgstr "蓝条纹泳装"
+
+#. STRINGS.SKIN_NAMES.body_onepiece3_beach
+msgctxt "STRINGS.SKIN_NAMES.body_onepiece3_beach"
+msgid "Green-Striped Swimsie"
+msgstr "绿条纹泳装"
+
+#. STRINGS.SKIN_NAMES.body_onepiece_beach
+msgctxt "STRINGS.SKIN_NAMES.body_onepiece_beach"
+msgid "Red-Striped Swimsie"
+msgstr "红条纹泳装"
+
 #. STRINGS.SKIN_NAMES.body_oni_001
 msgctxt "STRINGS.SKIN_NAMES.body_oni_001"
 msgid "Red Space-age Sweater"
@@ -386461,6 +386541,21 @@ msgctxt "STRINGS.SKIN_NAMES.body_redjacket"
 msgid "Harmonic Riftwear"
 msgstr "和声裂隙装"
 
+#. STRINGS.SKIN_NAMES.body_sailor2_beach
+msgctxt "STRINGS.SKIN_NAMES.body_sailor2_beach"
+msgid "Charcoal Sailor Suit"
+msgstr "炭黑水手服"
+
+#. STRINGS.SKIN_NAMES.body_sailor3_beach
+msgctxt "STRINGS.SKIN_NAMES.body_sailor3_beach"
+msgid "Classic Combo Sailor Suit"
+msgstr "经典配色水手服"
+
+#. STRINGS.SKIN_NAMES.body_sailor_beach
+msgctxt "STRINGS.SKIN_NAMES.body_sailor_beach"
+msgid "Navy Blue Sailor Suit"
+msgstr "海军蓝水手服"
+
 #. STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost
 msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost"
 msgid "Silk Robe"
@@ -386505,6 +386600,21 @@ msgstr "丝绸装"
 msgctxt "STRINGS.SKIN_NAMES.body_silkbrocade_coat_green_laurel"
 msgid "Silk Brocade Coat"
 msgstr "丝织外套"
+
+#. STRINGS.SKIN_NAMES.body_skirt2_beach
+msgctxt "STRINGS.SKIN_NAMES.body_skirt2_beach"
+msgid "Blue Swimming Frock"
+msgstr "蓝色泳裙"
+
+#. STRINGS.SKIN_NAMES.body_skirt3_beach
+msgctxt "STRINGS.SKIN_NAMES.body_skirt3_beach"
+msgid "Green Swimming Frock"
+msgstr "绿色泳裙"
+
+#. STRINGS.SKIN_NAMES.body_skirt_beach
+msgctxt "STRINGS.SKIN_NAMES.body_skirt_beach"
+msgid "Red Swimming Frock"
+msgstr "红色泳裙"
 
 #. STRINGS.SKIN_NAMES.body_sleepgown_blue_ice
 msgctxt "STRINGS.SKIN_NAMES.body_sleepgown_blue_ice"
@@ -394699,12 +394809,12 @@ msgstr "帝王蟹风帆"
 #. STRINGS.SKIN_NAMES.mast_malbatross_tesla
 msgctxt "STRINGS.SKIN_NAMES.mast_malbatross_tesla"
 msgid "Arc Welded Mast"
-msgstr "电弧焊接帆"
+msgstr "电弧焊接桅杆"
 
 #. STRINGS.SKIN_NAMES.mast_malbatross_tesla_item
 msgctxt "STRINGS.SKIN_NAMES.mast_malbatross_tesla_item"
 msgid "Arc Welded Mast"
-msgstr "电弧焊接帆"
+msgstr "电弧焊接桅杆"
 
 #. STRINGS.SKIN_NAMES.mast_malbatross_wagstaff
 msgctxt "STRINGS.SKIN_NAMES.mast_malbatross_wagstaff"
@@ -395095,6 +395205,11 @@ msgstr "现代艺术蘑菇灯"
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_balatro"
 msgid "Jovial Chest"
 msgstr "欢快箱子"
+
+#. STRINGS.SKIN_NAMES.mysterybox_beach
+msgctxt "STRINGS.SKIN_NAMES.mysterybox_beach"
+msgid "Beach Day Chest"
+msgstr "海滩日箱子"
 
 #. STRINGS.SKIN_NAMES.mysterybox_beards
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_beards"
@@ -398571,6 +398686,11 @@ msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_wardrobeyule"
 msgid "Winter Wardrobe Portrait"
 msgstr "冬季衣柜背景"
 
+#. STRINGS.SKIN_NAMES.playerportrait_bg_waterballoon_insect
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_waterballoon_insect"
+msgid "Bugburst Waterballoon Portrait"
+msgstr "爆虫水球背景画像"
+
 #. STRINGS.SKIN_NAMES.playerportrait_bg_winter
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_winter"
 msgid "Winter Portrait"
@@ -399890,6 +400010,11 @@ msgstr "水晶"
 msgctxt "STRINGS.SKIN_NAMES.profileflair_wardrobe_yule"
 msgid "Winter Wardrobe"
 msgstr "冬季衣柜"
+
+#. STRINGS.SKIN_NAMES.profileflair_waterballoon_insect
+msgctxt "STRINGS.SKIN_NAMES.profileflair_waterballoon_insect"
+msgid "Bugburst Waterballoon"
+msgstr "爆虫水球"
 
 #. STRINGS.SKIN_NAMES.profileflair_watermelonhat_pumpkin
 msgctxt "STRINGS.SKIN_NAMES.profileflair_watermelonhat_pumpkin"
@@ -402230,6 +402355,11 @@ msgstr "维多利亚"
 msgctxt "STRINGS.SKIN_NAMES.warly_yule"
 msgid "The Merrymaker"
 msgstr "欢乐"
+
+#. STRINGS.SKIN_NAMES.waterballoon_insect
+msgctxt "STRINGS.SKIN_NAMES.waterballoon_insect"
+msgid "Bugburst Waterballoon"
+msgstr "爆虫水球"
 
 #. STRINGS.SKIN_NAMES.wateringcan_cactus
 msgctxt "STRINGS.SKIN_NAMES.wateringcan_cactus"
@@ -408566,6 +408696,11 @@ msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WARDROBE"
 msgid "Wardrobe"
 msgstr "衣柜"
 
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERBALLOON
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERBALLOON"
+msgid "Waterballoon"
+msgstr "水球"
+
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERINGCAN
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WATERINGCAN"
 msgid "Watering Can"
@@ -413814,7 +413949,7 @@ msgstr "感谢赏玩"
 #. STRINGS.THANKS_POPUP.ROGR
 msgctxt "STRINGS.THANKS_POPUP.ROGR"
 msgid "Thank you for buying the Reign of Giants DLC"
-msgstr "感谢购买"
+msgstr "感谢购买巨兽统治DLC"
 
 #. STRINGS.THANKS_POPUP.ROT2
 msgctxt "STRINGS.THANKS_POPUP.ROT2"
@@ -413839,7 +413974,7 @@ msgstr "感谢赏玩"
 #. STRINGS.THANKS_POPUP.SWR
 msgctxt "STRINGS.THANKS_POPUP.SWR"
 msgid "Thank you for buying the ShipWrecked DLC"
-msgstr "感谢购买"
+msgstr "感谢购买失落之船DLC"
 
 #. STRINGS.THANKS_POPUP.TOT
 msgctxt "STRINGS.THANKS_POPUP.TOT"
@@ -422878,8 +423013,8 @@ msgstr "下降"
 
 #. STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_BODY
 msgctxt "STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_BODY"
-msgid "You will not be able to play online. Are you sure?"
-msgstr "你将无法在线玩游戏。确定吗？"
+msgid "You will not be able to log into a Klei account or play online. Are you sure?"
+msgstr ""
 
 #. STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_TITLE
 msgctxt "STRINGS.UI.EULADIALOG.DECLINE_CONFIRMATION_TITLE"
@@ -423919,7 +424054,7 @@ msgstr "天"
 #. STRINGS.UI.HUD.WORLD_CLOCKDAY_V2
 msgctxt "STRINGS.UI.HUD.WORLD_CLOCKDAY_V2"
 msgid "Day {day_count}"
-msgstr "天 {day_count}"
+msgstr "第{day_count}天"
 
 #. STRINGS.UI.INTENTION.ANY
 msgctxt "STRINGS.UI.INTENTION.ANY"
@@ -425029,7 +425164,7 @@ msgstr "熔炉测试版 (v{version})"
 #. STRINGS.UI.MAINSCREEN.DST_UPDATENAME
 msgctxt "STRINGS.UI.MAINSCREEN.DST_UPDATENAME"
 msgid "Release"
-msgstr "版本"
+msgstr "发布版"
 
 #. STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_CLEAR
 msgctxt "STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_CLEAR"
@@ -425329,7 +425464,7 @@ msgstr "模组"
 #. STRINGS.UI.MAINSCREEN.MODSBADLOAD
 msgctxt "STRINGS.UI.MAINSCREEN.MODSBADLOAD"
 msgid "The game did not start correctly last time. This was likely caused by a mod, so all client mods have been disabled.\n\nYou can try re-enabling mods from the mod settings screen."
-msgstr "游戏上次未正常启动。这可能是由于某个模组所致，因此所有本地模组已禁用。\n\n你可以从模组设置画面尝试重新启用这些模组。"
+msgstr "游戏上次未正常启动。这可能是由于某个模组所致，因此所有客户端模组已禁用。\n\n你可以从模组设置画面尝试重新启用这些模组。"
 
 #. STRINGS.UI.MAINSCREEN.MODSBADTITLE
 msgctxt "STRINGS.UI.MAINSCREEN.MODSBADTITLE"
@@ -425761,6 +425896,11 @@ msgctxt "STRINGS.UI.MAINSCREEN.STORE_DISABLE"
 msgid "You must be logged in to use the Klei Store."
 msgstr "你需要登录才能使用科雷商店。"
 
+#. STRINGS.UI.MAINSCREEN.STORE_DISABLE_CONSOLE
+msgctxt "STRINGS.UI.MAINSCREEN.STORE_DISABLE_CONSOLE"
+msgid "You must be logged in to use the Klei Store.\nDo you want to log in now?"
+msgstr ""
+
 #. STRINGS.UI.MAINSCREEN.SURE
 msgctxt "STRINGS.UI.MAINSCREEN.SURE"
 msgid "Are you sure?"
@@ -426009,7 +426149,7 @@ msgstr "全部清除"
 #. STRINGS.UI.MODSSCREEN.CLEANALL_BODY
 msgctxt "STRINGS.UI.MODSSCREEN.CLEANALL_BODY"
 msgid "Are you sure you want to clean your local Workshop data?\nThis will result in a full download of all your subscribed mods, and your mod configuration settings being reset."
-msgstr "你确定想清理你本地创意工坊的数据吗？\n这样将全部下载你订用的所有模组，并且重设下你的模组配置。"
+msgstr "你确定想清理你本地的创意工坊数据吗？\n这将完整下载你订阅的所有模组，并且重置你的模组配置。"
 
 #. STRINGS.UI.MODSSCREEN.CLEANALL_TITLE
 msgctxt "STRINGS.UI.MODSSCREEN.CLEANALL_TITLE"
@@ -426019,7 +426159,7 @@ msgstr "清除所有模组创意工坊的数据"
 #. STRINGS.UI.MODSSCREEN.CLIENTMODS
 msgctxt "STRINGS.UI.MODSSCREEN.CLIENTMODS"
 msgid "Client Mods"
-msgstr "本地模组"
+msgstr "客户端模组"
 
 #. STRINGS.UI.MODSSCREEN.COMPATIBILITY_ALL
 msgctxt "STRINGS.UI.MODSSCREEN.COMPATIBILITY_ALL"
@@ -428029,7 +428169,7 @@ msgstr "社交菜单移动："
 #. STRINGS.UI.OPTIONS.CONSOLEAUTOPAUSE
 msgctxt "STRINGS.UI.OPTIONS.CONSOLEAUTOPAUSE"
 msgid "Console Auto-Pause:"
-msgstr "主机自动暂停："
+msgstr "控制台页面自动暂停："
 
 #. STRINGS.UI.OPTIONS.CONTROLLER_AUDIO
 msgctxt "STRINGS.UI.OPTIONS.CONTROLLER_AUDIO"
@@ -430101,6 +430241,36 @@ msgctxt "STRINGS.UI.PORTRAIT.ITEMS"
 msgid "Items"
 msgstr "物品"
 
+#. STRINGS.UI.PREMIUM_ONLINE.NINTENDO_ONLINE
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.NINTENDO_ONLINE"
+msgid "Nintendo Switch Online"
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.NO
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.NO"
+msgid "Cancel"
+msgstr "取消"
+
+#. STRINGS.UI.PREMIUM_ONLINE.NOT_REQUIRED_TEXT
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.NOT_REQUIRED_TEXT"
+msgid "Skins and the Klei Shop are now available to everyone without a %s membership.\n\n You must be logged in to a Klei Account to use these features."
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.PLAYSTATION_PLUS
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.PLAYSTATION_PLUS"
+msgid "PlayStation®Plus"
+msgstr "PlayStation®Plus"
+
+#. STRINGS.UI.PREMIUM_ONLINE.UPSELL_TEXT
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.UPSELL_TEXT"
+msgid "Online play requires an active\n%s membership\n Do you want to become a member?"
+msgstr ""
+
+#. STRINGS.UI.PREMIUM_ONLINE.YES
+msgctxt "STRINGS.UI.PREMIUM_ONLINE.YES"
+msgid "Subscribe"
+msgstr "订阅"
+
 #. STRINGS.UI.PRESENCE.INVITATION
 msgctxt "STRINGS.UI.PRESENCE.INVITATION"
 msgid "Let's play Don't Starve Together.... together!"
@@ -430229,7 +430399,7 @@ msgstr "抱歉！\n科雷商店现在关闭了。\n请稍后再次尝试。"
 #. STRINGS.UI.PURCHASEPACKSCREEN.FILTERS
 msgctxt "STRINGS.UI.PURCHASEPACKSCREEN.FILTERS"
 msgid "Filters"
-msgstr "过滤器"
+msgstr "过滤"
 
 #. STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL
 msgctxt "STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL"
@@ -431996,6 +432166,16 @@ msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_LOCAL"
 msgid "local"
 msgstr "本地存档"
 
+#. STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_OFFLINE_TO_ONLINE
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_OFFLINE_TO_ONLINE"
+msgid "This world was last saved as offline. Are you sure you want to play online?"
+msgstr ""
+
+#. STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_ONLINE_TO_OFFLINE
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.CONVERT_ONLINE_TO_OFFLINE"
+msgid "This world was last saved as online. Are you sure you want to play offline? Only users on your Local Area Network will be able to join."
+msgstr ""
+
 #. STRINGS.UI.SERVERCREATIONSCREEN.COPY_OF_SLOT_NAME
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.COPY_OF_SLOT_NAME"
 msgid "Copy of {worldname}"
@@ -432321,6 +432501,11 @@ msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY"
 msgid "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again."
 msgstr "只有连接到 Steam 和科雷服务器的时候才能回到联机世界。请登录并再试一次。"
 
+#. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PROMPT
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PROMPT"
+msgid "You are currently in offline mode and cannot resume an online world. Do you want to continue in offline mode?"
+msgstr ""
+
 #. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PS4
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PS4"
 msgid "You are currently in offline mode and cannot resume an online world. Please log in and try again."
@@ -432330,11 +432515,6 @@ msgstr "您当前处于离线模式，无法进入在线世界。请登录并再
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_RAIL"
 msgid "You can only resume an online world when you have a connection to the game servers. Please log in and try again."
 msgstr "只有连接到游戏服务器时才能恢复这个世界。请你检查你的网络，然后再试一次。"
-
-#. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_SPLITSCREEN
-msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_SPLITSCREEN"
-msgid "You are currently in offline mode and cannot resume an online world. Please log in and try again."
-msgstr "您当前处于离线模式，无法进入在线世界。请登录并再次尝试。"
 
 #. STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE"
@@ -432350,6 +432530,11 @@ msgstr "服务器模式："
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.OPENSAVEFOLDER"
 msgid "Open World Folder"
 msgstr "打开世界文件夹"
+
+#. STRINGS.UI.SERVERCREATIONSCREEN.PLAYONLINE
+msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.PLAYONLINE"
+msgid "Play Online"
+msgstr ""
 
 #. STRINGS.UI.SERVERCREATIONSCREEN.PLAYSTYLE_TITLE
 msgctxt "STRINGS.UI.SERVERCREATIONSCREEN.PLAYSTYLE_TITLE"
@@ -432744,12 +432929,12 @@ msgstr "事件："
 #. STRINGS.UI.SERVERLISTINGSCREEN.FILTERS
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.FILTERS"
 msgid "Filters"
-msgstr "过滤器"
+msgstr "过滤"
 
 #. STRINGS.UI.SERVERLISTINGSCREEN.FILTER_RESET
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.FILTER_RESET"
 msgid "Reset Filters"
-msgstr "重设过滤器"
+msgstr "重设过滤"
 
 #. STRINGS.UI.SERVERLISTINGSCREEN.FRIENDSONLY
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.FRIENDSONLY"
@@ -432899,7 +433084,7 @@ msgstr "加入"
 #. STRINGS.UI.SERVERLISTINGSCREEN.LAN
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.LAN"
 msgid "LAN"
-msgstr "LAN"
+msgstr "局域网"
 
 #. STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1"
@@ -433070,6 +433255,11 @@ msgstr "这是一个离线世界。\n许多细节还是个迷，但似乎人们�
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY"
 msgid "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in."
 msgstr "您未登录，无法玩在线游戏。\n请尝试通过 LAN 玩游戏或重启游戏以登录。"
+
+#. STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PROMPT
+msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PROMPT"
+msgid "You must be logged in to play online.\nDo you want to log in now?"
+msgstr ""
 
 #. STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PS4
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PS4"
@@ -433644,7 +433834,7 @@ msgstr "脚"
 #. STRINGS.UI.SKINSSCREEN.FILTERS
 msgctxt "STRINGS.UI.SKINSSCREEN.FILTERS"
 msgid "Filters"
-msgstr "过滤器"
+msgstr "过滤"
 
 #. STRINGS.UI.SKINSSCREEN.HAND
 msgctxt "STRINGS.UI.SKINSSCREEN.HAND"

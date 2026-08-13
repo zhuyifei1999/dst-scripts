@@ -197,7 +197,7 @@ local function fumarole_onrepaired(inst)
 	inst.components.tool:SetAction(ACTIONS.DIG)
 
 	inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(TUNING.AXE_DAMAGE)
+	inst.components.weapon:SetDamage(TUNING.SHOVEL_DAMAGE)
 end
 
 local FUMAROLE_SWAP_DATA_BROKEN = { sym_build = "fumaroleshovel", anim = "broken" }

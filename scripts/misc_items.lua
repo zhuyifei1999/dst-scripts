@@ -1410,6 +1410,16 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 166,
 	},
+	mysterybox_beach =
+	{
+		type = "mysterybox",
+		skin_tags = { "MYSTERYBOX", },
+		build_name_override = "mysterybox_classic_4",
+		box_build = "box_mystery_classic",
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 184,
+	},
 	mysterybox_beards =
 	{
 		type = "mysterybox",
@@ -9171,6 +9181,13 @@ MISC_ITEMS =
 		rarity = "Loyal",
 		release_group = 110,
 	},
+	playerportrait_bg_waterballoon_insect =
+	{
+		type = "playerportrait",
+		skin_tags = { "INSECT", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 184,
+	},
 	playerportrait_bg_winter =
 	{
 		type = "playerportrait",
@@ -10954,6 +10971,13 @@ MISC_ITEMS =
 		skin_tags = { "YULE", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 110,
+	},
+	profileflair_waterballoon_insect =
+	{
+		type = "profileflair",
+		skin_tags = { "INSECT", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 184,
 	},
 	profileflair_watermelonhat_pumpkin =
 	{

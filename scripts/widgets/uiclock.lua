@@ -80,6 +80,8 @@ local UIClock = Class(Widget, function(self)
     end
 
     self._face = self:AddChild(Image("images/hud.xml", "clock_NIGHT.tex"))
+	self._face:SetScale(0.5) --V2C: texture was upressed 2006/07/06
+
     self._face:SetClickable(false)
 
     local segscale = .4
@@ -101,14 +103,17 @@ local UIClock = Class(Widget, function(self)
         self._rim:GetAnimState():AnimateWhilePaused(false)
 
         self._hands = self:AddChild(Widget("clockhands"))
+		self._hands:SetScale(0.5) --V2C: texture was upressed 2006/07/06
         self._hands._img = self._hands:AddChild(Image("images/hud.xml", "clock_hand.tex"))
         self._hands._img:SetClickable(false)
         self._hands._animtime = nil
     else
         self._rim = self:AddChild(Image("images/hud.xml", "clock_rim.tex"))
+		self._rim:SetScale(0.5) --V2C: texture was upressed 2006/07/06
         self._rim:SetClickable(false)
 
         self._hands = self:AddChild(Image("images/hud.xml", "clock_hand.tex"))
+		self._hands:SetScale(0.5) --V2C: texture was upressed 2006/07/06
         self._hands:SetClickable(false)
     end
 

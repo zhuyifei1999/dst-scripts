@@ -168,6 +168,7 @@ function WorldRouteFollower:TryToTeleportToDestination()
 end
 local function TryToTeleportToDestination_Bridge(inst)
     local self = inst.components.worldroutefollower
+    self.trytoteleporttodestinationtask = nil
     self:TryToTeleportToDestination()
 end
 
