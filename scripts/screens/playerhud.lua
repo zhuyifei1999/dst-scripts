@@ -52,6 +52,7 @@ local PumpkinCarvingScreen = require("screens/redux/pumpkincarvingscreen")
 local PumpkinHatCarvingScreen = require("screens/redux/pumpkinhatcarvingscreen")
 local SnowmanDecoratingScreen = require("screens/redux/snowmandecoratingscreen")
 local UpgradeModulesDisplay_Inspecting = require("widgets/upgrademodulesdisplay_inspecting")
+local ShroudenOver = require "widgets/shroudenover"
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -205,6 +206,8 @@ function PlayerHud:CreateOverlays(owner)
 	self.Wagpunkui = self.overlayroot:AddChild(WagpunkUI(owner))
 	self.dronezapover = self.overlayroot:AddChild(DroneZapOver(owner))
 	self.wxpowerover = self.over_root:AddChild(WxPowerOver(owner))
+
+    self.shroudenover = self.over_root:AddChild(ShroudenOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
     self.clouds.cloudcolour = GetGameModeProperty("cloudcolour") or {1, 1, 1}

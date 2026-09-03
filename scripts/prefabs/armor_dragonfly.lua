@@ -7,7 +7,7 @@ local function OnBlocked(owner, data)
     owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_scalemail")
     if data.attacker ~= nil and
         not (data.attacker.components.health ~= nil and data.attacker.components.health:IsDead()) and
-        (data.weapon == nil or ((data.weapon.components.weapon == nil or data.weapon.components.weapon.projectile == nil) and data.weapon.components.projectile == nil)) and
+		not IsRangedWeapon(data.weapon) and
         data.attacker.components.burnable ~= nil and
         not data.redirected and
         not data.attacker:HasTag("thorny") then

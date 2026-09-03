@@ -148,6 +148,8 @@ local function fn()
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetLoot(LOOT)
 
+	inst:AddComponent("stalkerinspectable")
+
 	inst:ListenForEvent("death", OnDeath)
 	inst.Despawn = Despawn
 	inst.OnEntitySleep = OnEntitySleep

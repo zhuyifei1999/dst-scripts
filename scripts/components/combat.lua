@@ -147,7 +147,7 @@ end
 
 function Combat:SetRange(attack, hit)
     self.attackrange = attack
-    self.hitrange = (hit or self.attackrange)
+    self.hitrange = hit or attack
 end
 
 function Combat:SetHitArc(arc)
@@ -584,12 +584,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
 
 	--can add more attacktypes as needed
 	--currently just "projectile" or nil, used for hit stun calculation
-	if (damage or 0) > 0 and
-		weapon and
-		(	weapon.components.projectile or
-			(weapon.components.weapon and weapon.components.weapon.projectile)
-		)
-	then
+	if IsRangedWeapon(weapon) then
 		self.lastattacktype = "projectile"
 	else
 		self.lastattacktype = nil
@@ -603,19 +598,35 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
         blocked = true
     end
 
+	--e.g. slurper/bat_boss
+	local isequipped =
+		attacker and
+		attacker.components.equippable and
+		self.inst.components.inventory and
+		self.inst.components.inventory:IsItemEquipped(attacker) or
+		false
+
     if self.inst.components.health ~= nil and damage ~= nil and damageredirecttarget == nil then
-        if self.inst.components.attackdodger ~= nil and self.inst.components.attackdodger:CanDodge(attacker) then
-            self.inst.components.attackdodger:Dodge(attacker)
-            damage, spdamage = 0, nil
-        end
+		--try dodge (unless attacker is equipped on you)
+		if not isequipped then
+			if self.inst.components.attackdodger and self.inst.components.attackdodger:CanDodge(attacker) then
+				self.inst.components.attackdodger:Dodge(attacker)
+				damage, spdamage = 0, nil
+			end
+		end
 
 		if self.inst.components.inventory and not self.inst.components.inventory.ignorecombat then
 			if attacker ~= nil and attacker.components.planarentity ~= nil and not self.inst.components.inventory:EquipHasSpDefenseForType("planar") then
 				attacker.components.planarentity:OnPlanarAttackUndefended(self.inst)
 			end
-			damage, spdamage = self.inst.components.inventory:ApplyDamage(damage, attacker, weapon, spdamage)
+			--try defending with armor (unless attacker is equipped on you)
+			if not isequipped then
+				damage, spdamage = self.inst.components.inventory:ApplyDamage(damage, attacker, weapon, spdamage)
+			end
         end
-		if self.inst.components.rideable ~= nil then
+
+		--try defending with saddle (unless attacker is equipped on you)
+		if not isequipped and self.inst.components.rideable then
 			local saddle = self.inst.components.rideable.saddle
 			if saddle ~= nil then
                 if saddle.components.saddler ~= nil then
@@ -623,6 +634,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
                 end
 			end
 		end
+
         local damagetypemult = 1
 		if self.inst.components.damagetyperesist ~= nil then
 			damagetypemult = damagetypemult * self.inst.components.damagetyperesist:GetResist(attacker, weapon)
@@ -631,7 +643,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
             damage = damagetypemult * self:ApplyConditionExternalDamageTakenMultiplier(damage, attacker, weapon)
         end
 		damage = damage * damagetypemult * self.externaldamagetakenmultipliers:Get()
-		if (damage > 0 or spdamage ~= nil) and not self.inst.components.health:IsInvincible() then
+		if (damage > 0 or (spdamage and damagetypemult ~= 0)) and not self.inst.components.health:IsInvincible() then
 			if damage > 0 then
 				--Bonus damage only applies after unabsorbed damage gets through your armor
 				if attacker ~= nil and attacker.components.combat ~= nil and attacker.components.combat.bonusdamagefn ~= nil then
@@ -702,7 +714,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
         end
     else
         -- We blocked it, but we might still want to know how much they rattled us in damage value!
-        self.inst:PushEvent("blocked", { attacker = attacker, damage = damage, spdamage = spdamage, original_damage = original_damage })
+		self.inst:PushEvent("blocked", { attacker = attacker, damage = damage, spdamage = spdamage, original_damage = original_damage, weapon = weapon, stimuli = stimuli })
     end
 
 	if self.target == nil or self.target == attacker then

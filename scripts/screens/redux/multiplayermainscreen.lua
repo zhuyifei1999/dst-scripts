@@ -36,7 +36,7 @@ local KitcoonPuppet = require "widgets/kitcoonpuppet"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
-local IS_BETA = BRANCH == "staging"-- or BRANCH == "dev"
+local IS_BETA = BRANCH == "staging" or BRANCH == "dev"
 local IS_DEV_BUILD = BRANCH == "dev"
 
 local function PlayBannerSound(inst, self, sound)
@@ -375,7 +375,7 @@ function MakeBanner(self)
 		--
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeRift7Banner(self, banner_root, uianim)
+		MakeCawnivalBanner(self, banner_root, uianim)
     elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTH) then
         MakeYOTHBanner(self, banner_root, uianim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTS) then
@@ -398,7 +398,7 @@ function MakeBanner(self)
 		--*** !!! ***
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeRift7Banner(self, banner_root, uianim)
+		MakeCawnivalBanner(self, banner_root, uianim)
 		--MakeWurtWinonaQOLBanner(self, banner_root, uianim)
 		--MakeRiftsMetaQoLBanner(self, banner_root, uianim)
 		--MakeMeta2Banner(self, banner_root, uianim)

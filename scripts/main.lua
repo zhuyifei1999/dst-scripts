@@ -377,6 +377,12 @@ require("map/rooms")
 require("map/tasksets")
 require("map/startlocations")
 
+
+if TheSim:FeedbackEnabled() then
+	TheFeedbackScreen = nil
+	TheScreenshotter = require("util.screenshotter")()
+end
+
 inGamePlay = false
 
 local function ModSafeStartup()
@@ -536,6 +542,18 @@ if CHEATS_ENABLED then
     require "debugkeys"
 else
 	global("CREATING_SCRAPBOOK_DATA")
+end
+
+if TheSim:FeedbackEnabled() then
+	global("TheFeedbackScreen")
+
+	function SubmitFeedbackResult(response_code, response)
+		print("Feedback result:",response_code)
+		print("response:",response)
+		if TheFeedbackScreen then
+			TheFeedbackScreen:SubmitFeedbackResult(response_code, response)
+		end
+	end
 end
 
 TheSystemService:SetStalling(false)

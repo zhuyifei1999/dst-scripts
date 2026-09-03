@@ -1,0 +1,49 @@
+require("behaviours/chaseandattack")
+require("behaviours/wander")
+
+local MAX_CHASE_TIME = 5
+local MAX_CHASE_DIST = 20
+
+local WANDER_DIST = 8
+
+local CharlieBossRunnerBrain = Class(Brain, function(self, inst)
+	Brain._ctor(self, inst)
+end)
+
+local WANDER_TIMES =
+{
+    minwalktime = 10,
+    randwalktime = 2,
+    minwaittime = 0,
+    randwaittime = 0,
+}
+
+local WANDER_DATA =
+{
+	wander_dist = WANDER_DIST,
+	ignore_walls = true,
+}
+
+local function GetWanderDirection(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local rot = inst.Transform:GetRotation()
+	local theta = rot * DEGREES
+	local angleoffset = TheWorld.Map:IsVisualGroundAtPoint(x + math.cos(theta) * WANDER_DIST, y, z - math.sin(theta) * WANDER_DIST) and 0 or -180 -- flip if against void
+	return ReduceAngle(GetRandomWithVariance(rot + angleoffset, 10)) * DEGREES
+end
+
+function CharlieBossRunnerBrain:OnStart()
+	local root = PriorityNode({
+		WhileNode(
+			function() return not self.inst.sg:HasStateTag("jumping") end, "<busy state guard>",
+			PriorityNode({
+				ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+				Wander(self.inst, nil, nil, WANDER_TIMES, GetWanderDirection, nil, nil, WANDER_DATA),
+			}, 0.25)
+		)
+	}, 0.25)
+
+	self.bt = BT(self.inst, root)
+end
+
+return CharlieBossRunnerBrain

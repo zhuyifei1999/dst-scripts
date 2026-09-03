@@ -138,6 +138,11 @@ function LaunchToXZ(inst, tox, toz)
     end
 end
 
+function LaunchToInst(inst, toinst)
+    local x, _, z = toinst.Transform:GetWorldPosition()
+    LaunchToXZ(inst, x, z)
+end
+
 local COLLAPSIBLE_WORK_ACTIONS =
 {
     CHOP = true,

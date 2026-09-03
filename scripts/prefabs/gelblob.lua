@@ -103,7 +103,7 @@ local HEALTH_SEGS_PER_SIZE = LEVELS_PER_SIZE - 1
 local NUM_LEVELS = NUM_SIZES * LEVELS_PER_SIZE
 local NUM_HEALTH_SEGS = NUM_SIZES * HEALTH_SEGS_PER_SIZE
 
-local REGISTERED_PROXIMITY_TAGS = rawget(_G, "TheSim") and TheSim:RegisterFindTags({ "locomotor" }, { "INLIMBO", "flight", "invisible", "notarget", "noattack", "ghost", "playerghost", "shadowthrall", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece" }) or {}
+local REGISTERED_PROXIMITY_TAGS = rawget(_G, "TheSim") and TheSim:RegisterFindTags({ "locomotor" }, { "INLIMBO", "flight", "invisible", "notarget", "noattack", "ghost", "playerghost", "shadowthrall", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece", "stalker", "nogelblob" }) or {}
 local PHYSICS_PADDING = 3
 local NEAR_RADIUS = 3
 

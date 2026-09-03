@@ -1,13 +1,18 @@
 require("worldsettingsutil")
+local easing = require("easing")
 
 local assets =
 {
     Asset("ANIM", "anim/atrium_gate.zip"),
+    Asset("ANIM", "anim/atrium_gate_shrouden.zip"),
     Asset("ANIM", "anim/atrium_gate_build.zip"),
     Asset("ANIM", "anim/atrium_floor.zip"),
+    Asset("ANIM", "anim/atrium_ritual.zip"),
     Asset("MINIMAP_IMAGE", "atrium_gate_active"),
     Asset("MINIMAP_IMAGE", "atrium_gate_fixed"),
     Asset("MINIMAP_IMAGE", "atrium_gate_fixed_active"),
+    Asset("MINIMAP_IMAGE", "atrium_gate_keystone"), -- fixed + keystone!
+    Asset("MINIMAP_IMAGE", "atrium_gate_keystone_active"), -- fixed + keystone + original key!
 }
 
 local prefabs =
@@ -16,7 +21,21 @@ local prefabs =
     "atrium_gate_activatedfx",
     "atrium_gate_pulsesfx",
     "atrium_gate_explodesfx",
+    "atrium_ritual_marking",
     "charlie_hand",
+    "charlie_hand_keystone",
+    "charlie_circle_spawn_fx",
+    "charlie_circle_spawn_ground_fx",
+}
+
+local RITUAL_STATES =
+{
+    DISABLED = 0,
+    ENABLED = 1,
+    ACTIVE = 2, -- ritual has all 3 pieces
+    SUMMONING = 3, -- we're summoning shrouden
+    SUMMONED = 4, -- summoned, tentacles pop out, room morphs, charlie taken
+    -- then reset back to ENABLED? or we need another state here?
 }
 
 local EXPLOSION_ANIM_LEN = 86 * FRAMES
@@ -41,7 +60,8 @@ local function OnFocusCamera(inst)
     if inst._camerafocusvalue > FRAMES then
         inst._camerafocusvalue = inst._camerafocusvalue - FRAMES
         local k = math.min(1, inst._camerafocusvalue) / 1
-        TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 10 * k, 28 * k, 4)
+        local offset = (inst.ritual_state:value() >= RITUAL_STATES.SUMMONING and Vector3(0, 2.75)) or nil
+        TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 10 * k, 28 * k, 4, nil, offset)
     else
         inst._camerafocustask:Cancel()
         inst._camerafocustask = nil
@@ -138,21 +158,6 @@ local function HideFx(inst)
     end
 end
 
-local function SocketVaultKey(inst, doer)
-    -- WORLDSTATETAGS.SetTagEnabled("VAULT_KEY_FOUND", true) -- FIXME(JBK): rifts7: Vault key progress flag.
-    inst.vault_key_socketed = true
-    inst.AnimState:Show("KEY")
-
-    if doer ~= nil then
-        -- TODO FIXME_RIFTS7_AUDIO
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
-    end
-end
-
-local function IsVaultKeySocketed(inst)
-    return inst.vault_key_socketed
-end
-
 local function ItemTradeTest(inst, item)
     if item == nil then
         return false
@@ -164,7 +169,7 @@ local function ItemTradeTest(inst, item)
     return true
 end
 
-local function OnKeyGiven(inst, giver)
+local function OnKeyGiven(inst, giver, pushanim)
     WORLDSTATETAGS.SetTagEnabled("ATRIUM_KEY_FOUND", true)
     --Disable trading, enable picking.
     inst.components.trader:Disable()
@@ -172,10 +177,15 @@ local function OnKeyGiven(inst, giver)
     inst.components.pickable:Pause()
     inst.components.pickable.caninteractwith = true
 
-    inst.AnimState:PlayAnimation("idle_active")
+    if pushanim then
+        inst.AnimState:PushAnimation("idle_active")
+    else
+        inst.AnimState:PlayAnimation("idle_active")
+    end
 
+    local vaultkeyin = inst:IsVaultKeySocketed()
     local repaired = inst.components.charliecutscene:IsGateRepaired()
-    inst.MiniMapEntity:SetIcon(repaired and "atrium_gate_fixed_active.png" or "atrium_gate_active.png")
+    inst.MiniMapEntity:SetIcon(vaultkeyin and "atrium_gate_keystone_active.png" or repaired and "atrium_gate_fixed_active.png" or "atrium_gate_active.png")
 
     TheWorld:PushEvent("atriumpowered", true)
     TheWorld:PushEvent("ms_locknightmarephase", "wild")
@@ -201,8 +211,9 @@ local function OnKeyTaken(inst)
 
     inst.AnimState:PlayAnimation("idle")
 
+    local vaultkeyin = inst:IsVaultKeySocketed()
     local repaired = inst.components.charliecutscene:IsGateRepaired()
-    inst.MiniMapEntity:SetIcon(repaired and "atrium_gate_fixed.png" or "atrium_gate.png")
+    inst.MiniMapEntity:SetIcon(vaultkeyin and "atrium_gate_keystone.png" or repaired and "atrium_gate_fixed.png" or "atrium_gate.png")
 
     HideFx(inst)
 
@@ -210,6 +221,45 @@ local function OnKeyTaken(inst)
     TheWorld:PushEvent("ms_locknightmarephase", nil)
     TheWorld:PushEvent("unpausequakes", { source = inst })
     TheWorld:PushEvent("unpausehounded", { source = inst })
+end
+
+local function SocketVaultKey(inst, loading)
+    -- WORLDSTATETAGS.SetTagEnabled("VAULT_KEY_FOUND", true) -- FIXME(JBK): rifts7: Vault key progress flag.
+    inst.vault_key_socketed = true
+    inst.AnimState:Show("KEY")
+
+    local active = inst.components.pickable.caninteractwith or inst.components.worldsettingstimer:ActiveTimerExists("destabilizedelay")
+    inst.MiniMapEntity:SetIcon(active and "atrium_gate_keystone_active.png" or "atrium_gate_keystone.png")
+
+    if not loading then
+        -- kill off cooldown timer if it exists
+        inst.components.worldsettingstimer:StopTimer("cooldown")
+        inst.SoundEmitter:KillSound("loop")
+
+        local placing_both_keys = not inst.components.pickable.caninteractwith
+        if placing_both_keys then
+            inst.AnimState:PlayAnimation("place_both_keys")
+            -- save load case handled in charliecutscene:LoadPostPass
+            inst:DoTaskInTime(109 * FRAMES, OnKeyGiven, nil, true) -- For the original key
+        else
+            inst.AnimState:PlayAnimation("place_vault_key")
+            inst.AnimState:PushAnimation("idle_active", true)
+
+        end
+        inst.SoundEmitter:PlaySoundWithParams("rifts8/charlie_ritual/keys", { key_amt = placing_both_keys and .5 or 0 })
+    end
+end
+
+local function DestroyVaultKey(inst)
+    inst.vault_key_socketed = nil
+    inst.AnimState:Hide("KEY")
+
+    local active = inst.components.pickable.caninteractwith or inst.components.worldsettingstimer:ActiveTimerExists("destabilizedelay")
+    inst.MiniMapEntity:SetIcon(active and "atrium_gate_fixed_active.png" or "atrium_gate_fixed.png")
+end
+
+local function IsVaultKeySocketed(inst)
+    return inst.vault_key_socketed
 end
 
 local function DoPlayerWarning(inst, player)
@@ -451,7 +501,8 @@ local function ontimer(inst, data)
 end
 
 local function getstatus(inst)
-    return (inst:IsDestabilizing() and "DESTABILIZING")
+    return (inst:IsRitualSummoning() and "RITUAL_SUMMONING")
+        or (inst:IsDestabilizing() and "DESTABILIZING")
         or (inst.components.worldsettingstimer:ActiveTimerExists("cooldown") and "COOLDOWN")
         or ((inst:HasTag("intense") or inst.components.worldsettingstimer:ActiveTimerExists("destabilizedelay")) and "CHARGING")
         -- or (inst:IsVaultKeySocketed() and "ON_VAULT")
@@ -484,7 +535,7 @@ end
 
 local function OnSave(inst, data)
     data.vault_key_socketed = inst:IsVaultKeySocketed()
-    data.can_spawn_charlie_hand_keystone = inst.can_spawn_charlie_hand_keystone
+    data.ritual_state = inst.ritual_state:value()
     if inst._launchkeytask ~= nil then
         data.launch_key = true
     end
@@ -493,10 +544,7 @@ end
 local function OnLoad(inst, data)
     if data ~= nil then
         if data.vault_key_socketed then
-            inst:SocketVaultKey()
-        end
-        if data.can_spawn_charlie_hand_keystone then
-            inst.can_spawn_charlie_hand_keystone = data.can_spawn_charlie_hand_keystone
+            inst:SocketVaultKey(true)
         end
         if data.launch_key then
             local key = SpawnPrefab("atrium_key")
@@ -526,6 +574,14 @@ local function OnLoadPostPass(inst, ents, data)
             OnQueueDestabilize(inst, true)
         end
     end
+    if data then
+        if inst._runningkeysocket--[[from charliecutscene:LoadPostPass]] then
+            inst:EnableRitual(true)
+            inst._runningkeysocket = nil
+        elseif data.ritual_state then
+            inst:SetRitualState(data.ritual_state)
+        end
+    end
 end
 
 local function InitializePathFinding(inst)
@@ -547,7 +603,7 @@ end
 --------------------------------------------------------------------------
 
 local KEYSTONE_MUST_TAGS = { "irreplaceable" }
-local KEYSTONE_RADIUS = math.ceil(ATRIUM_ARENA_SIZE + 4)
+local KEYSTONE_RADIUS = math.ceil(ATRIUM_ARENA_SIZE + 3)
 
 local function FindKeyStone(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -563,8 +619,7 @@ end
 
 local function UpdateCharlieHandKeyStone(inst)
     local charliehand = inst.components.entitytracker:GetEntity("charlie_hand")
-    local canspawn = inst.can_spawn_charlie_hand_keystone
-        and inst.components.charliecutscene:IsGateRepaired()
+    local canspawn = inst.components.charliecutscene:IsGateRepaired()
         and not inst:IsVaultKeySocketed()
         and not inst:HasTag("intense")
         and not inst.AnimState:IsCurrentAnimation("idle_fight")
@@ -601,11 +656,227 @@ local function OnPlayerFar(inst, player)
             charliehand.persists = false
             charliehand:RunAway()
         end
+
         inst.players = nil
         if inst.charlie_hand_keystone_task ~= nil then
             inst.charlie_hand_keystone_task:Cancel()
             inst.charlie_hand_keystone_task = nil
         end
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function UpdateShroudenTarget(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local timeleft = GetTaskRemaining(inst.shrouden_summon_task)
+    local charlienpc = inst.components.entitytracker:GetEntity("charlienpc")
+    local players = FindPlayersInRange(x, y, z, ATRIUM_ARENA_SIZE + 5, true)
+    local targetchoices = {}
+    for i, v in ipairs(players) do
+        targetchoices[v] = inst.shrouden_target:value() == v and 0 or Remap(easing.linear(1 / (TUNING.SHROUDEN_RITUAL_TIME/timeleft), 1, -1, 1), 0, 1, 1, 0)
+    end
+    if charlienpc then
+        targetchoices[charlienpc] = (timeleft > 1 and inst.shrouden_target:value() == charlienpc and 0) or .8
+    end
+
+    local target = weighted_random_choice(targetchoices)
+
+    inst:SetShroudenTarget(target)
+    inst.shrouden_target_task = inst:DoTaskInTime(easing.linear(1 / (TUNING.SHROUDEN_RITUAL_TIME/timeleft), .5, 1.5, 1), UpdateShroudenTarget)
+end
+
+local function DoShroudenSummon(inst)
+    inst:SetRitualState(RITUAL_STATES.SUMMONED)
+    inst.shrouden_summon_task = nil
+end
+
+---
+
+-- keep in sync with charliecutscene.lua
+local NUM_RITUAL_MARKINGS = 3
+local RITUAL_MARKING_THETA_STEP = 1 / NUM_RITUAL_MARKINGS
+local MARKING_RANGE = 725 / 150
+
+local function TryToSpawnCharlieNPC(inst)
+    if inst.components.entitytracker:GetEntity("charlienpc") or TheWorld.components.charlie_tracker:IsCharlieDefeated() then
+        return nil
+    end
+
+    local charlienpc = SpawnPrefab("charlie_npc")
+    inst.components.entitytracker:TrackEntity("charlienpc", charlienpc)
+end
+
+local function ritualstate_SpawnCharlieNPC(inst, summoning)
+    local newspawn = inst.components.entitytracker:GetEntity("charlienpc") == nil
+    TryToSpawnCharlieNPC(inst)
+    local charlienpc = inst.components.entitytracker:GetEntity("charlienpc")
+    if charlienpc then
+        if newspawn then
+            charlienpc.Transform:SetPosition(inst.components.charliecutscene:FindCharlieRitualSpawnPoint():Get())
+            charlienpc:ForceFacePoint(inst.Transform:GetWorldPosition())
+            charlienpc:PushEventImmediate("spawn")
+        end
+        if not POPULATING then
+            if summoning then
+                charlienpc.components.npc_talker:ResetQueue()
+                charlienpc.components.talker:ShutUp()
+                charlienpc.sg.mem.skipdonetalking = true
+                charlienpc.components.npc_talker:Chatter("CHARLIE_NPC_RITUAL_BEGUN")
+                charlienpc.SoundEmitter:KillSound("loop")
+            else
+                charlienpc.components.npc_talker:ResetQueue()
+                charlienpc.components.talker:ShutUp()
+                charlienpc.sg.mem.skipdonetalking = true
+                charlienpc.components.npc_talker:Chatter("CHARLIE_NPC_SHROUDEN_TAKES_HOST")
+                charlienpc.components.npc_talker:DoNextLine()
+                charlienpc.SoundEmitter:KillSound("loop")
+                charlienpc:PushEventImmediate("transform", { gate = inst })
+            end
+        end
+    end
+end
+
+local function ritualstate_StartShroudenAmbience(inst)
+    if not inst.SoundEmitter:PlayingSound("shrouden_amb") then
+        inst.SoundEmitter:PlaySound("rifts8/shrouden_portal/ambient_LP", "shrouden_amb")
+    end
+end
+
+local function ritualstate_StopShroudenAmbience(inst)
+    inst.SoundEmitter:KillSound("shrouden_amb")
+end
+
+local function ritualstate_OnSummoned(inst, state)
+    ritualstate_StartShroudenAmbience(inst)
+    ritualstate_SpawnCharlieNPC(inst, false)
+    SetCameraFocus(inst, 1)
+    inst:AddTag("intense")
+    inst:SetShroudenTarget(inst.components.entitytracker:GetEntity("charlienpc"))
+
+    TheWorld:PushEvent("ms_charliearena_morphatrium",
+    {
+        cb = function()
+            SetCameraFocus(inst, 0)
+            DestroyVaultKey(inst)
+            inst:SetRitualState(RITUAL_STATES.ENABLED) -- cycle back
+        end,
+    })
+end
+
+local function ritualstate_OnSummoning(inst, state)
+    inst.SoundEmitter:PlaySound("rifts8/shrouden_portal/eye_appear")
+    ritualstate_StartShroudenAmbience(inst)
+
+    ritualstate_SpawnCharlieNPC(inst, true)
+    SetCameraFocus(inst, 1)
+    inst:AddTag("intense")
+    for i = 1, NUM_RITUAL_MARKINGS do
+        local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+        if marking then
+            marking:ConsumeRitualItem()
+        end
+    end
+
+    -- 72 frames for the eye to appear
+    inst.shrouden_target_task = inst:DoTaskInTime(3, UpdateShroudenTarget)
+    inst.shrouden_summon_task = inst:DoPeriodicTask(TUNING.SHROUDEN_RITUAL_TIME, DoShroudenSummon)
+end
+
+local function ritualstate_OnEnabled(inst, state)
+    ritualstate_StopShroudenAmbience(inst)
+    if state == RITUAL_STATES.ACTIVE then
+        inst.SoundEmitter:PlaySound("rifts8/charlie_ritual/summon")
+        for i = 1, NUM_RITUAL_MARKINGS do
+            local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+            if marking then
+                marking:ConsumeRitualItem()
+            end
+        end
+        inst:DoTaskInTime(0.7, function()
+            inst:SetRitualState(RITUAL_STATES.SUMMONING)
+        end)
+    end
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local theta = (inst.components.charliecutscene:FindRitualAngle() * DEGREES) -- charliecutscene has data on atrium pillar positions so using that component
+    for i = 1, NUM_RITUAL_MARKINGS do
+        local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+        if marking == nil then
+            marking = SpawnPrefab("atrium_ritual_marking")
+            marking.Transform:SetPosition(x + math.cos(theta) * MARKING_RANGE, 0, z - math.sin(theta) * MARKING_RANGE)
+            marking.Transform:SetRotation(math.random() * 360)
+            marking:Enable(true)
+            inst.components.entitytracker:TrackEntity("ritualmarking"..tostring(i), marking)
+
+            if not POPULATING then
+                marking:PushEvent("onbuilt")
+            end
+        end
+
+        marking.gate = inst
+
+        if not marking.atriumlistening then
+            marking.atriumlistening = true
+            inst:ListenForEvent("updateselectedritualitem", inst._updateritualitemstate, marking)
+        end
+
+        theta = theta + (RITUAL_MARKING_THETA_STEP * TWOPI)
+    end
+end
+
+local function ritualstate_OnDisabled(inst) -- this won't be used probably, but it's supported
+    for i = 1, NUM_RITUAL_MARKINGS do
+        local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+        if marking then
+            marking:Remove()
+        end
+    end
+end
+
+local function SetRitualState(inst, state)
+    if inst.ritual_state:value() ~= state then
+        inst.ritual_state:set(state)
+        inst.components.charliecutscene:FindAndSetCameraSceneAngle()
+
+        if inst.shrouden_target_task then
+            inst.shrouden_target_task:Cancel()
+            inst.shrouden_target_task = nil
+        end
+        if inst.morph_room_task then
+            inst.morph_room_task:Cancel()
+            inst.morph_room_task = nil
+        end
+
+        TheWorld:PushEvent("ms_atriumgate_ritualstatechanged", inst)
+
+        if state >= RITUAL_STATES.SUMMONED then
+            ritualstate_OnSummoned(inst, state)
+        elseif state >= RITUAL_STATES.SUMMONING then
+            ritualstate_OnSummoning(inst, state)
+        elseif state >= RITUAL_STATES.ENABLED then
+            ritualstate_OnEnabled(inst, state)
+        else
+            ritualstate_OnDisabled(inst)
+        end
+    end
+end
+
+local function GetRitualState(inst)
+    return inst.ritual_state:value()
+end
+
+local function EnableRitual(inst, enable)
+    inst:SetRitualState(enable and RITUAL_STATES.ENABLED or RITUAL_STATES.DISABLED)
+end
+
+--------------------------------------------------------------------------
+
+local function SetShroudenTarget(inst, target)
+    if target ~= inst.shrouden_target:value() then
+        inst.shrouden_target:set(target)
+
+        inst.SoundEmitter:PlaySound("rifts8/shrouden_portal/eye_movement")
     end
 end
 
@@ -628,7 +899,7 @@ local function CreateTerraformBlocker(parent)
     return inst
 end
 
-local function AddTerraformBlockers(inst)
+local function AddTerraformBlockers(inst) -- NOTES(JBK): Keep in sync with charlie_boss_trial. [ARTBES]
     local diameter = 2 * TERRAFORM_BLOCKER_RADIUS
     local rowoffset = 3 * TERRAFORM_BLOCKER_RADIUS
     for row = -rowoffset, rowoffset, diameter do
@@ -645,6 +916,10 @@ local function AddTerraformBlockers(inst)
 end
 
 --------------------------------------------------------------------------
+
+local function floor_SetRitualState(inst, ritual_state)
+    inst.AnimState:PlayAnimation(ritual_state >= RITUAL_STATES.ACTIVE and "idle_active_on" or "idle_active")
+end
 
 local function CreateFloor()
     local inst = CreateEntity()
@@ -664,6 +939,80 @@ local function CreateFloor()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(-3)
 
+    inst.SetRitualState = floor_SetRitualState
+
+    return inst
+end
+
+local function ritual_OnParentWake(inst)
+    local parent = inst.entity:GetParent()
+    local ritual_state = parent and parent.ritual_state:value()
+    if ritual_state then
+        inst.AnimState:PlayAnimation(ritual_state >= RITUAL_STATES.ACTIVE and "path_active" or "path", true)
+    end
+
+    -- end tween
+    inst:RemoveComponent("colourtweener")
+    inst.AnimState:SetMultColour(1, 1, 1, 1)
+    if inst.tween_task then
+        inst.tween_task:Cancel()
+        inst.tween_task = nil
+    end
+end
+
+local function ritual_SetRitualState(inst, ritual_state)
+    if ritual_state >= RITUAL_STATES.ACTIVE then
+        inst.AnimState:PlayAnimation("path_active")
+    elseif not inst.AnimState:IsCurrentAnimation("path_appear") then
+        inst.AnimState:PlayAnimation("path", true)
+    end
+end
+
+local REVERT_COLOUR_TIME = 1.4
+local function ritual_OnFinishColourTweening(inst)
+    inst:RemoveComponent("colourtweener")
+end
+
+local function ritual_TweenToNormalColour(inst)
+    inst.components.colourtweener:StartTween({1, 1, 1, 1}, REVERT_COLOUR_TIME, ritual_OnFinishColourTweening)
+end
+
+local function ritual_RevertToNormalColour(inst)
+    inst.tween_task = inst:DoTaskInTime(0.4, ritual_TweenToNormalColour)
+end
+
+local function CreateRitualFloor(parent)
+    local inst = CreateEntity()
+
+    inst:AddTag("DECOR")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("atrium_ritual")
+    inst.AnimState:SetBuild("atrium_ritual")
+    if parent:GetTimeAlive() >= 1 then -- FIXME bad hack this is so we don't play appear or colour tween again on room transition : (
+        inst.AnimState:PlayAnimation("path_appear")
+        inst.AnimState:PushAnimation("path", true)
+    else
+        inst.AnimState:PlayAnimation("path", true)
+    end
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(-3)
+    inst.AnimState:SetFinalOffset(1)
+
+    if parent:GetTimeAlive() >= 1 then -- FIXME bad hack this is so we don't play appear or colour tween again on room transition : (
+        inst:AddComponent("colourtweener")
+        inst.components.colourtweener:StartTween({0, 0, 0, 1}, 2 * FRAMES, ritual_RevertToNormalColour)
+    end
+
+    inst.OnParentWake = ritual_OnParentWake
+    inst.SetRitualState = ritual_SetRitualState
+
     return inst
 end
 
@@ -674,6 +1023,212 @@ local function OnPreLoad(inst, data)
     WorldSettings_Timer_PreLoad_Fix(inst, data, "destabilizedelay", 1)
     WorldSettings_Timer_PreLoad(inst, data, "cooldown", TUNING.ATRIUM_GATE_COOLDOWN)
     WorldSettings_Timer_PreLoad_Fix(inst, data, "cooldown", 1)
+end
+
+--------------------------------------------------------------------------
+
+local function GetPupilDeltaTime(inst)
+	local current_time = GetStaticTime()
+	local dt = current_time - inst.t
+	inst.t = current_time
+	return dt
+end
+
+local PUPIL_POS_UPDATE_RATE = 5
+local function UpdateShroudenPupil(inst)
+    local dt = GetPupilDeltaTime(inst)
+    local parent = inst.entity:GetParent()
+    local target = parent.shrouden_target:value()
+    if not inst.entity:IsVisible() then
+        return
+    end
+
+    local offx, offy = 0, 0 -- original position if no target
+    if target then
+        local x, y, z = target.Transform:GetWorldPosition()
+        y = y + (target.prefab == "charlie_npc" and 2.5 or 1)
+
+        local psx, psy = TheSim:GetScreenPos(x, y, z)
+        x, y, z = parent.Transform:GetWorldPosition()
+        local sx, sy = TheSim:GetScreenPos(x, y + 4, z)
+        local theta = math.atan2(sy - psy, psx - sx)
+        local w, h = 70, 70
+        local dist = math.sqrt(distsq(psx, psy, sx, sy))
+
+        offx = math.cos(theta) * math.min(dist, w)
+        offy = math.sin(theta) * math.min(dist, h)
+    end
+
+    local k = math.min(1, dt * PUPIL_POS_UPDATE_RATE)
+    local mult = 1 - k
+    inst.targetpos.x = offx * k + inst.targetpos.x * mult
+    inst.targetpos.y = offy * k + inst.targetpos.y * mult
+
+    inst.Follower:SetOffset(inst.targetpos.x, inst.targetpos.y, 0)
+end
+
+local function shrouden_OnParentWake(inst)
+    inst.AnimState:PlayAnimation(inst.anim, true)
+    if inst.SyncEyeParts then
+        inst:SyncEyeParts()
+    end
+end
+
+local function shrouden_SetRitualState(inst, state)
+    if inst.anim == "tentacles_idle" then
+        if state == RITUAL_STATES.SUMMONED then
+            inst:Show()
+            inst.AnimState:PlayAnimation(inst.appearanim)
+            inst.AnimState:PushAnimation(inst.queueanim)
+            inst.AnimState:PushAnimation(inst.anim, true)
+        else
+            inst:Hide()
+        end
+    end
+end
+
+local function SyncEyeParts(inst)
+    local parent = inst.entity:GetParent()
+    local isappearing = inst.AnimState:IsCurrentAnimation("eye_appear")
+    local idleframe = inst.AnimState:IsCurrentAnimation("eye_idle") and inst.AnimState:GetCurrentAnimationFrame()
+    if not parent or not parent.shrouden_parts then
+        return
+    end
+
+    for i, v in ipairs(parent.shrouden_parts) do
+        if v.synctoeye then
+            if isappearing then
+                v:Hide()
+            else
+                v:Show()
+            end
+            if idleframe then
+                v.AnimState:SetFrame(idleframe)
+            end
+        end
+    end
+end
+
+local function AddShroudenFollowSymbol(inst, sym, anim, appearanim, synctoeye, queueanim)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	--fx.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("atrium_gate_shrouden")
+	fx.AnimState:SetBuild("atrium_gate_shrouden")
+    fx.AnimState:SetSymbolLightOverride("red_parts", 1)
+    if appearanim then
+        fx.AnimState:PlayAnimation(appearanim)
+        if queueanim then
+            fx.AnimState:PushAnimation(queueanim)
+            fx.AnimState:PushAnimation(anim, true)
+        else
+            fx.AnimState:PushAnimation(anim, true)
+        end
+        fx.OnParentWake = shrouden_OnParentWake
+    else
+	    fx.AnimState:PlayAnimation(anim, true)
+    end
+
+    fx.anim = anim
+    fx.appearanim = appearanim
+    fx.queueanim = queueanim
+    fx.synctoeye = synctoeye
+
+	fx.entity:SetParent(inst.entity)
+	fx.Follower:FollowSymbol(inst.GUID, sym, 0, 0, 0)
+
+    fx.SetRitualState = shrouden_SetRitualState
+
+    if anim == "pupil" then
+        fx.t = GetTime()
+        fx.targetpos = { x = 0, y = 0 }
+        fx:AddComponent("updatelooper")
+        fx.components.updatelooper:AddPostUpdateFn(UpdateShroudenPupil)
+        fx:Hide()
+    elseif anim == "eye_idle" then
+        fx:ListenForEvent("animover", SyncEyeParts)
+        fx.SyncEyeParts = SyncEyeParts
+    end
+
+	return fx
+end
+
+local function ConfigureShroudenFX(inst)
+    if inst.shrouden_parts then
+        return
+    end
+    inst.shrouden_parts =
+    {
+        AddShroudenFollowSymbol(inst, "swap_shrouden", "tentacles_idle", "tentacles_appear", nil, "tentacles_grow"),
+        AddShroudenFollowSymbol(inst, "swap_shrouden", "eye_idle", "eye_appear"),
+        AddShroudenFollowSymbol(inst, "swap_shrouden", "pupil", nil, true),
+        AddShroudenFollowSymbol(inst, "swap_shrouden", "eye_shading_idle", nil, true),
+        AddShroudenFollowSymbol(inst, "swap_shrouden", "eye_lids_idle", nil, true),
+    }
+    for i, v in ipairs(inst.shrouden_parts) do
+        table.insert(inst.highlightchildren, v)
+        if v.SyncEyeParts then
+            v:SyncEyeParts()
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
+local RITUAL_ROT_OFFSET = 360 / 6
+local function OnRitualStateDirty(inst)
+    local ritual_state = inst.ritual_state:value()
+    inst.atrium_floor:SetRitualState(ritual_state)
+    if ritual_state >= RITUAL_STATES.ENABLED then
+        if ritual_state == RITUAL_STATES.SUMMONED then
+            ConfigureShroudenFX(inst)
+            for i, v in ipairs(inst.shrouden_parts) do
+                v:SetRitualState(ritual_state)
+            end
+        elseif ritual_state == RITUAL_STATES.SUMMONING then
+            ConfigureShroudenFX(inst)
+            for i, v in ipairs(inst.shrouden_parts) do
+                v:SetRitualState(ritual_state)
+            end
+        end
+        if inst.ritual_circle == nil then
+            inst.ritual_circle = CreateRitualFloor(inst)
+            inst.ritual_circle.entity:SetParent(inst.entity)
+        end
+        inst.ritual_circle:SetRitualState(ritual_state)
+        -- using charliecutscene camera angle info to set the ritual circle the right rotation
+        local angle = inst.components.charliecutscene:ClientGetCameraAngle()
+        inst.ritual_circle.Transform:SetRotation(225-angle+RITUAL_ROT_OFFSET)
+    elseif inst.ritual_circle then
+        inst.ritual_circle:Remove()
+        inst.ritual_circle = nil
+    end
+end
+
+local function IsRitualSummoning(inst) -- summoning shrouden
+    return inst.ritual_state:value() == RITUAL_STATES.SUMMONING
+end
+
+local function notdedi_OnEntityWake(inst)
+    if inst.ritual_circle then
+        inst.ritual_circle:OnParentWake()
+    end
+    if inst.shrouden_parts then
+        for i, v in ipairs(inst.shrouden_parts) do
+            if v.OnParentWake then
+                v:OnParentWake()
+            end
+        end
+    end
+    inst:RemoveEventCallback("entitywake", notdedi_OnEntityWake)
 end
 
 --------------------------------------------------------------------------
@@ -710,12 +1265,21 @@ local function fn()
 
     inst._camerafocus = net_tinybyte(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
     inst._camerafocustask = nil
+    inst.ritual_state = net_tinybyte(inst.GUID, "atrium_gate.ritual_state", "ritualstatedirty")
+    inst.shrouden_target = net_entity(inst.GUID, "atrium_gate.shrouden_target") -- the entity the pupil is focusing on
 
     inst.scrapbook_specialinfo = "atriumgate"
 
     --Dedicated server does not need to spawn the flooring
     if not TheNet:IsDedicated() then
-        CreateFloor().entity:SetParent(inst.entity)
+        inst.atrium_floor = CreateFloor()
+        inst.atrium_floor.entity:SetParent(inst.entity)
+
+        inst:ListenForEvent("ritualstatedirty", OnRitualStateDirty)
+        inst:ListenForEvent("entitywake", notdedi_OnEntityWake)
+
+        inst:AddComponent("pointofinterest")
+        inst.components.pointofinterest:SetHeight(20)
     end
 
 	inst.scrapbook_speechstatus = "OFF"
@@ -730,11 +1294,6 @@ local function fn()
 
     -- Server and Client component.
     inst:AddComponent("charliecutscene")
-
-    if not TheNet:IsDedicated() then
-        inst:AddComponent("pointofinterest")
-        inst.components.pointofinterest:SetHeight(20)
-    end
 
     inst.entity:SetPristine()
 
@@ -755,6 +1314,7 @@ local function fn()
     inst.components.trader:SetAbleToAcceptTest(ItemTradeTest)
     inst.components.trader.deleteitemonaccept = true
     inst.components.trader.onaccept = OnKeyGiven
+    inst.OnKeyGiven = OnKeyGiven -- for charliecutscene
 
     inst:AddComponent("worldsettingstimer")
     inst.components.worldsettingstimer:AddTimer("destabilizing", TUNING.ATRIUM_GATE_DESTABILIZE_TIME, true)
@@ -791,10 +1351,20 @@ local function fn()
     inst.ForceDestabilizeExplode = ForceDestabilizeExplode
 
     inst.SocketVaultKey = SocketVaultKey
+    inst.DestroyVaultKey = DestroyVaultKey
     inst.IsVaultKeySocketed = IsVaultKeySocketed
     inst.vault_key_socketed = nil
 
+    inst.EnableRitual = EnableRitual
+    inst.GetRitualState = GetRitualState
+    inst.SetRitualState = SetRitualState
+    inst.IsRitualSummoning = IsRitualSummoning
+
+    inst.SetShroudenTarget = SetShroudenTarget
+
     inst.IsObjectInAtriumArena = IsObjectInAtriumArena
+
+    inst.RITUAL_STATES = RITUAL_STATES
 
     inst._onremovestalker = function(stalker)
         local current = inst.components.entitytracker:GetEntity("stalker")
@@ -815,8 +1385,6 @@ local function fn()
             if not stalker:IsAtriumDecay()
                 and not inst.components.entitytracker:GetEntity("charlie_hand")
             then
-                -- TODO #FIXME charlie hand keystone spawns after killing fuelweaver again for now.
-                inst.can_spawn_charlie_hand_keystone = true
                 if TUNING.SPAWN_RIFTS == 1
                     and TheWorld.components.riftspawner ~= nil and
                     not TheWorld.components.riftspawner:GetShadowRiftsEnabled() then
@@ -824,6 +1392,34 @@ local function fn()
                 end
             end
         end
+    end
+    inst._updateritualitemstate = function()
+        if inst:IsRitualSummoning() or (inst:GetRitualState() == RITUAL_STATES.ACTIVE) then
+            return
+        end
+
+        if inst.activate_ritual_task then
+            inst.activate_ritual_task:Cancel()
+            inst.activate_ritual_task = nil
+        end
+        local ritualitems = {} -- [prefab] = true
+
+        for i = 1, NUM_RITUAL_MARKINGS do
+            local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+            if marking and marking.item then
+                if ritualitems[marking.item.prefab] then
+                    inst:SetRitualState(RITUAL_STATES.ENABLED)
+                    return
+                end
+                ritualitems[marking.item.prefab] = true
+            else
+                inst:SetRitualState(RITUAL_STATES.ENABLED)
+                return
+            end
+        end
+
+        -- defer to allow for last ritual piece to rise visually
+        inst.activate_ritual_task = inst:DoTaskInTime(0.5, inst.SetRitualState, RITUAL_STATES.ACTIVE)
     end
 
     return inst

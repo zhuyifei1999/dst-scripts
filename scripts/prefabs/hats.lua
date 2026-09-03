@@ -7,6 +7,7 @@ local SHADOWTHRALL_PARASITE_RETARGET_CANT_TAGS = { "shadowthrall_parasite_hosted
 local MOONGLASS_MUST_TAGS = {"moonglass_piece"}
 local MOONGLASS_CANT_TAGS = {"INLIMBO"}
 local KNIGHT_MUST_TAGS = {"gilded_knight"}
+local EYEMASK_DIET = { FOODGROUP.OMNI, FOODTYPE.HORRIBLE }
 
 ALL_HAT_PREFAB_NAMES = {}
 
@@ -523,8 +524,6 @@ local function MakeHat(name)
 
 		inst:AddComponent("shadowlevel")
 		inst.components.shadowlevel:SetDefaultLevel(TUNING.RUINSHAT_SHADOW_LEVEL)
-
-        MakeHauntableLaunch(inst)
 
         inst.OnRemoveEntity = ruins_onremove
 
@@ -2337,6 +2336,7 @@ local function MakeHat(name)
 		end
 	end
 
+
     fns.eyemask = function()
         local inst = simple(eyemask_custom_init)
 
@@ -2348,12 +2348,11 @@ local function MakeHat(name)
         end
 
 		inst:AddComponent("eater")
-        --inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI }) -- FOODGROUP.OMNI  is default
+        inst.components.eater:SetDiet(EYEMASK_DIET, EYEMASK_DIET)
 		inst.components.eater:SetOnEatFn(eyemask_oneatfn)
 		inst.components.eater:SetAbsorptionModifiers(4.0, 1.75, 0)
 		inst.components.eater:SetCanEatRawMeat(true)
 		inst.components.eater:SetStrongStomach(true)
-		inst.components.eater:SetCanEatHorrible(true)
 
         inst:AddComponent("armor")
         inst.components.armor:InitCondition(TUNING.ARMOR_FOOTBALLHAT, TUNING.ARMOR_FOOTBALLHAT_ABSORPTION)
@@ -2760,6 +2759,10 @@ local function MakeHat(name)
 		local inst = fns.mask_common(fns.mask_ancient_custom_init, true)
         inst.scrapbook_specialinfo = nil -- Let the prefab override these ones.
 		inst.scrapbook_subcat = "costume"
+        if not TheWorld.ismastersim then
+			return inst
+		end
+        inst:AddComponent("stalkerinspectable")
         return inst
 	end
 
@@ -3799,8 +3802,6 @@ local function MakeHat(name)
         local setbonus = inst:AddComponent("setbonus")
         setbonus:SetSetName(EQUIPMENTSETNAMES.DREADSTONE)
 
-		MakeHauntableLaunch(inst)
-
 		return inst
 	end
 
@@ -3914,7 +3915,6 @@ local function MakeHat(name)
         require("prefabs/skilltree_defs").CUSTOM_FUNCTIONS.wortox.SetupLunarResists(inst)
 
 		MakeForgeRepairable(inst, FORGEMATERIALS.LUNARPLANT, lunarplant_onbroken, lunarplant_onrepaired)
-		MakeHauntableLaunch(inst)
 
 		return inst
 	end
@@ -4133,7 +4133,6 @@ local function MakeHat(name)
         setbonus:SetOnDisabledFn(fns.voidcloth_onsetbonus_disabled)
 
 		MakeForgeRepairable(inst, FORGEMATERIALS.VOIDCLOTH, fns.voidcloth_onbroken, fns.voidcloth_onrepaired)
-		MakeHauntableLaunch(inst)
 
         inst.voidcloth_onattackother = voidcloth_onattackother -- Mods
 
@@ -4647,7 +4646,6 @@ local function MakeHat(name)
         inst.components.equippable.insulated = true
 
         MakeForgeRepairable(inst, FORGEMATERIALS.WAGPUNKBITS, fns.wagpunk_onbroken, fns.wagpunk_onrepaired)
-        MakeHauntableLaunch(inst)
 
         return inst
     end
@@ -4706,8 +4704,6 @@ local function MakeHat(name)
         inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
         inst.components.fueled.no_sewing = true
 
-        MakeHauntableLaunch(inst)
-
         return inst
     end
 
@@ -4732,8 +4728,6 @@ local function MakeHat(name)
 
 		inst:AddComponent("waterproofer")
 		inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
-
-        MakeHauntableLaunch(inst)
 
         return inst
     end
@@ -5072,8 +5066,6 @@ local function MakeHat(name)
         inst.components.useableitem:SetOnUseFn(fns.inspectacles_onuse)
         inst.components.useableitem:SetOnStopUseFn(fns.inspectacles_onstopuse)
 
-        MakeHauntableLaunch(inst)
-
         inst.components.inspectable.getstatus = fns.inspectacles_getstatus
 
         return inst
@@ -5170,8 +5162,6 @@ local function MakeHat(name)
 		inst.components.equippable:SetOnUnequip(fns.roseglasses_onunequip)
         inst.components.equippable.restrictedtag = "handyperson"
 
-		MakeHauntableLaunch(inst)
-
         inst.components.inspectable.getstatus = fns.roseglasses_getstatus
 
 		return inst
@@ -5239,10 +5229,8 @@ local function MakeHat(name)
         inst:AddComponent("forcecompostable")
         inst.components.forcecompostable.green = true
 
-        inst:AddComponent("rechargeable")        
+        inst:AddComponent("rechargeable")
         inst:ListenForEvent("rechargechange", fns.onghostflowerrecharge)
-
-        MakeHauntableLaunch(inst)
 
         return inst
     end
@@ -5804,8 +5792,6 @@ local function MakeHat(name)
         inst.components.equippable:SetOnUnequip(fns.shadowthrall_parasite_onunequip)
 
         inst.components.inventoryitem.keepondeath = true
-
-        MakeHauntableLaunch(inst)
 
         inst.OnEntitySleep = fns.shadowthrall_parasite_OnEntitySleep
         inst.OnEntityWake = fns.shadowthrall_parasite_OnEntityWake
@@ -6505,6 +6491,173 @@ local function MakeHat(name)
         return inst
     end
 
+    --
+
+    local function IsLifeDrainable(target)
+    	return not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable")
+    end
+
+	local function bat_bosscorpse_onattackother_fn(inst, owner, data)
+		if owner ~= nil and owner.components.health and not owner.components.health:IsDead() and owner.components.health:IsHurt() then
+		    local target = data.target
+			if target and target ~= owner and target:IsValid() and (target.components.health == nil or not target.components.health:IsDead() and IsLifeDrainable(target)) then
+
+                -- In combat, this is when we're just launching a projectile, so don't spawn a gestalt yet
+                if data.weapon ~= nil and data.projectile == nil
+                        and (data.weapon.components.projectile ~= nil
+                            or data.weapon.components.complexprojectile ~= nil
+                            or data.weapon.components.weapon:CanRangedAttack()) then
+                    return
+                end
+
+                -- TODO no life leech for projectiles at all?
+
+                local mult = owner.components.aoediminishingreturns and owner.components.aoediminishingreturns.mult:Get() or 1
+                owner.components.health:DoDelta(TUNING.BAT_BOSS_CORPSEHAT_LIFESTEAL * mult, false, "bat_bosshat")
+			end
+		end
+	end
+
+    fns.bat_bosscorpse_regenperish = function(inst)
+        inst.components.perishable:AddTime(TUNING.PERISH_FAST * TUNING.BAT_BOSS_CORPSEHAT_REGEN_PERISH_MULT)
+    end
+
+	fns.bat_bosscorpse_onequip = function(inst, owner)
+        owner:AddTag("monster")
+        owner:AddTag("batdisguise")
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
+	    owner.AnimState:Show("HAT")
+	    owner.AnimState:Show("HAIR_HAT")
+	    owner.AnimState:Hide("HAIR_NOHAT")
+	    owner.AnimState:Hide("HAIR")
+
+        if inst.damage_equip_task then
+            inst.damage_equip_task:Cancel()
+            inst.damage_equip_task = nil
+        end
+
+        if inst.regen_perish_task then
+            inst.regen_perish_task:Cancel()
+            inst.regen_perish_task = nil
+        end
+
+        if owner.components.leader then
+            owner.components.leader:RemoveFollowersByTag("pig")
+        end
+
+	    if owner.isplayer then
+	    	owner.AnimState:Hide("HEAD")
+	    	owner.AnimState:Show("HEAD_HAT")
+	    	owner.AnimState:Show("HEAD_HAT_NOHELM")
+	    	owner.AnimState:Hide("HEAD_HAT_HELM")
+	    end
+
+		if inst.fx ~= nil then
+			inst.fx:Remove()
+		end
+		inst.fx = SpawnPrefab("bat_bosscorpsehat_fx")
+		inst.fx:AttachToOwner(owner)
+
+        inst.bat_bosscorpse_onattackother_fn = function(_owner, _data) bat_bosscorpse_onattackother_fn(inst, _owner, _data) end
+        inst:ListenForEvent("onattackother", inst.bat_bosscorpse_onattackother_fn, owner)
+
+        if owner.components.health then
+			owner.components.health:AddRegenSource(inst, TUNING.BAT_BOSS_CORPSEHAT_TICK_VALUE, TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, "bat_bosscorpsehat")
+            -- only if the owner actually has health, will we regen
+            inst.components.perishable:StopPerishing()
+            inst.regen_perish_task = inst:DoPeriodicTask(TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, fns.bat_bosscorpse_regenperish)
+        end
+        if owner.components.combat and not owner.components.inventory.isloading then
+            -- Delay the hit on equip by a frame so that we can't damage ourselves repeatedly when the game is paused, looks silly.
+            inst.damage_equip_task = inst:DoTaskInTime(0, function()
+                if owner and owner:IsValid() and owner.components.combat then
+                    owner.components.combat:GetAttacked(inst, TUNING.BAT_BOSS_CORPSEHAT_DAMAGE_ON_EQUIP)
+                end
+            end)
+        end
+	end
+
+	fns.bat_bosscorpse_onunequip = function(inst, owner)
+        if not owner:HasTag("playermonster") then
+            owner:RemoveTag("monster")
+        end
+        owner:RemoveTag("batdisguise")
+	    owner.AnimState:ClearOverrideSymbol("swap_hat")
+	    owner.AnimState:Hide("HAT")
+	    owner.AnimState:Hide("HAIR_HAT")
+	    owner.AnimState:Show("HAIR_NOHAT")
+	    owner.AnimState:Show("HAIR")
+
+        if inst.damage_equip_task then
+            inst.damage_equip_task:Cancel()
+            inst.damage_equip_task = nil
+        end
+
+        if inst.regen_perish_task then
+            -- HACK another way to do IsValid check before entity is actually retired :)
+            if Ents[inst.GUID] then
+                inst.components.perishable:StartPerishing()
+            end
+            inst.regen_perish_task:Cancel()
+            inst.regen_perish_task = nil
+        end
+
+	    if owner.isplayer then
+	    	owner.AnimState:Show("HEAD")
+	    	owner.AnimState:Hide("HEAD_HAT")
+	    	owner.AnimState:Hide("HEAD_HAT_NOHELM")
+	    	owner.AnimState:Hide("HEAD_HAT_HELM")
+	    end
+
+		if inst.fx ~= nil then
+			inst.fx:Remove()
+			inst.fx = nil
+		end
+
+        inst:RemoveEventCallback("onattackother", inst.bat_bosscorpse_onattackother_fn, owner)
+
+        if owner.components.health then
+            owner.components.health:RemoveRegenSource(inst, "bat_bosscorpsehat")
+        end
+	end
+
+	fns.bat_bosscorpse_custom_init = function(inst)
+        inst:AddTag("bathat")
+        inst:AddTag("show_spoilage")
+        inst:AddTag("icebox_valid")
+        inst:AddTag("monsterhat")
+		inst:AddTag("mufflehat")
+        inst:AddTag("acidrainimmune")
+
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+
+        -- inst:AddTag("creaturecorpse")
+	end
+
+    fns.bat_bosscorpse = function()
+        local inst = simple(fns.bat_bosscorpse_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.equippable.dapperness = TUNING.CRAZINESS_MED
+
+		inst.components.equippable:SetOnEquip(fns.bat_bosscorpse_onequip)
+		inst.components.equippable:SetOnUnequip(fns.bat_bosscorpse_onunequip)
+
+        inst:AddComponent("perishable")
+        inst.components.perishable.onperishreplacement = "spoiled_food"
+        inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+        inst.components.perishable:StartPerishing()
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
     -----------------------------------------------------------------------------
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
@@ -6731,6 +6884,9 @@ local function MakeHat(name)
         }
     elseif name == "yoth_knight" then
         fn = fns.yoth_knight
+    elseif name == "bat_bosscorpse" then
+        fn = fns.bat_bosscorpse
+        prefabs = { "bat_bosscorpsehat_fx" }
     end
 
     table.insert(ALL_HAT_PREFAB_NAMES, prefabname)
@@ -7397,6 +7553,62 @@ fns2.pumpkinhat_fx_master_postinit = function(inst)
 	inst.CopyFaceSymbols = fns2.pumpkinhat_fx_copyfacesymbols
 end
 
+fns2.bat_bosscorpsehat_CreateFxFollowFrame = function(i)
+	local inst = CreateEntity()
+
+	--[[Non-networked entity]]
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+
+	inst:AddTag("FX")
+
+	inst.AnimState:SetBank("bat_bosscorpsehat")
+	inst.AnimState:SetBuild("hat_bat_bosscorpse")
+	inst.AnimState:PlayAnimation("idle"..tostring(i))
+
+	inst:AddComponent("highlightchild")
+
+	inst.persists = false
+
+	return inst
+end
+
+fns2.bat_bosscorpsehat_fx_OnEntityWake = function(inst)
+	inst.OnEntityWake = nil
+
+	local owner = inst.entity:GetParent()
+	if owner then
+		owner:PushEvent("startbatcorpsehatdrain")
+		owner:ListenForEvent("onremove", function() owner:PushEvent("stopbatcorpsehatdrain") end, inst)
+
+		if not TheNet:IsDedicated() and owner:HasTag("locomotor") then
+			inst:AddComponent("autojiggle")
+			inst.components.autojiggle:SetOnJiggleLoopFn(fns2.bat_bosscorpsehat_fx_OnJiggleLoopFn)
+			inst.components.autojiggle:SetOnJiggleOneShotFn(fns2.bat_bosscorpsehat_fx_OnJiggleOneShotFn)
+			inst.components.autojiggle:SetOwner(owner)
+		end
+	end
+end
+
+fns2.bat_bosscorpsehat_fx_OnJiggleLoopFn = function(inst)
+	for i, v in ipairs(inst.fx) do
+		v.AnimState:PlayAnimation("swing_loop"..tostring(i), true)
+	end
+end
+
+fns2.bat_bosscorpsehat_fx_OnJiggleOneShotFn = function(inst)
+	for i, v in ipairs(inst.fx) do
+		i = tostring(i)
+		v.AnimState:PlayAnimation("settle"..i)
+		v.AnimState:PushAnimation("idle"..i, false)
+	end
+end
+
+fns2.bat_bosscorpsehat_fx_common_postinit = function(inst)
+	inst.OnEntityWake = fns2.bat_bosscorpsehat_fx_OnEntityWake
+end
+
 --------------------------------------------------------------------------
 
 local function FollowFx_OnRemoveEntity(inst)
@@ -7605,6 +7817,8 @@ return  MakeHat("straw"),
         MakeHat("mask_princess"),
         MakeHat("yoth_knight"),
 
+        MakeHat("bat_bosscorpse"),
+
         MakeFollowFx("mask_halfwit_fx", {
 			createfn = fns2.mask_halfwit_CreateFxFollowFrame,
             framebegin = 1,
@@ -7675,6 +7889,13 @@ return  MakeHat("straw"),
 			frameend = 2,
 			isfullhelm = true,
 			assets = { Asset("ANIM", "anim/hat_pumpkin.zip") },
+		}),
+        MakeFollowFx("bat_bosscorpsehat_fx", {
+			createfn = fns2.bat_bosscorpsehat_CreateFxFollowFrame,
+			common_postinit = fns2.bat_bosscorpsehat_fx_common_postinit,
+			framebegin = 1,
+			frameend = 3,
+			assets = { Asset("ANIM", "anim/hat_bat_bosscorpse.zip") },
 		}),
 
 		Prefab("minerhatlight", fns2.minerhatlightfn),

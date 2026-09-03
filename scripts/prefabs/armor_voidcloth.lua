@@ -173,17 +173,12 @@ local function fx_OnRemoveEntity(inst)
     end
 end
 
-local function fx_OnUpdate(inst)
-    local moving = inst.owner:HasTag("moving")
-    if moving ~= inst.wasmoving then
-        inst.wasmoving = moving
-        if not moving then
-            for i, v in ipairs(inst.fx) do
-                v.AnimState:PlayAnimation("settle"..tostring(i))
-                v.AnimState:PushAnimation("idle"..tostring(i), false)
-            end
-        end
-    end
+local function fx_OnJiggleOneShotFn(inst)
+	for i, v in ipairs(inst.fx) do
+		i = tostring(i)
+		v.AnimState:PlayAnimation("settle"..i)
+		v.AnimState:PushAnimation("idle"..i, false)
+	end
 end
 
 local function fx_ColourChanged(inst, r, g, b, a)
@@ -194,7 +189,6 @@ end
 
 local function fx_SpawnFxForOwner(inst, owner)
     inst.owner = owner
-    inst.wasmoving = false
     inst.fx = {}
     local frame
     for i = 1, 9 do
@@ -206,8 +200,9 @@ local function fx_SpawnFxForOwner(inst, owner)
     end
 	inst.components.colouraddersync:SetColourChangedFn(fx_ColourChanged)
     if owner:HasTag("locomotor") then
-        inst:AddComponent("updatelooper")
-        inst.components.updatelooper:AddOnUpdateFn(fx_OnUpdate)
+		inst:AddComponent("autojiggle")
+		inst.components.autojiggle:SetOnJiggleOneShotFn(fx_OnJiggleOneShotFn)
+		inst.components.autojiggle:SetOwner(owner)
     end
     inst.OnRemoveEntity = fx_OnRemoveEntity
 end

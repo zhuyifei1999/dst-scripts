@@ -1,0 +1,142 @@
+local assets =
+{
+	Asset("ANIM", "anim/shadow_insanity_player.zip"),
+}
+
+local prefabs =
+{
+	"nightmarefuel",
+}
+
+local brain = require("brains/charlie_boss_runnerbrain")
+SetSharedLootTable("charlie_boss_runner",
+{
+    { "nightmarefuel",  0.5 },
+})
+
+local function OnAttackOther(inst, data)
+	local target = data ~= nil and data.target or nil
+	if target and target:IsValid() then
+		if target.components.pinnable and target.components.pinnable:IsStuck() then
+            target:PushEvent("knockback", { knocker = inst, radius = 2, strengthmult = 1 })
+		end
+	end
+end
+
+local TARGET_MUST_TAGS, TARGET_CANT_TAGS, TARGET_ONEOF_TAGS
+local function RetargetFn(inst)
+	return FindEntity(inst, TUNING.CHARLIE_BOSS_RUNNER_TARGET_RANGE, nil, TARGET_MUST_TAGS, TARGET_CANT_TAGS, TARGET_ONEOF_TAGS)
+end
+
+local function OnAttacked(inst, data) -- probably doesn't matter but it could be a 0 damage attack?
+    inst.components.combat:SetTarget(data.attacker)
+end
+
+local function CreateHairFx(inst)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	--fx.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("shadow_insanity_player")
+	fx.AnimState:SetBuild("shadow_insanity_player")
+	fx.AnimState:PlayAnimation("flame_hair_fx", true)
+
+	fx.entity:SetParent(inst.entity)
+	fx.Follower:FollowSymbol(inst.GUID, "follow", 0, 0, 0, true)
+
+	return fx
+end
+
+local function OnColourChanged(inst, r, g, b, a)
+	for _, v in ipairs(inst.highlightchildren) do
+		v.AnimState:SetAddColour(r, g, b, a)
+	end
+end
+
+local function fn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+    MakeCharacterPhysics(inst, 10, 0.5)
+    RemovePhysicsColliders(inst)
+    inst.Physics:SetCollisionGroup(COLLISION.SANITY)
+    inst.Physics:CollidesWith(COLLISION.SANITY)
+
+	inst.Transform:SetSixFaced()
+
+	inst.AnimState:SetBank("shadow_insanity_player")
+	inst.AnimState:SetBuild("shadow_insanity_player")
+	inst.AnimState:PlayAnimation("idle", true)
+
+	inst:AddTag("character")
+	inst:AddTag("shadow")
+	inst:AddTag("shadow_aligned")
+	inst:AddTag("gestaltnoloot")
+	inst:AddTag("monster")
+	inst:AddTag("hostile")
+	inst:AddTag("notraptrigger")
+
+	inst:AddComponent("colouraddersync")
+
+	if not TheNet:IsDedicated() then
+		inst.highlightchildren = { CreateHairFx(inst) }
+		inst.components.colouraddersync:SetColourChangedFn(OnColourChanged)
+	end
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	if TARGET_MUST_TAGS == nil then
+		TARGET_MUST_TAGS = { "_combat", "_health" }
+		TARGET_CANT_TAGS = { "NOCLICK", "INLIMBO", "playerghost" }
+		TARGET_ONEOF_TAGS = { "_sanity", "crazy" }
+	end
+
+    inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+    inst.components.locomotor.walkspeed = TUNING.CHARLIE_BOSS_RUNNER_WALKSPEED
+    inst.components.locomotor.runspeed = TUNING.CHARLIE_BOSS_RUNNER_RUNSPEED
+	inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor.pathcaps = { ignorecreep = true }
+
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
+
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(TUNING.CHARLIE_BOSS_RUNNER_HEALTH)
+    inst.components.health.nofadeout = true
+
+    inst:AddComponent("combat")
+    inst.components.combat:SetDefaultDamage(TUNING.CHARLIE_BOSS_RUNNER_DAMAGE)
+    inst.components.combat:SetRetargetFunction(1, RetargetFn)
+	inst.components.combat:SetRange(TUNING.CHARLIE_BOSS_RUNNER_POUNCE_RANGE)
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable('charlie_boss_runner')
+
+	inst:AddComponent("knownlocations")
+
+    inst:ListenForEvent("attacked", OnAttacked)
+	inst:ListenForEvent("onattackother", OnAttackOther)
+
+	inst:SetStateGraph("SGcharlie_boss_runner")
+	inst:SetBrain(brain)
+
+	return inst
+end
+--------------------------------------------------------------------------
+
+return Prefab("charlie_boss_runner", fn, assets, prefabs)

@@ -48,6 +48,10 @@ local function OnLanded(inst)
     end
 end
 
+local function OnDroppedAsLoot(inst)
+    inst.sg:GoToState("stunned", GetRandomWithVariance(10, 1))
+end
+
 ----------------------------------------------------------------------------------------------------------------
 
 local function CLIENT_AttachShadowFx(inst)
@@ -151,6 +155,7 @@ local function fn()
     inst:ListenForEvent("enterlimbo", inst.OnEntitySleep)
 
     inst:ListenForEvent("on_landed", OnLanded)
+	inst:ListenForEvent("on_loot_dropped", OnDroppedAsLoot)
 
     MakeHauntable(inst)
 

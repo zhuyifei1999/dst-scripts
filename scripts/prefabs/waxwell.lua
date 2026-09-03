@@ -325,6 +325,8 @@ local function master_postinit(inst)
 	}
 	--
 
+	inst:AddComponent("stalkerinspectable")
+
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/waxwell").master_postinit(inst)
     elseif TheNet:GetServerGameMode() == "quagmire" then

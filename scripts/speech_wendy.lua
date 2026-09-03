@@ -1258,6 +1258,13 @@ return{
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "The flames may consume me once again.",--fire immunity expired
     ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Seems we have a new friend, Abigail.", -- Security spark attached to us due to us holding Waymark Compass.
 
+    -- Rifts 8
+
+    -- after the final fight when Charlie goes MIA and isn't the night monster anymore
+	ANNOUNCE_GRUE_NOCHARLIE = "Demon! Show yourself!",
+	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "I am attacked!",
+--fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
+
 	BATTLECRY =
 	{
 		GENERIC = "Death will find you!",
@@ -1707,7 +1714,12 @@ return{
 		CAVE_BANANA = "The peels look dangerous.",
 		CAVE_BANANA_COOKED = "Warmed banana mush is so much better.",
 		CAVE_BANANA_TREE = "Poor plant, locked away from the sun.",
-		ROCKY = "What terrible sights they have seen.",
+        ROCKY =
+        {
+            GENERIC = "What terrible sights they have seen.",
+            BOULDER = "Even that is not permanent.", -- in boulder state, it looks like a normal boulder
+            ACID = "Sometimes I wish I could shrink into nothing.", -- in acid form
+        },
 
 		COMPASS =
 		{
@@ -1724,7 +1736,11 @@ return{
 
         HOUNDSTOOTH = "Pulled out by the root.",
         ARMORSNURTLESHELL = "A suit to hide from one's problems.",
-        BAT = "A creature of the night.",
+        BAT =
+        {
+            GENERIC = "A creature of the night.",
+            ACID = "It hungers.", -- in acid form
+        },
         BATBAT = "An enchanted weapon. How exciting!",
         BATWING = "If only I could fly away.",
         BATWING_COOKED = "They once held such great potential.",
@@ -3513,6 +3529,7 @@ return{
 			CHARGING = "Take us far from here.",
 			DESTABILIZING = "Oh well. I hope it's a quick death.",
 			COOLDOWN = "We can't do that again for awhile.",
+            RITUAL_SUMMONING = "TODO", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "I think I know where it goes...",
 		LIFEINJECTOR = "We were not meant to cheat death.",
@@ -4533,6 +4550,8 @@ return{
 			LORE1 = "He gave in.",
 			LORE2 = "So much death.",
 			LORE3 = "We aren't meant to leave this place.",
+            --
+            LORE1_STALKER = "Don't feel bad. You did your best.", -- when the stalker/king is with you, different inspect for the king statue!
 		},
 
         ARCHIVE_RESONATOR = {
@@ -5368,7 +5387,12 @@ return{
 		SHADOWTHRALL_WINGS = "There is no face beneath that hood.",
 		SHADOWTHRALL_MOUTH = "What are you? The Grin Reaper?",
 
-        CHARLIE_NPC = "Are you the true face of the darkness?",
+        CHARLIE_NPC =
+        {
+            GENERIC = "Are you the true face of the darkness?", -- scene 1, first appearance of charlie to repair the gateway
+            SCENE2 = "Will this help bring Abigail back?", -- scene 2, charlie appears again to socket the key and place the ritual down
+            SCENE3 = "Will this help bring Abigail back?", -- scene 3, the gateway has both keys, and the sacrifice pieces are set up in the ritual, she appears to tell you to activate it
+        },
         CHARLIE_HAND = "Do I dare approach?",
 
         NITRE_FORMATION = "It thrives while the rest of us burn.",
@@ -6275,6 +6299,51 @@ return{
 
         CARNIVALGAME_GOLFPROP_FAN = "I love the wind, but not while I'm putting.", -- fan that blows wind and pushes in a direction
 
+        -- Rifts 8
+
+        ROCKY_BOSS =
+        {
+            GENERIC = "Can it cut the fabric that separates us, Abi?",
+            BOULDER = "Something off about that boulder.", -- in boulder form
+            ACID = "I wonder if it's in pain.",
+        },
+		ROCKY_BOSS_SHADOW = "Do you think that claw would hurt, Abi?",
+        BAT_BOSS =
+        {
+            GENERIC = "What are you waiting for?",
+            ACID = "Nothing but hunger behind those glowing eyes.",
+        },
+		BAT_BOSS_SHADOW = "Truly a creature of the night.",
+
+        BATBOSSCAVE =
+        {
+            GENERIC = "I sense a hungry presence inside.", -- boss bat is inside,
+            VACANT = "I think it's empty.", -- boss bat is not inside anymore
+        },
+
+        WORM_BOSS_SHADOW = "It's covered in shadow.",
+
+        ARMOR_ROCKY = "No armor strong enough to protect my heart.",
+        BAT_BOSSCORPSEHAT = "I sure hope it's dead.",
+
+        ATRIUM_RITUAL_ORGAN_ROCKY =
+        {
+            GENERIC = "So deadly.",
+            IN_RITUAL = "Light as a feather...", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+        ATRIUM_RITUAL_ORGAN_BAT =
+        {
+            GENERIC = "I can still hear it.",
+            IN_RITUAL = "Light as a feather...", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+        ATRIUM_RITUAL_ORGAN_WORM =
+        {
+            GENERIC = "Smells like death.",
+            IN_RITUAL = "Light as a feather...", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+
+		CHARLIE_BOSS = "She's lost herself.",
+        SHROUDEN = "The abyss gazes back.... and walks among us.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",
@@ -6299,6 +6368,4 @@ return{
     },
 
     WENDY_SKILLTREE_EASTEREGG = "Is that you, Abby?",
-
-
 }

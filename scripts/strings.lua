@@ -1208,6 +1208,10 @@ STRINGS =
 		GOLF_STOP_AIMING = "Stop Aiming",
 		GOLF_START_CHARGING = "Putt (Hold)",
         TERRAFORM_REMOVE = "Uproot",
+
+        -- Rifts 8
+
+
     },
 
 	WOBY_COMMANDS =
@@ -4726,6 +4730,35 @@ STRINGS =
         CARNIVALGAME_GOLFPROP_CUTOUT10 = "Tentacle Obstacle", -- tentacle
 
 		CARNIVALGAME_GOLF_SHAPE = "Course Wall",
+
+        -- Rifts 8
+
+        -- in boulder form
+        ROCKY_BOULDER = "Boulder",
+        ROCKY_BOSS_BOULDER = "Boulder",
+
+		ROCKY_BOSS = "Rock Master",
+		ROCKY_BOSS_SHADOW = "Blighted Rock Master",
+
+		BAT_BOSS = "Hound Batilisk",
+		BAT_BOSS_SHADOW = "Blighted Hound Batilisk",
+
+        WORM_BOSS_SHADOW = "Blighted Great Depths Worm",
+
+        ARMOR_ROCKY = "Craggy Carapace",
+        BAT_BOSSCORPSEHAT = "Bat Hat",
+        REGEN_BAT_BOSSCORPSEHAT = "Bat Hat",
+
+        BATBOSSCAVE = "Big Bat Cave",
+
+        ATRIUM_RITUAL_ORGAN_ROCKY = "Blighted Claw",
+        ATRIUM_RITUAL_ORGAN_BAT = "Blighted Larynx",
+        ATRIUM_RITUAL_ORGAN_WORM = "Blighted Guts",
+
+		CHARLIE_BOSS = "Shrouded Queen",
+        SHROUDEN = "Umbral Abomination",
+
+        CHARLIE_BOSS_RUNNER = "Grim Harrier",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -6007,6 +6040,9 @@ STRINGS =
         CARNIVALGAME_GOLFPROP_CUTOUT10 = "Not deadly, but still annoying.", -- tentacle
 
 		CARNIVALGAME_GOLF_SHAPE = "Of course, a course needs walls.",
+
+        -- Rifts 8
+
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -7025,6 +7061,416 @@ STRINGS =
         "History will repeat itself...",
         "It will all come to pass again...",
         "You've made your choice.",
+    },
+
+    -- The lines are read in order
+
+    STALKER_NPC_FIRST_SPAWN =
+    {
+        "Where am I?",
+        "The battle... I lost...",        
+        "You...!",
+        "What have you done?!",
+        "The Gateway... I can feel it...",
+        "They are waiting...",
+    },
+
+    STALKER_NPC_PERFORM_FIRST_CORRUPT = -- corrupting a boss creature into its shadow version
+    {
+        "You have chosen...",
+        "This innocent creature...",
+        "To be woven...",
+        "And made an offering...",
+        "To Them.",
+        "As you wish...",
+        "It is done.",
+        "Rise now, child.",
+    },
+
+    STALKER_NPC_SEE_BIOMES = -- seeing certain biomes for the first time
+    {
+        ATRIUM =
+        {
+            "My once glorious kingdom is now a tomb.",
+            "What have I done?",
+            "I was a damned fool.",
+        },
+        RUINS_RESIDENTIAL = -- where the common peoples lived
+        {
+            "How many lives were lost to the darkness?",
+            "You all put your trust in me.",
+            "I'm sorry.",
+        },
+        RUINS_MILITARY = -- the military, consisting of clockworks
+        {
+            "How do you fight an enemy that has taken root in your very being?",
+        },
+        RUINS_SACRED = -- the sacred areas, where worship occurred.
+        {
+            "I have desecrated these sacred grounds.",
+            "The cursed fuel has defiled all.",
+            "I can't bear the sight of it.",
+        },
+        RUINS_LABYRINTH = -- the labyrinth, where the guardian was.
+        {
+            "Better to be lost here.",
+            "Wandering for an eternity...",
+            "than find that cursed key.",
+        },
+        LUNAR_GROTTO =
+        {
+            "Alter... I feel your presence.",
+            "Have you returned?",
+            "Alas... not soon enough.",
+        },
+        ARCHIVES =
+        {
+            "We lived in the light once.",
+            "An age of brilliance.",
+            "This is all that remains.",
+        },
+        VAULT =
+        {
+            "This place...",
+            "It was built in secret...",
+            "They trusted no one... especially me.",
+        },
+    },
+
+    STALKER_NPC_INSPECT = -- inspecting certain objects and talking about them for the first time.
+    {
+        VAULT_STATUE_LORE1 = -- the king statue of him pre-transformation in the vault.
+        {
+            "It is... me.",
+            "How long it has been...",
+            "What have I become?",
+        },
+        VAULT_STATUE_LORE2 = -- the statues of the gateway + ancients and bugs surrounding it
+        {
+            "All lost...",
+            "because of me.",
+            "It promised...",
+            "All lies...",
+            "I was blind...",
+            "A fool.",
+        },
+        VAULT_STATUE_LORE3 = -- the statues of the guardsmen with their spear protecting the key room
+        {
+            "They stand guard over a doomed world.",
+            "Against fools fated to repeat the same mistakes.",
+            "Futile is their vigil.",
+            "Watching the dark return, time and again.",
+        },
+        ANCIENT_HUSK_HANDMAID = -- elytra
+        {
+            "What have you done, Shieldbearer?",
+            "Was it by my Queen's command that you came here?",
+            "This place... built beyond my sight. Was I not worthy of your trust?",
+            "What secret did you guard until your last breath?",
+            "What burden drove you to turn against your own brethren, Elytra?",
+            "How unbearable that weight must have been upon your soul... if it is still yours.",
+        },
+        ANCIENT_HUSK_ARCHITECT = -- visionist
+        {
+            "Visionist! What filled this chalice from which you took your final sip?",
+            "Poison? Did you know what it held?",
+            "Did you choose it? Or was it served to you in a toast to your work?",
+            "Why was death itself poured as your reward?",
+            "May your vision be restored, clear and made whole beyond the shroud.",
+            "For this world is no longer our own.",
+        },
+        ANCIENT_HUSK_MASON = -- artificer
+        {
+            "So this is the cruel fate that befell my dear friend.",
+            "What tragedy left your carapace so grievously pierced?",
+            "I recognize the mark of your tarsi in all that was wrought here.",
+            "Knowing you, your labor born of duty to a noble cause.",
+            "I was blinded by the suffering of our kind, unable to see what truly had to be done.",
+            "You deserved a far better end than this, Artificer.",
+        },
+        VAULT_RUNE_LOBBY = -- sanctum rune stones
+        {
+            "Yet you escaped... damning yourself.",
+        },
+        VAULT_RUNE_TELEPORT1 = -- sanctum rune stones
+        {
+            "A fool in your wisdom...",
+        },
+        VAULT_RUNE_LORE1 = -- sanctum rune stones (king statue room)
+        {
+            "It truly does.",
+        },
+        VAULT_RUNE_LORE2 = -- sanctum rune stones (gateway statue room)
+        {
+            "Indeed.",
+        },
+        VAULT_RUNE_LORE3 = -- sanctum rune stones (guard room)
+        {
+            "It's too late.",
+        },
+        VAULT_RUNE_PUZZLE1 = -- sanctum rune stones (sequitor puzzle)
+        {
+            "Better one should fall than all.",
+        },
+        VAULT_RUNE_PUZZLE2 = -- sanctum rune stones (flummoxxing flame puzzle)
+        {
+            "I've seen the way and it is cursed.",
+        },
+        MASK_ANCIENT_HANDMAIDHAT =
+        {
+            "That visage... I've not... It cannot be...", -- e.g. "Is that...? It can't be.."
+            "Where did this come from?", -- e.g. "How did you find this?"
+            "Elytra! Shieldbearer of my beloved Metheus!",
+            "What words did she impart to you in those darkest of days?",
+            "Your devotion to my beloved shall never be forgotten. Rest well, faithful Shieldbearer.",
+        },
+        MASK_ANCIENT_MASONHAT =
+        {
+            "That visage... I've not... It cannot be...", -- e.g. "Is that...? It can't be.."
+            "Where did this come from?", -- e.g. "How did you find this?"
+            "My Artificer...",
+            "How I have missed you, old friend.",
+            "Never one to temper the truth, nor spare a wounded heart. May you finally know rest.",
+        },
+        MASK_ANCIENT_ARCHITECTHAT =
+        {
+            "That visage... I've not... It cannot be...", -- e.g. "Is that...? It can't be.."
+            "Where did this come from?", -- e.g. "How did you find this?"
+            "Dear Visionist...",
+            "My heart aches at the fate of your glorious design.",
+            "It is a mercy that your eyes shall never behold its ruin.",
+        },
+        NIGHTMARELIGHT =
+        {
+            "So afraid of the dark...",
+            "I put faith in this cursed light.",
+            "But all who bathed in the glow...",
+            "lost themselves to madness.",
+        },
+        NIGHTMAREGROWTH = -- the nightmare ramparts found at the edge of the shadow war in the grotto
+        {
+            "You left us little choice.",
+            "Why did you leave us in the cold?",
+            "Was our devotion so lacking?",
+            "We were your children.",
+        },
+        ATRIUM_OVERGROWTH = -- the ancient obelisks found in the atrium
+        {
+            "I chose our path.",
+            "I bowed before the Other.",
+            "They followed me... into damnation.",
+            "Curse the name... Shrouden.",
+        },
+        ATRIUM_RUBBLE =
+        {
+            "You were deaf to our suffering, Alter.",
+            "Do you know what we sacrificed?",
+            "The Other gave us what you wouldn't. Am I to blame for accepting the cursed fuel?",
+            "We lost our way.",
+            "It seemed the beginning of a new age...",
+        },
+        RUINS_SHADELING = -- the shadeling that sits on the chair in the ruins
+        {
+            "Cursed shade.",
+            "Inevitable that it should inherit this world.",
+        },
+        ARCHIVE_MOON_STATUE = -- the common statue in the archives
+        {
+            "All we had left...",
+            "Just pieces of you.",
+            "Did you know we waited?",
+            "Were we nothing to you?",
+        },
+        ANCIENT_ALTAR = -- the (broken) crafting station altar in the ruins
+        {
+            "We thought we mastered the dark.",
+            "The dark cannot be harnessed... or controlled.",
+            "We paid the price for our arrogance.",
+        },
+        ARCHIVE_RUNE_STATUE = -- the runes in the ancient archives
+        {
+            "How long did you expect us to wait?",
+            "We needed you, Alter.",
+            "You left us.",
+            "Faith alone could not sustain.",
+        },
+        ARCHIVE_LOCKBOX_DISPENCER =
+        {
+            "We thought our knowledge gave us power over the forces we tampered with.",
+            "We were wrong.",
+        },
+        ARCHIVE_PORTAL =
+        {
+            "It's been an eternity.",
+            "My memory fails me.",
+            "I don't remember this.",
+        },
+        RUINS_STATUE_HEAD = -- one of two common statues in the ruins
+        {
+            "A blessing you can't see our world in ruin.",
+        },
+        RUINS_STATUE_MAGE = -- the other common statue in the ruins
+        {
+            "We should have known better...",
+            "I should have known better.",
+        },
+        DAYWALKER = -- nightmare werepig, when he's imprisoned by the shadow chains.
+        {
+            "Corrupted swine...",
+            "You know not the forces with which you meddle.",
+            "At least I sought to save our world.",
+            "But you... your lust for power consumes you.",
+            "May you never escape your bondage.",
+        },
+        SHADOWRIFT_PORTAL = -- the shadow rift
+        {
+            "A tear in the fabric...",
+            "From the cursed realm of the Other, shadow seeps forth.",
+            "Your world is infected.",
+        },
+        VAULT_KEY = -- on the ground OR on the pedestal
+        {
+            "The Keystone...",
+            "Kept hidden by the faithful few... by my beloved.",
+            "Now you've unearthed it...",
+            "Damning one and all.",
+        },
+        WAXWELL = -- talking to maxwell
+        {
+            "Maxwell... the king deposed.",
+            "Unimaginable power, once at your fingertips.",
+            "And now... you are nothing.",
+            "Still, you fare better than I...",
+            "A husk filled with naught but echoes of regret.",
+        },
+    },
+
+    -- Random line is chosen
+
+    STALKER_NPC_SPAWN = -- spawned after first spawns
+    {
+        "I arise yet again.",
+        "My slumber ends.",
+        "Why do you disturb my rest?",
+        "Is this my curse?",
+        "Must I see the ruins of my world again?",
+        "No more... I beg of you.",
+    },
+
+    STALKER_NPC_PERFORM_CORRUPT =
+    {
+        "Rise anew, child.",
+        "Rise anew and bring glory.",
+        "We are all pawns.",
+        "You are woven.",
+        "Your sacrifice will not be forgotten.",
+        "We will make Them pay... make Them suffer.",
+    },
+
+    STALKER_NPC_IDLE =
+    {
+        "Where is she?",
+        "My love...",
+        "It is a nightmare eternal.",
+        "Come back to me...",
+    },
+
+    STALKER_NPC_GREETING =
+    {
+        "Who are you?",
+        "Have you seen her?",
+        "Why do you torment me?",
+        "Do you know who I am?",
+    },
+
+    STALKER_NPC_FOLLOW_THURIBLE = -- start following thurible
+    {
+        "Will you not let this old king rest his weary bones?",
+        "You would lead a king like a thrall?",
+        "I shall follow... with every step steeped in shame.",
+        "What choice have I but to walk at your command?",
+    },
+
+    STALKER_NPC_FOLLOWING_THURIBLE = -- while we're following it.
+    {
+        "Where are you leading me?",
+        "I shall follow you to your doom.",
+        "You may prove a greater fool than I.",
+        "Are you lost? For I am.",
+    },
+
+    STALKER_NPC_BIOMES_IDLE = -- idle talk after seeing the biome for the first time, and being within it
+    {
+        ATRIUM =
+        {
+            "Gone... all gone.",
+        },
+        RUINS_RESIDENTIAL = -- where the common peoples lived
+        {
+            "They trusted me.",
+            "I failed them.",
+        },
+        RUINS_MILITARY = -- the military, consisting of clockworks
+        {
+            "I was our enemy.",
+        },
+        RUINS_SACRED = -- the sacred areas, where worship occurred.
+        {
+            "All that was once sacred now stand defiled.",
+        },
+        RUINS_LABYRINTH = -- the labyrinth, where the guardian was.
+        {
+            "Does my old friend still roam these parts?",
+        },
+        LUNAR_GROTTO =
+        {
+            "Alter's power is strong here.",
+        },
+        ARCHIVES =
+        {
+            "It pains me to remember what we once were.",
+        },
+        VAULT =
+        {
+            "You should have never come here.",
+        },
+    },
+
+    STALKER_NPC_DESTROY_STRUCTURE = -- this is by accident from him walking into a structure(he can be a little apologetic)
+    {
+        "All I touch is laid to ruin!",
+        "My way is ever cursed!",
+        "Like my world, broken forever.",
+    },
+
+    CHARLIE_NPC_SACRIFICE_REQUEST =
+    {
+        "The ritual demands sacrifices.",
+        "There are species of creature that produce extraordinary specimens.",
+        "Seek them out. Allow them to be touched by Shadow...",
+        "Slaughter them. Bring me their essence.",
+        "Then the ritual may begin.",
+    },
+
+    -- Monologue on ritual beginning, portal swirls, eye appears, hooray! youre about to be betrayed and apart of the ritual!
+    -- (script plays in order)
+    CHARLIE_NPC_RITUAL_BEGUN =
+    {
+        "We've done it.",
+        "They whom we call Shrouden accept our sacrifices.",
+        "There's just one left to make...",
+    },
+
+    -- Shrouden jumps to take host of charlie
+    -- (script plays in order)
+    CHARLIE_NPC_SHROUDEN_TAKES_HOST =
+    {
+        "What's happening?!",
+        "They're the sacrifice, not me!",
+        "No...",
+        -- e.g. "Ah what's happening-"
+        -- e.g. "No! They're the sacrifice, not me!"
+        -- e.g. "AAAH!!!!!"
     },
 
     --Arena Event
@@ -9101,7 +9547,7 @@ STRINGS.UI =
             "Steven Erenst",
             "Corey McDaniel",
             "Xiaowen Lin",
-            "Leira Zamfirescu",
+			"Zell Leira",
             "Scott Hansen",
 			"Philippe Donati",
 			"Yorman Arias",
@@ -9141,7 +9587,6 @@ STRINGS.UI =
             "Kent Reimer",
             "Garnet (G50) Syberg-Olsen",
             "Omar Al-Saadi",
-            "Elaine Chen",
             "Nathan Bosia",
         },
 
@@ -9455,6 +9900,49 @@ STRINGS.UI =
         CHANGE_BUG_DESCRIPTION = "Change Bug Description",
     },
 
+    FEEDBACK_SCREEN =
+    {
+        SUBMIT = "Submit",
+        CANCEL = "Cancel",
+        REQUIRE_SUMMARY = "Briefly describe your issue in the Summary field!",
+        CATEGORY = 
+        {
+            AUDIO = "Audio",
+            VISUAL = "Visual",
+            WORDS = "Words",
+            OTHER = "Other",
+        },
+        CATEGORY_PROMPT =
+        {
+            -- These must fit on a single line.
+            AUDIO = "Does something sound wrong? Or amazing?",
+            VISUAL = "Tell us about what you saw.",
+            WORDS = "Loved some dialogue? Found a typo? Confused?",
+            OTHER = "What happened?",
+        },
+        SEND_LOG = "Send Log Files",
+        SEND_SCREENSHOT = "Send Screenshot",
+        SEND_SAVE = "Send Savegame",
+
+        SUBMITTING_BODY = "Sending feedback",
+
+        SUBMITTED_TITLE = "Feedback submitted",
+	    SUBMITTED_BODY = "Thank you for your feedback. You are helping to make this game better!",
+	    SUBMITTED_OK = "OK",
+
+    	SUBMIT_ERROR_TITLE = "Unexpected Error",
+    	SUBMIT_ERROR_BODY = "Something went wrong. Please try again later.",
+		SUBMIT_ERROR_OK = "OK",
+
+		DISCARD_TITLE = "Discard changes?",
+		DISCARD_BODY = "Are you sure you want to cancel your feedback?",
+		DISCARD_YES = "Yes",
+		DISCARD_NO = "No",
+
+		NOT_AUTOPAUSED = "Warning - the game is not auto-paused.",
+    },
+
+
     EMAILSCREEN =
     {
         SIGNUPSUBMITTITLE="Sending...",
@@ -9743,7 +10231,7 @@ STRINGS.UI =
 
         ITEMCOLLECTION_DISABLE = "You must be logged in to view your Profile or Item Collection.",
 		STORE_DISABLE = "You must be logged in to use the Klei Store.",
-        STORE_DISABLE_CONSOLE = "You must be logged in to use the Klei Store.\nDo you want to log in now?",
+        ITEMS_DISABLE = "You must be logged in to continue.\nDo you want to log in now?",
 
         LOGIN = "Login",
 
@@ -11800,6 +12288,9 @@ STRINGS.UI =
         MUTATED_WARG = "Possessed Vargs",
 
         TREE_ROCK = "Boulderboughs",
+
+        BAT_BOSS = "Hound Batilisks",
+        ROCKY_BOSS = "Rock Masters",
 		-- End of world customization strings
     },
 
@@ -15566,12 +16057,13 @@ STRINGS.UI =
 
     PREMIUM_ONLINE = 
     {
-        NOT_REQUIRED_TEXT = "Skins and the Klei Shop are now available to everyone without a %s membership.\n\n You must be logged in to a Klei Account to use these features.",
-        UPSELL_TEXT = "Online play requires an active\n%s membership\n Do you want to become a member?",
         PLAYSTATION_PLUS = "PlayStation®Plus",
         NINTENDO_ONLINE = "Nintendo Switch Online",
-        YES = "Subscribe",
-        NO = "Cancel",
+        NOT_REQUIRED_TEXT = "Skins and the Klei Store are now available to everyone without a %s membership.\n\n You must be logged in to a Klei Account to use these features.",
+        OFFLINE_WARNING = "Online play requires an active\n%s membership\nDo you want to play offline?",
+        UPSELL_TEXT = "Online play requires an active%s membership\n Do you want to become a member?",
+        SUBSCRIBE = "Subscribe",
+        CANCEL = "Cancel",
     },
 }
 
@@ -18655,9 +19147,6 @@ STRINGS.SCRAPBOOK = {
         WOBY_TREAT = "Restores three times as much hunger when eaten by Woby.",
         ELIXIR_CONTAINER = "A carryable container with 9 slots that can hold Elixirs.",
         GHOSTFLOWERHAT = "When equipped, allows Wendy to drink Elixirs herself.",
-        -- GHOSTLYELIXERLUNAR = "TODO",
-        -- GHOSTLYELIXERREVIVE = "TODO",
-        -- GHOSTLYELIXERSHADOW = "TODO",
         GRAVEGUARD_GHOST = "Where they appear, Evil Flowers tend to grow nearby.",
         GRAVEURN = "It is used to move Headstones.",
         PORTABLEFIREPIT_ITEM = "A portable campfire that stays lit even when packed!",
@@ -18784,6 +19273,10 @@ STRINGS.SCRAPBOOK = {
         VAULT_COMPASS = "A compass left by one of the last builders of this place. It could lead somewhere important.",
         VAULT_KEY_PEDESTAL = "Maybe this one will help you get home.",
         VAULT_REFINER_PEDESTAL = "Break down some orbs in the mean time.",
+
+        -- Rifts 8
+
+
     },
 
     -- Full name: "{name} Scrapbook Page"
@@ -18802,7 +19295,13 @@ STRINGS.TEMP_BETA_MSG =
 	RIFTS6_BASIC = "Thanks for playing the beta!\nThe room beyond this point is not yet available.",
 	--
 	RIFTS7_FMT = "You defeated all beta {name}s!\nAdditional loot and rewards coming soon...",
+	--
+	RIFTS8_BASIC = "Thanks for playing the beta!\nBoss final phase and rewards coming soon...",
+	RIFTS8_BASIC_NEW = "Thanks for playing the beta!",
+	RIFTS8_KILLTIME_FMT = "You defeated {name} in {time}s.",
 }
+
+STRINGS.UPDATENAME = require("versioning").UPDATENAME
 
 --Don't include this in pot generation as this file is already translated.
 if POT_GENERATION == false then

@@ -1254,6 +1254,13 @@ return{
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "There goes my protection against the fire.",--fire immunity expired
     ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Ugh, are you going to follow me everywhere?", -- Security spark attached to us due to us holding Waymark Compass.
 
+    -- Rifts 8
+
+    -- after the final fight when Charlie goes MIA and isn't the night monster anymore
+	ANNOUNCE_GRUE_NOCHARLIE = "That's not Charlie...",
+	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "Ow! What have you done with Charlie!?",
+--fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
+
 	BATTLECRY =
 	{
 		GENERIC = "To arms!",
@@ -1703,7 +1710,12 @@ return{
 		CAVE_BANANA = "Ashes in one's mouth.",
 		CAVE_BANANA_COOKED = "Even worse than raw.",
 		CAVE_BANANA_TREE = "It looks like a banana, but I'm not buying it.",
-		ROCKY = "I banished these guys down here for a reason.",
+        ROCKY =
+        {
+            GENERIC = "I banished these guys down here for a reason.",
+            BOULDER = "It's a rock.", -- in boulder state, it looks like a normal boulder
+            ACID = "Serves you right.", -- in acid form
+        },
 
 		COMPASS =
 		{
@@ -1720,7 +1732,11 @@ return{
 
         HOUNDSTOOTH = "It could be used for fashion.",
         ARMORSNURTLESHELL = "That is not dapper at all.",
-        BAT = "Ugh. Ugly beasts.",
+        BAT =
+        {
+            GENERIC = "Ugh. Ugly beasts.",
+            ACID = "Blegh... shut your drooling mouth, foul beast.", -- in acid form
+        },
         BATBAT = "Violence has never felt better.",
         BATWING = "I'm not eating that.",
         BATWING_COOKED = "I'm still not eating that.",
@@ -3509,6 +3525,7 @@ return{
 			CHARGING = "It is feeding off the dark energy.",
 			DESTABILIZING = "Now we've gone and done it.",
 			COOLDOWN = "Best not to overuse this power.",
+            RITUAL_SUMMONING = "What have we done, Charlie?", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "It's strange to see it.",
 		LIFEINJECTOR = "Who would put this filth in their veins?",
@@ -4529,6 +4546,8 @@ return{
 			LORE1 = "I have complicated feelings about this.",
 			LORE2 = "This was before my time.",
 			LORE3 = "Ooh. So menacing.",
+            --
+            LORE1_STALKER = "Well, this must be awkward for you.", -- when the stalker/king is with you, different inspect for the king statue!
 		},
 
         ARCHIVE_RESONATOR = {
@@ -5364,7 +5383,12 @@ return{
 		SHADOWTHRALL_WINGS = "You think you can look down on me?",
 		SHADOWTHRALL_MOUTH = "What are you smiling at, pal?",
 
-        CHARLIE_NPC = "Charlie...",
+        CHARLIE_NPC =
+        {
+            GENERIC = "Charlie...", -- scene 1, first appearance of charlie to repair the gateway
+            SCENE2 = "I hope this makes you happy, Charlie.", -- scene 2, charlie appears again to socket the key and place the ritual down
+            SCENE3 = "I hope this makes you happy, Charlie.", -- scene 3, the gateway has both keys, and the sacrifice pieces are set up in the ritual, she appears to tell you to activate it
+        },
         CHARLIE_HAND = "I'll... see to it.",
 
         NITRE_FORMATION = "A large growth of nitre.",
@@ -6271,6 +6295,51 @@ return{
 
         CARNIVALGAME_GOLFPROP_FAN = "Can someone turn off that blasted fan?", -- fan that blows wind and pushes in a direction
 
+        -- Rifts 8
+
+        ROCKY_BOSS =
+        {
+            GENERIC = "That claw could be troublesome.",
+            BOULDER = "It thinks it's being clever.", -- in boulder form
+            ACID = "Crusty old brute!",
+        },
+		ROCKY_BOSS_SHADOW = "Hm. I don't mind the new look.",
+        BAT_BOSS =
+        {
+            GENERIC = "How charming. A giant flying parasite.",
+            ACID = "The glow is impressive. The drool, less so.",
+        },
+		BAT_BOSS_SHADOW = "Hardly see it in the dark now.",
+
+        BATBOSSCAVE =
+        {
+            GENERIC = "Something horrid in there, no doubt.", -- boss bat is inside,
+            VACANT = "No one home?", -- boss bat is not inside anymore
+        },
+
+        WORM_BOSS_SHADOW = "Great.",
+
+        ARMOR_ROCKY = "I still smell lobster inside.",
+        BAT_BOSSCORPSEHAT = "Preposterous!",
+
+        ATRIUM_RITUAL_ORGAN_ROCKY =
+        {
+            GENERIC = "Better be worth it...",
+            IN_RITUAL = "Levitation? Amateurs.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+        ATRIUM_RITUAL_ORGAN_BAT =
+        {
+            GENERIC = "I don't even want to know, Charlie.",
+            IN_RITUAL = "Levitation? Amateurs.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+        ATRIUM_RITUAL_ORGAN_WORM =
+        {
+            GENERIC = "Disgusting. Really, Charlie?",
+            IN_RITUAL = "Levitation? Amateurs.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+
+		CHARLIE_BOSS = "Charlie? Are you still there?",
+        SHROUDEN = "H-hey there, pal... Maxwell here. Big fan of, uh... whatever it is you're doing.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",
@@ -6295,6 +6364,4 @@ return{
     },
 
     WENDY_SKILLTREE_EASTEREGG = "only_used_by_wendy",
-
-
 }

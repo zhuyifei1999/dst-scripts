@@ -1397,10 +1397,9 @@ end
 
 -- consider using IsNear if you're checking if something is inside/outside a certain horizontal distance
 function EntityScript:GetDistanceSqToInst(inst)
-    assert(self:IsValid() and inst:IsValid())
-    local p1x, p1y, p1z = self.Transform:GetWorldPosition()
-    local p2x, p2y, p2z = inst.Transform:GetWorldPosition()
-    return distsq(p1x, p1z, p2x, p2z)
+	local p1x, _, p1z = self.Transform:GetWorldPosition()
+	local p2x, _, p2z = inst.Transform:GetWorldPosition()
+	return math2d.DistSq(p1x, p1z, p2x, p2z)
 end
 
 function EntityScript:IsNear(otherinst, dist)
@@ -1412,8 +1411,8 @@ function EntityScript:GetDistanceSqToPoint(x, y, z)
     if x and not y and not z then
         x, y, z = x:Get()
     end
-    local x1, y1, z1 = self.Transform:GetWorldPosition()
-    return distsq(x, z, x1, z1)
+	local x1, _, z1 = self.Transform:GetWorldPosition()
+	return math2d.DistSq(x, z, x1, z1)
 end
 
 function EntityScript:IsNearPlayer(range, isalive)
@@ -1428,8 +1427,8 @@ end
 
 function EntityScript:GetDistanceSqToClosestPlayer(isalive)
     local x, y, z = self.Transform:GetWorldPosition()
-    local player, distsq = FindClosestPlayer(x, y, z, isalive)
-    return distsq or math.huge
+	local player, dsq = FindClosestPlayer(x, y, z, isalive)
+	return dsq or math.huge
 end
 
 function EntityScript:FaceAwayFromPoint(dest, force)

@@ -4382,6 +4382,105 @@ function d_activatearchives()
     end
 end
 
+local function PrintVirtualRoomUsage(name)
+    print(string.format("Usage: %s(\"roomsetname\")", name))
+    print("Bad roomsetname. Valid roomsetnames:")
+    for name, _ in orderedPairs(VIRTUALROOMS) do
+        print(name)
+    end
+end
+function d_virtualroom_iterateroom(roomsetname)
+    local virtualroomset = TheWorld.components.virtualroommanager.virtualroomsets[roomsetname]
+    if not virtualroomset then
+        PrintVirtualRoomUsage("d_virtualroom_iterateroom")
+        return
+    end
+    local index = virtualroomset.currentroomindex + 1
+    if index > virtualroomset.numberrooms then
+        index = 0
+    end
+    virtualroomset:SetRoom(index)
+end
+
+function d_virtualroom_setroom(roomsetname, roomnameorroomindex)
+    local virtualroomset = TheWorld.components.virtualroommanager.virtualroomsets[roomsetname]
+    if not virtualroomset then
+        PrintVirtualRoomUsage("d_virtualroom_setroom")
+        return
+    end
+    virtualroomset:SetRoom(roomnameorroomindex or 0)
+end
+
+function d_virtualroom_hotreloadroom(roomsetname)
+    local virtualroomset = TheWorld.components.virtualroommanager.virtualroomsets[roomsetname]
+    if not virtualroomset then
+        PrintVirtualRoomUsage("d_virtualroom_hotreloadroom")
+        return
+    end
+    local roomname = virtualroomset:GetCurrentRoomName()
+    virtualroomset:HideRoom(true)
+    virtualroomset:LoadRoom(roomname)
+end
+
+local function createvirtualroomcontroller(roomsetname, defs)
+    local inst = CreateEntity()
+
+    inst:AddTag("CLASSIFIED")
+    --[[Non-networked entity]]
+
+    inst.entity:AddTransform()
+
+    inst.persists = false
+
+    local virtualroomset = inst:AddComponent("virtualroomset")
+    virtualroomset:DeclareVirtualRoomSetName(roomsetname)
+    virtualroomset:SetRoomDefinitions(defs) -- Do last.
+    return inst
+end
+
+function d_virtualroom_test_newroomset(roomsetname, defs, bb)
+    roomsetname = string.upper(roomsetname)
+    local virtualroomset = TheWorld.components.virtualroommanager.virtualroomsets[roomsetname]
+    if virtualroomset then
+        print("That roomsetname already exists, please pick another.")
+        return
+    end
+    if not defs then
+        defs = require("prefabs/vaultroom_defs")
+        bb = shallowcopy(VIRTUALROOM_BOUNDINGBOXES["VAULT"])
+    end
+    if not bb then
+        print("Missing a bounding box for this.")
+        return
+    end
+    VIRTUALROOMS[roomsetname] = roomsetname
+    VIRTUALROOM_BOUNDINGBOXES[roomsetname] = bb
+    local x, y, z = TheInput:GetWorldPosition():Get()
+    local virtualroomcontroller = createvirtualroomcontroller(roomsetname, defs)
+    local cx, cy, cz = TheWorld.Map:GetTileCenterPoint(x, y, z)
+    virtualroomcontroller.Transform:SetPosition(cx, cy, cz)
+end
+
+function d_virtualroom_printtilelayouts(roomsetname)
+    local virtualroomset = TheWorld.components.virtualroommanager.virtualroomsets[roomsetname]
+    if not virtualroomset then
+        PrintVirtualRoomUsage("d_virtualroom_printtilelayouts")
+        return
+    end
+    virtualroomset.floortilesbatch = shallowcopy(virtualroomset.originalfloortiles)
+    virtualroomset:DebugPrintBatch(VIRTUALROOMLOBBY)
+    for roomindex = 1, virtualroomset.numberrooms do
+        local roomname = virtualroomset.rooms[roomindex].roomname
+        virtualroomset.floortilesbatch = shallowcopy(virtualroomset.defs.defaultfloortiles or virtualroomset.originalfloortiles)
+        local layout = virtualroomset.defs.layouts[roomname]
+        if layout.ApplyFloorTiles then
+            layout.ApplyFloorTiles(virtualroomset.inst, virtualroomset)
+        end
+        virtualroomset:DebugPrintBatch(roomname)
+    end
+    virtualroomset.floortilesbatch = nil
+end
+
 function d_vaultroom(id)
 	local center
 	for i, v in ipairs(TheSim:FindEntities(0, 0, 0, 9001, { "CLASSIFIED" })) do
@@ -5113,5 +5212,92 @@ function d_golfteleport()
         inst.Physics:Teleport(x, y, z)
     else
         inst.Transform:SetPosition(x, y, z)
+    end
+end
+
+function d_resetfuelweavernpc()
+    if TheWorld.components.stalkermanager then
+        TheWorld.components.stalkermanager:Debug_ResetData()
+    end
+end
+
+function d_bossripple()
+    local duration = 0.8 -- seconds; both inner and outer radius grow to their max over this duration
+
+    local screen_w, screen_h = TheSim:GetScreenSize()
+    local aspect_ratio = screen_w / screen_h
+    local mouse_pos = TheInput:GetScreenPosition() -- raw pixel coords, same origin/orientation as TheSim:GetScreenPos() used elsewhere for this shader's UV points -- no flip needed
+    local mouse_u, mouse_v = mouse_pos.x / screen_w, mouse_pos.y / screen_h
+
+    local guid = GetNextVisualEffectGUID()
+    local scale = 1.0
+
+    StartStaticThread(function()
+        local start_time = GetTime()
+        while true do
+            local linear_t = math.min((GetTime() - start_time) / duration, 1)
+
+            local inner_radius, outer_radius, ring_width_inner, ring_width_outer, spacing_power, inner_fade_amount, strength, ring_count, phase = Effect_BossRipple(linear_t, scale)
+
+            local pushed = PushRingDistortion(guid, mouse_u, mouse_v, mouse_u, mouse_v, aspect_ratio,
+                inner_radius, outer_radius, ring_width_inner, ring_width_outer,
+                spacing_power, inner_fade_amount, strength,
+                ring_count, phase)
+            if not pushed or linear_t >= 1 then
+                break
+            end
+            Yield()
+        end
+        ClearRingDistortion(guid)
+    end)
+end
+
+function d_charliearena_nextstate()
+    local gate = c_findnext("atrium_gate")
+    if not gate then
+        local charlie_boss = c_findnext("charlie_boss")
+        if charlie_boss then
+            charlie_boss.components.health:Kill()
+        end
+    else
+        if gate.components.charliecutscene and not gate.components.charliecutscene:IsGateRepaired() then
+            gate.components.charliecutscene:RepairGate()
+        end
+
+        if not gate:IsVaultKeySocketed() then
+            gate:SocketVaultKey(true)
+        end
+
+        if gate.components.trader.enabled then
+            gate:OnKeyGiven()
+        end
+
+        if gate:GetRitualState() == gate.RITUAL_STATES.ENABLED then
+            local organs = {
+                "atrium_ritual_organ_bat",
+                "atrium_ritual_organ_rocky",
+                "atrium_ritual_organ_worm",
+            }
+            for i = 1, 3 do
+                local marking = gate.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+                if marking then
+                    SpawnPrefab(organs[i]).Transform:SetPosition(marking.Transform:GetWorldPosition())
+                end
+            end
+        else
+            local nextstate = gate:GetRitualState() + 1
+            if nextstate > gate.RITUAL_STATES.SUMMONED then
+                nextstate = gate.RITUAL_STATES.ENABLED
+            end
+            gate:SetRitualState(nextstate)
+        end
+    end
+end
+
+function d_checkspecialevents()
+    for codename, eventname in pairs(SPECIAL_EVENTS) do
+        if IsSpecialEventActive(eventname) then
+            print("Special event is active:", codename, eventname)
+        end
     end
 end

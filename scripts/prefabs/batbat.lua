@@ -51,7 +51,10 @@ local function onattack(inst, owner, target)
 	if owner.components.health and owner.components.health:IsHurt() and IsLifeDrainable(target) then
         owner.components.health:DoDelta(TUNING.BATBAT_DRAIN, false, "batbat")
 		if owner.components.sanity ~= nil then
-	        owner.components.sanity:DoDelta(-.5 * TUNING.BATBAT_DRAIN)
+            local hat = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+            local has_bat_hat = hat and hat:HasTag("bathat")
+            local sanitydrainmult = has_bat_hat and -TUNING.BATBAT_SETBONUS_SANITY_DRAIN_MULT or -TUNING.BATBAT_SANITY_DRAIN_MULT
+	        owner.components.sanity:DoDelta(sanitydrainmult * TUNING.BATBAT_DRAIN)
 		end
     end
 end

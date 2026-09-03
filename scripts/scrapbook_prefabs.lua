@@ -2088,6 +2088,28 @@ local PREFABS =
     ["healingsalve_fumarole"] = true,
     ["chesspiece_vault_pillar_guard"] = true,
 
+    -- [[ Rifts 8 ]]
+
+    -- ["stalker_npc"] = true,
+
+    -- ["atrium_ritual_organ_bat"] = true,
+    -- ["atrium_ritual_organ_worm"] = true,
+    -- ["atrium_ritual_organ_rocky"] = true,
+
+    -- ["rocky_boss"] = true,
+    -- ["bat_boss"] = true,
+
+    -- ["rocky_boss_shadow"] = true,
+    -- ["bat_boss_shadow"] = true,
+    -- ["worm_boss_shadow"] = true,
+
+    -- ["charlie_boss"] = true,
+
+    -- ["bat_bosscorpsehat"] = true,
+    -- ["armor_rocky"] = true,
+
+    -- ["charlie_boss_runner"] = true,
+
     -----------------------------------------------
 
     --["archive_switch"] = true, proxy for archive_switch_base

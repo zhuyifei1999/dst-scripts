@@ -276,7 +276,7 @@ local function fn()
 
 	inst:AddComponent("planarentity")
 	inst:AddComponent("planardamage")
-	inst.components.planardamage:SetBaseDamage(TUNING.SHADOWTHRALL_HORNS_PLANAR_DAMAGE)
+	inst.components.planardamage:SetBaseDamage(TUNING.ROCKY_BOSS_SHADOW_PLANAR_DAMAGE)
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetChanceLootTable("shadowthrall_horns")

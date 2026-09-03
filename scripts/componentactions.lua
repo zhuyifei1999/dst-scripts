@@ -879,7 +879,7 @@ local COMPONENT_ACTIONS =
             if inst:HasTag("teleporter") then
                 if inst:HasTag("climbable") then
                     table.insert(actions, ACTIONS.CLIMB)
-                elseif not inst:HasAnyTag("townportal", "vault_teleporter") then
+                elseif not inst:HasAnyTag("townportal", "virtualroomteleporter") then
                     table.insert(actions, ACTIONS.JUMPIN)
                 elseif right and not doer:HasTag("channeling") then
                     table.insert(actions, ACTIONS.TELEPORT)
@@ -1573,10 +1573,10 @@ local COMPONENT_ACTIONS =
 
         preservative = function(inst, doer, target, actions, right)
 			if right and target.replica.health == nil
-				and (target:HasTag("fresh") or target:HasTag("stale") or target:HasTag("spoiled"))
+                and target:HasAnyTag("fresh", "stale", "spoiled")
 				and target:HasTag("cookable")
-				and not target:HasTag("deployable")
-				and not target:HasTag("smallcreature") then
+                and not target:HasAnyTag("deployable", "smallcreature")
+                then
 					table.insert(actions, ACTIONS.APPLYPRESERVATIVE)
 			end
         end,

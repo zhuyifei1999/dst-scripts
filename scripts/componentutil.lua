@@ -99,6 +99,15 @@ function PushAwayItemsOnBoatPlace(inst)
 end
 
 --------------------------------------------------------------------------
+
+function IsRangedWeapon(ent)
+	return ent ~= nil and
+		(	ent.components.projectile ~= nil or
+			(ent.components.weapon ~= nil and ent.components.weapon.projectile ~= nil)
+		)
+end
+
+--------------------------------------------------------------------------
 --Tags useful for testing against combat targets that you can hit,
 --but aren't really considered "alive".
 
@@ -1183,7 +1192,105 @@ end
 -------
 -- Teleporting checks for restrictions.
 
-local vaultroom_defs = require("prefabs/vaultroom_defs")
+local function GetActualTileCoords_Internal(map, fx, fy, fz) -- For when point is on tile overhang
+    local tx, ty = map:GetTileCoordsAtPoint(fx, 0, fz)
+    local tilecenter_x, tilecenter_y, tilecenter_z  = map:GetTileCenterPoint(fx, 0, fz)
+    local actual_tile = map:GetTile(tx, ty)
+
+    if not TileGroupManager:IsLandTile(actual_tile) then
+        local xpercent = (tilecenter_x - fx) / TILE_SCALE
+        local ypercent = (tilecenter_z - fz) / TILE_SCALE
+
+        local x_min = xpercent > 0.166 and -1 or 0
+        local x_max = xpercent < -0.166 and 1 or 0
+        local y_min = ypercent > 0.166 and -1 or 0
+        local y_max = ypercent < -0.166 and 1 or 0
+
+        for x = x_min, x_max do
+            for y = y_min, y_max do
+                local nx, ny = tx + x, ty + y
+                local tile = map:GetTile(nx, ny)
+                if TileGroupManager:IsLandTile(tile) then
+                    return nx, ny
+                end
+            end
+        end
+    end
+
+    return tx, ty
+end
+local function IsPathClear_Internal(map, roomsethash, IsTileInvalidForPathing, fx, fy, fz, tx, ty, tz)
+    if IsTileInvalidForPathing == nil then
+        return true
+    end
+
+    local minx, miny, maxx, maxy = map:GetVirtualRoomSetBoundingBox(roomsethash)
+	local width = maxx - minx + 1
+
+    fx, fy = GetActualTileCoords_Internal(map, fx, fy, fz)
+    tx, ty = GetActualTileCoords_Internal(map, tx, ty, tz)
+
+    -- fast checks
+    if IsTileInvalidForPathing(map, fx, fy) then
+        return false
+    elseif fx == tx and fy == ty then
+        return true
+    end
+
+    -- TODO should cache result?
+    -- TODO AStar search instead of BFS.
+
+    local visited = {}
+
+    local is_clear = false
+
+    local to_visit_queue = { { fx, fy } }
+    local queue_index = 1
+    while queue_index <= #to_visit_queue do
+        local next_x, next_y = to_visit_queue[queue_index][1], to_visit_queue[queue_index][2]
+        queue_index = queue_index + 1
+
+        local col = next_x
+        local row = next_y
+        local index = (row - miny) * width + col - minx
+        if visited[index] == nil then
+            visited[index] = true
+
+            if next_x == tx and next_y == ty then
+                is_clear = true
+                break
+            end
+
+            for off_x = -1, 1, 1 do
+                for off_y = -1, 1, 1 do
+                    if off_x ~= 0 or off_y ~= 0 then
+                        local nx, ny = next_x + off_x, next_y + off_y
+                        if not IsTileInvalidForPathing(map, nx, ny) then
+                            table.insert(to_visit_queue, { nx, ny })
+                            if nx == tx and ny == ty then
+                                is_clear = true
+                                break
+                            end
+                        end
+                    end
+
+                    if is_clear then break end
+                end
+            end
+
+            if is_clear then break end
+        end
+    end
+
+    return is_clear
+end
+
+local ISTILEINVALIDFORPATHING_HASHES = {}
+function AddIsTileInvalidForPathing_VirtualRoomSet(roomsetname, fn)
+    -- NOTES(JBK): This uses the hash of the roomsetname for networking on clients.
+    ISTILEINVALIDFORPATHING_HASHES[hash(roomsetname)] = fn
+end
+
 function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
     local map = TheWorld.Map
 
@@ -1193,11 +1300,31 @@ function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
         end
     end
 
-    if map:IsPointInVaultRoom(tx, ty, tz) then
-        if map:IsPointInVaultRoom(fx, fy, fz) and vaultroom_defs.IsPathClear(fx, fy, fz, tx, ty, tz) then
-            return true
+    local virtualroomsethashes = map:GetVirtualRoomSetHashes()
+    if virtualroomsethashes[1] --[[#virtualroomsethashes > 0 optimization]] then
+        local prohibited = false
+        for _, roomsethash in ipairs(virtualroomsethashes) do
+            if map:IsPointInVirtualRoomSet(roomsethash, tx, ty, tz) then
+                if map:IsPointInVirtualRoomSet(roomsethash, fx, fy, fz) then
+                    -- Teleporting from inside to inside of the VRS.
+                    -- Check if the path is clear to allow this.
+                    local IsTileInvalidForPathing = ISTILEINVALIDFORPATHING_HASHES[roomsethash]
+                    prohibited = not IsPathClear_Internal(map, roomsethash, IsTileInvalidForPathing, fx, fy, fz, tx, ty, tz)
+                else
+                    -- Teleporting from outside to inside of the VRS.
+                    if map:IsVirtualRoomSetInLobby(roomsethash) then
+                        -- Some VRS permit teleporting into its lobby.
+                        prohibited = map:IsVirtualRoomSetTeleportingInLobbyProhibited(roomsethash)
+                    else
+                        -- Nothing is permitted to go from out to inside a VRS.
+                        prohibited = true
+                    end
+                end
+            end
         end
-        return false
+        if prohibited then
+            return false
+        end
     end
 
     return true
@@ -1423,6 +1550,7 @@ function GetCreatureImpactSound(inst, weaponmod)
     weaponmod = weaponmod or "dull"
 
     local tgttype =
+		inst.override_combat_impact_sound or
 		(inst:HasAnyTag("hive", "eyeturret", "houndmound") and "hive_") or
         (inst:HasTag("ghost") and "ghost_") or
 		(inst:HasAnyTag("insect", "spider") and "insect_") or
@@ -1435,7 +1563,6 @@ function GetCreatureImpactSound(inst, weaponmod)
         (inst:HasAnyTag("veggie", "hedge") and "vegetable_") or
         (inst:HasTag("shell") and "shell_") or
 		(inst:HasAnyTag("rocky", "fossil") and "stone_") or
-        inst.override_combat_impact_sound or
         nil
 
     return
@@ -1597,7 +1724,7 @@ end
 
 function RemoveComponentInventoryItemSource(cmp, owner)
     local self = cmp
-    local owner = owner or self.inst
+    owner = owner or self.inst
 
     self.inst:RemoveEventCallback("onputininventory", self.itemsource_topocket, owner)
     self.inst:RemoveEventCallback("ondropped", self.itemsource_toground, owner)
@@ -2191,3 +2318,36 @@ function GetEntityTemperature(inst) -- Purposely defaulting to nil. Account for 
         or (inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetTemperature())
         or nil
 end
+
+--------------------------------------------------------------------------
+-- VirtualRoomSet helpers.
+
+function GetPlayersInfoForVirtualRoomSetName(roomsetname)
+    local virtualroommanager = TheWorld.components.virtualroommanager
+    if virtualroommanager then
+        local virtualroomset = virtualroommanager:GetVirtualRoomSet(roomsetname)
+        if virtualroomset then
+            return virtualroomset:GetPlayersInfo()
+        end
+    end
+
+    return nil, 0
+end
+
+--------------------------------------------------------------------------
+
+function FindFirstPrefabInArray(entityarray, prefab)
+    if not entityarray then
+        return nil
+    end
+
+    for _, v in ipairs(entityarray) do
+        if v.prefab == prefab then
+            return v
+        end
+    end
+
+    return nil
+end
+
+--------------------------------------------------------------------------

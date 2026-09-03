@@ -2080,11 +2080,15 @@ function ResumeExistingUserSession(data, guid)
 
             -- Spawn the player to last known location
 			local x, y, z, platform = ResolveSaveRecordPosition(data)
-            if TheWorld.Map:IsPointInVaultRoom(x, y, z) then
-                local vault_lobby_center = TheWorld.components.vaultroommanager:GetVaultLobbyCenterMarker()
-                if vault_lobby_center then
-                    x, y, z = vault_lobby_center.Transform:GetWorldPosition()
-                end
+            local virtualroommanager = TheWorld.components.virtualroommanager
+            if virtualroommanager then
+                local map = TheWorld.Map
+                virtualroommanager:ForEachVirtualRoomSet(function(virtualroomset)
+                    if map:IsPointInVirtualRoomSet(virtualroomset.roomsetname, x, y, z) then
+                        x, y, z = virtualroomset:FindSafePlayerPointFrom(x, y, z)
+                        return true
+                    end
+                end)
             end
 			TheWorld.components.playerspawner:SpawnAtLocation(TheWorld, player, x, y, z, true)
 			if platform ~= nil then

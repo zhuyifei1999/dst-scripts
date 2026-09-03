@@ -3955,6 +3955,33 @@ local fx =
 			inst.AnimState:SetScale(math.random() < .5 and scale or -scale, scale)
 		end,
     },
+    {
+        name = "charlie_circle_spawn_fx",
+        bank = "charlie_basic",
+        build = "charlie_basic",
+        anim = "circle_spawn_fx",
+    },
+    {
+        name = "charlie_circle_spawn_ground_fx",
+        bank = "charlie_basic",
+        build = "charlie_basic",
+        anim = "circle_spawn_fx_ground",
+        fn = GroundOrientation,
+    },
+	{
+		name = "atrium_portal_fx",
+		bank = "vault_portal_fx", -- #FIXME
+		build = "vault_portal_fx", -- #FIXME
+		anim = "activate",
+        fn = function(inst)
+            local parent = inst.entity:GetParent()
+            if parent and ThePlayer and ThePlayer == parent then
+                ThePlayer:PushEvent("shroudensummoned")
+                inst.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                inst.entity:SetParent(nil)
+            end
+        end,
+	},
 }
 
 for cratersteamindex = 1, 4 do

@@ -3117,7 +3117,7 @@ table.insert(prefs, CreatePrefabSkin("coldfirepit_an",
 	base_prefab = "coldfirepit",
 	type = "item",
 	rarity = "Loyal",
-	init_fn = function(inst, skin_custom) coldfirepit_init_fn(inst, "coldfirepit_an", skin_custom) end,
+	init_fn = function(inst) coldfirepit_init_fn(inst, "coldfirepit_an", Vector3(0, 0, 0)) end,
 	skin_tags = { "COLDFIREPIT", "ARTNOUVEAU", "CRAFTABLE", },
 	release_group = 150,
 }))

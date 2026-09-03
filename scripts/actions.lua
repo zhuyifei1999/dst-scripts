@@ -6273,6 +6273,7 @@ ACTIONS.WOBY_PICKUP.fn = function(act)
             return false, "NO_HEAVY_LIFTING"
         end
 
+        act.target.components.inventoryitem:OnPickupStopSmoldering(act.doer)
         act.doer:PushEvent("onpickupitem", { item = act.target })
 
         act.doer.components.container:GiveItem(act.target, nil, act.target:GetPosition())

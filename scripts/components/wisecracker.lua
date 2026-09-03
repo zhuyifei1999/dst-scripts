@@ -99,16 +99,19 @@ local Wisecracker = Class(function(self, inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_INSUFFICIENTFERTILIZER"))
     end)
 
+    local function IsCharlieDefeated()
+        return TheWorld.components.charlie_tracker:IsCharlieDefeated()
+    end
     inst:ListenForEvent("heargrue", function(inst, data)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE"))
+        inst.components.talker:Say(GetString(inst, IsCharlieDefeated() and "ANNOUNCE_GRUE_NOCHARLIE" or "ANNOUNCE_CHARLIE"))
     end)
 
     inst:ListenForEvent("attackedbygrue", function(inst, data)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE_ATTACK"))
+        inst.components.talker:Say(GetString(inst, IsCharlieDefeated() and "ANNOUNCE_GRUE_NOCHARLIE_ATTACK" or "ANNOUNCE_CHARLIE_ATTACK"))
     end)
 
     inst:ListenForEvent("resistedgrue", function(inst, data)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE_MISSED"))
+        inst.components.talker:Say(GetString(inst, IsCharlieDefeated() and "ANNOUNCE_GRUE_NOCHARLIE_MISSED" or "ANNOUNCE_CHARLIE_MISSED"))
     end)
 
     inst:ListenForEvent("thorns", function(inst, data)
