@@ -425,20 +425,6 @@ local function OnPlaced(inst) -- NOTES(JBK): This should be safe to run multiple
 	end
 end
 
-local function IsOtherRoomLinkBroken(virtualroomset, direction)
-    local virtualroom = virtualroomset.rooms[virtualroomset.currentroomindex] -- Do not use GetCurrentRoom here for clarity on the linked room handling.
-    if virtualroom then
-        local links = virtualroom.links
-        if links then
-            local link = links[direction]
-            if link and link.linkedroom and link.linkeddirection then
-                return vaultroom_defs.internal.IsLinkBroken(virtualroomset, link.linkedroom, link.linkeddirection)
-            end
-        end
-    end
-    return false
-end
-
 local function UpdateTeleporterPoweredState(inst)
     local virtualroomset = inst.components.virtualroomteleporter:GetVirtualRoomSet()
     local direction = inst.components.virtualroomteleporter:GetDirection()
@@ -455,7 +441,7 @@ local function UpdateTeleporterPoweredState(inst)
             inst:SetPowered(powered)
         end
     else
-        local powered = not IsOtherRoomLinkBroken(virtualroomset, direction)
+        local powered = not vaultroom_defs.internal.IsOtherRoomLinkBroken(virtualroomset, virtualroomset:GetCurrentRoomName(), direction)
         inst:SetPowered(powered)
     end
 end

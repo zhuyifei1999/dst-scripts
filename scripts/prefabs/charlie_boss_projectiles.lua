@@ -42,6 +42,7 @@ local function SpawnHitFxAtXYZ(x, y, z)
 	local fx = SpawnPrefab("charlie_boss_projectile_hit_fx")
 	fx.Transform:SetPosition(x, math.max(0, y - 0.2), z)
 	fx.AnimState:SetScale(math.random() < 0.5 and -1 or 1, 1)
+	fx.SoundEmitter:PlaySound("rifts8/charlie/projectile_impact")
 	return fx
 end
 
@@ -182,6 +183,7 @@ local function UpdateFlightPath(inst, dt)
 		return
 	end
 
+	inst.t = inst.t + dt
 	inst.maxturn = math.min(1, inst.maxturn + dt * 2)
 	if dsq ~= 0 then
 		local dir = inst.Transform:GetRotation()
@@ -220,8 +222,9 @@ local function UpdateFlightPath(inst, dt)
 		end
 
 		local theta = tilt / 60 * TWOPI
-		local vx = math.sin(theta) * inst.speed
-		local vy = math.cos(theta) * inst.speed
+		local speed = easing.inQuad(math.min(inst.acceltime, inst.t), TUNING.CHARLIE_BOSS_PROJECTILE_SPEED[1], TUNING.CHARLIE_BOSS_PROJECTILE_SPEED[2], inst.acceltime)
+		local vx = math.sin(theta) * speed
+		local vy = math.cos(theta) * speed
 		inst.Physics:SetMotorVel(vx, vy - g, 0)
 	end
 
@@ -233,6 +236,7 @@ end
 local function Launch(inst, caster, targetorpos, x, y, z, dir)
 	inst.Physics:Teleport(x, y, z)
 	inst.Transform:SetRotation(dir)
+	inst.SoundEmitter:PlaySound("rifts2/thrall_wings/projectile")
 
 	if targetorpos:is_a(EntityScript) then
 		inst.target = targetorpos
@@ -245,9 +249,12 @@ local function Launch(inst, caster, targetorpos, x, y, z, dir)
 	inst.caster = caster
 	inst.tilt:set(math.random(3, 7))
 	inst.maxturn = 0
-	inst.speed = GetRandomMinMax(unpack(TUNING.CHARLIE_BOSS_PROJECTILE_SPEED))
+	inst.t = 0
 
-	inst:DoTaskInTime(GetRandomMinMax(unpack(TUNING.CHARLIE_BOSS_PROJECTILE_LIFETIME)), Despawn)
+	local lifetime = GetRandomMinMax(unpack(TUNING.CHARLIE_BOSS_PROJECTILE_LIFETIME))
+	inst.acceltime = (0.4 + 0.35 * math.random()) * lifetime
+
+	inst:DoTaskInTime(lifetime, Despawn)
 
 	inst.components.updatelooper:AddOnUpdateFn(UpdateFlightPath)
 	UpdateFlightPath(inst, 0)
@@ -348,6 +355,7 @@ local function hitfxfn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
 	inst.AnimState:SetBank("charlie_boss")

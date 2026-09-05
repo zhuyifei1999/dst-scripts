@@ -158,6 +158,10 @@ local function KeepTargetFn(inst, target)
 end
 
 local function TryAggro(inst, attacker)
+	if inst.components.health:IsDead() or inst.sg:HasStateTag("temp_invincible") then
+		return false
+	end
+
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local target = inst.components.combat.target
 	if target and target.isplayer then
@@ -425,6 +429,7 @@ end
 local function IsInArena(inst)
 	if inst._inarena == nil then
 		inst._inarena = TheWorld.Map:IsPointInCharlieBossArena(inst.Transform:GetWorldPosition())
+		inst.components.epicscare:SetRange(inst._inarena and 30 or TUNING.CHARLIE_BOSS_AGGRO_DIST)
 	end
 	return inst._inarena
 end
@@ -448,7 +453,7 @@ local PHASES =
 		end,
 	},
 	{
-		hp = 0.9,
+		hp = 0.95,
 		fn = function(inst)
 			inst.canmodeswitch = false
 			inst.canshadowhands = true
@@ -460,11 +465,11 @@ local PHASES =
 			SetRunnerSpawnsEnabled(inst, false)
 			inst.sg.mem.forcetaunt = true
 			inst.components.combat.battlecryenabled = true
-			inst.components.combat:SetAttackPeriod(TUNING.CHARLIE_BOSS_ATTACK_PERIOD)			
+			inst.components.combat:SetAttackPeriod(TUNING.CHARLIE_BOSS_ATTACK_PERIOD)
 		end,
 	},
 	{
-		hp = 0.75,
+		hp = 0.85,
 		fn = function(inst)
 			inst.canmodeswitch = true
 			inst.canshadowhands = true
@@ -484,31 +489,40 @@ local PHASES =
 			inst.components.combat:SetAttackPeriod(inst.canvinecounter and TUNING.CHARLIE_BOSS_ATTACK_PERIOD or TUNING.CHARLIE_BOSS_ATTACK_PERIOD2)
 		end,
 	},
-	{
-		hp = 0.2,
-		fn = function(inst)
-			inst.canshadowhands = true
-			if not inst.canmodeswitch then
-				inst.canmodeswitch = true
-				if math.random() < 0.5 then
-					inst.canvinecounter = false
-					inst.canreflectprojectiles = true
-				else
-					inst.canvinecounter = true
-					inst.canreflectprojectiles = false
-				end
-				SetModeSwitching(inst, inst.components.combat:HasTarget())
-				inst.sg.mem.forcetaunt = true
-			end
-			inst.canspawnrunners = true
-			SetShadowHandsEnabled(inst, inst.components.combat:HasTarget())
-			SetRunnerSpawnsEnabled(inst, inst.components.combat:HasTarget())
-			inst.components.combat.battlecryenabled = true
-			inst.components.combat:SetAttackPeriod(inst.canvinecounter and TUNING.CHARLIE_BOSS_ATTACK_PERIOD or TUNING.CHARLIE_BOSS_ATTACK_PERIOD2)
-
-		end,
-	},
 }
+
+local RUNNER_HP_THRESHOLDS = { 0.2, 0.25, 0.3, 0.35 }
+
+local function RunnerPhaseFn(inst)
+	inst.canshadowhands = true
+	if not inst.canmodeswitch then
+		inst.canmodeswitch = true
+		if math.random() < 0.5 then
+			inst.canvinecounter = false
+			inst.canreflectprojectiles = true
+		else
+			inst.canvinecounter = true
+			inst.canreflectprojectiles = false
+		end
+		SetModeSwitching(inst, inst.components.combat:HasTarget())
+		inst.sg.mem.forcetaunt = true
+	end
+	SetShadowHandsEnabled(inst, inst.components.combat:HasTarget())
+	local n = math.clamp(inst.components.grouptargeter:GetNumTargets(), 1, #RUNNER_HP_THRESHOLDS)
+	if inst.components.health:GetPercent() <= RUNNER_HP_THRESHOLDS[n] then
+		inst.canspawnrunners = true
+		SetRunnerSpawnsEnabled(inst, inst.components.combat:HasTarget())
+	else
+		inst.canspawnrunners = false
+		SetRunnerSpawnsEnabled(inst, false)
+	end
+	inst.components.combat.battlecryenabled = true
+	inst.components.combat:SetAttackPeriod(inst.canvinecounter and TUNING.CHARLIE_BOSS_ATTACK_PERIOD or TUNING.CHARLIE_BOSS_ATTACK_PERIOD2)
+end
+
+for i = #RUNNER_HP_THRESHOLDS, 1, -1 do
+	table.insert(PHASES, { hp = RUNNER_HP_THRESHOLDS[i], fn = RunnerPhaseFn })
+end
 
 local function OnSave(inst, data)
 	if inst.sg.mem.killstarttime then
@@ -530,10 +544,42 @@ local function OnLoad(inst, data)--, ents)
 	end
 end
 
+local function OnLongUpdate(inst, dt)
+	if inst.sg.mem.killstarttime then
+		inst.sg.mem.killstarttime = inst.sg.mem.killstarttime - dt
+	end
+end
+
+-- NOTE: we'll set these to false for the case of setting our own fields to false, but event callbacks are cleared by this point
+-- so disabling these is in actuality handled by charlie_boss_trial, not here.
 local function OnRemoveEntity(inst)
 	SetShadowHandsEnabled(inst, false)
 	SetRunnerSpawnsEnabled(inst, false)
 end
+
+--------------------------------------------------------------------------
+
+local function OnCameraFocusDirty(inst)
+	local level = inst.camerafocus:value()
+	if level > 0 then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 5, 21, 4, nil, level > 1 and Vector3(0, 3, 0) or nil)
+	else
+		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	end
+end
+
+local function SetCameraFocusLevel(inst, level)
+	if level ~= inst.camerafocus:value() then
+		inst.camerafocus:set(level)
+
+		--Dedicated server does not need to focus camera
+		if not TheNet:IsDedicated() then
+			OnCameraFocusDirty(inst)
+		end
+	end
+end
+
+--------------------------------------------------------------------------
 
 local LIGHT_OVERRIDE = 1
 
@@ -601,6 +647,8 @@ local function fn()
 	inst:AddTag("shadow_aligned")
 	inst:AddTag("epic")
 
+	inst.camerafocus = net_tinybyte(inst.GUID, "charlie_boss.camerafocus", "camerafocusdirty")
+
 	inst:AddComponent("colouraddersync")
 
 	if not TheNet:IsDedicated() then
@@ -618,6 +666,8 @@ local function fn()
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
+		inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+
 		return inst
 	end
 
@@ -641,6 +691,7 @@ local function fn()
 	inst.components.combat:SetRetargetFunction(1, RetargetFn)
 	inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
 
+	inst:AddComponent("planarentity")
 	inst:AddComponent("planardamage")
 	inst.components.planardamage:SetBaseDamage(TUNING.CHARLIE_BOSS_PLANAR_DAMAGE)
 
@@ -655,6 +706,9 @@ local function fn()
 	inst.components.teleportedoverride:SetDestPositionFn(teleport_override_fn)
 
 	inst:AddComponent("explosiveresist")
+
+	inst:AddComponent("epicscare")
+	inst.components.epicscare:SetRange(30)
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetChanceLootTable("charlie_boss")
@@ -681,7 +735,9 @@ local function fn()
 	inst.ToggleReflectingProjectiles = ToggleReflectingProjectiles
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
+	inst.OnLongUpdate = OnLongUpdate
 	inst.OnRemoveEntity = OnRemoveEntity
+	inst.SetCameraFocusLevel = SetCameraFocusLevel
 
 	inst:AddComponent("healthtrigger")
 	for _, v in ipairs(PHASES) do

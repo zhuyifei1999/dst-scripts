@@ -204,6 +204,7 @@ local function centerfn()
 
     local virtualroomset = inst:AddComponent("virtualroomset")
     virtualroomset:DeclareVirtualRoomSetName(VIRTUALROOMSETS.ATRIUM)
+    virtualroomset:SetTeleportingOutProhibited(true)
     virtualroomset:SetOnShowRoom(OnShowRoom)
     virtualroomset:SetOnReset(OnReset)
     virtualroomset:SetOnPostInit(OnPostInit)
@@ -228,7 +229,7 @@ local function centerfn()
             targetroomname = "boss1",
             x = x,
             z = z,
-            radius = function(ent) return 2.5 + math.random() * 1.5 end,
+            radius = function(ent) return 9 + math.random() * 1 end, -- NOTE(Omar): has to be at least above 8, to be out of charlie boss aggro range
             state = "charliearena_teleport",
             onteleportcb = data ~= nil and data.cb or nil
         })

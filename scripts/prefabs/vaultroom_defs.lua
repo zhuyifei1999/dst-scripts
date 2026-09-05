@@ -90,6 +90,20 @@ defs.internal.IsLinkBroken = function(virtualroomset, roomnameorroomindex, direc
     return repairedlinks[directionname] == nil
 end
 
+defs.internal.IsOtherRoomLinkBroken = function(virtualroomset, roomnameorroomindex, direction)
+    local virtualroom = virtualroomset.rooms[roomnameorroomindex]
+    if virtualroom then
+        local links = virtualroom.links
+        if links then
+            local link = links[direction]
+            if link and link.linkedroom and link.linkeddirection then
+                return defs.internal.IsLinkBroken(virtualroomset, link.linkedroom, link.linkeddirection)
+            end
+        end
+    end
+    return false
+end
+
 defs.internal.DoOnArriveTeleporters_HACK = function(virtualroomset, x, z)
     -- FIXME(JBK): This is a hack using the room destination point to figure out what the new room's teleporter inst is when the room has finished loading.
     local teleporters = virtualroomset:GetVirtualRoomEntities(VIRTUALROOMCONTEXT.TELEPORTER)

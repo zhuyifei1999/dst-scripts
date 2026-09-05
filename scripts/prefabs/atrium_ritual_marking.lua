@@ -40,6 +40,7 @@ local function SelectRitualItem(inst, item)
     inst.item = item
     item:SetInRitual(inst)
     inst.AnimState:PlayAnimation("idle_active", true)
+    inst.SoundEmitter:PlaySound("rifts8/charlie_ritual/summon_item_place")
     LaunchToInst(item, inst)
     inst:PushEvent("updateselectedritualitem")
 
@@ -137,7 +138,7 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    -- inst.entity:AddSoundEmitter()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst:AddTag("NOCLICK")

@@ -53,9 +53,7 @@ local VirtualRoomSet = Class(function(self, inst)
     end
     self.inst:ListenForEvent("ms_playerjoined", OnPlayerJoined_Bridge, self.world)
     self.inst:ListenForEvent("ms_playerleft", OnPlayerLeft_Bridge, self.world)
-    for _, player in ipairs(AllPlayers) do
-        self:OnPlayerJoined(player)
-    end
+    -- Do not iterate AllPlayers here to do an OnPlayerJoined test because this component needs to setup its roomsetname first.
 
     self.initfn = function()
         self.inittask = nil
@@ -152,24 +150,33 @@ function VirtualRoomSet:InvalidateClosestDirectionCache()
     self.closestdirectioncache = {}
 end
 
-function VirtualRoomSet:CacheClosestDirectionFromRoom_Internal(fromroom, fromlinks, dist, directionbefore)
-    local nextdist = dist + 1
-    local cache = self.closestdirectioncache[fromroom]
-    for direction, roomlink in pairs(fromlinks) do
-        local originaldirection = directionbefore or direction
-        local linkedroomdata = self.rooms[roomlink.linkedroom]
-        if linkedroomdata ~= nil then
-            local link = self.rooms[fromroom].links[direction]
-            if (dist < ((cache[roomlink.linkedroom] and cache[roomlink.linkedroom].dist) or math.huge))
-                and (self.defs.internal.IsLinkBroken == nil or not self.defs.internal.IsLinkBroken(self, roomlink.linkedroom, direction)) then
-                cache[roomlink.linkedroom] = {
-                    dist = dist,
-                    direction = originaldirection,
-                }
+function VirtualRoomSet:CacheClosestDirectionFromRoom_Internal(cache, fromvirtualroom, dist, directionbefore)
+    local fromlinks = fromvirtualroom.links
+    if fromlinks then
+        local nextdist = dist + 1
+        for direction, roomlink in pairs(fromlinks) do
+            local originaldirection = directionbefore or direction
+            if (dist < ((cache[roomlink.linkedroom] and cache[roomlink.linkedroom].dist) or math.huge)) then
+                local validlink = true
+                if self.defs.internal.IsOtherRoomLinkBroken then
+                    validlink = not self.defs.internal.IsOtherRoomLinkBroken(self, fromvirtualroom.roomname, direction)
+                end
+                if validlink then
+                    local cachedvalue = cache[roomlink.linkedroom]
+                    if cachedvalue then
+                        cachedvalue.dist = dist
+                        cachedvalue.direction = originaldirection
+                    else
+                        cache[roomlink.linkedroom] = {
+                            dist = dist,
+                            direction = originaldirection,
+                        }
+                    end
 
-                local nextroomlinks = self.rooms[roomlink.linkedroom] and self.rooms[roomlink.linkedroom].links or nil
-                if nextroomlinks then
-                    self:CacheClosestDirectionFromRoom_Internal(fromroom, nextroomlinks, nextdist, originaldirection)
+                    local nextroom = self.rooms[roomlink.linkedroom]
+                    if nextroom then
+                        self:CacheClosestDirectionFromRoom_Internal(cache, nextroom, nextdist, originaldirection)
+                    end
                 end
             end
         end
@@ -179,9 +186,10 @@ end
 function VirtualRoomSet:CacheClosestDirectionFromRoom(fromroom)
     local virtualroom = self.rooms[fromroom]
     if virtualroom and self.closestdirectioncache[fromroom] == nil then
-        self.closestdirectioncache[fromroom] = {}
+        local cache = {}
+        self.closestdirectioncache[fromroom] = cache
 
-        self:CacheClosestDirectionFromRoom_Internal(fromroom, virtualroom.links, 1, nil)
+        self:CacheClosestDirectionFromRoom_Internal(cache, virtualroom, 1, nil)
     end
 end
 
@@ -879,6 +887,10 @@ end
 
 function VirtualRoomSet:SetTeleportingIntoLobbyProhibited(prohibited)
     self.map:SetVirtualRoomSetTeleportingInLobbyProhibited(self.roomsetname, prohibited)
+end
+
+function VirtualRoomSet:SetTeleportingOutProhibited(prohibited)
+    self.map:SetVirtualRoomSetTeleportingOutProhibited(self.roomsetname, prohibited)
 end
 
 function VirtualRoomSet:RotateRoomsTick()

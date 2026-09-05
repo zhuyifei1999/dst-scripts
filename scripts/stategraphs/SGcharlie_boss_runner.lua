@@ -88,6 +88,7 @@ local states =
         tags = { "noattack", "attack", "busy", "jumping" },
 
         onenter = function(inst, target)
+            inst.Light:Enable(false)
             inst.components.locomotor:Stop()
             inst.components.combat:StartAttack()
 			if target and target:IsValid() then
@@ -105,14 +106,28 @@ local states =
             inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/pounce")
         end,
 
-		onupdate = function(inst)
-			if inst.sg.statemem.tracking then
+		onupdate = function(inst, dt)
+			if dt > 0 and inst.sg.statemem.tracking then
 				local target = inst.sg.statemem.target
-                if target and target:IsValid() then
-                    inst:ForceFacePoint(target.Transform:GetWorldPosition())
-                else
-                    inst.sg.statemem.target = nil
-                end
+				if target then
+					if target:IsValid() then
+						local lastdrot = inst.sg.statemem.drot
+						if lastdrot ~= 0 then
+							local rot = inst.Transform:GetRotation()
+							local rot1 = inst:GetAngleToPoint(target.Transform:GetWorldPosition())
+							local drot = ReduceAngle(rot1 - rot)
+
+							drot = lastdrot and
+								math.clamp(drot, math.min(0, lastdrot), math.max(0, lastdrot)) or
+								math.clamp(drot, -15, 15)
+
+							inst.Transform:SetRotation(rot + drot)
+							inst.sg.statemem.lastdrot = drot
+						end
+					else
+						inst.sg.statemem.target = nil
+					end
+				end
 			end
 		end,
 
@@ -149,6 +164,7 @@ local states =
         tags = { "busy", "noattack", "canrotate" },
 
         onenter = function(inst)
+            inst.Light:Enable(false)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("spawn")
         end,

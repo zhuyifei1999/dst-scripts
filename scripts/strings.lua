@@ -7463,14 +7463,11 @@ STRINGS =
 
     -- Shrouden jumps to take host of charlie
     -- (script plays in order)
+    -- keep to two lines only
     CHARLIE_NPC_SHROUDEN_TAKES_HOST =
     {
         "What's happening?!",
         "They're the sacrifice, not me!",
-        "No...",
-        -- e.g. "Ah what's happening-"
-        -- e.g. "No! They're the sacrifice, not me!"
-        -- e.g. "AAAH!!!!!"
     },
 
     --Arena Event

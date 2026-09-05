@@ -109,9 +109,21 @@ local function OnShowRoom(inst, virtualroomset, roomname, teleportingentsdata)
     end
 end
 
+local function SetRoomToOne(inst, virtualroomset)
+    inst.setroomtask = nil
+    virtualroomset:SetRoom(1)
+end
+
 local function OnPlayersChanged(inst, virtualroomset, players, numberplayers)
     if numberplayers == 0 and inst.validmarkers then
-        virtualroomset:SetRoom(1)
+        if not inst.setroomtask then
+            inst.setroomtask = inst:DoTaskInTime(0, SetRoomToOne, virtualroomset) -- Delay a tick for when a player disconnects inside the VRS.
+        end
+    else
+        if inst.setroomtask then
+            inst.setroomtask:Cancel()
+            inst.setroomtask = nil
+        end
     end
 end
 
@@ -206,11 +218,19 @@ local function OnTeleportedEntity(inst, virtualroomset, ent, x, z)
 end
 
 local function OnInvalidMarkers(inst, virtualroomset, markers)
+    if not inst.validmarkers then
+        return
+    end
+
     inst.validmarkers = false
     virtualroomset:SetRoom(0)
 end
 
 local function OnValidMarkers(inst, virtualroomset, markers)
+    if inst.validmarkers then
+        return
+    end
+
     inst.validmarkers = true
     local lobbycenter = FindFirstPrefabInArray(markers, "vaultmarker_lobby_center")
     local vaultcenter = inst
@@ -228,7 +248,7 @@ local function OnValidMarkers(inst, virtualroomset, markers)
         vaultcollision.Transform:SetPosition(x, y, z)
         vaultcollision:ListenForEvent("onremove", function() vaultcollision:Remove() end, vaultcenter)
     end
-    if virtualroomset.currentroomindex == 0 then
+    if virtualroomset.currentroomindex ~= 1 then
         virtualroomset:SetRoom(1)
     end
 end
@@ -316,6 +336,10 @@ local function OnVirtualRoomEntitiesChanged_lobby(inst, virtualroomset)
     end
 end
 local function OnInvalidMarkers_lobby(inst, virtualroomset, markers)
+    if not inst.validmarkers then
+        return
+    end
+
     inst.validmarkers = false
     local lobbyexit = FindFirstPrefabInArray(markers, "vault_lobby_exit")
     if lobbyexit then
@@ -325,6 +349,10 @@ local function OnInvalidMarkers_lobby(inst, virtualroomset, markers)
 end
 
 local function OnValidMarkers_lobby(inst, virtualroomset, markers)
+    if inst.validmarkers then
+        return
+    end
+
     inst.validmarkers = true
     local lobbyexit = FindFirstPrefabInArray(markers, "vault_lobby_exit")
     local lobbyexittarget = FindFirstPrefabInArray(markers, "archive_portal")
@@ -351,6 +379,7 @@ local function lobbycenterfn()
 
     local virtualroomset = inst:AddComponent("virtualroomset") -- NOTES(JBK): This is for marking out the region that constitutes this vault lobby.
     virtualroomset:DeclareVirtualRoomSetName(VIRTUALROOMSETS.LOBBYVAULT)
+    virtualroomset:SetDoNotRotateRooms(true) -- No rooms to rotate to.
     virtualroomset:SetOnVirtualRoomEntitiesChanged(OnVirtualRoomEntitiesChanged_lobby)
     virtualroomset:SetRoomDefinitions(lobbyvaultroom_defs) -- Do last.
 

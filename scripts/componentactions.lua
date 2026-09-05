@@ -654,7 +654,7 @@ local COMPONENT_ACTIONS =
         end,
 
         pickable = function(inst, doer, actions)
-            if inst:HasTag("pickable") and not (inst:HasTag("fire") or inst:HasTag("intense")) then
+            if inst:HasTag("pickable") and not inst:HasAnyTag("fire", "intense") then
                 table.insert(actions, ACTIONS.PICK)
             end
         end,

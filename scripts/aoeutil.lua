@@ -28,9 +28,9 @@ local function _append_array(ar, ...)
 	end
 	local n = #ar
 	for i = 1, select('#', ...) do
-		n = n + 1
-		ar[n] = select(i, ...)
+		ar[n + i] = select(i, ...)
 	end
+	return ar
 end
 
 function AttackTagSet:AppendMustTags(...) self.must = _append_array(self.must, ...) end

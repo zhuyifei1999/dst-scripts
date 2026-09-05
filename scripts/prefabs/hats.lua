@@ -5750,6 +5750,7 @@ local function MakeHat(name)
 
     fns.shadowthrall_parasite_custom_init = function(inst)
         inst:AddTag("shadowthrall_parasite")
+        inst:AddTag("monsterhat")
     end
 
     local function shadowthrall_parasite_OnEntitySleep_task(inst)
@@ -7574,20 +7575,12 @@ fns2.bat_bosscorpsehat_CreateFxFollowFrame = function(i)
 	return inst
 end
 
-fns2.bat_bosscorpsehat_fx_OnEntityWake = function(inst)
-	inst.OnEntityWake = nil
-
-	local owner = inst.entity:GetParent()
-	if owner then
-		owner:PushEvent("startbatcorpsehatdrain")
-		owner:ListenForEvent("onremove", function() owner:PushEvent("stopbatcorpsehatdrain") end, inst)
-
-		if not TheNet:IsDedicated() and owner:HasTag("locomotor") then
-			inst:AddComponent("autojiggle")
-			inst.components.autojiggle:SetOnJiggleLoopFn(fns2.bat_bosscorpsehat_fx_OnJiggleLoopFn)
-			inst.components.autojiggle:SetOnJiggleOneShotFn(fns2.bat_bosscorpsehat_fx_OnJiggleOneShotFn)
-			inst.components.autojiggle:SetOwner(owner)
-		end
+fns2.bat_bosscorpsehat_OnFollowFxSpawned = function(inst, owner)
+	if owner and owner:HasTag("locomotor") then
+		inst:AddComponent("autojiggle")
+		inst.components.autojiggle:SetOnJiggleLoopFn(fns2.bat_bosscorpsehat_fx_OnJiggleLoopFn)
+		inst.components.autojiggle:SetOnJiggleOneShotFn(fns2.bat_bosscorpsehat_fx_OnJiggleOneShotFn)
+		inst.components.autojiggle:SetOwner(owner)
 	end
 end
 
@@ -7605,8 +7598,17 @@ fns2.bat_bosscorpsehat_fx_OnJiggleOneShotFn = function(inst)
 	end
 end
 
+fns2.bat_bosscorpsehat_fx_Init = function(inst)
+	local owner = inst.entity:GetParent()
+	if owner then
+		owner:PushEvent("startbatcorpsehatdrain")
+		owner:ListenForEvent("onremove", function() owner:PushEvent("stopbatcorpsehatdrain") end, inst)
+	end
+end
+
 fns2.bat_bosscorpsehat_fx_common_postinit = function(inst)
-	inst.OnEntityWake = fns2.bat_bosscorpsehat_fx_OnEntityWake
+	--start/stop events (mainly used for HUD), safe to defer via task
+	inst:DoTaskInTime(0, fns2.bat_bosscorpsehat_fx_Init)
 end
 
 --------------------------------------------------------------------------
@@ -7623,7 +7625,7 @@ local function FollowFx_ColourChanged(inst, r, g, b, a)
 	end
 end
 
-local function SpawnFollowFxForOwner(inst, owner, createfn, framebegin, frameend, isfullhelm)
+local function SpawnFollowFxForOwner(inst, owner, createfn, framebegin, frameend, isfullhelm, cb)
 	local follow_symbol = isfullhelm and owner.isplayer and owner.AnimState:BuildHasSymbol("headbase_hat") and "headbase_hat" or "swap_hat"
 	inst.fx = {}
 	local frame
@@ -7638,13 +7640,16 @@ local function SpawnFollowFxForOwner(inst, owner, createfn, framebegin, frameend
 	end
 	inst.components.colouraddersync:SetColourChangedFn(FollowFx_ColourChanged)
 	inst.OnRemoveEntity = FollowFx_OnRemoveEntity
+	if cb then
+		cb(inst, owner)
+	end
 end
 
 local function MakeFollowFx(name, data)
 	local function OnEntityReplicated(inst)
 		local owner = inst.entity:GetParent()
 		if owner ~= nil then
-			SpawnFollowFxForOwner(inst, owner, data.createfn, data.framebegin, data.frameend, data.isfullhelm)
+			SpawnFollowFxForOwner(inst, owner, data.createfn, data.framebegin, data.frameend, data.isfullhelm, data.onfollowfxspawnedfn)
 		end
 	end
 
@@ -7661,7 +7666,7 @@ local function MakeFollowFx(name, data)
         end
 		--Dedicated server does not need to spawn the local fx
 		if not TheNet:IsDedicated() then            
-			SpawnFollowFxForOwner(inst, owner, data.createfn, data.framebegin, data.frameend, data.isfullhelm)
+			SpawnFollowFxForOwner(inst, owner, data.createfn, data.framebegin, data.frameend, data.isfullhelm, data.onfollowfxspawnedfn)
 		end
 	end
 
@@ -7892,6 +7897,7 @@ return  MakeHat("straw"),
 		}),
         MakeFollowFx("bat_bosscorpsehat_fx", {
 			createfn = fns2.bat_bosscorpsehat_CreateFxFollowFrame,
+			onfollowfxspawnedfn = fns2.bat_bosscorpsehat_OnFollowFxSpawned,
 			common_postinit = fns2.bat_bosscorpsehat_fx_common_postinit,
 			framebegin = 1,
 			frameend = 3,

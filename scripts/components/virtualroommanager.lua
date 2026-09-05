@@ -261,17 +261,13 @@ function VirtualRoomManager:OnTick()
     self:ForEachVirtualRoomSet(self.OnTick_VirtualRoomSet_HandleResets)
     local cooldownticks
     if next(playerpositions) == nil then
-        self.rotatingrooms = true -- Small flag to reduce a ForEach call on finish.
         cooldownticks = self.updaterotatecooldownticks - 1
         if cooldownticks <= 0 then
             cooldownticks = self.UPDATE_ROTATE_ROOMS_COOLDOWN_TICKS_COUNT
             self:ForEachVirtualRoomSet(self.OnTick_VirtualRoomSet_RotateRooms)
         end
     else
-        if self.rotatingrooms then
-            self.rotatingrooms = nil
-            self:ForEachVirtualRoomSet(self.OnTick_VirtualRoomSet_FinishRotatingRooms)
-        end
+        self:ForEachVirtualRoomSet(self.OnTick_VirtualRoomSet_FinishRotatingRooms)
         cooldownticks = self.UPDATE_ROTATE_ROOMS_COOLDOWN_TICKS_COUNT
     end
     self.updaterotatecooldownticks = cooldownticks

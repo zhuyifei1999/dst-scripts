@@ -28603,19 +28603,17 @@ local states =
                 SpawnPrefab("atrium_portal_fx").entity:SetParent(inst.entity)
             end),
 			TimeEvent(4.8, function(inst)
-				inst:ScreenFade(false, 0.5)
 				StartTeleporting(inst)
 			end),
-            TimeEvent(5.3, function(inst)
+            TimeEvent(5.8, function(inst)
                 local data = inst.sg.statemem.data
                 if data then
                     if data.onplayerready then
                         data.onplayerready(inst)
                     end
                 end
-                inst:ScreenFade(true, 1)
             end),
-			TimeEvent(5.5, function(inst)
+			TimeEvent(6.1, function(inst)
 				inst.sg.statemem.not_interrupted = true
 				inst.sg:GoToState("idle")
 			end),

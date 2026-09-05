@@ -44,6 +44,7 @@ local states =
         onenter = function(inst)
             inst.AnimState:PlayAnimation("idle", true)
             if inst.components.npc_talker and inst.components.npc_talker:HasLines() then
+                inst:EnableCameraFocus(false)
                 inst.components.npc_talker:DoNextLine()
             end
         end,
@@ -312,6 +313,13 @@ local states =
             FrameEvent(78, function(inst) inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed * 0.35, 0, 0) end),
             FrameEvent(82, function(inst) inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed * 0.4, 0, 0) end),
             FrameEvent(85, function(inst) inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed * 0.5, 0, 0) end),
+
+            FrameEvent(92, function(inst)
+                if inst.components.npc_talker:HasLines() then -- last line
+                    inst.components.npc_talker:DoNextLine()
+                end
+            end),
+
             FrameEvent(93, function(inst) inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed * 0.7, 0, 0) end),
             FrameEvent(101, function(inst) inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed * 0.8, 0, 0) end),
             FrameEvent(111, function(inst) inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed * 0.9, 0, 0) end),

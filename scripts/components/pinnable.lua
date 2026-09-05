@@ -149,6 +149,10 @@ function Pinnable:UpdateStuckStatus()
     end
 end
 
+function Pinnable:GetTimeStuck()
+	return self.stuck and GetTime() - self.last_stuck_time or 0
+end
+
 function Pinnable:RemainingRatio()
     local remaining = self.wearofftime - ( GetTime() - self.last_stuck_time )
     remaining = remaining - self.attacks_since_pinned * TUNING.PINNABLE_ATTACK_WEAR_OFF

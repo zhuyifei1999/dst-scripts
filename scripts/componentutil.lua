@@ -1320,6 +1320,17 @@ function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
                         prohibited = true
                     end
                 end
+            else
+                if map:IsPointInVirtualRoomSet(roomsethash, fx, fy, fz) then
+                    -- Teleporting from inside to outside of the VRS.
+                    if map:IsVirtualRoomSetInLobby(roomsethash) then
+                        -- Some VRS permit teleporting into its lobby which also allows teleporting outside.
+                        prohibited = map:IsVirtualRoomSetTeleportingInLobbyProhibited(roomsethash)
+                    else
+                        -- Optional if a VRS locks down teleporting out if it is permitted.
+                        prohibited = map:IsVirtualRoomSetTeleportingOutProhibited(roomsethash)
+                    end
+                end
             end
         end
         if prohibited then

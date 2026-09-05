@@ -13,6 +13,7 @@ local function ChooseAttack(inst, target)
 			GetTime() > (inst.components.combat.nextbattlecrytime or 0) and
 			math.random() < 0.5
 		then
+			inst.components.combat:ResetBattleCryCooldown()
 			inst.sg:GoToState("taunt")
 			return true
 		end
@@ -117,6 +118,26 @@ local function GetTossParams(radius, strmult)
 	return _temp_toss_params
 end
 
+local function SpawnGroundVines(inst)
+	local x, _, z = inst.Transform:GetWorldPosition()
+	local num = 7
+	local theta = TWOPI * math.random()
+	local delta = TWOPI / num
+	for i = 1, num do
+		local sintheta = math.sin(theta)
+		local costheta = math.cos(theta)
+		local x1 = x + 0.5 * costheta
+		local z1 = z - 0.5 * sintheta
+		local vines = SpawnPrefab("charlie_boss_vines")
+		vines.Transform:SetPosition(x1, 0, z1)
+		vines.Transform:SetRotation(theta * RADIANS - 20 + 40 * math.random())
+		local deltadir = 1 + math.random() * 3.5
+		local numloops = (i == 1 and 5) or math.min(5, math.random(3, 6))
+		vines:InitVines(inst, numloops, math.random() < 0.5 and -deltadir or deltadir)
+		theta = theta + delta
+	end
+end
+
 local states =
 {
 	State{
@@ -165,6 +186,7 @@ local states =
 			if not inst.AnimState:IsCurrentAnimation("rise_loop") then
 				inst.AnimState:PlayAnimation("rise_loop", true)
 			end
+			inst:SetCameraFocusLevel(2)
 			inst.sg.statemem.loops = loops or 0
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 		end,
@@ -178,6 +200,7 @@ local states =
 		end,
 
 		ontimeout = function(inst)
+			inst.sg.statemem.spawning = true
 			inst.sg.statemem.keepnofaced = true
 			if inst.sg.statemem.loops < 15 and not inst.sg.statemem.aggro then
 				inst.sg:GoToState("spawn", inst.sg.statemem.loops + 1)
@@ -186,7 +209,12 @@ local states =
 			end
 		end,
 
-		onexit = TryRestoreSixFaced,
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			if not inst.sg.statemem.spawning then
+				inst:SetCameraFocusLevel(0)
+			end
+		end,
 	},
 
 	State{
@@ -197,6 +225,7 @@ local states =
 			inst.components.locomotor:Stop()
 			SwitchToNoFaced(inst)
 			inst.AnimState:PlayAnimation("rise_pst")
+			inst:SetCameraFocusLevel(2)
 		end,
 
 		timeline =
@@ -225,6 +254,9 @@ local states =
 					end
 				end
 			end),
+			FrameEvent(11, function(inst)
+				inst:SetCameraFocusLevel(1)
+			end),
 			FrameEvent(17, function(inst)
 				local targets = {}
 				AOEUtil.Work(inst, 3.5, targets)
@@ -243,14 +275,20 @@ local states =
 					end
 				end
 			end),
-			FrameEvent(62, DoScreamShake),
+			FrameEvent(62, function(inst)
+				DoScreamShake(inst)
+				inst.components.epicscare:Scare(5)
+			end),
 			FrameEvent(108, function(inst)
 				inst.sg.statemem.keepnofaced = true
 				inst.sg:GoToState("idle", true)
 			end),
 		},
 
-		onexit = TryRestoreSixFaced,
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			inst:SetCameraFocusLevel(0)
+		end,
 	},
 
 	State{
@@ -297,7 +335,9 @@ local states =
 					local targetorpos
 					if offs.target and offs.target:IsValid() and not IsEntityDeadOrGhost(offs.target) then
 						local x1, _, z1 = offs.target.Transform:GetWorldPosition()
-						if math2d.DistSq(x, z, x1, z1) < 256 and inst:IsInArena() == TheWorld.Map:IsPointInCharlieBossArena(x1, 0, z1) then
+						if inst:IsInArena() == TheWorld.Map:IsPointInCharlieBossArena(x1, 0, z1) and
+							(inst:IsInArena() or math2d.DistSq(x, z, x1, z1) < 484)
+						then
 							targetorpos = offs.target
 						end
 					end
@@ -308,7 +348,9 @@ local states =
 								local x1, _, z1 = k.Transform:GetWorldPosition()
 								local dx = x1 - x
 								local dz = z1 - z
-								if dx * dx + dz * dz < 256 and inst:IsInArena() == TheWorld.Map:IsPointInCharlieBossArena(x1, 0, z1) then
+								if inst:IsInArena() == TheWorld.Map:IsPointInCharlieBossArena(x1, 0, z1) and
+									(inst:IsInArena() or dx * dx + dz * dz < 484)
+								then
 									local diff = DiffAngle(offs.rot, math.atan2(-dz, dx) * RADIANS)
 									if diff < minangle then
 										minangle = diff
@@ -330,7 +372,7 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.5) end),
-			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.8) end),
+			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.5) end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit", nil, 0.7) end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit", nil, 0.8) end),
 			FrameEvent(23, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/tentacles") end),
@@ -338,6 +380,7 @@ local states =
 			FrameEvent(23, function(inst)
 				inst.sg.mem.forcetaunt = nil
 				DoScreamShake(inst)
+				inst.components.epicscare:Scare(5)
 				inst:ToggleReflectingProjectiles()
 			end),
 			FrameEvent(26, function(inst)
@@ -378,7 +421,7 @@ local states =
 							if k:IsValid() and not (IsEntityDeadOrGhost(k) or IsEntityInShadow(k)) then
 								local x2, _, z2 = k.Transform:GetWorldPosition()
 								if inst:IsInArena() == TheWorld.Map:IsPointInCharlieBossArena(x2, 0, z2) then
-									local mindsq = 400
+									local mindsq = inst:IsInArena() and math.huge or 625
 									local nearestoffs
 									for _, v in ipairs(inst.sg.statemem.offsets) do
 										if v.target == nil then
@@ -396,24 +439,7 @@ local states =
 							end
 						end
 					else
-						local x, _, z = inst.Transform:GetWorldPosition()
-						local num = 7
-						local theta = TWOPI * math.random()
-						local delta = TWOPI / num
-						local targets = {}
-						for i = 1, num do
-							local sintheta = math.sin(theta)
-							local costheta = math.cos(theta)
-							local x1 = x + 0.5 * costheta
-							local z1 = z - 0.5 * sintheta
-							local vines = SpawnPrefab("charlie_boss_vines")
-							vines.Transform:SetPosition(x1, 0, z1)
-							vines.Transform:SetRotation(theta * RADIANS - 20 + 40 * math.random())
-							local deltadir = 1 + math.random() * 3.5
-							local numloops = (i == 1 and 5) or math.random(3, 5)
-							vines:InitVines(inst, numloops, math.random() < 0.5 and -deltadir or deltadir, targets)
-							theta = theta + delta
-						end
+						SpawnGroundVines(inst)
 					end
 				end
 			end),
@@ -617,7 +643,7 @@ local states =
 
 		onupdate = function(inst, dt)
 			if dt > 0 and inst.sg.statemem.targets then
-				AOEUtil.Attack(inst, inst.sg.statemem.aoeparams, inst:GetAOEAttackTagSet(), inst.sg.statemem.targets, 0.5)
+				AOEUtil.Attack(inst, inst.sg.statemem.aoeparams, inst:GetAOEAttackTagSet(), inst.sg.statemem.targets, 0.65)
 			end
 		end,
 
@@ -629,10 +655,13 @@ local states =
 
 
 			FrameEvent(19, function(inst)
+				if inst.ismodeswitching then
+					SpawnGroundVines(inst)
+				end
 				inst.sg.statemem.targets = {}
-				inst.sg.statemem.aoeparams = GetAOEParams(0, 5, nil, 1)
-				AOEUtil.Work(inst, 5, inst.sg.statemem.targets)
-				AOEUtil.TossItems(inst, GetTossParams(5))
+				inst.sg.statemem.aoeparams = GetAOEParams(0, 6, nil, 1)
+				AOEUtil.Work(inst, 6, inst.sg.statemem.targets)
+				AOEUtil.TossItems(inst, GetTossParams(6))
 			end),
 			FrameEvent(39, function(inst)
 				inst.sg.statemem.targets = nil
@@ -666,7 +695,16 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/attack_aoe") end),
+			FrameEvent(6, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.6) end),
+			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.7) end),
+			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_subdued", nil, 0.5) end),
+			FrameEvent(41, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
+			FrameEvent(43, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit", nil, 0.6) end),
+			FrameEvent(41, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
+			FrameEvent(70, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit") end),
+			FrameEvent(35, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature3/die") end),
+			FrameEvent(35, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature2/die") end),
+			FrameEvent(35, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature1/die") end),
 
 			FrameEvent(34, function(inst)
 				if inst.sg.mem.killstarttime then

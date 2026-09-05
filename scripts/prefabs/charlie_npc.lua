@@ -10,6 +10,23 @@ local KNOWS_CHARLIE_LOOKUP =
     waxwell = true,
 }
 
+local function OnCameraFocusDirty(inst)
+    if inst._camerafocus:value() then
+        TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 10, 28, 5)
+    else
+        TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+    end
+end
+
+local function EnableCameraFocus(inst, enable)
+    if enable ~= inst._camerafocus:value() then
+        inst._camerafocus:set(enable)
+        if not TheNet:IsDedicated() then
+            OnCameraFocusDirty(inst)
+        end
+    end
+end
+
 local function OnRemove(inst)
     -- Charliecutscene cmp save/load will handle this not running.
     if inst.atrium ~= nil and inst.atrium.components.charliecutscene ~= nil then
@@ -33,7 +50,7 @@ local function StartCasting2WithDelay(inst, delay, cast_time)
 end
 
 local function GetStatus(inst)--, viewer)
-    return (inst.socketing_key or inst.ritualnagtask and "SCENE2")
+    return (inst.socketing_key or inst.scene2) and "SCENE2"
         or nil
 end
 
@@ -101,11 +118,15 @@ local function fn()
     npc_talker.default_chatpriority = CHATPRIORITIES.HIGH
     npc_talker.speaktime = 2.5
 
+    inst._camerafocus = net_bool(inst.GUID, "charlie_npc._camerafocus", "camerafocusdirty")
+
     inst.entity:SetPristine()
 
     inst.displaynamefn = DisplayNameFn
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+
         return inst
     end
 
@@ -116,6 +137,8 @@ local function fn()
     inst.StartCasting2WithDelay = StartCasting2WithDelay
     inst.OnRemoveEntity = OnRemove
     inst.OnEntityWake = OnEntityWake
+
+    inst.EnableCameraFocus = EnableCameraFocus
 
     inst:SetStateGraph("SGcharlie_npc")
     inst:ListenForEvent("ontalk", OnTalk)

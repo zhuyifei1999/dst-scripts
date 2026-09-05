@@ -4481,15 +4481,18 @@ function d_virtualroom_printtilelayouts(roomsetname)
     virtualroomset.floortilesbatch = nil
 end
 
-function d_vaultroom(id)
-	local center
-	for i, v in ipairs(TheSim:FindEntities(0, 0, 0, 9001, { "CLASSIFIED" })) do
-		if v.components.vaultroom then
-			v.components.vaultroom:UnloadRoom()
-			v.components.vaultroom:LoadRoom(id)
-			break
-		end
-	end
+function d_vaultcompasspathing()
+    local virtualroomset = TheWorld.components.virtualroommanager:GetVirtualRoomSet(VIRTUALROOMSETS.VAULT)
+    if virtualroomset then
+        for i = 1, virtualroomset.numberrooms do
+            local virtualroom = virtualroomset.rooms[i]
+            if virtualroom then
+                local roomname = virtualroom.roomname
+                local direction = virtualroomset:GetClosestDirectionFromRoomToRoom(roomname, "key1")
+                print(roomname, VIRTUALROOMDIRECTIONS_INDEX[direction] or "?")
+            end
+        end
+    end
 end
 
 function d_spawnvaultactors()

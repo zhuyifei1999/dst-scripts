@@ -308,9 +308,7 @@ end
 local function KeyStone_SetAtriumPowered(inst, atriumpowered)
     if atriumpowered ~= inst.atriumpowered:value() then
         inst.atriumpowered:set(atriumpowered)
-        if not TheNet:IsDedicated() then
-            common_KeyStone_OnAtriumPowered(inst, atriumpowered)
-        end
+        common_KeyStone_OnAtriumPowered(inst, atriumpowered)
     end
 end
 

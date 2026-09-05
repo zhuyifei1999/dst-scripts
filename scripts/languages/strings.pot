@@ -328868,11 +328868,6 @@ msgctxt "STRINGS.CHARLIE_NPC_SHROUDEN_TAKES_HOST.2"
 msgid "They're the sacrifice, not me!"
 msgstr ""
 
-#. STRINGS.CHARLIE_NPC_SHROUDEN_TAKES_HOST.3
-msgctxt "STRINGS.CHARLIE_NPC_SHROUDEN_TAKES_HOST.3"
-msgid "No..."
-msgstr ""
-
 #. STRINGS.COOKINGRECIPECARD_DESC.BASE
 msgctxt "STRINGS.COOKINGRECIPECARD_DESC.BASE"
 msgid "{name}:\n{ingredients}."

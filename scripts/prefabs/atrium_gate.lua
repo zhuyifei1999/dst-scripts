@@ -99,6 +99,16 @@ local function SetCameraFocus(inst, level)
     end
 end
 
+local function EnablePickable(inst, enabled)
+    if not enabled then
+        inst:AddTag("intense")
+        inst.components.pickable:SetStuck(true)
+    elseif inst.components.pickable:IsStuck() then
+        inst:RemoveTag("intense")
+        inst.components.pickable:SetStuck(false)
+    end
+end
+
 --------------------------------------------------------------------------
 
 local SUPPRESS_SHADOWS_RANGE = math.ceil(ATRIUM_ARENA_SIZE + 5)
@@ -205,7 +215,7 @@ local function OnKeyTaken(inst)
     --Disable picking, enable trading.
     inst.components.trader:Enable()
     inst.components.pickable.caninteractwith = false
-    inst:RemoveTag("intense")
+    EnablePickable(inst, true)
 
     inst.SoundEmitter:KillSound("loop")
 
@@ -301,7 +311,7 @@ local function StartDestabilizing(inst, onload)
     WORLDSTATETAGS.SetTagEnabled("ATRIUM_KEY_FOUND", true)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
-    inst:RemoveTag("intense")
+    EnablePickable(inst, true)
     SetCameraFocus(inst, 2)
     EnableShadowSuppression(inst, true)
 
@@ -342,7 +352,7 @@ local function OnQueueDestabilize(inst, onload)
 
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
-    inst:RemoveTag("intense")
+    EnablePickable(inst, true)
     SetCameraFocus(inst, 1)
     EnableShadowSuppression(inst, true)
 
@@ -432,7 +442,7 @@ local function StartCooldown(inst, immediate)
 
     SetCameraFocus(inst, 0)
     EnableShadowSuppression(inst, false)
-    inst:RemoveTag("intense")
+    EnablePickable(inst, true)
     inst.components.pickable.caninteractwith = false
     inst.components.trader:Disable()
     inst.SoundEmitter:KillSound("loop")
@@ -456,7 +466,7 @@ local function OnTrackStalker(inst, stalker)
     if stalker.components.health ~= nil and not stalker.components.health:IsDead() then
         inst:ListenForEvent("onremove", inst._onremovestalker, stalker)
         inst:ListenForEvent("death", inst._onstalkerdeath, stalker)
-        inst:AddTag("intense")
+        EnablePickable(inst, false)
         SetCameraFocus(inst, 0)
         EnableShadowSuppression(inst, false)
         ShowFx(inst, "idle")
@@ -712,10 +722,12 @@ local function ritualstate_SpawnCharlieNPC(inst, summoning)
     TryToSpawnCharlieNPC(inst)
     local charlienpc = inst.components.entitytracker:GetEntity("charlienpc")
     if charlienpc then
+        charlienpc.scene2 = true
         if newspawn then
             charlienpc.Transform:SetPosition(inst.components.charliecutscene:FindCharlieRitualSpawnPoint():Get())
             charlienpc:ForceFacePoint(inst.Transform:GetWorldPosition())
             charlienpc:PushEventImmediate("spawn")
+            charlienpc:EnableCameraFocus(true)
         end
         if not POPULATING then
             if summoning then
@@ -751,12 +763,13 @@ local function ritualstate_OnSummoned(inst, state)
     ritualstate_StartShroudenAmbience(inst)
     ritualstate_SpawnCharlieNPC(inst, false)
     SetCameraFocus(inst, 1)
-    inst:AddTag("intense")
+    EnablePickable(inst, false)
     inst:SetShroudenTarget(inst.components.entitytracker:GetEntity("charlienpc"))
 
     TheWorld:PushEvent("ms_charliearena_morphatrium",
     {
         cb = function()
+            inst.components.entitytracker:ForgetEntity("charlienpc") -- so we don't hit debug print in component
             SetCameraFocus(inst, 0)
             DestroyVaultKey(inst)
             inst:SetRitualState(RITUAL_STATES.ENABLED) -- cycle back
@@ -770,7 +783,7 @@ local function ritualstate_OnSummoning(inst, state)
 
     ritualstate_SpawnCharlieNPC(inst, true)
     SetCameraFocus(inst, 1)
-    inst:AddTag("intense")
+    EnablePickable(inst, false)
     for i = 1, NUM_RITUAL_MARKINGS do
         local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
         if marking then
@@ -786,6 +799,7 @@ end
 local function ritualstate_OnEnabled(inst, state)
     ritualstate_StopShroudenAmbience(inst)
     if state == RITUAL_STATES.ACTIVE then
+        EnablePickable(inst, false)
         inst.SoundEmitter:PlaySound("rifts8/charlie_ritual/summon")
         for i = 1, NUM_RITUAL_MARKINGS do
             local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
@@ -793,9 +807,7 @@ local function ritualstate_OnEnabled(inst, state)
                 marking:ConsumeRitualItem()
             end
         end
-        inst:DoTaskInTime(0.7, function()
-            inst:SetRitualState(RITUAL_STATES.SUMMONING)
-        end)
+        inst:DoTaskInTime(0.7, inst.SetRitualState, RITUAL_STATES.SUMMONING)
     end
 
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -1419,6 +1431,7 @@ local function fn()
         end
 
         -- defer to allow for last ritual piece to rise visually
+        inst.SoundEmitter:PlaySound("rifts8/charlie_ritual/summon_begin")
         inst.activate_ritual_task = inst:DoTaskInTime(0.5, inst.SetRitualState, RITUAL_STATES.ACTIVE)
     end
 

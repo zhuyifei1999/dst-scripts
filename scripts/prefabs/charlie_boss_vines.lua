@@ -247,7 +247,7 @@ local function OnEmerged(inst)
 	end
 end
 
-local DETECT_DELAY = 0.4
+local DETECT_DELAY = 0.3
 local DETECT_RADIUS = 6
 local DETECT_RADIUS_HIT_MOUNTED_SQ = 1.7 * 1.7
 local DETECT_RADIUS_HIT_SQ = 1.2 * 1.2 --unmounted
@@ -276,8 +276,8 @@ local function OnUpdate_Server(inst, dt)
 
 	local t = inst._t - DETECT_DELAY
 
-	--lifetime is 1s per loop + 1.6s
-	if t >= inst._numloops:value() + 1.6 then
+	--lifetime is 1s per loop + 1.7s
+	if t >= inst._numloops:value() + 1.7 then
 		inst:Remove()
 		return
 	end
@@ -289,17 +289,22 @@ local function OnUpdate_Server(inst, dt)
 	local neardir, neartarget
 
 	--detect_duration is 1s per loop
-	if t >= 0 and t < inst._numloops:value() and inst.caster and inst.caster:IsValid() then
+	if t >= 0 and t < inst._numloops:value() and inst.caster and inst.caster:IsValid() and not inst.caster.components.health:IsDead() then
 		inst.caster.components.combat.ignorehitrange = true
 
-		local mytargets = {}
+		local targets = {}
 		local xa, za, count = 0, 0, 0
 		--NOTE: we want target to be partially inside the radius, so don't add physics radius padding
 		for _, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, DETECT_RADIUS, inst.caster:GetAOEAttackTagSet():GetRegistered())) do
-			if v ~= inst and not mytargets[v] and
+			if v ~= inst and not targets[v] and
 				v:IsValid() and not v:IsInLimbo() and
-				v.components.pinnable and
+				v.components.pinnable and not (
+					v.components.pinnable:IsStuck() and
+					v.components.pinnable.goo_build == "goo_vines" and
+					v.components.pinnable:GetTimeStuck() < 0.65
+				) and
 				not (IsEntityDeadOrGhost(v) or v:HasTag("flying")) and
+				not (v.sg and v.sg:HasStateTag("knockback") and v.sg:HasStateTag("nointerrupt")) and
 				inst.caster.components.combat:CanTarget(v)
 			then
 				local mount = v.components.rider and v.components.rider.mount
@@ -311,21 +316,15 @@ local function OnUpdate_Server(inst, dt)
 					local wasstuck = v.components.pinnable:IsStuck()
 					local knockback
 					if wasstuck then
-						knockback = not (inst.targets and inst.targets[v])
+						knockback = true
 					else
 						v.components.pinnable:Stick("goo_vines", splashfxlist)
 						knockback = not v.components.pinnable:IsStuck()
 					end
 
-					mytargets[v] = true
-					if inst.targets then
-						inst.targets[v] = true
-					end
+					targets[v] = true
 					if mount then
-						mytargets[mount] = true
-						if inst.targets then
-							inst.targets[mount] = true
-						end
+						targets[mount] = true
 					end
 
 					inst.caster.components.combat:DoAttack(v, inst, inst)
@@ -392,12 +391,11 @@ local function OnUpdate_Server(inst, dt)
 	end
 end
 
-local function InitVines(inst, caster, numloops, deltadir, targets)
+local function InitVines(inst, caster, numloops, deltadir)
 	inst.caster = caster
 	inst._numloops:set(numloops)
 	inst.deltadir = deltadir
 	inst.dest = Vector3(0, 0, 0)
-	inst.targets = targets
 	inst.walkto = BufferedAction(inst, nil, ACTIONS.WALKTO, nil, inst.dest, nil, nil, nil, nil, 0)
 end
 

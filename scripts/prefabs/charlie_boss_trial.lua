@@ -34,6 +34,7 @@ end
 
 local function TrackCharlieBoss(inst, boss)
 	inst:ListenForEvent("death", inst._oncharliebossdied, boss)
+	inst:ListenForEvent("onremove", inst._oncharliebossremoved, boss)
 	inst:ListenForEvent("ms_charliearena_shadowrunners_setenabled", inst._onshadowrunnersenabled, boss)
 	inst:ListenForEvent("ms_charliearena_shadowhands_setenabled", inst._onshadowhandsenabled, boss)
 end
@@ -331,6 +332,14 @@ local function OnShadowRunnersTick(inst)
     end
 end
 
+local function DissipateAllShadowRunners(inst)
+    for runner, _ in pairs(inst.shadowrunnersdata.runners) do
+        runner.components.lootdropper:SetLoot({})
+        runner.components.lootdropper:SetChanceLootTable(nil)
+        runner.components.health:Kill()
+    end
+end
+
 local function OnShadowRunnersEnabled(inst, enabled)
     if enabled then
         if not inst.shadowrunnersdata.task then
@@ -341,6 +350,7 @@ local function OnShadowRunnersEnabled(inst, enabled)
         inst.SoundEmitter:KillSound("horde_lp")
         inst.shadowrunnersdata.task:Cancel()
         inst.shadowrunnersdata.task = nil
+        DissipateAllShadowRunners(inst)
     end
 end
 
@@ -484,13 +494,13 @@ local function InitParticles(inst)
     local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters(1)
     effect:SetRenderResources(0, TEXTURE, SHADER)
-    effect:SetMaxNumParticles(0, 400)
+    effect:SetMaxNumParticles(0, 350)
     effect:SetMaxLifetime(0, MAX_LIFETIME)
     effect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME)
     effect:SetScaleEnvelope(0, SCALE_ENVELOPE_NAME)
     effect:SetBlendMode(0, BLENDMODE.Additive)
     effect:SetSortOrder(0, 0)
-    effect:SetLayer(0, LAYER_BELOW_GROUND)
+    -- effect:SetLayer(0, LAYER_BELOW_GROUND)
     effect:SetAcceleration(0, 0, .0001, 0)
     effect:SetDragCoefficient(0, .0001)
     effect:EnableDepthTest(0, false)
@@ -518,16 +528,14 @@ local function InitParticles(inst)
 
         local lifetime = MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * UnitRand()
 
-        if minx > px or px > maxx or minz > pz or pz > maxz then
-            local uv_offset = math.random(0, 3) * .25
-            effect:AddParticleUV(
-                0,
-                lifetime,           -- lifetime
-                px, py, pz,         -- position
-                vx, vy, vz,         -- velocity
-                uv_offset, 0        -- uv offset
-            )
-        end
+        local uv_offset = math.random(0, 3) * .25
+        effect:AddParticleUV(
+            0,
+            lifetime,           -- lifetime
+            px, py, pz,         -- position
+            vx, vy, vz,         -- velocity
+            uv_offset, 0        -- uv offset
+        )
     end
 
     inst.time = 0
@@ -598,11 +606,15 @@ local function fn()
 	inst:AddComponent("entitytracker")
 
 	inst._oncharliebossdied = function(boss)
-		inst.components.entitytracker:ForgetEntity("charlie_boss")
         TheWorld:PushEvent("resetvault") -- this resets atrium room
         Shard_SyncCharlieDefeated(true)
 	end
 
+    -- charlie boss tries to set these but inst.OnRemoveEntity is called after event callbacks are removed, so we have to listen remove event here.
+    inst._oncharliebossremoved = function(boss)
+        OnShadowRunnersEnabled(inst, false)
+        OnShadowHandsEnabled(inst, false)
+    end
     inst._onshadowrunnersenabled = function(boss, enabled) OnShadowRunnersEnabled(inst, enabled) end
     inst._onshadowhandsenabled = function(boss, enabled) OnShadowHandsEnabled(inst, enabled) end
 

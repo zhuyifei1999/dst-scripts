@@ -117,15 +117,27 @@ end
 
 local AOE_RANGE_PADDING = 3
 local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
-local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "rocky" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
 local SHADOW_AOE_TARGET_CANT_TAGS = ConcatArrays({ "shadowthrall", "stalker" }, AOE_TARGET_CANT_TAGS)
+
+local function IsRockyAlly(inst, target)
+	if target:HasTag("rocky") then
+		local mytarget = inst.components.combat.target
+		return mytarget == nil
+			or not (mytarget == target or
+					target.components.combat:TargetIs(inst) or
+					target.components.combat:IsAlly(mytarget))
+	end
+	return false
+end
 
 local function DoAOEAttack(inst, x, z, r, hitbox, targets, flashtargets)
 	inst.components.combat.ignorehitrange = true
 	for _, v in ipairs(TheSim:FindEntities(x, 0, z, r + AOE_RANGE_PADDING, AOE_TARGET_MUSTHAVE_TAGS, IsShadow(inst) and SHADOW_AOE_TARGET_CANT_TAGS or AOE_TARGET_CANT_TAGS)) do
 		if not (targets and targets[v]) and
 			v:IsValid() and not v:IsInLimbo() and
-			not (v.components.health and v.components.health:IsDead())
+			not (v.components.health and v.components.health:IsDead()) and
+			not IsRockyAlly(inst, v)
 		then
 			local x1, _, z1 = v.Transform:GetWorldPosition()
 			if hitbox:CollidesWithCircle(x1, z1, v:GetPhysicsRadius(0)) and inst.components.combat:CanTarget(v) then
