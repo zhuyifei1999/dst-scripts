@@ -772,6 +772,7 @@ local function ritualstate_OnSummoned(inst, state)
             inst.components.entitytracker:ForgetEntity("charlienpc") -- so we don't hit debug print in component
             SetCameraFocus(inst, 0)
             DestroyVaultKey(inst)
+            EnablePickable(inst, true)
             inst:SetRitualState(RITUAL_STATES.ENABLED) -- cycle back
         end,
     })

@@ -91,6 +91,7 @@ local function MakeRitualOrgan(name)
 
         inst:ListenForEvent("on_loot_dropped", OnDroppedAsLoot)
 
+        inst:ListenForEvent("teleported", inst.SetItem)
         inst:ListenForEvent("onputininventory", inst.SetItem)
         inst:ListenForEvent("ondropped", inst.SetItem)
         inst:ListenForEvent("onremove", inst.SetItem)

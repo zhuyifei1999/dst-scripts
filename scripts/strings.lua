@@ -7343,6 +7343,127 @@ STRINGS =
             "Still, you fare better than I...",
             "A husk filled with naught but echoes of regret.",
         },
+        WORMWOOD =
+        {
+            "Moonchild...",
+            "Your shard shines true.",
+            "Thank you for allowing me to bask Alter's pure light once more.",
+        },
+        WANDA =
+        {
+            "Traveller...",
+            "How strange it must be for you...",
+            "To watch me fall from such heights...",
+            "To this... in but a moment.",
+        },    
+        WORTOX =
+        {
+            "Imp...",
+            "Mock me not, mischief-maker.",
+            "Soon enough, your glee shall turn to tears.",
+        },  
+        WICKERBOTTOM =
+        {
+            "Sage...",
+            "Like me, you will learn...",
+            "Wisdom is folly.",
+            "What you seek is unfathomable.",
+            "To know it is to damn yourself.",
+        },       
+        WILLOW =
+        {
+            "Firebrand...",
+            "You feed the flames, but the void within you hungers still.",
+            "Yet know this: The fires you kindle to destroy...",
+            "Are the same fires that warm your friends...",
+            "And hold the darkness at bay.",
+        },       
+        WINONA =
+        {
+            "Sister...",
+            "She is lost to you...",
+            "Like Metheus to me...",
+            "Abandon hope...",
+            "Or join her...",
+            "Cursed to wander...",
+            "Forever.",
+        },       
+        WENDY =
+        {
+            "Child of Grief...",
+            "I would bid you live for your other half...",
+            "But I failed to do so for mine.",
+            "Perhaps two little ghosts makes better company...",
+            "One on either side of the grave.",
+        },             
+        WILSON =
+        {
+            "Seeker...",
+            "I sought knowledge, grew wise...",
+            "Yet learned nothing.",
+            "Your science will not save you.",
+            "Some answers cannot be found by those who search alone.",
+        },       
+        WARLY =
+        {
+            "Nourisher...",
+            "You give much of yourself to feed others.",
+            "The one you serve in your heart...",
+            "Beyond this world and hers, rests well.",
+        },       
+        WATHGRITHR =
+        {
+            "Shieldmaiden...",
+            "You have forged yourself in battle.",
+            "But what were you before iron was cast?",
+            "And who remains when armor falls away?",
+        },          
+        WEBBER =
+        {
+            "Entangled Ones...",
+            "Though some may recoil at the sight of you...",
+            "There is a child within who still longs for home.",
+            "A longing not even kings are spared.",
+        },       
+        WOLFGANG =
+        {
+            "Strongman...",
+            "The others see your might.",
+            "I see why you need it.",
+        },       
+        WOODIE =
+        {
+            "Woodsman...",
+            "You have long wondered where the beast came from.",
+            "Perhaps you should ask what it came for.",
+        },       
+        WURT =
+        {
+            "Foundling...",
+            "Blood may bind folk...",
+            "But love may bind a family.",
+            "May both hold you dear, little one.",
+        },       
+        WX78 =
+        {
+            "Construct...",
+            "Your shell protects you from threats without...",
+            "Yet what you fear most lies within.",
+        },       
+        WALTER =
+        {
+            "Brave Boy...",
+            "Tell my tale, so others may avoid the path of a faithless old king.",
+            "And lifetimes from now, I hope they tell yours...",
+            "So more will know the way of a steadfast young scout.",
+        },       
+        WES =
+        {
+            "Wordless One...",
+            "The world frays, yet yours, unseen, remains.",
+            "They laugh with you or at you, so long as they laugh.",
+            "For a fool you are, though I do not believe you foolish.",
+        },
     },
 
     -- Random line is chosen
@@ -9896,49 +10017,6 @@ STRINGS.UI =
         ENTER_BUG_DESCRIPTION = "Enter Bug Description",
         CHANGE_BUG_DESCRIPTION = "Change Bug Description",
     },
-
-    FEEDBACK_SCREEN =
-    {
-        SUBMIT = "Submit",
-        CANCEL = "Cancel",
-        REQUIRE_SUMMARY = "Briefly describe your issue in the Summary field!",
-        CATEGORY = 
-        {
-            AUDIO = "Audio",
-            VISUAL = "Visual",
-            WORDS = "Words",
-            OTHER = "Other",
-        },
-        CATEGORY_PROMPT =
-        {
-            -- These must fit on a single line.
-            AUDIO = "Does something sound wrong? Or amazing?",
-            VISUAL = "Tell us about what you saw.",
-            WORDS = "Loved some dialogue? Found a typo? Confused?",
-            OTHER = "What happened?",
-        },
-        SEND_LOG = "Send Log Files",
-        SEND_SCREENSHOT = "Send Screenshot",
-        SEND_SAVE = "Send Savegame",
-
-        SUBMITTING_BODY = "Sending feedback",
-
-        SUBMITTED_TITLE = "Feedback submitted",
-	    SUBMITTED_BODY = "Thank you for your feedback. You are helping to make this game better!",
-	    SUBMITTED_OK = "OK",
-
-    	SUBMIT_ERROR_TITLE = "Unexpected Error",
-    	SUBMIT_ERROR_BODY = "Something went wrong. Please try again later.",
-		SUBMIT_ERROR_OK = "OK",
-
-		DISCARD_TITLE = "Discard changes?",
-		DISCARD_BODY = "Are you sure you want to cancel your feedback?",
-		DISCARD_YES = "Yes",
-		DISCARD_NO = "No",
-
-		NOT_AUTOPAUSED = "Warning - the game is not auto-paused.",
-    },
-
 
     EMAILSCREEN =
     {
@@ -19273,7 +19351,10 @@ STRINGS.SCRAPBOOK = {
 
         -- Rifts 8
 
+        BAT_BOSSCORPSEHAT = "When equipped, leeches your life in exchange for life steal on melee attack. The wearer is considered a monster, and grants neutrality with Batilisks, Hound Batilisk and Naked Mole Bats.",
+        ARMOR_ROCKY = "This armor is incredibly durable, granting 95% protection to its wearer, along with knockback immunity.",
 
+        CHARLIE_BOSS_RUNNER = "Echoes of lost souls. Don't get too close.",
     },
 
     -- Full name: "{name} Scrapbook Page"

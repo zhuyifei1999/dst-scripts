@@ -358428,6 +358428,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.ARMOR_CARROTLURE"
 msgid "Bunnymen are drawn to its alluring scent, powerful enough to mask the musk of meats."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.ARMOR_ROCKY
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.ARMOR_ROCKY"
+msgid "This armor is incredibly durable, granting 95% protection to its wearer, along with knockback immunity."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.ATRIUMGATE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.ATRIUMGATE"
 msgid "A broken stone ring that has an empty socket at the base."
@@ -358531,6 +358536,11 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BATTLESONG_SHADOWALIGNED
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BATTLESONG_SHADOWALIGNED"
 msgid "Wigfrid and nearby allies take 10% less damage from Shadow Aligned enemies and deal 5% bonus damage to Lunar Aligned enemies.\n\nThis is a Battle Song. Wigfrid must continue to sing for its benefit."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.BAT_BOSSCORPSEHAT
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BAT_BOSSCORPSEHAT"
+msgid "When equipped, leeches your life in exchange for life steal on melee attack. The wearer is considered a monster, and grants neutrality with Batilisks, Hound Batilisk and Naked Mole Bats."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BEARGERFUR_SACK
@@ -358831,6 +358841,11 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SPECIALINFO.CAVE_VENT_ROCK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.CAVE_VENT_ROCK"
 msgid "These vents can billow out more than mere heat."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.CHARLIE_BOSS_RUNNER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.CHARLIE_BOSS_RUNNER"
+msgid "Echoes of lost souls. Don't get too close."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.CHARLIE_STAGE_POST
@@ -415763,6 +415778,86 @@ msgctxt "STRINGS.STALKER_NPC_INSPECT.VAULT_STATUE_LORE3.4"
 msgid "Watching the dark return, time and again."
 msgstr ""
 
+#. STRINGS.STALKER_NPC_INSPECT.WALTER.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WALTER.1"
+msgid "Brave Boy..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WALTER.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WALTER.2"
+msgid "Tell my tale, so others may avoid the path of a faithless old king."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WALTER.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WALTER.3"
+msgid "And lifetimes from now, I hope they tell yours..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WALTER.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WALTER.4"
+msgid "So more will know the way of a steadfast young scout."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WANDA.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.1"
+msgid "Traveller..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WANDA.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.2"
+msgid "How strange it must be for you..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WANDA.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.3"
+msgid "To watch me fall from such heights..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WANDA.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.4"
+msgid "To this... in but a moment."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WARLY.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WARLY.1"
+msgid "Nourisher..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WARLY.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WARLY.2"
+msgid "You give much of yourself to feed others."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WARLY.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WARLY.3"
+msgid "The one you serve in your heart..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WARLY.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WARLY.4"
+msgid "Beyond this world and hers, rests well."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.1"
+msgid "Shieldmaiden..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.2"
+msgid "You have forged yourself in battle."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.3"
+msgid "But what were you before iron was cast?"
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WATHGRITHR.4"
+msgid "And who remains when armor falls away?"
+msgstr ""
+
 #. STRINGS.STALKER_NPC_INSPECT.WAXWELL.1
 msgctxt "STRINGS.STALKER_NPC_INSPECT.WAXWELL.1"
 msgid "Maxwell... the king deposed."
@@ -415786,6 +415881,276 @@ msgstr ""
 #. STRINGS.STALKER_NPC_INSPECT.WAXWELL.5
 msgctxt "STRINGS.STALKER_NPC_INSPECT.WAXWELL.5"
 msgid "A husk filled with naught but echoes of regret."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WEBBER.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WEBBER.1"
+msgid "Entangled Ones..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WEBBER.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WEBBER.2"
+msgid "Though some may recoil at the sight of you..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WEBBER.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WEBBER.3"
+msgid "There is a child within who still longs for home."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WEBBER.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WEBBER.4"
+msgid "A longing not even kings are spared."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WENDY.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WENDY.1"
+msgid "Child of Grief..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WENDY.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WENDY.2"
+msgid "I would bid you live for your other half..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WENDY.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WENDY.3"
+msgid "But I failed to do so for mine."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WENDY.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WENDY.4"
+msgid "Perhaps two little ghosts makes better company..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WENDY.5
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WENDY.5"
+msgid "One on either side of the grave."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WES.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WES.1"
+msgid "Wordless One..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WES.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WES.2"
+msgid "The world frays, yet yours, unseen, remains."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WES.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WES.3"
+msgid "They laugh with you or at you, so long as they laugh."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WES.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WES.4"
+msgid "For a fool you are, though I do not believe you foolish."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.1"
+msgid "Sage..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.2"
+msgid "Like me, you will learn..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.3"
+msgid "Wisdom is folly."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.4"
+msgid "What you seek is unfathomable."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.5
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WICKERBOTTOM.5"
+msgid "To know it is to damn yourself."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILLOW.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILLOW.1"
+msgid "Firebrand..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILLOW.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILLOW.2"
+msgid "You feed the flames, but the void within you hungers still."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILLOW.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILLOW.3"
+msgid "Yet know this: The fires you kindle to destroy..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILLOW.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILLOW.4"
+msgid "Are the same fires that warm your friends..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILLOW.5
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILLOW.5"
+msgid "And hold the darkness at bay."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILSON.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILSON.1"
+msgid "Seeker..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILSON.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILSON.2"
+msgid "I sought knowledge, grew wise..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILSON.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILSON.3"
+msgid "Yet learned nothing."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILSON.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILSON.4"
+msgid "Your science will not save you."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WILSON.5
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WILSON.5"
+msgid "Some answers cannot be found by those who search alone."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.1"
+msgid "Sister..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.2"
+msgid "She is lost to you..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.3"
+msgid "Like Metheus to me..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.4"
+msgid "Abandon hope..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.5
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.5"
+msgid "Or join her..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.6
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.6"
+msgid "Cursed to wander..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WINONA.7
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WINONA.7"
+msgid "Forever."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WOLFGANG.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WOLFGANG.1"
+msgid "Strongman..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WOLFGANG.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WOLFGANG.2"
+msgid "The others see your might."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WOLFGANG.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WOLFGANG.3"
+msgid "I see why you need it."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WOODIE.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WOODIE.1"
+msgid "Woodsman..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WOODIE.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WOODIE.2"
+msgid "You have long wondered where the beast came from."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WOODIE.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WOODIE.3"
+msgid "Perhaps you should ask what it came for."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WORMWOOD.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WORMWOOD.1"
+msgid "Moonchild..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WORMWOOD.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WORMWOOD.2"
+msgid "Your shard shines true."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WORMWOOD.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WORMWOOD.3"
+msgid "Thank you for allowing me to bask Alter's pure light once more."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WORTOX.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WORTOX.1"
+msgid "Imp..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WORTOX.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WORTOX.2"
+msgid "Mock me not, mischief-maker."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WORTOX.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WORTOX.3"
+msgid "Soon enough, your glee shall turn to tears."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WURT.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WURT.1"
+msgid "Foundling..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WURT.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WURT.2"
+msgid "Blood may bind folk..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WURT.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WURT.3"
+msgid "But love may bind a family."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WURT.4
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WURT.4"
+msgid "May both hold you dear, little one."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WX78.1
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WX78.1"
+msgid "Construct..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WX78.2
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WX78.2"
+msgid "Your shell protects you from threats without..."
+msgstr ""
+
+#. STRINGS.STALKER_NPC_INSPECT.WX78.3
+msgctxt "STRINGS.STALKER_NPC_INSPECT.WX78.3"
+msgid "Yet what you fear most lies within."
 msgstr ""
 
 #. STRINGS.STALKER_NPC_PERFORM_CORRUPT.1
@@ -426646,136 +427011,6 @@ msgstr ""
 #. STRINGS.UI.EVENT_QUICKJOINSCREEN.TITLE
 msgctxt "STRINGS.UI.EVENT_QUICKJOINSCREEN.TITLE"
 msgid "Quick Match"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CANCEL
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CANCEL"
-msgid "Cancel"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.AUDIO
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.AUDIO"
-msgid "Audio"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.OTHER
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.OTHER"
-msgid "Other"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.VISUAL
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.VISUAL"
-msgid "Visual"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.WORDS
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.WORDS"
-msgid "Words"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.AUDIO
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.AUDIO"
-msgid "Does something sound wrong? Or amazing?"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.OTHER
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.OTHER"
-msgid "What happened?"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.VISUAL
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.VISUAL"
-msgid "Tell us about what you saw."
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.WORDS
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.WORDS"
-msgid "Loved some dialogue? Found a typo? Confused?"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.DISCARD_BODY
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.DISCARD_BODY"
-msgid "Are you sure you want to cancel your feedback?"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.DISCARD_NO
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.DISCARD_NO"
-msgid "No"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.DISCARD_TITLE
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.DISCARD_TITLE"
-msgid "Discard changes?"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.DISCARD_YES
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.DISCARD_YES"
-msgid "Yes"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.NOT_AUTOPAUSED
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.NOT_AUTOPAUSED"
-msgid "Warning - the game is not auto-paused."
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.REQUIRE_SUMMARY
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.REQUIRE_SUMMARY"
-msgid "Briefly describe your issue in the Summary field!"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SEND_LOG
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SEND_LOG"
-msgid "Send Log Files"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SEND_SAVE
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SEND_SAVE"
-msgid "Send Savegame"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SEND_SCREENSHOT
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SEND_SCREENSHOT"
-msgid "Send Screenshot"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMIT
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMIT"
-msgid "Submit"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_BODY
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_BODY"
-msgid "Thank you for your feedback. You are helping to make this game better!"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_OK
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_OK"
-msgid "OK"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_TITLE
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_TITLE"
-msgid "Feedback submitted"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMITTING_BODY
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMITTING_BODY"
-msgid "Sending feedback"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_BODY
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_BODY"
-msgid "Something went wrong. Please try again later."
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_OK
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_OK"
-msgid "OK"
-msgstr ""
-
-#. STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_TITLE
-msgctxt "STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_TITLE"
-msgid "Unexpected Error"
 msgstr ""
 
 #. STRINGS.UI.FESTIVALEVENTSCREEN.BROWSE

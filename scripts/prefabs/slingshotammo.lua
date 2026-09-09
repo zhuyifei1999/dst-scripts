@@ -76,15 +76,6 @@ local function ImpactFx(inst, attacker, target)
     end
 end
 
-local function OnAttack(inst, attacker, target)
-	if target ~= nil and target:IsValid() and attacker ~= nil and attacker:IsValid() then
-		if inst.ammo_def ~= nil and inst.ammo_def.onhit ~= nil then
-			inst.ammo_def.onhit(inst, attacker, target)
-		end
-		ImpactFx(inst, attacker, target)
-	end
-end
-
 local function OnPreHit(inst, attacker, target)
 	if inst.ammo_def ~= nil and inst.ammo_def.onprehit ~= nil then
 		inst.ammo_def.onprehit(inst, attacker, target)
@@ -96,9 +87,24 @@ local function OnPreHit(inst, attacker, target)
 end
 
 local function OnHit(inst, attacker, target)
-    if target ~= nil and target:IsValid() and target.components.combat ~= nil then
-		target.components.combat:RemoveShouldAvoidAggro(attacker)
+	if target and target:IsValid() then
+		if attacker and attacker:IsValid() then
+			if inst.ammo_def and inst.ammo_def.onhit then
+				inst.ammo_def.onhit(inst, attacker, target)
+			end
+
+			if not target:IsValid() then
+				target = nil
+			elseif attacker:IsValid() then
+				ImpactFx(inst, attacker, target)
+			end
+		end
+
+		if target and target.components.combat then
+			target.components.combat:RemoveShouldAvoidAggro(attacker)
+		end
 	end
+
     inst:Remove()
 end
 
@@ -1217,7 +1223,6 @@ local function projectile_fn(ammo_def)
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(ammo_def.damage)
-	inst.components.weapon:SetOnAttack(OnAttack)
 
     inst:AddComponent("projectile")
     inst.components.projectile:SetSpeed(25)

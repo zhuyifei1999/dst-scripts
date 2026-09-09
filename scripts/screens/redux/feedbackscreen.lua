@@ -16,6 +16,52 @@ local Category = {
 	OTHER = "OTHER",
 }
 
+-- NOTES(JBK): With this being for beta feedback the strings do not need localized.
+local FEEDBACK_SCREEN = {
+    UI_TITLE = "Send Us Your Beta Feedback",
+    SUMMARY_HELPERTEXT = "What happened?",
+    DETAILS_HELPERTEXT = "A short summary of your feedback",
+
+    SUBMIT = "Submit",
+    CANCEL = "Cancel",
+    REQUIRE_SUMMARY = "Briefly describe your issue in the Summary field!",
+    CATEGORY = 
+    {
+        AUDIO = "Audio",
+        VISUAL = "Visual",
+        WORDS = "Words",
+        OTHER = "Other",
+    },
+    CATEGORY_PROMPT =
+    {
+        -- These must fit on a single line.
+        AUDIO = "Does something sound wrong? Or amazing?",
+        VISUAL = "Tell us about what you saw.",
+        WORDS = "Loved some dialogue? Found a typo? Confused?",
+        OTHER = "What happened?",
+    },
+    SEND_LOG = "Send Log Files",
+    SEND_SCREENSHOT = "Send Screenshot",
+    SEND_SAVE = "Send Savegame",
+
+    SUBMITTING_BODY = "Sending feedback",
+
+    SUBMITTED_TITLE = "Feedback submitted",
+    SUBMITTED_BODY = "Thank you for your feedback. You are helping to make this game better!",
+    SUBMITTED_OK = "OK",
+
+    SUBMIT_ERROR_TITLE = "Unexpected Error",
+    SUBMIT_ERROR_BODY = "Something went wrong. Please try again later.",
+    SUBMIT_ERROR_OK = "OK",
+
+    DISCARD_TITLE = "Discard changes?",
+    DISCARD_BODY = "Are you sure you want to cancel your feedback?",
+    DISCARD_YES = "Yes",
+    DISCARD_NO = "No",
+
+    NOT_AUTOPAUSED = "Warning - the game is not auto-paused.",
+}
+
 
 local PANEL_WIDTH = 1000
 local PANEL_HEIGHT = 530
@@ -113,7 +159,26 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 	self.title = self.dialog:AddChild(Text(BUTTONFONT, 40))
 	self.title:SetPosition(0, 235, 0)
 	self.title:SetColour(UICOLOURS.GOLD)
-	self.title:SetString("Send Us Your Feedback")
+	self.title:SetString(FEEDBACK_SCREEN.UI_TITLE)
+
+    do -- Scope block.
+        local title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE
+        local x, y = 80, 0
+        local text_width = 880
+        local font_size = 22
+        local font = BODYTEXTFONT
+
+        local shadow = self.title:AddChild(Text(font, font_size, title_str, UICOLOURS.BLACK))
+        local title  = self.title:AddChild(Text(font, font_size, title_str, UICOLOURS.HIGHLIGHT_GOLD))
+
+        shadow:SetRegionSize(text_width, 2*(font_size + 2))
+        title:SetRegionSize(text_width, 2*(font_size + 2))
+        shadow:SetHAlign(ANCHOR_RIGHT)
+        title:SetHAlign(ANCHOR_RIGHT)
+        
+        shadow:SetPosition(x + 2, y - 2)
+        title:SetPosition(x, y)
+    end
 
     self.send_log = true
     self.send_screenshot = true
@@ -123,15 +188,9 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 	SummaryTitle:SetRegionSize(480,30)
 	SummaryTitle:SetHAlign(ANCHOR_LEFT)
 	SummaryTitle:SetPosition(-260, 230 - 40)
-	local s = "This is test to see if everything works the way I expect it to be working.\nI can only try so much.\n\nBut I will try for sure.\nAlso a long line to see if word wrap does what I expect it to do.\nDoes it?"
-	local s = ""
-	local prompt = "Does something sound wrong? Or amazing?"
-	local prompt = "Tell us about what you saw"
-	local prompt = "Loved some dialogue? Found a typo? Confused?"
-	local prompt = "What happened?"
-	self.subject = self.dialog:AddChild(TextWithBg(s, prompt, 480, 24) )
+	self.subject = self.dialog:AddChild(TextWithBg("", FEEDBACK_SCREEN.SUMMARY_HELPERTEXT, 480, 24) )
 	self.subject:SetPosition(-260,200 - 40)
-	self.subject.text.prompt:SetString(STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT.OTHER)
+	self.subject.text.prompt:SetString(FEEDBACK_SCREEN.CATEGORY_PROMPT.OTHER)
 
 	self.subject.text:SetFn(function()
 		self:_RefreshSendButton()
@@ -157,10 +216,10 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 	}
 
 	local category_options = {
-		{text=STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.AUDIO,  data=Category.AUDIO},
-		{text=STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.VISUAL, data=Category.VISUAL},
-		{text=STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.WORDS,  data=Category.WORDS},
-		{text=STRINGS.UI.FEEDBACK_SCREEN.CATEGORY.OTHER,  data=Category.OTHER},
+		{text=FEEDBACK_SCREEN.CATEGORY.AUDIO,  data=Category.AUDIO},
+		{text=FEEDBACK_SCREEN.CATEGORY.VISUAL, data=Category.VISUAL},
+		{text=FEEDBACK_SCREEN.CATEGORY.WORDS,  data=Category.WORDS},
+		{text=FEEDBACK_SCREEN.CATEGORY.OTHER,  data=Category.OTHER},
 	}
 	local category_width = #category_options * 120
 
@@ -169,7 +228,7 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 	self.category_type.buttons:SetSelected(Category.OTHER)
 	self.category_type.buttons:SetOnChangedFn(function(data)
 		self.category = data
-		local prompt = STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT[data]
+		local prompt = FEEDBACK_SCREEN.CATEGORY_PROMPT[data]
 		self.subject.text.prompt:SetString(prompt)
 	end)
 	self.category_type.focus_forward = self.category_type.buttons
@@ -181,8 +240,7 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 	DetailsTitle:SetHAlign(ANCHOR_LEFT)
 	DetailsTitle:SetPosition(-260, 130 - 40)
 
-	local prompt = "A short summary of your feedback"
-	self.details = self.dialog:AddChild(TextWithBg("", prompt, 480, 304) )
+	self.details = self.dialog:AddChild(TextWithBg("", FEEDBACK_SCREEN.DETAILS_HELPERTEXT, 480, 304) )
 	self.details:SetPosition(-260,10 - 90)
 
 	self.details.text:SetOnTabGoToTextEditWidget(self.subject.text)
@@ -207,12 +265,12 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 	self:_UpdateAutopauseStatus()
 	self.inst:ListenForEvent("serverpauseddirty", function() self:_UpdateAutopauseStatus() end, TheWorld)
 
-	self.checkbox_send_screenshot = CreateCheckBoxNew(self.root, self, "send_screenshot", STRINGS.UI.FEEDBACK_SCREEN.SEND_SCREENSHOT,
+	self.checkbox_send_screenshot = CreateCheckBoxNew(self.root, self, "send_screenshot", FEEDBACK_SCREEN.SEND_SCREENSHOT,
 			STRINGS.UI.OPTIONS.TOOLTIPS.DATACOLLECTION
 			)
 	self.checkbox_send_screenshot:SetPosition(300,-100)
 
-	self.checkbox_send_log = CreateCheckBoxNew(self.root, self, "send_log", STRINGS.UI.FEEDBACK_SCREEN.SEND_LOG,
+	self.checkbox_send_log = CreateCheckBoxNew(self.root, self, "send_log", FEEDBACK_SCREEN.SEND_LOG,
 			STRINGS.UI.OPTIONS.TOOLTIPS.DATACOLLECTION
 			)
 	self.checkbox_send_log:SetPosition(300,-130)
@@ -222,7 +280,7 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 			function()
 				self:SendFeedback()
 			end,
-			STRINGS.UI.FEEDBACK_SCREEN.SUBMIT,
+			FEEDBACK_SCREEN.SUBMIT,
 			{200, 50}
 		)
 	)
@@ -233,7 +291,7 @@ FeedbackScreen = Class(Screen, function(self, gamestate, screen_shot_texture)
 			function() 
 				self:TryCancelFeedback()
 			end,
-			STRINGS.UI.FEEDBACK_SCREEN.CANCEL,
+			FEEDBACK_SCREEN.CANCEL,
 			{200, 50}
 		)
 	)
@@ -280,7 +338,7 @@ function FeedbackScreen:SendFeedback()
     local cancelfn = function()
 		self:CancelFeedback()
 	end
-	local submit_popup= GenericWaitingPopup("SubmitFeedbackPopup", STRINGS.UI.FEEDBACK_SCREEN.SUBMITTING_BODY, nil, false, cancelfn)
+	local submit_popup= GenericWaitingPopup("SubmitFeedbackPopup", FEEDBACK_SCREEN.SUBMITTING_BODY, nil, false, cancelfn)
     TheFrontEnd:PushScreen(submit_popup)
 
 	local gamestatus = "" -- string to populate a txt file
@@ -307,11 +365,11 @@ function FeedbackScreen:SendFeedback()
 
 	if res == "" then
 		local feedback_error = PopupDialogScreen(
-			STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_TITLE,
-			STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_BODY,
+			FEEDBACK_SCREEN.SUBMIT_ERROR_TITLE,
+			FEEDBACK_SCREEN.SUBMIT_ERROR_BODY,
 			{
 				{
-					text = STRINGS.UI.FEEDBACK_SCREEN.SUBMIT_ERROR_OK,
+					text = FEEDBACK_SCREEN.SUBMIT_ERROR_OK,
 					cb = function()
 						TheFrontEnd:PopScreen()	-- This dialog
 						TheFrontEnd:PopScreen()	-- The waiting popup 
@@ -335,18 +393,18 @@ end
 function FeedbackScreen:TryCancelFeedback()
 	if self:HasTextEntered() then
 		local dialog = PopupDialogScreen(
-			STRINGS.UI.FEEDBACK_SCREEN.DISCARD_TITLE,
-			STRINGS.UI.FEEDBACK_SCREEN.DISCARD_BODY,
+			FEEDBACK_SCREEN.DISCARD_TITLE,
+			FEEDBACK_SCREEN.DISCARD_BODY,
 			{
 				{
-					text = STRINGS.UI.FEEDBACK_SCREEN.DISCARD_YES,
+					text = FEEDBACK_SCREEN.DISCARD_YES,
 					cb = function()
 						TheFrontEnd:PopScreen()
 						self:CancelFeedback()
 					end
 				},
 				{
-					text = STRINGS.UI.FEEDBACK_SCREEN.DISCARD_NO,
+					text = FEEDBACK_SCREEN.DISCARD_NO,
 					cb = function()
 						TheFrontEnd:PopScreen()
 					end
@@ -376,9 +434,9 @@ function FeedbackScreen:SubmitFeedbackResult(response_code, response)
 		TheFrontEnd:PopScreen() -- pop the sending... dialog
 		-- Show the thank you for submitting dialog:
 
-        local thankyou = PopupDialogScreen( STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_TITLE, STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_BODY,
+        local thankyou = PopupDialogScreen( FEEDBACK_SCREEN.SUBMITTED_TITLE, FEEDBACK_SCREEN.SUBMITTED_BODY,
         {
-            {text=STRINGS.UI.FEEDBACK_SCREEN.SUBMITTED_OK, cb = function()
+            {text=FEEDBACK_SCREEN.SUBMITTED_OK, cb = function()
                  TheFrontEnd:PopScreen()
                  self:CancelFeedback()
             end },
@@ -395,7 +453,7 @@ function FeedbackScreen:_UpdateAutopauseStatus()
 	if ThePlayer == nil or TheNet:IsServerPaused() then
 		self.autopause_status:Hide()
 	else
-		self.autopause_status:SetString(STRINGS.UI.FEEDBACK_SCREEN.NOT_AUTOPAUSED)
+		self.autopause_status:SetString(FEEDBACK_SCREEN.NOT_AUTOPAUSED)
 		self.autopause_status:Show()
 	end
 end
@@ -403,7 +461,7 @@ end
 function FeedbackScreen:_RefreshSendButton()
 	if self.subject.text:GetString():len() < 1 then
 		self.send_btn:Disable()
-		self.send_btn:SetHoverText(STRINGS.UI.FEEDBACK_SCREEN.REQUIRE_SUMMARY)
+		self.send_btn:SetHoverText(FEEDBACK_SCREEN.REQUIRE_SUMMARY)
 	else
 		self.send_btn:Enable()
 		self.send_btn:ClearHoverText()
@@ -416,7 +474,7 @@ function FeedbackScreen:SetCategory(cat)
 	end
 	self.category = cat
 
-	self.message_inputbox:SetTextPrompt(STRINGS.UI.FEEDBACK_SCREEN.CATEGORY_PROMPT[cat])
+	self.message_inputbox:SetTextPrompt(FEEDBACK_SCREEN.CATEGORY_PROMPT[cat])
 end
 
 function FeedbackScreen:HandleControlUp(control)

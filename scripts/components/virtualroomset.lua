@@ -933,6 +933,7 @@ function VirtualRoomSet:SetFindSafePlayerPointFrom(FindSafePlayerPointFrom)
     self.config.FindSafePlayerPointFrom = FindSafePlayerPointFrom
 end
 
+local SAVE_CLASSIFIED_TAGS = {"CLASSIFIED"}
 local SAVE_NO_TAGS = { "INLIMBO" }
 local SAVE_CONTAINER_TAGS = { "_inventory", "_container" }
 
@@ -1036,6 +1037,36 @@ function VirtualRoomSet:UnloadRoom(save)
             --Don't remove entities that aren't saved by the room
             keepidx = keepidx + 1
             ents[keepidx] = v
+        end
+    end
+    
+    -- NOTES(JBK): Some entities are CLASSIFIED and must be handled on a case by case basis if it should save too.
+    for _, v in ipairs(TheSim:FindEntities(x, 0, z, saveradius, SAVE_CLASSIFIED_TAGS)) do
+        if v:HasTag("forcedtosavethroughvirtualrooms") then
+            -- unloadaction is always _SAVE for this case
+            if save then
+                table.insert(toremove, v) --defer removal so we can save references
+                if v.persists and v.prefab --[[and v.Transform and v.entity:GetParent() == nil redundant checks]] then
+                    local record, new_refs = v:GetSaveRecord()
+                    record.prefab = nil
+
+                    if new_refs then
+                        refs[v.GUID] = v
+                        for _, guid in pairs(new_refs) do
+                            refs[guid] = v
+                        end
+                    end
+
+                    recbyguid[v.GUID] = record
+
+                    if save.ents[v.prefab] == nil then
+                        save.ents[v.prefab] = {}
+                    end
+                    table.insert(save.ents[v.prefab], record)
+                end
+            else
+                v:Remove()
+            end
         end
     end
 

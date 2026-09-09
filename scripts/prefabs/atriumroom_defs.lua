@@ -8,6 +8,14 @@ local IMPASSABLE = WORLD_TILES.IMPASSABLE
 
 --------------------------------------------------------------------------
 
+if TheSim then -- updateprefabs guard
+    AddIsTileInvalidForPathing_VirtualRoomSet(VIRTUALROOMSETS.ATRIUM, function(map, tx, ty)
+        return TileGroupManager:IsInvalidTile(map:GetTile(tx, ty))
+    end)
+end
+
+--------------------------------------------------------------------------
+
 --[[
 A short template for layouts.
 defs.layouts.roomnamehere = {

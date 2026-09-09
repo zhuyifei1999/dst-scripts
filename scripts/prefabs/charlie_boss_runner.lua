@@ -71,7 +71,7 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	inst.Light:SetIntensity(0.3)
-	inst.Light:SetRadius(0.2)
+	inst.Light:SetRadius(0.4)
 	inst.Light:SetFalloff(0.9)
 	inst.Light:SetColour(0.5, 0, 0)
 
@@ -84,7 +84,7 @@ local function fn()
 
 	inst.AnimState:SetBank("shadow_insanity_player")
 	inst.AnimState:SetBuild("shadow_insanity_player")
-	inst.AnimState:PlayAnimation("idle", true)
+	inst.AnimState:PlayAnimation("walk_loop", true)
 	inst.AnimState:SetLightOverride(1)
 
 	inst:AddTag("character")
@@ -95,6 +95,7 @@ local function fn()
 	inst:AddTag("hostile")
 	inst:AddTag("notraptrigger")
 
+	inst:AddComponent("spawnfader")
 	inst:AddComponent("colouraddersync")
 
 	if not TheNet:IsDedicated() then
@@ -142,6 +143,8 @@ local function fn()
 
 	inst:SetStateGraph("SGcharlie_boss_runner")
 	inst:SetBrain(brain)
+
+	inst.persists = false
 
 	return inst
 end

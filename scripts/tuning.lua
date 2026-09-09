@@ -1913,9 +1913,10 @@ function Tune(overrides)
         ARMOR_VOIDCLOTH_SETBONUS_PLANARDAMAGE_MAX_HITS = 6,
         ARMOR_VOIDCLOTH_SETBONUS_PLANARDAMAGE_DECAY_TIME = 3,
 
-        ARMOR_ROCKY = wilson_health*8*multiplayer_armor_durability_modifier,
-        ARMOR_ROCKY_ABSORPTION = .90*multiplayer_armor_absorption_modifier,
+        ARMOR_ROCKY = wilson_health*10*multiplayer_armor_durability_modifier,
+        ARMOR_ROCKY_ABSORPTION = .95*multiplayer_armor_absorption_modifier,
         ARMOR_ROCKY_SLOW = 0.7,
+        ARMOR_ROCKY_KNOCKBACK_BLOCKED_DAMAGE = (wilson_health*10*multiplayer_armor_durability_modifier) / 20,
 
         PANFLUTE_SLEEPTIME = 20,
         PANFLUTE_SLEEPRANGE = 15,
@@ -9642,9 +9643,9 @@ function Tune(overrides)
 
         BAT_BOSS_CORPSEHAT_TICK_RATE = 0.6,
         BAT_BOSS_CORPSEHAT_TICK_VALUE = -3,
-        BAT_BOSS_CORPSEHAT_LIFESTEAL = wilson_attack * 0.25, -- 25%+ from bat bat
+        BAT_BOSS_CORPSEHAT_LIFESTEAL = wilson_attack * 0.2, -- same as bat bat
         BAT_BOSS_CORPSEHAT_DAMAGE_ON_EQUIP = 10,
-        BAT_BOSS_CORPSEHAT_REGEN_PERISH_MULT = 0.001, -- regen 0.1% per tick.
+        BAT_BOSS_CORPSEHAT_REGEN_PERISH_MULT = 0.0006, -- regen 0.1% per second. (0.06% per tick)
 
         BATBOSSCAVE_REGEN_PERIOD = total_day_time * 10,
         BATBOSSCAVE_SPAWN_PERIOD = 20,
@@ -9667,7 +9668,7 @@ function Tune(overrides)
         WORM_BOSS_MAX_SPEED = 1,
         WORM_BOSS_SHADOW_ENRAGED_MAX_SPEED = 1.5,
 
-        SHROUDEN_RITUAL_TIME = 11,
+        SHROUDEN_RITUAL_TIME = 14,
 
         -- tile width * SQRT2 * TILE_SCALE / 2
         CHARLIE_ARENA_RADIUS = 6 * math.sqrt(2) * 4 / 2, -- used for temperatureoverrider
@@ -9706,9 +9707,8 @@ function Tune(overrides)
         CHARLIE_BOSS_RUNNER_RUNSPEED = 9,
         CHARLIE_BOSS_RUNNER_HEALTH = 1,
         CHARLIE_BOSS_RUNNER_DAMAGE = 50,
-        CHARLIE_BOSS_RUNNER_TARGET_RANGE = 6,
-        CHARLIE_BOSS_RUNNER_TARGET_RANGE_SQ = 6 * 6,
-        CHARLIE_BOSS_RUNNER_POUNCE_RANGE = 2.25,
+		CHARLIE_BOSS_RUNNER_TARGET_RANGE = 8,
+		CHARLIE_BOSS_RUNNER_POUNCE_RANGE = 2.5,
     }
 
     TUNING_MODIFIERS = {}

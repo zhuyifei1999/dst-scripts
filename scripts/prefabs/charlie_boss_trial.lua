@@ -323,8 +323,12 @@ local function OnShadowRunnersTick(inst)
         local runner = SpawnPrefab("charlie_boss_runner")
         runner.Transform:SetPosition(x, y, z)
         runner.Transform:SetRotation(angle)
-        runner:PushEventImmediate("spawn")
         runner.caster = charlieboss
+		runner.components.spawnfader:FadeIn()
+		if not runner.components.locomotor:WantsToMoveForward() then
+			local theta = angle * DEGREES
+			runner.components.locomotor:GoToPoint(Vector3(x + 3 * math.cos(theta), 0, z - 3 * math.sin(theta)), nil, false)
+		end
 
         inst.shadowrunnersdata.totalrunnerscount = totalrunnerscount + 1
         inst.shadowrunnersdata.runners[runner] = true

@@ -11,6 +11,10 @@ local prefabs =
     "charlie_boss_trial",
 }
 
+local function GetTeleportRadius()-- ent)
+    return 9 + math.random() * 1 -- NOTE(Omar): has to be at least above 8, to be out of charlie boss aggro range
+end
+
 local function OnAdd(inst)
 	inst.inittask = nil
     if not TheWorld.ismastersim then
@@ -82,7 +86,7 @@ local function TeleportToOuter(inst, player, otx, oty, virtualroomset)
     player:PushEventImmediate("vault_teleport", {
         state = "charliearena_teleport",
         onplayerready = function(doer)
-            virtualroomset:TeleportEntities(teleportents, x, y, z)
+            virtualroomset:TeleportEntities(teleportents, x, y, z, GetTeleportRadius)
         end,
     })
 end
@@ -106,7 +110,7 @@ local function CheckPlayersDimensionHopping(inst, virtualroomset)
                     state = "charliearena_teleport",
                     fastforward = 4,
                     onplayerready = function(doer)
-                        virtualroomset:TeleportEntities(teleportents, x, y, z)
+                        virtualroomset:TeleportEntities(teleportents, x, y, z, GetTeleportRadius)
                     end,
                 })
             end
@@ -225,14 +229,20 @@ local function centerfn()
 
     inst:ListenForEvent("ms_charliearena_morphatrium", function(_world, data)
         local x, _, z = virtualroomset:GetOrigin()
-        virtualroomset:TryStartTeleportSequence({
+        if not virtualroomset:TryStartTeleportSequence({
             targetroomname = "boss1",
             x = x,
             z = z,
-            radius = function(ent) return 9 + math.random() * 1 end, -- NOTE(Omar): has to be at least above 8, to be out of charlie boss aggro range
+            radius = GetTeleportRadius,
             state = "charliearena_teleport",
             onteleportcb = data ~= nil and data.cb or nil
-        })
+        }) then
+            -- if teleport sequence wasn't successful (e.g. loading when no players loaded) then set the room instantly
+            if data and data.cb then
+                data.cb()
+            end
+            virtualroomset:SetRoom("boss1")
+        end
     end, TheWorld)
 
 	inst.inittask = inst:DoStaticTaskInTime(0, OnAdd)

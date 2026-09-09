@@ -354,11 +354,10 @@ local function OnDroppedTarget(inst)
 	end
 end
 
-local function IsLifeDrainable(target)
-	return not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable")
-end
-
 local function OnHitOther(inst, data)
+	if inst.components.health:IsDead() then -- can reach here if we died from redirect attack
+		return
+	end
 	if data and data.target then
 		local damage = data.damageresolved or data.damage
 		if damage and damage > 0 and IsLifeDrainable(data.target) then
@@ -367,7 +366,17 @@ local function OnHitOther(inst, data)
 	end
 end
 
+local function DropFromOwner(inst)
+	local owner = inst.components.inventoryitem:GetGrandOwner()
+	if owner and inst.components.equippable:IsEquipped() then
+		owner.components.inventory:DropItem(inst)
+	end
+end
+
 local function CanJoinAcidBatWave(inst) -- for whether we're available to join a acid bat wave.
+	if inst.components.health:IsDead() then
+		return false
+	end
 	return inst:IsAsleep() or -- we can always join if we're asleep
 		not (inst.components.combat:HasTarget() or
 			inst.sg:HasAnyStateTag("sleeping", "frozen", "flight") or
@@ -574,6 +583,8 @@ local function normal_master_postinit(inst)
 	MakeHauntable(inst)
 
 	inst:ListenForEvent("onhitother", OnHitOther)
+	inst:ListenForEvent("startelectrocute", DropFromOwner)
+	inst:ListenForEvent("death", DropFromOwner)
 
 	inst.NumBatsToSpawn = NumBatsToSpawn
 	inst.CanJoinAcidBatWave = CanJoinAcidBatWave

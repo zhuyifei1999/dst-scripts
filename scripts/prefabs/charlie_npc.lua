@@ -4,12 +4,6 @@ local assets =
     Asset("ANIM", "anim/charlie_transform.zip"),
 }
 
-local KNOWS_CHARLIE_LOOKUP =
-{
-    winona  = true,
-    waxwell = true,
-}
-
 local function OnCameraFocusDirty(inst)
     if inst._camerafocus:value() then
         TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 10, 28, 5)
@@ -75,7 +69,7 @@ local function OnTalk(inst)
 end
 
 local function DisplayNameFn(inst)
-    return ThePlayer ~= nil and KNOWS_CHARLIE_LOOKUP[ThePlayer.prefab]
+    return ThePlayer ~= nil and CHARACTER_KNOWS_CHARLIE[ThePlayer.prefab]
         and STRINGS.NAMES[string.upper(inst.prefab)]
         or STRINGS.NAMES[string.upper(inst.prefab.."_ALT")]
 end
@@ -116,7 +110,7 @@ local function fn()
 
     local npc_talker = inst:AddComponent("npc_talker")
     npc_talker.default_chatpriority = CHATPRIORITIES.HIGH
-    npc_talker.speaktime = 2.5
+    npc_talker.speaktime = 3
 
     inst._camerafocus = net_bool(inst.GUID, "charlie_npc._camerafocus", "camerafocusdirty")
 

@@ -32,12 +32,13 @@ local BOULDER_RADIUS = 1.2
 local loot = { "rocks", "rocks", "meat", "flint", "flint" }
 local nitreloot = { "nitre", "nitre", "rocks", "rocks", "meat", "flint", "flint" }
 
+-- StandardSleepChecks instead of DefaultSleepTest so we can skip phase checks
 local function ShouldSleep(inst)
-    return inst.components.sleeper:GetTimeAwake() > (TUNING.TOTAL_DAY_TIME * 2)
+    return StandardSleepChecks(inst) and inst.components.sleeper:GetTimeAwake() > (TUNING.TOTAL_DAY_TIME * 2)
 end
 
 local function ShouldWake(inst)
-    return inst.components.sleeper:GetTimeAsleep() > (TUNING.TOTAL_DAY_TIME * .5)
+    return StandardWakeChecks(inst) and inst.components.sleeper:GetTimeAsleep() > (TUNING.TOTAL_DAY_TIME * .5)
 end
 
 local PARASITE_SHARE_TAGS = { "_combat", "shadowthrall_parasite_hosted" }

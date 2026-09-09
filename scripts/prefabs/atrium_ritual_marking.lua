@@ -37,10 +37,20 @@ local function OnBuilt(inst)
 end
 
 local function SelectRitualItem(inst, item)
+    local soundparam = { item_sequence = 0.1 }
+    if inst.gate then
+        for i = 1, 3 do
+            local marking = inst.gate.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+            if marking and marking.item and marking ~= inst then
+                soundparam.item_sequence = soundparam.item_sequence + 0.1
+            end
+        end
+    end
+
     inst.item = item
     item:SetInRitual(inst)
     inst.AnimState:PlayAnimation("idle_active", true)
-    inst.SoundEmitter:PlaySound("rifts8/charlie_ritual/summon_item_place")
+    inst.SoundEmitter:PlaySoundWithParams("rifts8/charlie_ritual/summon_item_place", soundparam)
     LaunchToInst(item, inst)
     inst:PushEvent("updateselectedritualitem")
 
@@ -53,7 +63,7 @@ end
 local RITUAL_ITEM_TAGS, RITUAL_ITEM_NO_TAGS
 local function IsValidRitualItem(guy)
     local x, y, z = guy.Transform:GetWorldPosition()
-    return y < .1
+    return y < .1 and not guy.marking -- in case this ritual item was somehow pushed to another marking
 end
 
 local function TestForRitualItem(inst)

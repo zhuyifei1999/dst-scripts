@@ -660,9 +660,16 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
 				damage = damage + damagetypemult * SpDamageUtil.CalcTotalDamage(spdamage)
 			end
 
-            local cause = attacker == self.inst and weapon or attacker
+            local afflicter = attacker == self.inst and weapon or attacker
+            local cause
+            if afflicter == nil and TheWorld.components.charlie_tracker:IsCharlieDefeated() then -- a nil afflicter in this case means grue attack (which is silly, but whatever)
+                -- Stomp over the cause with darkness, because we don't want "Charlie" to show up as cause for Maxwell or Winona in the morgue
+                cause = "DARKNESS"
+            else
+                cause = afflicter ~= nil and (afflicter.nameoverride or afflicter.prefab) or "NIL"
+            end
             --V2C: guess we should try not to crash old mods that overwrote the health component
-            damageresolved = self.inst.components.health:DoDelta(-damage, nil, cause ~= nil and (cause.nameoverride or cause.prefab) or "NIL", nil, cause)
+            damageresolved = self.inst.components.health:DoDelta(-damage, nil, cause, nil, afflicter)
             damageresolved = damageresolved ~= nil and -damageresolved or damage
             if self.inst.components.health:IsDead() then
                 if attacker ~= nil then

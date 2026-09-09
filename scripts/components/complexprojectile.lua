@@ -18,7 +18,7 @@ local ComplexProjectile = Class(function(self, inst)
 
     self.usehigharc = true
 
-	--self.ondeflect = nil
+	--self.ondeflectfn = nil
 	--self.keepondeflect = false
 
 	--self.ismeleeweapon = false -- setting to true allows for melee attacks on left lick and toss on right click
@@ -68,6 +68,14 @@ end
 
 function ComplexProjectile:SetOnHit(fn)
     self.onhitfn = fn
+end
+
+function ComplexProjectile:SetOnDeflect(fn)
+	self.ondeflectfn = fn
+end
+
+function ComplexProjectile:SetKeepOnDeflect(keep)
+	self.keepondeflect = keep
 end
 
 function ComplexProjectile:SetOnUpdate(fn)
@@ -202,17 +210,9 @@ function ComplexProjectile:OnUpdate(dt)
     end
 end
 
-function ComplexProjectile:SetKeepOnDeflect(keep)
-	self.keepondeflect = keep
-end
-
-function ComplexProjectile:SetOnDeflect(fn)
-	self.ondeflect = fn
-end
-
 function ComplexProjectile:Deflect(deflector)
-	if self.ondeflect then
-		self.ondeflect(self.inst, deflector)
+	if self.ondeflectfn then
+		self.ondeflectfn(self.inst, self.attacker, deflector)
 	end
 	if not self.keepondeflect then
 		self.inst:Remove()

@@ -88,7 +88,7 @@ local function GenerateLoot(inst, pos, loot)
     local loottable = IsShadow(inst) and
     {
         horrorfuel = 8,
-        nightmarefuel = 5,
+        nightmarefuel = 12,
     }
     or
     {

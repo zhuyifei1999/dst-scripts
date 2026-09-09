@@ -1,9 +1,6 @@
 require("behaviours/chaseandattack")
 require("behaviours/wander")
 
-local MAX_CHASE_TIME = 5
-local MAX_CHASE_DIST = 20
-
 local WANDER_DIST = 4
 
 local CharlieBossRunnerBrain = Class(Brain, function(self, inst)
@@ -43,7 +40,7 @@ function CharlieBossRunnerBrain:OnStart()
 		WhileNode(
 			function() return not self.inst.sg:HasStateTag("jumping") end, "<busy state guard>",
 			PriorityNode({
-				ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
+				ChaseAndAttack(self.inst),
 				Wander(self.inst, nil, nil, WANDER_TIMES, GetWanderDirection, nil, nil, WANDER_DATA),
 			}, 0.25)
 		)

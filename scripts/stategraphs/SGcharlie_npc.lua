@@ -118,10 +118,6 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState(inst.sg.statemem.despawn and "despawn" or "idle")
-
-                    if inst.components.npc_talker:HasLines() then
-                        inst.components.npc_talker:DoNextLine()
-                    end
                 end
             end),
         },
@@ -157,10 +153,6 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState(inst.sg.statemem.despawn and "despawn" or "idle")
-
-                    if inst.components.npc_talker:HasLines() then
-                        inst.components.npc_talker:DoNextLine()
-                    end
                 end
             end),
         },

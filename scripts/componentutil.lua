@@ -103,7 +103,7 @@ end
 function IsRangedWeapon(ent)
 	return ent ~= nil and
 		(	ent.components.projectile ~= nil or
-			(ent.components.weapon ~= nil and ent.components.weapon.projectile ~= nil)
+			(ent.components.weapon ~= nil and ent.components.weapon:CanRangedAttack())
 		)
 end
 
@@ -155,6 +155,10 @@ PURE_SHADOW_TARGET_TAGS = {
     "stalkerminion",
     "shadowthrall",
 }
+
+function IsLifeDrainable(target)
+	return not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable")
+end
 
 --------------------------------------------------------------------------
 local IGNORE_DROWNING_ONREMOVE_TAGS = {"ignorewalkableplatforms", "ignorewalkableplatformdrowning", "activeprojectile", "flying", "FX", "DECOR", "INLIMBO"}
@@ -1633,17 +1637,13 @@ function GetPlayerDeathDescription(inst, viewer)
         -- Permanent translations for death cause.
         if inst.cause == "unknown" then
             inst.cause = "shenanigans"
-
         elseif inst.cause == "moose" then
             inst.cause = math.random() < .5 and "moose1" or "moose2"
         end
 
         -- Viewer based temp translations for death cause.
-        local cause =
-            inst.cause == "nil"
-            and (
-                (viewer == "waxwell" or viewer == "winona") and "charlie" or "darkness"
-            )
+        local cause = inst.cause == "nil" -- if charlie is defeated, this will be "darkness"
+            and (CHARACTER_KNOWS_CHARLIE[viewer.prefab] and "charlie" or "darkness")
             or inst.cause
 
         return string.format(desc, name, STRINGS.NAMES[string.upper(cause)] or STRINGS.NAMES.SHENANIGANS)

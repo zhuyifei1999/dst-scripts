@@ -24,6 +24,13 @@ local function ChooseAttack(inst, target)
 	return false
 end
 
+local function ShouldVineCounter(inst, data) --data from "attacked" event
+	return inst.canvinecounter
+		and data and data.attacker and data.attacker:IsValid()
+		and inst:IsNear(data.attacker, 4 + data.attacker:GetPhysicsRadius(0))
+		or false
+end
+
 local events =
 {
 	CommonHandlers.OnLocomote(false, true),
@@ -38,7 +45,13 @@ local events =
 		if not inst.components.health:IsDead() then
 			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return
-			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt")) and
+			elseif ShouldVineCounter(inst, data) then
+				if not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") or
+					(inst.ismodeswitching and inst.sg:HasStateTag("canforcecounter"))
+				then
+					inst.sg:GoToState("hit", true)
+				end
+			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
 				not CommonHandlers.HitRecoveryDelay(inst, nil, math.huge) --hit delay only for projectiles
 			then
 				inst.sg:GoToState("hit")
@@ -472,10 +485,12 @@ local states =
 		name = "hit",
 		tags = { "hit", "busy" },
 
-		onenter = function(inst)
+		onenter = function(inst, should_counter)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("hit")
 			CommonHandlers.UpdateHitRecoveryDelay(inst)
+
+			inst.sg.statemem.should_counter = should_counter
 		end,
 
 		timeline =
@@ -484,35 +499,8 @@ local states =
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/hit") end),
 
 			FrameEvent(8, function(inst)
-				if inst.canvinecounter and not (inst.sg.statemem.doattack and inst.sg.statemem.doattack:IsValid() or inst.sg.mem.forcetaunt) then
-					local x, _, z = inst.Transform:GetWorldPosition()
-					local vine_radius = 5
-					local should_counter
-					for _, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, vine_radius + 3, inst:GetAOEAttackTagSet():GetRegistered())) do
-						if v ~= inst and
-							v:IsValid() and not v:IsInLimbo() and
-							not (v.components.health and v.components.health:IsDead()) and
-							_temp_aoe_params.attack_filterfn(v, inst)
-						then
-							local range = vine_radius + v:GetPhysicsRadius(0)
-							local dsq = v:GetDistanceSqToPoint(x, 0, z)
-							if dsq < range * range then
-								if inst.components.combat:TargetIs(v) then
-									if dsq >= 9 and not inst.components.combat:InCooldown() and math.random() < 0.5 then
-										inst.sg.statemem.doattack = v
-										return
-									end
-									should_counter = true
-									break
-								elseif not should_counter and inst.components.combat:CanTarget(v) then
-									should_counter = true
-								end
-							end
-						end
-					end
-					if should_counter then
-						inst.sg:GoToState("vine_counterattack")
-					end
+				if inst.canvinecounter and inst.sg.statemem.should_counter and not inst.sg.mem.forcetaunt then
+					inst.sg:GoToState("vine_counterattack")
 				end
 			end),
 			FrameEvent(10, function(inst)
@@ -534,6 +522,11 @@ local states =
 					return true
 				end
 			end),
+			EventHandler("attacked", function(inst, data)
+				if inst.sg:HasStateTag("busy") and ShouldVineCounter(inst, data) then
+					inst.sg.statemem.should_counter = true
+				end
+			end),
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg:GoToState("idle")
@@ -544,7 +537,7 @@ local states =
 
 	State{
 		name = "attack",
-		tags = { "attack", "busy" },
+		tags = { "attack", "busy", "canforcecounter" },
 
 		onenter = function(inst, target)
 			inst.components.locomotor:Stop()
@@ -595,8 +588,8 @@ local states =
 			--FrameEvent(11, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_subdued", nil, 0.4) end),
 			FrameEvent(11, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.5) end),
 			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
-			FrameEvent(29, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature1/attack_grunt", nil, 0.7) end),
-			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature2/attack", nil, 0.6) end),
+			FrameEvent(29, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature1/attack_grunt", nil, 0.9) end),
+			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature2/attack", nil, 0.7) end),
 
 			FrameEvent(8, function(inst)
 				inst.sg.statemem.canturn = nil
@@ -605,6 +598,7 @@ local states =
 				inst.sg.statemem.target = nil --stop tracking
 			end),
 			FrameEvent(33, function(inst)
+				inst.sg:RemoveStateTag("canforcecounter")
 				inst.components.combat:RestartCooldown()
 				inst.sg.statemem.targets = {}
 				SpawnMinion(inst, 3, 0, 24)
@@ -655,7 +649,8 @@ local states =
 
 
 			FrameEvent(19, function(inst)
-				if inst.ismodeswitching then
+				if inst.ismodeswitching and inst.canvinecounter then
+					inst.components.combat:ResetBattleCryCooldown()
 					SpawnGroundVines(inst)
 				end
 				inst.sg.statemem.targets = {}

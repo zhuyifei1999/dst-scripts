@@ -3526,15 +3526,6 @@ local function MakeHat(name)
 		if owner ~= nil and (owner.components.health == nil or not owner.components.health:IsDead()) then
 		    local target = data.target
 			if target and target ~= owner and target:IsValid() and target.prefab ~= "gestalt_guard_evolved" and (target.components.health == nil or not target.components.health:IsDead() and not target:HasAnyTag("structure", "wall")) then
-
-                -- In combat, this is when we're just launching a projectile, so don't spawn a gestalt yet
-                if data.weapon ~= nil and data.projectile == nil
-                        and (data.weapon.components.projectile ~= nil
-                            or data.weapon.components.complexprojectile ~= nil
-                            or data.weapon.components.weapon:CanRangedAttack()) then
-                    return
-                end
-
 				local x, y, z = target.Transform:GetWorldPosition()
 
 				local gestalt = SpawnPrefab("alterguardianhat_projectile")
@@ -3567,8 +3558,10 @@ local function MakeHat(name)
     local function alterguardian_onequip(inst, owner)
         fns.opentop_onequip(inst, owner)
 
-		inst.alterguardian_spawngestalt_fn = function(_owner, _data) alterguardian_spawngestalt_fn(inst, _owner, _data) end
-		inst:ListenForEvent("onattackother", inst.alterguardian_spawngestalt_fn, owner)
+		if inst.alterguardian_spawngestalt_fn == nil then
+			inst.alterguardian_spawngestalt_fn = function(_owner, _data) alterguardian_spawngestalt_fn(inst, _owner, _data) end
+		end
+		inst:ListenForEvent("onhitother", inst.alterguardian_spawngestalt_fn, owner)
 
 		inst._onsanitydelta = function() alterguardian_onsanitydelta(inst, owner) end
 		inst:ListenForEvent("sanitydelta", inst._onsanitydelta, owner)
@@ -3595,7 +3588,7 @@ local function MakeHat(name)
 		inst._is_active = false
 
 		inst:RemoveEventCallback("sanitydelta", inst._onsanitydelta, owner)
-		inst:RemoveEventCallback("onattackother", inst.alterguardian_spawngestalt_fn, owner)
+		inst:RemoveEventCallback("onhitother", inst.alterguardian_spawngestalt_fn, owner)
 
         if inst.lunarseedsmaxed then
             if owner and owner.components.sanity then
@@ -6494,25 +6487,15 @@ local function MakeHat(name)
 
     --
 
-    local function IsLifeDrainable(target)
-    	return not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable")
-    end
-
-	local function bat_bosscorpse_onattackother_fn(inst, owner, data)
+	fns.bat_bosscorpse_onhitother_fn = function(inst, owner, data)
 		if owner ~= nil and owner.components.health and not owner.components.health:IsDead() and owner.components.health:IsHurt() then
 		    local target = data.target
-			if target and target ~= owner and target:IsValid() and (target.components.health == nil or not target.components.health:IsDead() and IsLifeDrainable(target)) then
-
-                -- In combat, this is when we're just launching a projectile, so don't spawn a gestalt yet
-                if data.weapon ~= nil and data.projectile == nil
-                        and (data.weapon.components.projectile ~= nil
-                            or data.weapon.components.complexprojectile ~= nil
-                            or data.weapon.components.weapon:CanRangedAttack()) then
-                    return
-                end
-
-                -- TODO no life leech for projectiles at all?
-
+			if target and target ~= owner and target:IsValid() and
+				not (target.components.health and target.components.health:IsDead()) and
+				IsLifeDrainable(target) and
+				not IsRangedWeapon(data.weapon) and
+                not (owner.components.rider and owner.components.rider:IsRiding())
+			then
                 local mult = owner.components.aoediminishingreturns and owner.components.aoediminishingreturns.mult:Get() or 1
                 owner.components.health:DoDelta(TUNING.BAT_BOSS_CORPSEHAT_LIFESTEAL * mult, false, "bat_bosshat")
 			end
@@ -6559,22 +6542,26 @@ local function MakeHat(name)
 		inst.fx = SpawnPrefab("bat_bosscorpsehat_fx")
 		inst.fx:AttachToOwner(owner)
 
-        inst.bat_bosscorpse_onattackother_fn = function(_owner, _data) bat_bosscorpse_onattackother_fn(inst, _owner, _data) end
-        inst:ListenForEvent("onattackother", inst.bat_bosscorpse_onattackother_fn, owner)
+		if inst.bat_bosscorpse_onhitother_fn == nil then
+			inst.bat_bosscorpse_onhitother_fn = function(_owner, _data) fns.bat_bosscorpse_onhitother_fn(inst, _owner, _data) end
+		end
+		inst:ListenForEvent("onhitother", inst.bat_bosscorpse_onhitother_fn, owner)
 
-        if owner.components.health then
-			owner.components.health:AddRegenSource(inst, TUNING.BAT_BOSS_CORPSEHAT_TICK_VALUE, TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, "bat_bosscorpsehat")
-            -- only if the owner actually has health, will we regen
-            inst.components.perishable:StopPerishing()
-            inst.regen_perish_task = inst:DoPeriodicTask(TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, fns.bat_bosscorpse_regenperish)
-        end
-        if owner.components.combat and not owner.components.inventory.isloading then
-            -- Delay the hit on equip by a frame so that we can't damage ourselves repeatedly when the game is paused, looks silly.
-            inst.damage_equip_task = inst:DoTaskInTime(0, function()
-                if owner and owner:IsValid() and owner.components.combat then
-                    owner.components.combat:GetAttacked(inst, TUNING.BAT_BOSS_CORPSEHAT_DAMAGE_ON_EQUIP)
-                end
-            end)
+        if not owner:HasTag("equipmentmodel") then
+            if owner.components.health then
+		    	owner.components.health:AddRegenSource(inst, TUNING.BAT_BOSS_CORPSEHAT_TICK_VALUE, TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, "bat_bosscorpsehat")
+                -- only if the owner actually has health, will we regen
+                inst.components.perishable:StopPerishing()
+                inst.regen_perish_task = inst:DoPeriodicTask(TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, fns.bat_bosscorpse_regenperish)
+            end
+            if owner.components.combat and not owner.components.inventory.isloading then
+                -- Delay the hit on equip by a frame so that we can't damage ourselves repeatedly when the game is paused, looks silly.
+                inst.damage_equip_task = inst:DoTaskInTime(0, function()
+                    if owner and owner:IsValid() and owner.components.combat then
+                        owner.components.combat:GetAttacked(inst, TUNING.BAT_BOSS_CORPSEHAT_DAMAGE_ON_EQUIP)
+                    end
+                end)
+            end
         end
 	end
 
@@ -6615,7 +6602,7 @@ local function MakeHat(name)
 			inst.fx = nil
 		end
 
-        inst:RemoveEventCallback("onattackother", inst.bat_bosscorpse_onattackother_fn, owner)
+		inst:RemoveEventCallback("onhitother", inst.bat_bosscorpse_onhitother_fn, owner)
 
         if owner.components.health then
             owner.components.health:RemoveRegenSource(inst, "bat_bosscorpsehat")
@@ -6629,6 +6616,7 @@ local function MakeHat(name)
         inst:AddTag("monsterhat")
 		inst:AddTag("mufflehat")
         inst:AddTag("acidrainimmune")
+        inst:AddTag("small_livestock")
 
         --waterproofer (from waterproofer component) added to pristine state for optimization
         inst:AddTag("waterproofer")

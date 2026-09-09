@@ -7,7 +7,10 @@ local assets =
 
 local AOEUtil = require("aoeutil")
 
-local splashfxlist = {} --for pinnable, dummy empty list
+local splashfxlist =
+{
+	"goo_vines_break_fx",
+}
 
 local DIRT_SCALE = 0.7
 local DIRT_OFFSET = -0.3
@@ -354,6 +357,9 @@ local function OnUpdate_Server(inst, dt)
 			za = (z + za / count) / 2
 			inst.Physics:Teleport(xa, 0, za)
 
+			inst.SoundEmitter:KillSound("loop")
+			inst.SoundEmitter:PlaySound("rifts/lunarthrall/vine_spawn")
+
 			inst._emerged:set(true)
 			inst._t = 0
 			inst._synct:set(0)
@@ -397,12 +403,15 @@ local function InitVines(inst, caster, numloops, deltadir)
 	inst.deltadir = deltadir
 	inst.dest = Vector3(0, 0, 0)
 	inst.walkto = BufferedAction(inst, nil, ACTIONS.WALKTO, nil, inst.dest, nil, nil, nil, nil, 0)
+
+	inst.SoundEmitter:PlaySound("rifts/lunarthrall/vine_move", "loop")
 end
 
 local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
+	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
 	MakeInventoryPhysics(inst, 100, VINES_RADIUS + 0.4)
@@ -456,4 +465,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("charlie_boss_vines", fn, assets)
+return Prefab("charlie_boss_vines", fn, assets, splashfxlist)

@@ -855,7 +855,7 @@ SPECIAL_EVENTS =
     YOTS = "year_of_the_snake",
     YOTH = "year_of_the_knight",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.CARNIVAL
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 WORLD_EXTRA_EVENTS = {}
 
 FESTIVAL_EVENTS =
@@ -3108,4 +3108,10 @@ VIRTUALROOM_BOUNDINGBOXES = {
         maxx = 10, maxy = 10,
         mask = nil, -- Can be nil for a solid box. Index 1 is at minx, miny so this is visually flipped vertically.
     },
+}
+
+CHARACTER_KNOWS_CHARLIE =
+{
+    winona = true,
+    waxwell = true,
 }

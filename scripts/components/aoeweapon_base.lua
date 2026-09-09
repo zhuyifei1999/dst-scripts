@@ -139,9 +139,7 @@ local function TestGround(x, z)
 end
 
 function AOEWeapon_Base:OnToss(doer, target, sourceposition, basespeed, startradius)
-    if target.components.mine ~= nil then
-        target.components.mine:Deactivate()
-    end
+    DeactivateInventoryItemBeforeLaunch(target)
 
     if target.Physics and not target.components.inventoryitem.nobounce and target.Physics:IsActive() then
         startradius = math.max(startradius or 0, doer:GetPhysicsRadius(0) + target:GetPhysicsRadius(0))

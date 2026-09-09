@@ -3970,8 +3970,8 @@ local fx =
     },
 	{
 		name = "atrium_portal_fx",
-		bank = "vault_portal_fx", -- #FIXME
-		build = "vault_portal_fx", -- #FIXME
+		bank = "atrium_portal_fx",
+		build = "atrium_portal_fx",
 		anim = "activate",
         fn = function(inst)
             local parent = inst.entity:GetParent()
@@ -3981,6 +3981,18 @@ local fx =
                 inst.entity:SetParent(nil)
             end
         end,
+	},
+	{
+		name = "goo_vines_break_fx",
+		bank = "charlie_boss_vines",
+		build = "charlie_boss_vines",
+		anim = "vine_break",
+		sound = "rifts/lunarthrall/vine_death",
+		fn = function(inst)
+			inst.AnimState:SetFinalOffset(2)
+			inst.AnimState:SetLightOverride(1)
+			--inst.AnimState:SetSymbolLightOverride("cb_vine_red", 1)
+		end,
 	},
 }
 

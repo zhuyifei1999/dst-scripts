@@ -7,6 +7,13 @@ local function OnBlocked(owner)
     owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_marble")
 end
 
+local function OnKnockbackBlocked(owner)
+    if owner.components.rider and owner.components.rider:IsRiding() then
+        local armor = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+        armor.components.armor:TakeDamage(TUNING.ARMOR_ROCKY_KNOCKBACK_BLOCKED_DAMAGE)
+    end
+end
+
 local function OnEquip(inst, owner)
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
@@ -17,11 +24,13 @@ local function OnEquip(inst, owner)
     end
 
     inst:ListenForEvent("blocked", OnBlocked, owner)
+    inst:ListenForEvent("knockbackblocked", OnKnockbackBlocked, owner)
 end
 
 local function OnUnequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst:RemoveEventCallback("blocked", OnBlocked, owner)
+    inst:RemoveEventCallback("knockbackblocked", OnKnockbackBlocked, owner)
 
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then

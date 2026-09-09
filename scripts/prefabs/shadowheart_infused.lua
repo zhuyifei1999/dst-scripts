@@ -48,8 +48,10 @@ local function OnLanded(inst)
     end
 end
 
-local function OnDroppedAsLoot(inst)
-    inst.sg:GoToState("stunned", GetRandomWithVariance(10, 1))
+local function OnDroppedAsLoot(inst, data)
+    if data and data.dropper and data.dropper:HasTag("npcstalker") then
+        inst.sg:GoToState("stunned", GetRandomWithVariance(10, 1))
+    end
 end
 
 ----------------------------------------------------------------------------------------------------------------

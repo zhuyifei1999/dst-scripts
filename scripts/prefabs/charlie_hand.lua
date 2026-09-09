@@ -345,6 +345,7 @@ local function CharlieHandKeyStoneFn()
     inst.components.constructionsite:SetConstructionPrefab("socket_bothgatekeys_construction_container")
     inst.components.constructionsite:SetOnConstructedFn(KeyStone_ConstructionSite_OnConstructed)
     inst.OnAtriumPowered = KeyStone_OnAtriumPowered
+    inst.OnEntitySleep = inst.Remove
 
     return inst
 end

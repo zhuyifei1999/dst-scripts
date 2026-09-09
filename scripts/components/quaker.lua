@@ -626,9 +626,11 @@ local OnMiniQuake = _ismastersim and function(src, data)
     _miniquakesoundintensity:set(true)
 
     local pos = data.pos or data.target:GetPosition()
-    local dt = data.duration / data.num
-    for t = 0, data.duration - dt * .5, dt do
-        inst:DoTaskInTime(t, _OnMiniQuakeSpawn, pos, data.rad, data.minrad, data.debrisfn)
+    if _world.Map:CanPointHaveQuaker(pos.x, pos.y, pos.z) then
+        local dt = data.duration / data.num
+        for t = 0, data.duration - dt * .5, dt do
+            inst:DoTaskInTime(t, _OnMiniQuakeSpawn, pos, data.rad, data.minrad, data.debrisfn)
+        end
     end
 
     ShakeAllCamerasWithFilter(CanPlayerHaveQuaker, CAMERASHAKE.FULL, data.duration, .02, .5, data.target, 40)

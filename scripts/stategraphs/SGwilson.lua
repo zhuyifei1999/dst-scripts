@@ -855,6 +855,7 @@ local function SetGooBuild(inst, build)
 				inst.AnimState:SetSymbolLightOverride("goo_vine_red", 0)
 				inst.AnimState:SetSymbolLightOverride("goo_vine_black", 0)
 				inst.AnimState:SetSymbolLightOverride("goo_vines", 0)
+				inst.SoundEmitter:KillSound("goo_vines_loop")
 			end
 		end
 		inst.sg.mem.goo_build = build
@@ -864,6 +865,7 @@ local function SetGooBuild(inst, build)
 				inst.AnimState:SetSymbolLightOverride("goo_vine_red", 1)
 				inst.AnimState:SetSymbolLightOverride("goo_vine_black", 1)
 				inst.AnimState:SetSymbolLightOverride("goo_vines", 1)
+				inst.SoundEmitter:PlaySound("rifts/lunarthrall/vine_move", "goo_vines_loop")
 			end
 		end
 	end
@@ -1876,7 +1878,7 @@ local events =
             elseif inst.sg:HasStateTag("shell") then
                 inst.sg:GoToState("shell_hit")
             elseif inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
-				inst.sg.statemem.keepgoobuild = true
+				inst.sg.statemem.isstillpinned = true
 				inst.sg:GoToState("pinned_hit")
             elseif data.stimuli == "darkness" then
                 inst.sg:GoToState("hit_darkness")
@@ -1973,6 +1975,7 @@ local events =
                 })
             else
                 if inst.components.inventory:EquipHasTag("superheavyarmor") then
+                    inst:PushEvent("knockbackblocked")
                     inst.sg:GoToState("hit")
                 else
                     inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
@@ -2309,6 +2312,7 @@ local events =
         function(inst, data)
             if inst.components.health ~= nil and not inst.components.health:IsDead() and inst.components.pinnable ~= nil then
                 if inst.components.pinnable.canbepinned then
+					inst.sg.statemem.isstillpinned = true
                     inst.sg:GoToState("pinned_pre", data)
                 elseif inst.components.pinnable:IsStuck() then
                     --V2C: Since sg events are queued, it's possible we're no longer pinnable
@@ -19070,6 +19074,7 @@ local states =
             ForceStopHeavyLifting(inst)
 
             if inst.components.pinnable == nil or not inst.components.pinnable:IsStuck() then
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
                 return
             end
@@ -19097,30 +19102,30 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
-				inst.sg.statemem.keepgoobuild = true
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
             end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg.statemem.isstillpinned = true
-					inst.sg.statemem.keepgoobuild = true
                     inst.sg:GoToState("pinned")
                 end
             end),
         },
 
         onexit = function(inst)
+			inst.AnimState:ClearOverrideSymbol("swap_goosplat")
             if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
                 inst.components.inventory:Show()
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:EnableMapControls(true)
                     inst.components.playercontroller:Enable(true)
                 end
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
             end
-            inst.AnimState:ClearOverrideSymbol("swap_goosplat")
-			if not inst.sg.statemem.keepgoobuild then
-				SetGooBuild(inst, nil)
-			end
         end,
     },
 
@@ -19130,6 +19135,7 @@ local states =
 
         onenter = function(inst)
             if inst.components.pinnable == nil or not inst.components.pinnable:IsStuck() then
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
                 return
             end
@@ -19156,20 +19162,23 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
-				inst.sg.statemem.keepgoobuild = true
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
             end),
         },
 
         onexit = function(inst)
-            inst.components.inventory:Show()
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:EnableMapControls(true)
-                inst.components.playercontroller:Enable(true)
-            end
             inst.SoundEmitter:KillSound("struggling")
-			if not inst.sg.statemem.keepgoobuild then
+			if not inst.sg.statemem.isstillpinned then
 				SetGooBuild(inst, nil)
+				inst.components.inventory:Show()
+				if inst.components.playercontroller then
+					inst.components.playercontroller:EnableMapControls(true)
+					inst.components.playercontroller:Enable(true)
+				end
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
 			end
         end,
     },
@@ -19202,13 +19211,12 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
-				inst.sg.statemem.keepgoobuild = true
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
             end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg.statemem.isstillpinned = true
-					inst.sg.statemem.keepgoobuild = true
                     inst.sg:GoToState("pinned")
                 end
             end),
@@ -19216,15 +19224,16 @@ local states =
 
         onexit = function(inst)
             if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
                 inst.components.inventory:Show()
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:EnableMapControls(true)
                     inst.components.playercontroller:Enable(true)
                 end
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
             end
-			if not inst.sg.statemem.keepgoobuild then
-				SetGooBuild(inst, nil)
-			end
         end,
     },
 
@@ -19257,12 +19266,17 @@ local states =
         },
 
         onexit = function(inst)
-            inst.components.inventory:Show()
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:EnableMapControls(true)
-                inst.components.playercontroller:Enable(true)
-            end
-			SetGooBuild(inst, nil)
+			if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
+				inst.components.inventory:Show()
+				if inst.components.playercontroller ~= nil then
+					inst.components.playercontroller:EnableMapControls(true)
+					inst.components.playercontroller:Enable(true)
+				end
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
+			end
         end,
     },
 

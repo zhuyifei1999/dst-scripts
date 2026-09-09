@@ -298,8 +298,8 @@ function VirtualRoomManager:GetDebugString()
             otx, oty = -1, -1
         end
         table.insert(str,
-            string.format("  %s Current Room %d[%s], Max Room %d, Players %d, Voters %d, origin %d_%d",
-            virtualroomset.roomsetname,
+            string.format("  %s[%08X] Current Room %d[%s], Max Room %d, Players %d, Voters %d, origin %d_%d",
+            virtualroomset.roomsetname, hash(virtualroomset.roomsetname),
             virtualroomset.currentroomindex, virtualroomset:GetCurrentRoomName(), virtualroomset.numberrooms,
             virtualroomset.numberplayers, virtualroomset.numbervoters,
             otx, oty))

@@ -129,6 +129,14 @@ function Projectile:SetOnMissFn(fn)
     self.onmiss = fn
 end
 
+function Projectile:SetOnDeflectFn(fn)
+	self.ondeflect = fn
+end
+
+function Projectile:SetKeepOnDeflect(keep)
+	self.keepondeflect = keep
+end
+
 function Projectile:SetCanCatch(cancatch)
     self.cancatch = cancatch
 end
@@ -521,17 +529,9 @@ function Projectile:IsBounced()
 	return self.bounced == true
 end
 
-function Projectile:SetKeepOnDeflect(keep)
-	self.keepondeflect = keep
-end
-
-function Projectile:SetOnDeflect(fn)
-	self.ondeflect = fn
-end
-
 function Projectile:Deflect(deflector)
 	if self.ondeflect then
-		self.ondeflect(self.inst, deflector)
+		self.ondeflect(self.inst, self.owner, deflector)
 	end
 	if not self.keepondeflect then
 		self.inst:Remove()

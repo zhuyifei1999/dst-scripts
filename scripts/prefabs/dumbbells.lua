@@ -192,7 +192,7 @@ end
 local LAUNCH_OFFSET = Vector3(1, 1, 0)
 local DEFLECT_LAUNCH_OFFSET = Vector3(0, 0.5, 0)
 
-local function OnDeflect(inst, deflector)
+local function OnDeflect(inst, attacker, deflector)
 	inst.components.complexprojectile:Cancel()
 	local pt = inst:GetPosition()
 	local theta = deflector:GetAngleToPoint(pt) * DEGREES

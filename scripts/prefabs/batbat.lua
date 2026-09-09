@@ -32,10 +32,6 @@ local function onunequip(inst, owner)
     end
 end
 
-local function IsLifeDrainable(target)
-	return not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable")
-end
-
 local function onattack(inst, owner, target)
     local skin_fx = SKIN_FX_PREFAB[inst:GetSkinName()]
     if skin_fx ~= nil and skin_fx[1] ~= nil and target ~= nil and target.components.combat ~= nil and target:IsValid() then

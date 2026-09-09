@@ -2,26 +2,14 @@ require("stategraphs/commonstates")
 
 local AOEUtil = require("aoeutil")
 
-local function ChooseAttack(inst, target)
-	target = target or inst.components.combat.target
-	if target and target:IsValid() then
-		inst.sg:GoToState("pounce", target)
-		return true
-	end
-	return false
-end
-
 local events =
 {
     CommonHandlers.OnLocomote(true, true),
     CommonHandlers.OnDeath(),
     EventHandler("doattack", function(inst, data)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
-            ChooseAttack(inst, data and data.target)
+			inst.sg:GoToState("pounce", data.target)
         end
-    end),
-    EventHandler("spawn", function(inst)
-        inst.sg:GoToState("spawn")
     end),
 }
 
@@ -83,6 +71,145 @@ local states =
 		end,
     },
 
+	State{
+		name = "walk_start",
+		tags = { "moving", "canrotate" },
+
+		onenter = function(inst)
+			if inst.sg.lasttags["running"] then
+				inst.sg:GoToState("run_stop", true)
+				return
+			end
+			inst.components.locomotor:WalkForward()
+			inst.AnimState:PlayAnimation("walk_pre")
+		end,
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("walk")
+				end
+			end),
+		},
+	},
+
+	State{
+		name = "walk",
+		tags = { "moving", "canrotate" },
+
+		onenter = function(inst)
+			inst.components.locomotor:WalkForward()
+			if not inst.AnimState:IsCurrentAnimation("walk_loop") then
+				inst.AnimState:PlayAnimation("walk_loop", true)
+			end
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+		end,
+
+		ontimeout = function(inst)
+			inst.sg:GoToState("walk")
+		end,
+	},
+
+	State{
+		name = "walk_stop",
+		tags = { "canrotate" },
+
+		onenter = function(inst)
+			inst.components.locomotor:StopMoving()
+			inst.AnimState:PlayAnimation("walk_pst")
+		end,
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
+
+	State{
+		name = "run_start",
+		tags = { "moving", "running", "canrotate" },
+
+		onenter = function(inst)
+			inst.components.locomotor.runspeed = TUNING.CHARLIE_BOSS_RUNNER_WALKSPEED
+			inst.components.locomotor:RunForward()
+			inst.AnimState:PlayAnimation("run_pre")
+		end,
+
+		timeline =
+		{
+			FrameEvent(11, function(inst)
+				inst.components.locomotor.runspeed = inst.components.locomotor.runspeed * 0.75 + TUNING.CHARLIE_BOSS_RUNNER_RUNSPEED * 0.25
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("run")
+				end
+			end),
+		},
+	},
+
+	State{
+		name = "run",
+		tags = { "moving", "running", "canrotate" },
+
+		onenter = function(inst)
+			inst.components.locomotor.runspeed = (inst.components.locomotor.runspeed + TUNING.CHARLIE_BOSS_RUNNER_RUNSPEED) * 0.5
+			inst.components.locomotor:RunForward()
+			if not inst.AnimState:IsCurrentAnimation("run_loop") then
+				inst.AnimState:PlayAnimation("run_loop", true)
+			end
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+		end,
+
+		ontimeout = function(inst)
+			inst.sg:GoToState("run")
+		end,
+	},
+
+	State{
+		name = "run_stop",
+		tags = { "idle" },
+
+		onenter = function(inst, towalk)
+			inst.components.locomotor:StopMoving()
+			inst.AnimState:PlayAnimation("run_pst")
+			if towalk then
+				inst.sg:RemoveStateTag("idle")
+				inst.sg:AddStateTag("canrotate")
+			end
+		end,
+
+		events =
+		{
+			EventHandler("locomote", function(inst, data)
+				if inst.components.locomotor:WantsToMoveForward() and not inst.components.locomotor:WantsToRun() then
+					if inst.sg:HasStateTag("idle") then
+						inst.sg:RemoveStateTag("idle")
+						inst.sg:AddStateTag("canrotate")
+					end
+					return true
+				elseif not inst.sg:HasStateTag("idle") then
+					inst.sg:RemoveStateTag("canrotate")
+					inst.sg:AddStateTag("idle")
+				end
+			end),
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState(inst.sg:HasStateTag("idle") and "idle" or "walk_start")
+				end
+			end),
+		},
+	},
+
     State{
         name = "pounce",
         tags = { "noattack", "attack", "busy", "jumping" },
@@ -92,17 +219,31 @@ local states =
             inst.components.locomotor:Stop()
             inst.components.combat:StartAttack()
 			if target and target:IsValid() then
-                local x, y, z = inst.Transform:GetWorldPosition()
-                local tx, ty, tz = target.Transform:GetWorldPosition()
-                inst.sg.statemem.target = target
-                inst.sg.statemem.tracking = true
-                inst:ForceFacePoint(tx, ty, tz)
+				inst.sg.statemem.target = target
+				inst.sg.statemem.tracking = true
 
-                local speed = TUNING.CHARLIE_BOSS_RUNNER_RUNSPEED
-                inst.sg.statemem.speed = speed
-                inst.Physics:SetMotorVelOverride(inst.sg.statemem.speed, 0, 0)
+				local x, _, z = inst.Transform:GetWorldPosition()
+				local tx, _, tz = target.Transform:GetWorldPosition()
+				local vx, _, vz = target.Physics:GetVelocity()
+
+				local dt = 16 * FRAMES
+				local dx = tx + vx * dt - x
+				local dz = tz + vz * dt - z
+				local speed = math.min(8, math.sqrt(dx * dx + dz * dz)) / dt
+				if speed >= 6 then
+					inst.sg.statemem.far = true
+				else
+					dt = 11 * FRAMES
+					dx = tx + vx * dt - x
+					dz = tz + vz * dt - z
+					speed = math.max(1, math.sqrt(dx * dx + dz * dz)) / dt
+				end
+				if x ~= tx or z ~= tz then
+					inst.Transform:SetRotation(math.atan2(z - tz, tx - x) * RADIANS)
+				end
+				inst.Physics:SetMotorVelOverride(speed, 0, 0)
 			end
-            inst.AnimState:PlayAnimation("attack")
+			inst.AnimState:PlayAnimation(inst.sg.statemem.far and "attack" or "attack_quick")
             inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/pounce")
         end,
 
@@ -113,13 +254,19 @@ local states =
 					if target:IsValid() then
 						local lastdrot = inst.sg.statemem.drot
 						if lastdrot ~= 0 then
+							local tx, _, tz = target.Transform:GetWorldPosition()
+							local vx, _, vz = target.Physics:GetVelocity()
+							local dt = (inst.sg.statemem.far and 16 or 11) * FRAMES
+							tx = tx + vx * dt
+							tz = tz + vz * dt
+
 							local rot = inst.Transform:GetRotation()
-							local rot1 = inst:GetAngleToPoint(target.Transform:GetWorldPosition())
+							local rot1 = inst:GetAngleToPoint(tx, 0, tz)
 							local drot = ReduceAngle(rot1 - rot)
 
 							drot = lastdrot and
 								math.clamp(drot, math.min(0, lastdrot), math.max(0, lastdrot)) or
-								math.clamp(drot, -15, 15)
+								math.clamp(drot, -6, 6)
 
 							inst.Transform:SetRotation(rot + drot)
 							inst.sg.statemem.lastdrot = drot
@@ -139,14 +286,24 @@ local states =
 			FrameEvent(6, function(inst)
 				inst.sg.statemem.tracking = false
 			end),
-
-            FrameEvent(9, function(inst)
-                inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/death")
-                DoAOE(inst)
-                RemovePhysicsColliders(inst)
-				inst.Physics:ClearMotorVelOverride()
-				inst.Physics:Stop()
-            end),
+			FrameEvent(11, function(inst)
+				if not inst.sg.statemem.far then
+					inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/death")
+					DoAOE(inst)
+					RemovePhysicsColliders(inst)
+					inst.Physics:ClearMotorVelOverride()
+					inst.Physics:Stop()
+				end
+			end),
+			FrameEvent(16, function(inst)
+				if inst.sg.statemem.far then
+					inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/death")
+					DoAOE(inst)
+					RemovePhysicsColliders(inst)
+					inst.Physics:ClearMotorVelOverride()
+					inst.Physics:Stop()
+				end
+			end),
         },
 
         events =
@@ -156,7 +313,7 @@ local states =
                     inst:Remove()
                 end
             end),
-        }
+		},
     },
 
     State{
@@ -189,14 +346,15 @@ local states =
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
             inst:AddTag("NOCLICK")
-            inst.persists = false
             inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/death")
         end,
 
         events =
         {
             EventHandler("animover", function(inst)
-                inst:Remove()
+				if inst.AnimState:AnimDone() then
+					inst:Remove()
+				end
             end),
         },
 
@@ -206,7 +364,4 @@ local states =
     },
 }
 
-CommonStates.AddWalkStates(states)
-CommonStates.AddRunStates(states)
-
-return StateGraph("charlie_boss_runner", states, events, "idle")
+return StateGraph("charlie_boss_runner", states, events, "walk")
