@@ -134,7 +134,7 @@ local SHAKE_DIST = 40
 local RETARGET_MUST_TAGS  = { "_combat" }
 local RETARGET_CANT_TAGS  = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" }
 local RETARGET_ONEOF_TAGS = { "character", "animal", "monster" }
-local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost", "shadowthrall", "stalker" }
+local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost", "shadowthrall", "shadowboss", "stalker" }
 
 local function RetargetFn(inst)
     local head = next(inst.chunks) ~= nil and inst.chunks[#inst.chunks].dirt_start or nil
@@ -919,7 +919,7 @@ end
 local THORNS_AOE_RADIUS = 2
 local THORNS_AOE_MUST_TAGS  =  { "_combat" }
 local THRORNS_AOE_CANT_TAGS =  { "worm_boss_piece", "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" }
-local SHADOW_THORNS_AOE_CANT_TAGS = ConcatArrays({ "shadowthrall", "stalker" }, THRORNS_AOE_CANT_TAGS)
+local SHADOW_THORNS_AOE_CANT_TAGS = ConcatArrays({ "shadowthrall", "shadowboss", "stalker" }, THRORNS_AOE_CANT_TAGS)
 
 local AOE_DAMAGE_RADIUS_PADDING = 3
 

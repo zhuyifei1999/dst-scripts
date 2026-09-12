@@ -566,6 +566,10 @@ function Combat:SetHurtSound(sound)
 end
 
 function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
+	self:GetAttacked_Internal(attacker, damage, weapon, stimuli, spdamage, nil)
+end
+
+function Combat:GetAttacked_Internal(attacker, damage, weapon, stimuli, spdamage, from_doattack)
     if self.inst.components.health and self.inst.components.health:IsDead() then
         return true
     end
@@ -673,7 +677,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
             damageresolved = damageresolved ~= nil and -damageresolved or damage
             if self.inst.components.health:IsDead() then
                 if attacker ~= nil then
-                    attacker:PushEvent("killed", { victim = self.inst, attacker = attacker })
+					attacker:PushEvent("killed", { victim = self.inst, attacker = attacker, from_doattack = from_doattack })
                 end
                 if self.onkilledbyother ~= nil then
                     self.onkilledbyother(self.inst, attacker)
@@ -688,7 +692,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
     if redirect_combat ~= nil then
         -- Small hack for centipede
         redirect_combat.redirected_from = self.inst
-		redirect_combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
+		redirect_combat:GetAttacked_Internal(attacker, damage, weapon, stimuli, spdamage, true)
         redirect_combat.redirected_from = nil
     end
 
@@ -707,21 +711,21 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
     end
 
     if not blocked then
-		self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, damageresolved = damageresolved, original_damage = original_damage, weapon = weapon, stimuli = stimuli, spdamage = spdamage, redirected = damageredirecttarget, noimpactsound = self.noimpactsound })
+		self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, damageresolved = damageresolved, original_damage = original_damage, weapon = weapon, stimuli = stimuli, spdamage = spdamage, redirected = damageredirecttarget, noimpactsound = self.noimpactsound, from_doattack = from_doattack })
 
         if self.onhitfn ~= nil then
 			self.onhitfn(self.inst, attacker, damage, spdamage)
         end
 
         if attacker ~= nil then
-			attacker:PushEvent("onhitother", { target = self.inst, damage = damage, damageresolved = damageresolved, stimuli = stimuli, spdamage = spdamage, weapon = weapon, redirected = damageredirecttarget })
+			attacker:PushEvent("onhitother", { target = self.inst, damage = damage, damageresolved = damageresolved, stimuli = stimuli, spdamage = spdamage, weapon = weapon, redirected = damageredirecttarget, from_doattack = from_doattack })
             if attacker.components.combat ~= nil and attacker.components.combat.onhitotherfn ~= nil then
 				attacker.components.combat.onhitotherfn(attacker, self.inst, damage, stimuli, weapon, damageresolved, spdamage, damageredirecttarget)
             end
         end
     else
         -- We blocked it, but we might still want to know how much they rattled us in damage value!
-		self.inst:PushEvent("blocked", { attacker = attacker, damage = damage, spdamage = spdamage, original_damage = original_damage, weapon = weapon, stimuli = stimuli })
+		self.inst:PushEvent("blocked", { attacker = attacker, damage = damage, spdamage = spdamage, original_damage = original_damage, weapon = weapon, stimuli = stimuli, from_doattack = from_doattack })
     end
 
 	if self.target == nil or self.target == attacker then
@@ -1209,7 +1213,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
         if projectile == nil then
 			reflected_dmg, reflected_spdmg = self:CalcReflectedDamage(targ, dmg, weapon, stimuli, reflect_list, spdmg)
         end
-		targ.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli, spdmg)
+		targ.components.combat:GetAttacked_Internal(self.inst, dmg, weapon, stimuli, spdmg, true)
     elseif projectile == nil then
 		reflected_dmg, reflected_spdmg = self:CalcReflectedDamage(targ, 0, weapon, stimuli, reflect_list)
     end
@@ -1226,7 +1230,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
 
     --Apply reflected damage to self after our attack damage is completed
 	if (reflected_dmg > 0 or reflected_spdmg ~= nil) and self.inst.components.health ~= nil and not self.inst.components.health:IsDead() then
-		self:GetAttacked(targ, reflected_dmg, nil, nil, reflected_spdmg)
+		self:GetAttacked_Internal(targ, reflected_dmg, nil, nil, reflected_spdmg, true)
         for i, v in ipairs(reflect_list) do
             if v.inst:IsValid() then
                 v.inst:PushEvent("onreflectdamage", v)
@@ -1312,7 +1316,7 @@ function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetag
             (validfn == nil or validfn(ent, self.inst)) then
             self.inst:PushEvent("onareaattackother", { target = ent, weapon = weapon, stimuli = stimuli })
             local dmg, spdmg = self:CalcDamage(ent, weapon, self.areahitdamagepercent)
-            ent.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli, spdmg)
+			ent.components.combat:GetAttacked_Internal(self.inst, dmg, weapon, stimuli, spdmg, true)
             hitcount = hitcount + 1
         end
     else
@@ -1324,7 +1328,7 @@ function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetag
                 (validfn == nil or validfn(ent, self.inst)) then
                 self.inst:PushEvent("onareaattackother", { target = ent, weapon = weapon, stimuli = stimuli })
                 local dmg, spdmg = self:CalcDamage(ent, weapon, self.areahitdamagepercent)
-                ent.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli, spdmg)
+				ent.components.combat:GetAttacked_Internal(self.inst, dmg, weapon, stimuli, spdmg, true)
                 hitcount = hitcount + 1
             end
         end

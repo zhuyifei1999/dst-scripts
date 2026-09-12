@@ -11,6 +11,11 @@ local UserCommandPickerScreen = require "screens/redux/usercommandpickerscreen"
 
 local UserCommands = require "usercommands"
 
+-- NOTES(JBK): With this being for beta feedback the strings do not need localized.
+local FEEDBACK_SCREEN = {
+    PAUSEDGAME_BUTTONHINT = "Press F8 to send feedback on the beta!",
+}
+
 local PauseScreen = Class(Screen, function(self)
     Screen._ctor(self, "PauseScreen")
 
@@ -148,7 +153,7 @@ function PauseScreen:BuildMenu()
 
     if TheSim:FeedbackEnabled() then
         -- Feedback hint below the dialog
-        local feedback_str = "Press F8 to send feedback!"
+        local feedback_str = FEEDBACK_SCREEN.PAUSEDGAME_BUTTONHINT
         local feedback_y = -height/2 - 80
 
         self.feedback_shadow = self.proot:AddChild(Text(UIFONT, 36, feedback_str, UICOLOURS.BLACK))

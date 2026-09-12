@@ -118,7 +118,7 @@ end
 local AOE_RANGE_PADDING = 3
 local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
 local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
-local SHADOW_AOE_TARGET_CANT_TAGS = ConcatArrays({ "shadowthrall", "stalker" }, AOE_TARGET_CANT_TAGS)
+local SHADOW_AOE_TARGET_CANT_TAGS = ConcatArrays({ "shadowthrall", "shadowboss", "stalker" }, AOE_TARGET_CANT_TAGS)
 
 local function IsRockyAlly(inst, target)
 	if target:HasTag("rocky") then

@@ -717,7 +717,8 @@ function self:OnUpdate(dt)
         end
     end
 
-    SetGroundOverlay(GROUND_OVERLAYS.puddles, _wetness:value() * 3 / 100)
+    --NOTE: for now this is okay because only charlie arena is a no rain zone, which is already covered by a teleport, so we won't see any sudden snapping.
+    SetGroundOverlay(GROUND_OVERLAYS.puddles, _rainfx_allowsfx and _wetness:value() * 3 / 100 or 0)
 
     PushWeather()
 end

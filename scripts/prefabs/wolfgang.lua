@@ -241,6 +241,9 @@ local function OnTerraform(inst)
 end
 
 local function OnHitOther(inst, data)
+	if not (data and data.from_doattack) then
+		return
+	end
 	local target = data.target
 	if target ~= nil and (
 		data.weapon == nil or (

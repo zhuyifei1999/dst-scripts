@@ -103,8 +103,32 @@ end
 function IsRangedWeapon(ent)
 	return ent ~= nil and
 		(	ent.components.projectile ~= nil or
-			(ent.components.weapon ~= nil and ent.components.weapon:CanRangedAttack())
+			(ent.components.weapon ~= nil and ent.components.weapon:CanRangedAttack()) or
+			ent:HasTag("pseudorangedweapon")
 		)
+end
+
+--Use this check during "attacked" or "blocked" events to check if you should trigger procs.
+--e.g. shouldn't while mounted (will be redirected)
+--     shouldn't from "monsterhat"
+function ShouldProcOnAttackedOrBlocked(inst, owner, data) --data from "attacked" or "blocked" event
+	return data ~= nil
+		and not data.redirected
+		and data.attacker ~= nil
+		and (	data.attacker.components.inventoryitem and
+				data.attacker.components.inventoryitem:GetGrandOwner() or
+				data.attacker
+			) ~= owner
+end
+
+--Use this check during "attacked" or "blocked" events to check if the hit came from your own equipment.
+--e.g. bat_bosscorpsehat
+function IsEquipmentOnAttackedOrBlocked(inst, owner, data) --data from "attacked" or "blocked" event
+	return data ~= nil
+		and data.attacker ~= nil
+		and data.attacker.components.inventoryitem ~= nil
+		and data.attacker.components.inventoryitem:GetGrandOwner() == owner
+		and data.attacker:HasTag("nodangermusic")
 end
 
 --------------------------------------------------------------------------
@@ -121,6 +145,7 @@ NON_LIFEFORM_TARGET_TAGS =
 	"smashable",
 	"veggie", --stuff like lureplants... not considered life?
     "deck_of_cards",
+    "plantcreature",
 }
 
 --Shadows and Gestalts don't have souls.
@@ -154,6 +179,7 @@ PURE_SHADOW_TARGET_TAGS = {
     "stalker",
     "stalkerminion",
     "shadowthrall",
+	"shadowboss",
 }
 
 function IsLifeDrainable(target)
@@ -1324,6 +1350,7 @@ function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
                         prohibited = true
                     end
                 end
+                break -- prohibited is set
             else
                 if map:IsPointInVirtualRoomSet(roomsethash, fx, fy, fz) then
                     -- Teleporting from inside to outside of the VRS.
@@ -1334,6 +1361,7 @@ function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
                         -- Optional if a VRS locks down teleporting out if it is permitted.
                         prohibited = map:IsVirtualRoomSetTeleportingOutProhibited(roomsethash)
                     end
+                    break -- prohibited is set
                 end
             end
         end
@@ -1575,7 +1603,7 @@ function GetCreatureImpactSound(inst, weaponmod)
         (inst:HasTag("mound") and "mound_") or
 		(inst:HasAnyTag("shadow", "shadowminion", "shadowchesspiece") and "shadow_") or
 		(inst:HasAnyTag("tree", "wooden") and "tree_") or
-        (inst:HasAnyTag("veggie", "hedge") and "vegetable_") or
+        (inst:HasAnyTag("veggie", "hedge", "plantcreature") and "vegetable_") or
         (inst:HasTag("shell") and "shell_") or
 		(inst:HasAnyTag("rocky", "fossil") and "stone_") or
         nil

@@ -16,7 +16,7 @@ local function MakeLightRay(name)
 
         inst.AnimState:SetBank("charlie_arena_light_ray")
         inst.AnimState:SetBuild("charlie_arena_light_ray")
-        inst.AnimState:PlayAnimation("idle", true)
+        inst.AnimState:PlayAnimation("idle_loop", true)
         inst.AnimState:SetLightOverride(1)
 
         inst:AddTag("lightrays")
@@ -28,6 +28,19 @@ local function MakeLightRay(name)
 
         if not TheWorld.ismastersim then
             return inst
+        end
+
+        inst:AddComponent("savedrotation")
+
+        local rays = { 1, 2, 3, 4 }
+        for i = 1, #rays do
+            inst.AnimState:Hide("lightray"..i)
+        end
+
+        for i = 1, math.random(1) do
+            local selection = math.random(1, #rays)
+            inst.AnimState:Show("lightray"..rays[selection])
+            table.remove(rays, selection)
         end
 
         return inst

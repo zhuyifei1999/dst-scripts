@@ -477,7 +477,7 @@ local function MakeHat(name)
 
     local function tryproc(inst, owner, data)
         if inst._task == nil and
-            not data.redirected and
+			ShouldProcOnAttackedOrBlocked(inst, owner, data) and
             TryLuckRoll(owner, TUNING.ARMOR_RUINSHAT_PROC_CHANCE, LuckFormulas.RuinsHatProc) then
             ruinshat_proc(inst, owner)
         end
@@ -1362,21 +1362,22 @@ local function MakeHat(name)
         return inst
     end
 
-    local function balloon_onownerattackedfn(inst, data)
-        local balloon = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) or nil
-        if balloon ~= nil and balloon.components.poppable ~= nil then
-			balloon.components.poppable:Pop()
-        end
-    end
-
     local function balloon_onequip(inst, owner)
         fns.simple_onequip(inst, owner)
-		inst:ListenForEvent("attacked", balloon_onownerattackedfn, owner)
+		if inst.balloon_onownerattackedfn == nil then
+			inst.balloon_onownerattackedfn = function(owner, data)
+				if inst.components.poppable and ShouldProcOnAttackedOrBlocked(inst, owner, data) then
+					inst.components.poppable:Pop()
+				end
+			end
+		end
+		inst:ListenForEvent("attacked", inst.balloon_onownerattackedfn, owner)
     end
 
     local function balloon_onunequip(inst, owner)        
         _onunequip(inst, owner)
-		inst:RemoveEventCallback("attacked", balloon_onownerattackedfn, owner)
+		inst:RemoveEventCallback("attacked", inst.balloon_onownerattackedfn, owner)
+		inst.balloon_onownerattackedfn = nil
     end
 
     local function balloon_custom_init(inst)
@@ -1854,15 +1855,6 @@ local function MakeHat(name)
 
         hat:DoTaskInTime(TUNING.MUSHROOMHAT_MOONSPORE_RETALIATION_SPORE_DELAY, fns.mushroom_onattacked_moonspore_tryspawn)
     end
-    fns.mushroom_onattacked_moonspore = function(inst, data)
-        local hat = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) or nil
-        if hat ~= nil then
-            if hat._moonspore_tryspawn_count == nil then
-                hat:DoTaskInTime(TUNING.MUSHROOMHAT_MOONSPORE_RETALIATION_SPORE_DELAY, fns.mushroom_onattacked_moonspore_tryspawn)
-            end
-            hat._moonspore_tryspawn_count = TUNING.MUSHROOMHAT_MOONSPORE_RETALIATION_SPORE_COUNT
-        end
-    end
     fns.mushroom_spawnpoint_moonspore = function(inst)
         local pos = inst:GetPosition()
         local dist = GetRandomMinMax(0.1, 2.0)
@@ -1881,7 +1873,17 @@ local function MakeHat(name)
         owner:AddTag("spoiler")
         if inst._ismoonspore then
             owner:AddTag("moon_spore_protection")
-            inst:ListenForEvent("attacked", fns.mushroom_onattacked_moonspore, owner)
+			if inst.mushroom_onattacked_moonspore == nil then
+				inst.mushroom_onattacked_moonspore = function(owner, data)
+					if ShouldProcOnAttackedOrBlocked(inst, owner, data) then
+						if inst._moonspore_tryspawn_count == nil then
+							inst:DoTaskInTime(TUNING.MUSHROOMHAT_MOONSPORE_RETALIATION_SPORE_DELAY, fns.mushroom_onattacked_moonspore_tryspawn)
+						end
+						inst._moonspore_tryspawn_count = TUNING.MUSHROOMHAT_MOONSPORE_RETALIATION_SPORE_COUNT
+					end
+				end
+			end
+			inst:ListenForEvent("attacked", inst.mushroom_onattacked_moonspore, owner)
         end
 
         inst.components.periodicspawner:Start()
@@ -1897,7 +1899,8 @@ local function MakeHat(name)
         owner:RemoveTag("spoiler")
         if inst._ismoonspore then
             owner:RemoveTag("moon_spore_protection")
-            inst:RemoveEventCallback("attacked", fns.mushroom_onattacked_moonspore, owner)
+			inst:RemoveEventCallback("attacked", inst.mushroom_onattacked_moonspore, owner)
+			inst.mushroom_onattacked_moonspore = nil
         end
         inst.components.periodicspawner:Stop()
 
@@ -3519,7 +3522,7 @@ local function MakeHat(name)
 	end
 
 	local function alterguardian_spawngestalt_fn(inst, owner, data)
-		if not inst._is_active then
+		if not (inst._is_active and data and data.from_doattack) then
 			return
 		end
 
@@ -4004,8 +4007,10 @@ local function MakeHat(name)
 						voidcloth_setbuffitem(inst, nil)
 					end
 				end
-				inst._onattacked = function(owner)
-					voidcloth_resetbuff(inst)
+				inst._onattacked = function(owner, data)
+					if not IsEquipmentOnAttackedOrBlocked(inst, owner, data) then
+						voidcloth_resetbuff(inst)
+					end
 				end
 				inst._onattackother = function(owner)
 					voidcloth_onattackother(inst)
@@ -5536,14 +5541,9 @@ local function MakeHat(name)
             inst,
             TUNING.SHADOWTHRALL_PARASITE_TARGET_DIST,
             function(guy)
-                return inst.components.combat:CanTarget(guy) and 
-                       not guy:HasTag("shadowthrall") and 
-                       not guy:HasTag("shadow") and 
-                       (guy:HasTag("smallcreature") or 
-                        guy:HasTag("animal") or
-                        guy:HasTag("largecreature") or
-                        guy:HasTag("monster") or 
-                        guy:HasTag("character"))
+				return inst.components.combat:CanTarget(guy)
+					and not guy:HasAnyTag("shadowthrall", "shadow", "shadowboss")
+					and guy:HasAnyTag("smallcreature", "animal", "largecreature", "monster", "character")
             end,
             nil,
             SHADOWTHRALL_PARASITE_RETARGET_CANT_TAGS
@@ -5566,7 +5566,11 @@ local function MakeHat(name)
         if data.victim.sg == nil or not (data.victim.sg:HasState("parasite_revive") or data.victim.sg:HasState("death_hosted")) then
             return
         end
-        
+
+        if data.victim.components.inventory == nil then
+            return
+        end
+
         if data.victim.was_shadowthrall_parasited or data.victim:HasTag("shadowthrall_parasite_hosted") then
             return
         end
@@ -6488,7 +6492,10 @@ local function MakeHat(name)
     --
 
 	fns.bat_bosscorpse_onhitother_fn = function(inst, owner, data)
-		if owner ~= nil and owner.components.health and not owner.components.health:IsDead() and owner.components.health:IsHurt() then
+		if data and data.from_doattack and
+			owner and owner.components.health and
+			not owner.components.health:IsDead() and owner.components.health:IsHurt()
+		then
 		    local target = data.target
 			if target and target ~= owner and target:IsValid() and
 				not (target.components.health and target.components.health:IsDead()) and
@@ -6617,6 +6624,7 @@ local function MakeHat(name)
 		inst:AddTag("mufflehat")
         inst:AddTag("acidrainimmune")
         inst:AddTag("small_livestock")
+		inst:AddTag("nodangermusic")
 
         --waterproofer (from waterproofer component) added to pristine state for optimization
         inst:AddTag("waterproofer")

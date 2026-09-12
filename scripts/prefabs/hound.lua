@@ -490,6 +490,8 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
             inst:ListenForEvent("eyeflamesdirty", OnEyeFlamesDirty)
         elseif tag == "lunar_aligned" then
             inst:AddTag("soulless") -- no wortox souls
+        elseif tag == "hedge" then
+            inst:AddTag("plantcreature")
         end
     end
 

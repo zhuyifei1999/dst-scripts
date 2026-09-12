@@ -328818,6 +328818,11 @@ msgctxt "STRINGS.CHARACTER_TITLES.wx78"
 msgid "The Soulless Automaton"
 msgstr ""
 
+#. STRINGS.CHARLIE_NPC_GIVE_SHADOWHEART_INFUSED.1
+msgctxt "STRINGS.CHARLIE_NPC_GIVE_SHADOWHEART_INFUSED.1"
+msgid "You'll need to call upon an old friend."
+msgstr ""
+
 #. STRINGS.CHARLIE_NPC_RITUAL_BEGUN.1
 msgctxt "STRINGS.CHARLIE_NPC_RITUAL_BEGUN.1"
 msgid "We've done it."
@@ -328840,7 +328845,7 @@ msgstr ""
 
 #. STRINGS.CHARLIE_NPC_SACRIFICE_REQUEST.2
 msgctxt "STRINGS.CHARLIE_NPC_SACRIFICE_REQUEST.2"
-msgid "There are species of creature that produce extraordinary specimens."
+msgid "Only the most extraordinary specimens are worthy."
 msgstr ""
 
 #. STRINGS.CHARLIE_NPC_SACRIFICE_REQUEST.3
@@ -415805,17 +415810,17 @@ msgstr ""
 
 #. STRINGS.STALKER_NPC_INSPECT.WANDA.2
 msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.2"
-msgid "How strange it must be for you..."
+msgid "Have you seen what becomes?"
 msgstr ""
 
 #. STRINGS.STALKER_NPC_INSPECT.WANDA.3
 msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.3"
-msgid "To watch me fall from such heights..."
+msgid "Will I rest?"
 msgstr ""
 
 #. STRINGS.STALKER_NPC_INSPECT.WANDA.4
 msgctxt "STRINGS.STALKER_NPC_INSPECT.WANDA.4"
-msgid "To this... in but a moment."
+msgid "Or am I cursed to awaken to this nightmare evermore?"
 msgstr ""
 
 #. STRINGS.STALKER_NPC_INSPECT.WARLY.1

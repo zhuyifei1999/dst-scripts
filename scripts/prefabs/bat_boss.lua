@@ -78,7 +78,7 @@ local SHARE_TARGET_DIST = 40
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "INLIMBO", "bat", "batdisguise" }
 local RETARGET_ONEOF_TAGS = { "character", "monster" }
-local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "bat", "shadowthrall", "stalker" }
+local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "bat", "shadowthrall", "shadowboss", "stalker" }
 local CLONE_MAX_DIST = 12 --switches back to share target if separated this far
 
 local function _cantargetfn(guy, inst)
@@ -170,6 +170,7 @@ local function DoUnequip(inst, owner)
 	if owner:IsValid() and owner.components.inventory and owner.components.inventory:IsItemEquipped(inst) then
 		owner.components.inventory:DropItem(inst, true, true)
 	end
+	inst.unequiptask = nil
 end
 
 local function DoShadowRot(item)

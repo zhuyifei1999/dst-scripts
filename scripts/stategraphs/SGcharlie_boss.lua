@@ -28,6 +28,7 @@ local function ShouldVineCounter(inst, data) --data from "attacked" event
 	return inst.canvinecounter
 		and data and data.attacker and data.attacker:IsValid()
 		and inst:IsNear(data.attacker, 4 + data.attacker:GetPhysicsRadius(0))
+		and inst.components.combat:CanTarget(data.attacker)
 		or false
 end
 
@@ -244,18 +245,9 @@ local states =
 		timeline =
 		{
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature3/teleport_whoosh", nil, 0.7) end),
-			FrameEvent(9, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe", nil, 0.6) end),
-			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe", nil, 0.4) end),
-			FrameEvent(26, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/shadowrock_reveal") end),
-			FrameEvent(26, function(inst) inst.SoundEmitter:PlaySound("rifts/lunarthrall/vine_death") end),
-			FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/transform/three") end),
-			FrameEvent(34, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/shadowrock_reveal") end),
-			FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/shadowrock_reveal") end),
-			FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.4) end),
-			FrameEvent(54, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.7) end),
-			FrameEvent(57, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_subdued", nil, 0.9) end),
-			FrameEvent(60, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/tentacles", nil, 0.6) end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/rise_pst_1") end),
+			FrameEvent(53, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/rise_pst_2") end),
+
 
 			FrameEvent(10, function(inst)
 				local targets = {}
@@ -290,7 +282,7 @@ local states =
 			end),
 			FrameEvent(62, function(inst)
 				DoScreamShake(inst)
-				inst.components.epicscare:Scare(5)
+				inst.components.epicscare:Scare(10)
 			end),
 			FrameEvent(108, function(inst)
 				inst.sg.statemem.keepnofaced = true
@@ -393,7 +385,7 @@ local states =
 			FrameEvent(23, function(inst)
 				inst.sg.mem.forcetaunt = nil
 				DoScreamShake(inst)
-				inst.components.epicscare:Scare(5)
+				inst.components.epicscare:Scare(10)
 				inst:ToggleReflectingProjectiles()
 			end),
 			FrameEvent(26, function(inst)

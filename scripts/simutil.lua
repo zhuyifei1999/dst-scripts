@@ -369,13 +369,18 @@ end
 local function NoHoles(pt)
     return not TheWorld.Map:IsPointNearHole(pt)
 end
+local function Filter_TeleportingPermitted(inst, nightlight)
+    local fx, fy, fz = inst.Transform:GetWorldPosition()
+    local tx, ty, tz = nightlight.Transform:GetWorldPosition()
+    return IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
+end
 local NO_CHARLIE_TAGS = {"lunacyarea"}
 function FindCharlieRezSpotFor(inst)
     local x, y, z
     local nightlightmanager = TheWorld.components.nightlightmanager
     if nightlightmanager ~= nil then
         local nightlights = nightlightmanager:GetNightLightsWithFilter(nightlightmanager.Filter_OnlyOutTags, NO_CHARLIE_TAGS)
-        local nightlight = nightlightmanager:FindClosestNightLightFromListToInst(nightlights, inst)
+        local nightlight = nightlightmanager:FindClosestNightLightFromListToInst(nightlights, inst, Filter_TeleportingPermitted)
         if nightlight ~= nil then
             x, y, z = nightlight.Transform:GetWorldPosition()
         end

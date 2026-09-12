@@ -295,7 +295,7 @@ end
 local function DoLifeSteal(inst, owner, target)
     if owner.components.health ~= nil and
         owner.components.health:IsHurt() and
-        not target:HasOneOfTags(NON_LIFEFORM_TARGET_TAGS)
+        IsLifeDrainable(target)
     then
 		local mult = owner.components.aoediminishingreturns and owner.components.aoediminishingreturns.mult:Get() or 1
 		owner.components.health:DoDelta(inst._lifesteal * mult, false, "shadow_battleaxe")

@@ -2305,7 +2305,7 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "craftingstation"
     elseif t:HasAnyTag("brightmare", "brightmare_gestalt", "brightmareboss") then
         subcat = "gestalt"
-    elseif t:HasAnyTag("shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion", "shadowthrall", "shadowhand") then
+	elseif t:HasAnyTag("shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion", "shadowthrall", "shadowhand", "shadowboss") then
         subcat = "shadow"
     elseif t:HasTag("book") then
         subcat = "book"

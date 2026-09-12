@@ -39,7 +39,7 @@ local AOE_TAGSET
 local function GetAOEAttackTagSet(inst)
 	if AOE_TAGSET == nil then
 		AOE_TAGSET = AOEUtil.AttackTagSet()
-		AOE_TAGSET:AppendCantTags("shadowthrall", "shadow", "shadowcreature", "shadowchesspiece", "charlie_npc")
+		AOE_TAGSET:AppendCantTags("shadowthrall", "shadow", "shadowcreature", "shadowchesspiece", "shadowboss", "charlie_npc")
 		AOE_TAGSET:Register()
 	end
 	return AOE_TAGSET
@@ -199,6 +199,34 @@ end
 
 local REFLECT_RADIUS = 2
 
+local function TryGenericDeflectable(inst, ent)
+	if ent and ent.components.deflectable and ent:IsValid() then
+		local attacker = ent.components.deflectable:GetOwner()
+		local x1, y1, z1 = ent.Transform:GetWorldPosition()
+
+		ent.components.deflectable:Deflect(inst)
+
+		local x, y, z = inst.Transform:GetWorldPosition()
+		local rot, theta
+		if x ~= x1 or z ~= z1 then
+			theta = math.atan2(z - z1, x1 - x)
+			rot = theta * RADIANS
+		elseif attacker and attacker:IsValid() then
+			rot = attacker:GetAngleToPoint(x, y, z)
+			theta = rot * DEGREES
+		else
+			rot = inst.Transform:GetRotation()
+			theta = rot * DEGREES
+		end
+		x1 = x + REFLECT_RADIUS * math.cos(theta)
+		z1 = z - REFLECT_RADIUS * math.sin(theta)
+		y1 = math.max(1, y1)
+		SpawnReflectProjectileAtXYZ(inst, x1, y1, z1, rot, attacker)
+		return true
+	end
+	return false
+end
+
 local function OnBlocked(inst, data)
 	if data then
 		if data.attacker and data.attacker:IsValid() then
@@ -230,9 +258,13 @@ local function OnBlocked(inst, data)
 					x1 = x + REFLECT_RADIUS * math.cos(theta)
 					z1 = z - REFLECT_RADIUS * math.sin(theta)
 					SpawnReflectProjectileAtXYZ(inst, x1, y1, z1, rot, data.attacker)
+				else
+					TryGenericDeflectable(inst, weaponinst)
 				end
 			end
 			inst:ListenForEvent("weapononattack", onweapononattack, data.weapon)
+		else
+			TryGenericDeflectable(inst, data.attacker)
 		end
 	end
 end
@@ -283,6 +315,7 @@ local function SetReflectingProjectiles(inst, enable)
 			inst.isreflectingprojectiles = true
 			inst.components.damagetyperesist:AddResist("projectile", inst, 0, "rangedcounter")
 			inst.components.damagetyperesist:AddResist("rangedweapon", inst, 0, "rangedcounter")
+			inst.components.damagetyperesist:AddResist("deflectable", inst, 0, "rangedcounter")
 			inst.components.updatelooper:AddOnUpdateFn(OnUpdateReflectComplexProjectiles)
 			inst:ListenForEvent("blocked", OnBlocked)
 		end
@@ -290,6 +323,7 @@ local function SetReflectingProjectiles(inst, enable)
 		inst.isreflectingprojectiles = false
 		inst.components.damagetyperesist:RemoveResist("projectile", inst, "rangedcounter")
 		inst.components.damagetyperesist:RemoveResist("rangedweapon", inst, "rangedcounter")
+		inst.components.damagetyperesist:RemoveResist("deflectable", inst, "rangedcounter")
 		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateReflectComplexProjectiles)
 		inst:RemoveEventCallback("blocked", OnBlocked)
 	end
@@ -645,6 +679,7 @@ local function fn()
 	inst:AddTag("hostile")
 	inst:AddTag("scarytoprey")
 	inst:AddTag("shadow_aligned")
+	inst:AddTag("shadowboss")
 	inst:AddTag("epic")
 
 	inst.camerafocus = net_tinybyte(inst.GUID, "charlie_boss.camerafocus", "camerafocusdirty")
@@ -683,6 +718,7 @@ local function fn()
 	inst.components.health.nofadeout = true
 
 	inst:AddComponent("combat")
+	inst.components.combat.hiteffectsymbol = "hit_fx_follow"
 	inst.components.combat.battlecryinterval = TUNING.CHARLIE_BOSS_TAUNT_INTERVAL
 	inst.components.combat.playerdamagepercent = TUNING.CHARLIE_BOSS_PLAYERDAMAGEPERCENT
 	inst.components.combat:SetAttackPeriod(TUNING.CHARLIE_BOSS_ATTACK_PERIOD)

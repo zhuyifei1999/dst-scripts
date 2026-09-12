@@ -448,6 +448,7 @@ local function fn()
     inst:AddTag("retaliates")
     inst:AddTag("NPCcanaggro")
     inst:AddTag("gestaltmutant")
+    inst:AddTag("plantcreature")
 
 	inst.highlightchildren = {}
 
@@ -779,6 +780,7 @@ local function vineendfn()
     inst:AddTag("hostile")
     inst:AddTag("soulless")
     inst:AddTag("NPCcanaggro")
+    inst:AddTag("plantcreature")
 
     inst.AnimState:SetBank("lunarthrall_plant_vine")
     inst.AnimState:SetBuild("lunarthrall_plant_vine")

@@ -349,21 +349,31 @@ function LootDropper:FlingItem(loot, pt)
                 if self.inst ~= nil and self.inst.Physics ~= nil then
                     local radius = loot:GetPhysicsRadius(1) + self.inst:GetPhysicsRadius(1)
                     if not self.spawn_loot_inside_prefab then
-						TryTeleportToLaunchPos(loot,
-                            pt.x + cosangle * radius,
-                            pt.y + y_offset,
-                            pt.z - sinangle * radius
-                        )
+						if not TryTeleportToLaunchPos(loot,
+									pt.x + cosangle * radius,
+									pt.y + y_offset,
+									pt.z - sinangle * radius) and
+							y_offset > 0
+						then
+							loot.Physics:Teleport(pt.x, pt.y + y_offset, pt.z)
+						end
                     else
                         radius = radius * math.random()
-						TryTeleportToLaunchPos(loot,
-                            pt.x + cosangle * radius,
-                            pt.y + y_offset + 0.5,
-                            pt.z - sinangle * radius
-                        )
+						if not TryTeleportToLaunchPos(loot,
+									pt.x + cosangle * radius,
+									pt.y + y_offset + 0.5,
+									pt.z - sinangle * radius) and
+							y_offset + 0.5 > 0
+						then
+							loot.Physics:Teleport(pt.x, pt.y + y_offset + 0.5, pt.z)
+						end
                     end
                 end
 				loot.Physics:SetVel(speed * cosangle, GetRandomWithVariance(y_speed, y_speed_variance), speed * -sinangle)
+				--should already be set since loot was just spawned
+				--[[if loot.components.inventoryitem then
+					loot.components.inventoryitem:SetLanded(false, true)
+				end]]
             end
         end
     end

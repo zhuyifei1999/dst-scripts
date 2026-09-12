@@ -51,6 +51,7 @@ function CharlieArenaWatcher:OnUpdate_Master(dt)
 			v:PushEvent("changearea")
 			if not TheNet:IsDedicated() then
 				self.inst.VFXEffect:ClearAllParticles(0)
+				self.inst.VFXEffect:ClearAllParticles(1)
 				TheWorld.Map:SetUndergroundFadeHeight(5) -- revert to caves falloff
 			end
 		end
@@ -70,6 +71,7 @@ function CharlieArenaWatcher:OnUpdate_Client(dt)
 			self.inarena = false
 			ThePlayer:PushEvent("changearea")
 			self.inst.VFXEffect:ClearAllParticles(0)
+			self.inst.VFXEffect:ClearAllParticles(1)
 			TheWorld.Map:SetUndergroundFadeHeight(5) -- revert to caves falloff
 		end
 	end

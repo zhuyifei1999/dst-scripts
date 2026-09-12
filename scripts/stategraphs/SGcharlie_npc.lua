@@ -202,16 +202,16 @@ local states =
 		name = "talk_pst",
 		tags = { "idle", "canrotate" },
 
-		onenter = function(inst, despawn)
+		onenter = function(inst, wassocketing)
 			inst.AnimState:PlayAnimation("talk_pst")
-            inst.sg.statemem.despawn = despawn
+            inst.sg.statemem.wassocketing = wassocketing
 		end,
 
 		events =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState(inst.sg.statemem.despawn and "despawn" or "idle")
+					inst.sg:GoToState(inst.sg.statemem.wassocketing and "give" or "idle")
 				end
 			end),
 		},
@@ -338,6 +338,43 @@ local states =
                 inst.Physics:SetMotorVelOverride(data.speed, 0, 0)
             end
         end,
+    },
+
+    State{
+        name = "give",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("giving")
+            inst.components.npc_talker:Chatter("CHARLIE_NPC_GIVE_SHADOWHEART_INFUSED")
+            inst.components.npc_talker:DoNextLine()
+        end,
+
+        timeline =
+        {
+            FrameEvent(16, function(inst)
+                inst.SoundEmitter:PlaySound("rifts8/charlie_ritual/summon_small")
+            end),
+            FrameEvent(55, function(inst)
+                inst.SoundEmitter:PlaySound("rifts2/charlie/charlie_cast")
+                local x, y, z = inst.Transform:GetWorldPosition()
+                local heart = SpawnPrefab("shadowheart_infused")
+                heart.sg:GoToState("stunned", GetRandomWithVariance(10, 1))
+
+                local target = inst.atrium or FindClosestPlayer(x, y, z, true)
+                heart.components.inventoryitem:SetLanded(false, true)
+                LaunchAt(heart, inst, target, 1, 2.5, 1.5, 0)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("despawn")
+                end
+            end),
+        }
     },
 }
 

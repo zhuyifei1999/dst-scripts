@@ -179,8 +179,13 @@ function AOEWeapon_Base:OnToss(doer, target, sourceposition, basespeed, startrad
         end
 
         local speed = (basespeed or 1) + math.random()
-		TryTeleportToLaunchPos(target, x0 + startradius * cosa, 0.1, z0 + startradius * sina)
+		if not TryTeleportToLaunchPos(target, x0 + startradius * cosa, 0.1, z0 + startradius * sina) then
+			target.Physics:Teleport(x1, math.max(y1, 0.1), z1)
+		end
         target.Physics:SetVel(cosa * speed, speed * 5 + math.random() * 2, sina * speed)
+		if target.components.inventoryitem then
+			target.components.inventoryitem:SetLanded(false, true)
+		end
     end
 end
 

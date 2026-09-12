@@ -17,7 +17,7 @@ local AOE_TAGSET
 local function GetAOEAttackTagSet(inst) -- only if not tied to charlie boss (debug)
 	if AOE_TAGSET == nil then
 		AOE_TAGSET = AOEUtil.AttackTagSet()
-		AOE_TAGSET:AppendCantTags("shadowthrall", "shadow", "shadowcreature", "shadowchesspiece", "charlie_npc")
+		AOE_TAGSET:AppendCantTags("shadowthrall", "shadow", "shadowcreature", "shadowchesspiece", "shadowboss")
 		-- AOE_TAGSET:Register() don't register tags for the debug ones
 	end
 	return AOE_TAGSET

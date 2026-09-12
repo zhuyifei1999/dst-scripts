@@ -343,10 +343,10 @@ local function fn()
     inst:AddTag("lureplant")
     inst:AddTag("hostile")
     inst:AddTag("veggie")
-	inst:AddTag("lifedrainable")
     inst:AddTag("wildfirepriority")
     inst:AddTag("NPCcanaggro")
 	inst:AddTag("NPC_workable")
+    inst:AddTag("plantcreature")
 
     inst.MiniMapEntity:SetIcon("eyeplant.png")
 

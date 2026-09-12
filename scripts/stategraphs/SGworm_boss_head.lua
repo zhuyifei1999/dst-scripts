@@ -728,6 +728,7 @@ local states =
             -- "stalker_snared_loop"
 			inst.AnimState:PlayAnimation("stun_pre", false)
 			inst.AnimState:PushAnimation("stun_loop", true)
+            inst.worm.components.health:SetInvincible(true)
 		end,
 
 		events =
@@ -736,6 +737,10 @@ local states =
 				inst.sg:GoToState("stalker_corruption_pre")
 			end),
 		},
+
+        onexit = function(inst)
+            inst.worm.components.health:SetInvincible(false)
+        end,
 	},
 
     State{
@@ -743,6 +748,7 @@ local states =
 		tags = { "busy", "nointerrupt", "noattack", "temp_invincible", "stalkercorrupting", },
 
 		onenter = function(inst)
+            inst.worm.components.health:SetInvincible(true)
 			inst.AnimState:PlayAnimation("stalker_corrupt_pre")
             inst.AnimState:AddOverrideBuild("stalker_corrupt_fx_build")
             inst.SoundEmitter:PlaySound("dontstarve/common/together/shadow_transform_a")
@@ -784,6 +790,7 @@ local states =
 		},
 
 		onexit = function(inst)
+            inst.worm.components.health:SetInvincible(false)
             inst.AnimState:ClearOverrideBuild("stalker_corrupt_fx_build")
 			assert(BRANCH ~= "dev", "We exited stalker_corruption_pre state somehow :(")
 		end,

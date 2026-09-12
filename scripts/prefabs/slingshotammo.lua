@@ -448,12 +448,15 @@ local HORROR_PERIOD = 1
 local INITIAL_RND_PERIOD = 0.35
 
 local function RecycleHorrorDebuffFX(fx, pool)
+	fx.components.deflectable:SetOwner(nil)
+	fx.components.deflectable:SetOnDeflectFn(nil)
 	fx:RemoveFromScene()
 	table.insert(pool, fx)
 end
 
 local function OnUpdate_HorrorFuel(target, attacker, data, endtime, first)
-	if not (target.components.health and target.components.health:IsDead()) and
+	if not data.deflected and
+		not (target.components.health and target.components.health:IsDead()) and
 		target.components.combat and target.components.combat:CanBeAttacked()
 	then
 		local rnd = math.random(math.clamp(NUM_HORROR_VARIATIONS - #data.tasks, 2, NUM_HORROR_VARIATIONS / 2))
@@ -473,6 +476,8 @@ local function OnUpdate_HorrorFuel(target, attacker, data, endtime, first)
 			fx.onrecyclefn = RecycleHorrorDebuffFX
 		end
 		fx.entity:SetParent(target.entity)
+		fx.components.deflectable:SetOwner(attacker)
+		fx.components.deflectable:SetOnDeflectFn(function() data.deflected = true end)
 		fx:Restart(attacker, target, variation, data.pool, first)
 	end
 

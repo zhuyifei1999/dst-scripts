@@ -760,7 +760,7 @@ function EntityScript:GetWetMultiplier()
     else
         return
         (
-			(TheWorld.state.iswet and not self:HasTag("rainimmunity")) or
+			(TheWorld.state.iswet and not self:HasTag("rainimmunity") and TheWorld.Map:CanPointHaveRain(self.Transform:GetWorldPosition())) or
 			(self:HasTag("swimming") and not self:HasTag("likewateroffducksback"))
         ) and 1 or 0
     end
@@ -778,7 +778,7 @@ function EntityScript:GetIsWet()
     if replica then
         return replica:IsWet()
     else
-		return (TheWorld.state.iswet and not self:HasTag("rainimmunity"))
+		return (TheWorld.state.iswet and not self:HasTag("rainimmunity") and TheWorld.Map:CanPointHaveRain(self.Transform:GetWorldPosition()))
             or (self:HasTag("swimming") and not self:HasTag("likewateroffducksback"))
     end
 end

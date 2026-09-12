@@ -1,5 +1,8 @@
-local TEXTURE = "fx/sparkle.tex"
+local TEXTURE = "fx/debris.tex"
 local SHADER = "shaders/vfx_particle_add.ksh"
+
+local ROCKTEXTURE = "fx/debris_rock.tex"
+local ROCKSHADER = "shaders/vfx_particle.ksh"
 
 local assets =
 {
@@ -8,6 +11,8 @@ local assets =
 
     Asset("IMAGE", TEXTURE),
     Asset("SHADER", SHADER),
+    Asset("IMAGE", ROCKTEXTURE),
+    Asset("SHADER", ROCKSHADER),
 }
 
 local prefabs =
@@ -98,19 +103,21 @@ local function InitializeLayout(inst, virtualroomset)
 	TrackCharlieBoss(inst, charlie)
 
 	--light rays
+	local rotationvars = { 1, 2, 3, 4, 5, 6, 7, 8, math.random(8) }
+
 	local halftile = 0.5 * TILE_SCALE
 	local base_r = 2 * TILE_SCALE
 	local lx, lz = x + GetRandomWithVariance(base_r, halftile), z + math.random() * halftile
-	SpawnTrackedPrefabAtXZ(inst, "light1", "charliearena_lightray", lx, lz)
+	SpawnTrackedPrefabAtXZ(inst, "light1", "charliearena_lightray", lx, lz).Transform:SetRotation(table.remove(rotationvars, math.random(#rotationvars)) * 45)
 	SpawnPrefabAtXZ("miasma_cloud_visual", lx, lz)
 	lx, lz = x - GetRandomWithVariance(base_r, halftile), z + math.random() * halftile
-	SpawnTrackedPrefabAtXZ(inst, "light2", "charliearena_lightray", lx, lz)
+	SpawnTrackedPrefabAtXZ(inst, "light2", "charliearena_lightray", lx, lz).Transform:SetRotation(table.remove(rotationvars, math.random(#rotationvars)) * 45)
 	SpawnPrefabAtXZ("miasma_cloud_visual", lx, lz)
 	lx, lz = x + math.random() * halftile, z + GetRandomWithVariance(base_r, halftile)
-	SpawnTrackedPrefabAtXZ(inst, "light1", "charliearena_lightray", lx, lz)
+	SpawnTrackedPrefabAtXZ(inst, "light1", "charliearena_lightray", lx, lz).Transform:SetRotation(table.remove(rotationvars, math.random(#rotationvars)) * 45)
 	SpawnPrefabAtXZ("miasma_cloud_visual", lx, lz)
 	lx, lz = x + math.random() * halftile, z - GetRandomWithVariance(base_r, halftile)
-	SpawnTrackedPrefabAtXZ(inst, "light1", "charliearena_lightray", lx, lz)
+	SpawnTrackedPrefabAtXZ(inst, "light1", "charliearena_lightray", lx, lz).Transform:SetRotation(table.remove(rotationvars, math.random(#rotationvars)) * 45)
 	SpawnPrefabAtXZ("miasma_cloud_visual", lx, lz)
 
 	SpawnBorder(inst)
@@ -338,9 +345,11 @@ end
 
 local function DissipateAllShadowRunners(inst)
     for runner, _ in pairs(inst.shadowrunnersdata.runners) do
-        runner.components.lootdropper:SetLoot({})
-        runner.components.lootdropper:SetChanceLootTable(nil)
-        runner.components.health:Kill()
+        runner:DoTaskInTime(0.5 * math.random(), function()
+            runner.components.lootdropper:SetLoot({})
+            runner.components.lootdropper:SetChanceLootTable(nil)
+            runner.components.health:Kill()
+        end)
     end
 end
 
@@ -461,13 +470,16 @@ end
 local COLOUR_ENVELOPE_NAME = "charliearenaembercolourenvelope"
 local SCALE_ENVELOPE_NAME = "charliearenascaleenvelope"
 
+local ROCK_COLOUR_ENVELOPE_NAME = "charliearenarockcolourenvelope"
+local ROCK_SCALE_ENVELOPE_NAME = "charliearenarockscaleenvelope"
+
 local function InitEnvelope()
     EnvelopeManager:AddColourEnvelope(
         COLOUR_ENVELOPE_NAME,
         {
             { 0,        IntColour(255, 220, 234, 0) },
-            { .2,       IntColour(255, 220, 234, 255) },
-            { .75,      IntColour(255, 220, 234, 247) },
+            { .2,       IntColour(255, 220, 234, 190) },
+            { .75,      IntColour(255, 220, 234, 168) },
             { 1,        IntColour(255, 220, 234, 0) },
         }
     )
@@ -483,6 +495,22 @@ local function InitEnvelope()
         }
     )
 
+    EnvelopeManager:AddColourEnvelope(
+        ROCK_COLOUR_ENVELOPE_NAME,
+        {
+            { 0,        IntColour(255, 255, 255, 255) },
+            { 1,        IntColour(255, 255, 255, 255) },
+        }
+    )
+
+    EnvelopeManager:AddVector2Envelope(
+        ROCK_SCALE_ENVELOPE_NAME,
+        {
+            { 0,    { 1, 1 } },
+            { 1,    { 1, 1 } },
+        }
+    )
+
     InitEnvelope = nil
     IntColour = nil
 end
@@ -492,13 +520,16 @@ local function InitParticles(inst)
         InitEnvelope()
     end
 
+    local ROCK_MAX_LIFETIME = 60*60*24
+
 	local MAX_LIFETIME = 40
 	local MIN_LIFETIME = 25
 
     local effect = inst.entity:AddVFXEffect()
-    effect:InitEmitters(1)
+    effect:InitEmitters(2)
+
     effect:SetRenderResources(0, TEXTURE, SHADER)
-    effect:SetMaxNumParticles(0, 350)
+    effect:SetMaxNumParticles(0, 300)
     effect:SetMaxLifetime(0, MAX_LIFETIME)
     effect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME)
     effect:SetScaleEnvelope(0, SCALE_ENVELOPE_NAME)
@@ -510,17 +541,32 @@ local function InitParticles(inst)
     effect:EnableDepthTest(0, false)
     effect:SetKillOnEntityDeath(0, true)
     effect:SetUVFrameSize(0, .25, 1)
+    effect:SetRotationStatus(0, true)
+
+    effect:SetRenderResources(1, ROCKTEXTURE, ROCKSHADER)
+    effect:SetMaxNumParticles(1, 20)
+    effect:SetMaxLifetime(1, ROCK_MAX_LIFETIME)
+    effect:SetColourEnvelope(1, ROCK_COLOUR_ENVELOPE_NAME)
+    effect:SetScaleEnvelope(1, ROCK_SCALE_ENVELOPE_NAME)
+    effect:SetSortOrder(1, 1)
+    effect:SetAcceleration(1, 0, .0001, 0)
+    effect:SetDragCoefficient(1, .0001)
+    effect:SetKillOnEntityDeath(1, true)
+    effect:SetUVFrameSize(1, .25, 0.5)
+    effect:SetRotationStatus(1, true)
 
     local tick_time = TheSim:GetTickTime()
 
     inst.particles_per_tick = 20 * tick_time
     inst.num_particles_to_emit = inst.particles_per_tick * 2 -- x2 on first tick to populate quickly
+    inst.num_rocks_to_emit = 20
 
     local halfheight = 2
     local emitter_shape = CreateBoxEmitter(0, 0, 0, 35, halfheight, 35)
+    local emitter_rock_shape = CreateBoxEmitter(0, 0, 0, 35, 4, 35)
 
     -- for discarding
-    local minx, maxx, minz, maxz = -4 * TILE_SCALE, 4 * TILE_SCALE, -4 * TILE_SCALE, 4 * TILE_SCALE
+    local minx, maxx, minz, maxz = -3 * TILE_SCALE, 3 * TILE_SCALE, -3 * TILE_SCALE, 3 * TILE_SCALE
 
     local function emit_fn()
         local px, py, pz = emitter_shape()
@@ -533,13 +579,36 @@ local function InitParticles(inst)
         local lifetime = MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * UnitRand()
 
         local uv_offset = math.random(0, 3) * .25
-        effect:AddParticleUV(
+        effect:AddRotatingParticleUV(
             0,
             lifetime,           -- lifetime
             px, py, pz,         -- position
             vx, vy, vz,         -- velocity
+            math.random() * 360, UnitRand(),
             uv_offset, 0        -- uv offset
         )
+    end
+
+    local function emit_rock_fn()
+        local px, py, pz = emitter_rock_shape()
+        py = py + 4
+
+        if px <= minx or px >= maxx or pz <= minz or pz >= maxz then
+            local vx = .0010 * (math.random() - .5)
+            local vy = .0
+            local vz = .0010 * (math.random() - .5)
+
+            local u_offset = math.random(0, 3) * .25
+            local v_offset = math.random(0, 1) * .5
+            effect:AddRotatingParticleUV(
+                1,
+                ROCK_MAX_LIFETIME,           -- lifetime
+                px, py, pz,         -- position
+                vx, vy, vz,         -- velocity
+                math.random() * 360, UnitRand() * 0.3,
+                u_offset, v_offset  -- uv offset
+            )
+        end
     end
 
     inst.time = 0
@@ -553,13 +622,20 @@ local function InitParticles(inst)
             inst.num_particles_to_emit = inst.num_particles_to_emit - 1
         end
         inst.num_particles_to_emit = inst.num_particles_to_emit + inst.particles_per_tick
+        while inst.num_rocks_to_emit > 1 do
+            emit_rock_fn()
+            inst.num_rocks_to_emit = inst.num_rocks_to_emit - 1
+        end
+        inst.num_rocks_to_emit = inst.num_rocks_to_emit + inst.particles_per_tick
 
         inst.time = inst.time + tick_time
         inst.interval = inst.interval + 1
         if inst.interval >= 10 then
             inst.interval = 0
-            local sin_val = .001 * math.sin(inst.time * .8)
-            effect:SetAcceleration(0, 0, sin_val, 0)
+            local debris_val = .001 * math.sin(inst.time * .8)
+            local rock_val = .002 * math.sin(inst.time)
+            effect:SetAcceleration(0, 0, debris_val, 0)
+            effect:SetAcceleration(1, 0, rock_val, 0)
         end
     end)
 end

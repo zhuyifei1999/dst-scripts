@@ -54,7 +54,7 @@ local events =
 
 local AOE_RANGE_PADDING = 3
 local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
-local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "shadowthrall" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "shadowthrall", "shadowboss" }
 
 local function DoAOEAttack(inst, dist, radius, heavymult, mult, forcelanded, targets)
 	inst.components.combat.ignorehitrange = true

@@ -302,7 +302,7 @@ local function _TossLaunch(item, x0, z0, basespeed, verticalspeed, startradius, 
 	local speed = basespeed + math.random()
 	item.Physics:SetVel(cosa * speed, verticalspeed + math.random(), -sina * speed)
 
-	if y1 > 0 and item.components.inventoryitem then
+	if item.components.inventoryitem then
 		item.components.inventoryitem:SetLanded(false, true)
 	end
 end

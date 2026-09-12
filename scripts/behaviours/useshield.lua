@@ -24,7 +24,11 @@ UseShield = Class(BehaviourNode, function(self, inst, damageforshield, shieldtim
         self.inst:ListenForEvent("epicscare", self.onepicscarefn)
     end
 
-    self.onattackedfn = function(inst, data) self:OnAttacked(data.attacker, data.damage) end
+	self.onattackedfn = function(inst, data)
+		if not IsEquipmentOnAttackedOrBlocked(inst, inst, data) then
+			self:OnAttacked(data.attacker, data.damage)
+		end
+	end
     self.onhostileprojectilefn = function() self:OnAttacked(nil, 0, true) end
     self.onfiredamagefn = function() self:OnAttacked() end
 	self.onelectrocutefn = function() self.inst.brain:ForceUpdate() end

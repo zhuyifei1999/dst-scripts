@@ -137,12 +137,6 @@ end
 
 local function OnEquip(inst, owner)
     --Start feeding!
-
-    if not CanHatTarget(inst, owner) then
-        owner.components.inventory:Unequip(EQUIPSLOTS.HEAD)
-        return
-    end
-
     inst._light.Light:Enable(true)
     inst._light._lightlevel:set(true)
     inst._light._lightframe:set(inst._light._lightframe:value())

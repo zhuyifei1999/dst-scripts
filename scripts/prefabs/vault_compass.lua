@@ -30,19 +30,12 @@ local function OnUpdateDirection(inst)
             ChangeToAnim(inst, "idle_marker_success")
         elseif direction then
             local marker
-            local virtualroom = virtualroomset:GetCurrentRoom()
-            local shuffleddirections = virtualroom.shuffleddirections
-            if shuffleddirections then
-                local shuffleddirection = VIRTUALROOMDIRECTIONS[shuffleddirections[direction]]
-                if shuffleddirection then
-                    local teleporters = virtualroomset:GetVirtualRoomEntities(VIRTUALROOMCONTEXT.TELEPORTER)
-                    if teleporters then
-                        for _, teleporter in ipairs(teleporters) do
-                            if teleporter.components.virtualroomteleporter:GetShuffledDirection() == shuffleddirection then
-                                marker = teleporter
-                                break
-                            end
-                        end
+            local teleporters = virtualroomset:GetVirtualRoomEntities(VIRTUALROOMCONTEXT.TELEPORTER)
+            if teleporters then
+                for _, teleporter in ipairs(teleporters) do
+                    if teleporter.components.virtualroomteleporter:GetDirection() == direction then
+                        marker = teleporter
+                        break
                     end
                 end
             end

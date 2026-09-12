@@ -760,6 +760,7 @@ local function ritualstate_StopShroudenAmbience(inst)
 end
 
 local function ritualstate_OnSummoned(inst, state)
+    inst.SoundEmitter:PlaySound("rifts8/shrouden_portal/tentacle_appear")
     ritualstate_StartShroudenAmbience(inst)
     ritualstate_SpawnCharlieNPC(inst, false)
     SetCameraFocus(inst, 1)

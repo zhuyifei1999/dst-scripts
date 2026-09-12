@@ -250,13 +250,35 @@ function VirtualRoomSet:CheckRoomVotes()
     end
 end
 
+function VirtualRoomSet:TryTeleportSequenceImmediatelyWithNoPlayers(teleportingentsdata)
+    if self.teleportingentsdata then
+        return false
+    end
+
+    local players, numberplayers = self:GetPlayersInfo()
+    if numberplayers > 0 then
+        return false
+    end
+
+    if teleportingentsdata.virtualroomteleporter then
+        teleportingentsdata.virtualroomteleporter:OnDepart()
+    end
+    self.teleportingentsdata = teleportingentsdata
+    if self.teleportingentsdata.onteleportcb then
+        self.teleportingentsdata.onteleportcb()
+    end
+    self:SetRoom(self.teleportingentsdata.targetroomname)
+    self.teleportingentsdata = nil
+    return true
+end
+
 function VirtualRoomSet:TryStartTeleportSequence(teleportingentsdata)
     if self.teleportingentsdata then
         return false
     end
 
     local players, numberplayers = self:GetPlayersInfo()
-    if not players or (numberplayers == 0) then
+    if numberplayers == 0 then
         return false
     end
 
@@ -942,7 +964,7 @@ local _SAVE = 2
 local _KEEP = 3
 
 local function _GetEntUnloadAction(self, ent)
-    if not ent:IsValid() or ent.entity:GetParent() or ent:HasTag("staysthroughvirtualrooms") then
+    if not ent:IsValid() or (ent.entity:GetParent() or ent.Follower and ent.Follower:IsFollowing()) or ent:HasTag("staysthroughvirtualrooms") then
         return _SKIP
     end
 
@@ -963,7 +985,7 @@ local function _GetEntUnloadAction(self, ent)
         end
     end
 
-    if owner ~= ent and owner.entity:GetParent() or not self:IsEntInVirtualRoom(owner) then
+    if owner ~= ent and (owner.entity:GetParent() or owner.Follower and owner.Follower:IsFollowing()) or not self:IsEntInVirtualRoom(owner) then
         return _SKIP
     elseif owner.isplayer or (
             owner:HasAnyTag("irreplaceable", "followsthroughvirtualrooms") or
@@ -974,6 +996,9 @@ local function _GetEntUnloadAction(self, ent)
     return _SAVE
 end
 
+local function ShouldContainerInstDropItemOnRoomUnload(inst, item)
+    return item:HasTag("irreplaceable") or (item.components.migrationpetowner and item.components.migrationpetowner:GetPet())
+end
 function VirtualRoomSet:UnloadRoom(save)
     local saveradius = self:GetSaveRadius()
     if not saveradius then
@@ -993,7 +1018,7 @@ function VirtualRoomSet:UnloadRoom(save)
         if _GetEntUnloadAction(self, v) == _SAVE then
             local container = v.components.inventory or v.components.container
             if container then
-                container:DropEverythingWithTag("irreplaceable")
+                container:DropEverythingByFilter(ShouldContainerInstDropItemOnRoomUnload)
             end
         end
     end

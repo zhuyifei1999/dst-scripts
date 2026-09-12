@@ -64,7 +64,7 @@ local function ShouldWake(inst) return true end
 
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "INLIMBO", "rocky" }
-local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "rocky", "shadowthrall", "stalker" }
+local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "rocky", "shadowthrall", "shadowboss", "stalker" }
 local RETARGET_ONEOF_TAGS = { "character", "monster" }
 local function IsValidTarget(guy, inst)
 	return inst.components.combat:CanTarget(guy)
@@ -484,6 +484,7 @@ local function commonfn(build, common_postinit, master_postinit)
 	end
 
 	inst:AddComponent("combat")
+	inst.components.combat.hiteffectsymbol = "hips_art"
 	inst.components.combat:SetAttackPeriod(3)
 	inst.components.combat:SetRange(TUNING.ROCKY_ATTACK_RANGE * scale, TUNING.ROCKY_HIT_RANGE * scale)
 	inst.components.combat:SetHitArc(TUNING.DEFAULT_HIT_ARC)
@@ -496,7 +497,6 @@ local function commonfn(build, common_postinit, master_postinit)
 	if not POPULATING then
 		inst.components.timer:StartTimer("bouldercd", 15 + math.random() * 15)
 	end
-
 
 	inst:AddComponent("health")
 

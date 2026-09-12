@@ -363,9 +363,7 @@ local states =
                 if inst.foreststalker then
                     inst:StartBlooming()
                 elseif inst.npcstalker then
-                    -- TODO lines and save info
                     if inst.sg.statemem.firstspawn then
-                        -- TODO only set data after fully finished talking?
                         inst:SetNPCData("spawned_once", true)
                         inst:Chatter("first_spawn")
                     else
@@ -1630,7 +1628,7 @@ local states =
         events =
         {
             EventHandler("ontalk", function(inst, data)
-                inst.sg:SetTimeout(5) -- TODO
+                inst.sg:SetTimeout(5)
                 if not inst.AnimState:IsCurrentAnimation("talk_stance_loop") then
                     inst.AnimState:PlayAnimation("talk_stance_loop", true)
                 end
@@ -1638,9 +1636,13 @@ local states =
             end),
             EventHandler("donetalking", function(inst, data)
                 local haslines = inst.components.npc_talker and inst.components.npc_talker:HasLines()
-                inst.sg:SetTimeout(haslines and 0.5 or 2) -- TODO
-                if not inst.AnimState:IsCurrentAnimation("talk_stance_idle") then
-                    inst.AnimState:PlayAnimation("talk_stance_idle", true)
+                if haslines then
+                    inst.sg:SetTimeout(0.5)
+                else
+                    inst.sg:SetTimeout(2)
+                    if not inst.AnimState:IsCurrentAnimation("talk_stance_idle") then
+                        inst.AnimState:PlayAnimation("talk_stance_idle", true)
+                    end
                 end
                 return true
             end),
@@ -1759,12 +1761,9 @@ local states =
         timeline =
         {
             FrameEvent(19, function(inst)
-                -- TODO
                 if not inst.sg.statemem.firstrevive then
                     local target = inst.sg.statemem.target
                     if target and target:IsValid() then
-                        -- TODO
-                        -- SpawnPrefab("shadow_merm_spawn_poof_fx").Transform:SetPosition(inst.sg.statemem.target.Transform:GetWorldPosition())
                         target:PushEventImmediate("startcorruption")
                         if target.sg:HasStateTag("stalkercorrupting") then
                             -- success

@@ -7352,9 +7352,9 @@ STRINGS =
         WANDA =
         {
             "Traveller...",
-            "How strange it must be for you...",
-            "To watch me fall from such heights...",
-            "To this... in but a moment.",
+            "Have you seen what becomes?",
+            "Will I rest?",
+            "Or am I cursed to awaken to this nightmare evermore?",
         },    
         WORTOX =
         {
@@ -7567,10 +7567,16 @@ STRINGS =
     CHARLIE_NPC_SACRIFICE_REQUEST =
     {
         "The ritual demands sacrifices.",
-        "There are species of creature that produce extraordinary specimens.",
+        "Only the most extraordinary specimens are worthy.",
         "Seek them out. Allow them to be touched by Shadow...",
         "Slaughter them. Bring me their essence.",
         "Then the ritual may begin.",
+    },
+
+    -- should be one string only
+    CHARLIE_NPC_GIVE_SHADOWHEART_INFUSED =
+    {
+        "You'll need to call upon an old friend.",
     },
 
     -- Monologue on ritual beginning, portal swirls, eye appears, hooray! youre about to be betrayed and apart of the ritual!

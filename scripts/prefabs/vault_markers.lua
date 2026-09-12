@@ -111,7 +111,21 @@ end
 
 local function SetRoomToOne(inst, virtualroomset)
     inst.setroomtask = nil
-    virtualroomset:SetRoom(1)
+    local teleportingsuccess = false
+    local markers = virtualroomset:GetVirtualRoomEntities(VIRTUALROOMCONTEXT.MARKER)
+    local marker = FindFirstPrefabInArray(markers, "vaultmarker_lobby_to_vault")
+    if marker then
+        local x, y, z = marker.Transform:GetWorldPosition()
+        local teleportingentsdata = {
+            targetroomname = "mask1",
+            x = x,
+            z = z,
+        }
+        teleportingsuccess = virtualroomset:TryTeleportSequenceImmediatelyWithNoPlayers(teleportingentsdata)
+    end
+    if not teleportingsuccess then
+        virtualroomset:SetRoom(1)
+    end
 end
 
 local function OnPlayersChanged(inst, virtualroomset, players, numberplayers)
@@ -248,9 +262,7 @@ local function OnValidMarkers(inst, virtualroomset, markers)
         vaultcollision.Transform:SetPosition(x, y, z)
         vaultcollision:ListenForEvent("onremove", function() vaultcollision:Remove() end, vaultcenter)
     end
-    if virtualroomset.currentroomindex ~= 1 then
-        virtualroomset:SetRoom(1)
-    end
+    virtualroomset:SetRoom(1)
 end
 
 

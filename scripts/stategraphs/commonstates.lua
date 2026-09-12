@@ -1193,6 +1193,9 @@ local function onwakeup(inst)
 end
 
 local function onentersleeping(inst)
+	if inst.components.locomotor then
+		inst.components.locomotor:StopMoving()
+	end
     inst.AnimState:PlayAnimation("sleep_loop")
 end
 
@@ -1756,6 +1759,9 @@ CommonStates.AddSleepExStates = function(states, timelines, fns)
         tags = { "busy", "sleeping" },
 
         onenter = function(inst)
+			if inst.components.locomotor then
+				inst.components.locomotor:StopMoving()
+			end
             inst.AnimState:PlayAnimation("sleep_loop")
             if fns ~= nil and fns.onsleeping ~= nil then
                 fns.onsleeping(inst)

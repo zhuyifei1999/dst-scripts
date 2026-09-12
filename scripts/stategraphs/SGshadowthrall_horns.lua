@@ -44,7 +44,7 @@ local events =
 
 local AOE_RANGE_PADDING = 3
 local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
-local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "shadowthrall" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "shadowthrall", "shadowboss" }
 local AOE_DEVOUR_RADIUS_SQ = TUNING.SHADOWTHRALL_HORNS_DEVOUR_RADIUS * TUNING.SHADOWTHRALL_HORNS_DEVOUR_RADIUS
 
 local function DoAOEAttack(inst, dist, radius, heavymult, mult, forcelanded, targets, devour)
