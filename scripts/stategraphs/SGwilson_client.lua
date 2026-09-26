@@ -1004,6 +1004,9 @@ local actionhandlers =
 		inst.sg.statemem.charging = true
 		return "club_putt_pre"
 	end),
+
+    -- Rifts 8
+    ActionHandler(ACTIONS.CORRUPTNIGHTMARE, "castspell"),
 }
 
 local events =

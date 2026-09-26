@@ -67,8 +67,12 @@ local function IsValidRitualItem(guy)
 end
 
 local function TestForRitualItem(inst)
-    if inst.gate and not inst.gate:IsVaultKeySocketed() then
-        return
+    if inst.gate then
+        if not inst.gate:IsVaultKeySocketed() or
+            inst.gate.components.entitytracker:GetEntity("stalker") or
+            inst.gate.components.worldsettingstimer:ActiveTimerExists("destabilizedelay") then
+            return false
+        end
     end
     local sacrifical_item = FindEntity(inst, CIRCLE_RADIUS, IsValidRitualItem, RITUAL_ITEM_TAGS, RITUAL_ITEM_NO_TAGS)
     if sacrifical_item then

@@ -398,7 +398,10 @@ local function OnUpdate_Server(inst, dt)
 end
 
 local function InitVines(inst, caster, numloops, deltadir)
-	inst.caster = caster
+	if caster then
+		inst.caster = caster
+		inst:ListenForEvent("resetboss", function() inst:Remove() end, caster)
+	end
 	inst._numloops:set(numloops)
 	inst.deltadir = deltadir
 	inst.dest = Vector3(0, 0, 0)

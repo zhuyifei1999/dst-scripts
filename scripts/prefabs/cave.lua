@@ -200,7 +200,6 @@ local prefabs =
 	-- Rifts 8
 	"rocky_boss",
     "batbosscave",
-	"charlie_boss",
 
     "atriummarker_gate_center",
 }

@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Speak plainly! I understand not thine chittering.",
             QUEENBUSY = "Something else hath caught her attention.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "This arena awaiteth its completion!",
+            KINGSTAFF_COOLDOWN = "'Tis stuck fast!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "So it hath come to this, Lady of Shadows. Very well... let us clash!",
         SHROUDEN = "At last we meet, accursed one! My destiny awaits!",
+        CHARLIEARENA_SPIKE = "'Tis surely a sign of Ragnarok!",
+
+        KING_CANE =
+        {
+            GENERIC = "A staff fit for Odin himself.", -- has a gem slotted in
+            EMPTY = "'Tis bereft of its power source.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "This flame must have burned since the days of Surtr's sword!",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

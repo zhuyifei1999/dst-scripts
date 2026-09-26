@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "CEASE YOUR RIDICULOUS MOUTH NOISES, LESSER HUMANOID",
             QUEENBUSY = "I WILL NOT BE IGNORED",
             CARNIVALGAME_GOLFGAME_NOTREADY = "MISSING COMPONENT: FLAGHOLE",
+            KINGSTAFF_COOLDOWN = "ERROR: COMPONENT STUCK", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "HOST CORRUPTED",
         SHROUDEN = "KNEEL BEFORE ME. I MAY PERMIT YOUR ESCAPE",
+        CHARLIEARENA_SPIKE = "NICE",
+
+        KING_CANE =
+        {
+            GENERIC = "FIT FOR A KING... ME", -- has a gem slotted in
+            EMPTY = "MISSING COMPONENT", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "NOT AFRAID OF DARK. MINE ANYWAY",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

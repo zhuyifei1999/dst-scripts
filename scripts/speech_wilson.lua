@@ -216,6 +216,7 @@ return {
             NOTAMONKEY = "I don't speak monkey.",
             QUEENBUSY = "She seems busy.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "It's a hole issue.",
+            KINGSTAFF_COOLDOWN = "It's stuck.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6350,6 +6351,16 @@ return {
 
 		CHARLIE_BOSS = "This is bad.",
         SHROUDEN = "There is no scientific explanation for that.",
+        CHARLIEARENA_SPIKE = "What a fascinating if not terrifying rock formation.",
+
+        KING_CANE =
+        {
+            GENERIC = "It's fully staffed.", -- has a gem slotted in
+            EMPTY = "It needs a gem.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "What a peculiar flame.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

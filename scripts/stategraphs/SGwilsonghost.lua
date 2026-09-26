@@ -671,15 +671,11 @@ local states =
 
 		timeline =
 		{
-			TimeEvent(0.3, function(inst)
-				inst:ScreenFade(false, 0.5)
-			end),
 			TimeEvent(1.3, function(inst)
 				local data = inst.sg.statemem.data
 				if data and data.onplayerready then
 					data.onplayerready(inst)
 				end
-				inst:ScreenFade(true, 1)
 			end),
 			TimeEvent(1.5, function(inst)
                 inst.sg.statemem.not_interrupted = true
@@ -695,9 +691,6 @@ local states =
                 local data = inst.sg.statemem.data
                 if data and data.onplayerready then
                     data.onplayerready(inst)
-                    inst:ScreenFade(true, 1)
-                else
-                    inst:ScreenFade(true, 0)
                 end
             end
 		end,

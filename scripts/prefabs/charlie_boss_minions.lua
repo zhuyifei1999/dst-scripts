@@ -86,6 +86,8 @@ local function InitMinion(inst, speed, caster, targets)
 		inst.caster = caster
 		inst._targets = targets
 
+		inst:ListenForEvent("resetboss", function() inst:Remove() end, caster)
+
 		inst._onattackother = function(caster, data)
 			if data and data.target and data.projectile == inst then
 				OnAttackOther(inst, data.target)

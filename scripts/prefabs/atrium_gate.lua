@@ -26,6 +26,9 @@ local prefabs =
     "charlie_hand_keystone",
     "charlie_circle_spawn_fx",
     "charlie_circle_spawn_ground_fx",
+
+    "king_cane",
+    "queen_torch",
 }
 
 local RITUAL_STATES =
@@ -39,6 +42,8 @@ local RITUAL_STATES =
 }
 
 local EXPLOSION_ANIM_LEN = 86 * FRAMES
+
+local NUM_RITUAL_MARKINGS = 3
 
 --------------------------------------------------------------------------
 
@@ -473,6 +478,13 @@ local function OnTrackStalker(inst, stalker)
         inst.AnimState:PlayAnimation("idle_fight", true)
         inst.SoundEmitter:KillSound("loop")
         inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/active_LP", "loop")
+
+        for i = 1, NUM_RITUAL_MARKINGS do
+            local marking = inst.components.entitytracker:GetEntity("ritualmarking"..tostring(i))
+            if marking and marking.item then
+                marking.item:SetItem()
+            end
+        end
     else
         --cleanup bad state, shouldn't reach here normally
         --but possible with corrupt or tampering save data
@@ -526,7 +538,7 @@ local function IsGateOn(inst)
 end
 
 local function IsWaitingForStalker(inst)
-    return IsGateOn(inst)
+    return IsGateOn(inst) and (inst:GetRitualState() < RITUAL_STATES.ACTIVE)
 end
 
 local function OnEntitySleep(inst)
@@ -568,6 +580,14 @@ local function OnLoadPostPass(inst, ents, data)
     if TheWorld.topology.overrides ~= nil and TheWorld.topology.overrides.rifts_enabled_cave == "always" and not inst.components.charliecutscene:IsGateRepaired() then
         inst.components.charliecutscene:RepairGate()
     end
+    if data then
+        if inst._runningkeysocket--[[from charliecutscene:LoadPostPass]] then
+            inst:EnableRitual(true)
+            inst._runningkeysocket = nil
+        elseif data.ritual_state then
+            inst:SetRitualState(data.ritual_state)
+        end
+    end
     if inst:IsDestabilizing() then
         StartDestabilizing(inst, true)
     elseif inst.components.worldsettingstimer:ActiveTimerExists("cooldown") then
@@ -582,14 +602,6 @@ local function OnLoadPostPass(inst, ents, data)
 
         if inst.components.worldsettingstimer:ActiveTimerExists("destabilizedelay") then
             OnQueueDestabilize(inst, true)
-        end
-    end
-    if data then
-        if inst._runningkeysocket--[[from charliecutscene:LoadPostPass]] then
-            inst:EnableRitual(true)
-            inst._runningkeysocket = nil
-        elseif data.ritual_state then
-            inst:SetRitualState(data.ritual_state)
         end
     end
 end
@@ -677,6 +689,20 @@ end
 
 --------------------------------------------------------------------------
 
+local function SpawnShroudenLootSetPiece(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local theta = inst.components.charliecutscene:FindRitualAngle() * DEGREES
+    theta = theta - PI/4
+    theta = theta - PI/16
+    SpawnPrefab("king_cane").Transform:SetPosition(x + math.cos(theta) * 7.25, y, z - math.sin(theta) * 7.25)
+
+    theta = theta + PI/16
+    theta = theta + PI/16
+    SpawnPrefab("queen_torch").Transform:SetPosition(x + math.cos(theta) * 8.75, y, z - math.sin(theta) * 8.75)
+end
+
+--------------------------------------------------------------------------
+
 local function UpdateShroudenTarget(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local timeleft = GetTaskRemaining(inst.shrouden_summon_task)
@@ -704,7 +730,6 @@ end
 ---
 
 -- keep in sync with charliecutscene.lua
-local NUM_RITUAL_MARKINGS = 3
 local RITUAL_MARKING_THETA_STEP = 1 / NUM_RITUAL_MARKINGS
 local MARKING_RANGE = 725 / 150
 
@@ -770,6 +795,7 @@ local function ritualstate_OnSummoned(inst, state)
     TheWorld:PushEvent("ms_charliearena_morphatrium",
     {
         cb = function()
+            SpawnShroudenLootSetPiece(inst) -- we actually spawn the loot before boss is defeated
             inst.components.entitytracker:ForgetEntity("charlienpc") -- so we don't hit debug print in component
             SetCameraFocus(inst, 0)
             DestroyVaultKey(inst)

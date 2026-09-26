@@ -236,6 +236,7 @@ function VirtualRoomSet:CheckRoomVotes()
         if validvote and virtualroomteleporter then
             local direction = virtualroomteleporter:GetDirection()
             local x, y, z = virtualroomteleporter:GetTeleportDestinationPosition()
+            local fxprefab = virtualroomteleporter:GetTeleportFXPrefab()
             if direction and x then
                 local virtualroom = self:GetCurrentRoom()
                 local teleportingentsdata = {
@@ -243,6 +244,7 @@ function VirtualRoomSet:CheckRoomVotes()
                     targetroomname = virtualroom.links[direction].linkedroom,
                     x = x,
                     z = z,
+                    fxprefab = fxprefab,
                 }
                 self:TryStartTeleportSequence(teleportingentsdata)
             end
@@ -324,6 +326,7 @@ function VirtualRoomSet:TryStartTeleportSequence(teleportingentsdata)
             end,
             onplayerready = self.teleportingentsdata.onremovependingtp,
             state = teleportingentsdata.state or nil,
+            fxprefab = teleportingentsdata.fxprefab or nil,
         })
     end
     checkpending()
@@ -964,7 +967,7 @@ local _SAVE = 2
 local _KEEP = 3
 
 local function _GetEntUnloadAction(self, ent)
-    if not ent:IsValid() or (ent.entity:GetParent() or ent.Follower and ent.Follower:IsFollowing()) or ent:HasTag("staysthroughvirtualrooms") then
+    if not ent:IsValid() or ent.entity:GetParent() or ent:HasTag("staysthroughvirtualrooms") then
         return _SKIP
     end
 
@@ -985,7 +988,7 @@ local function _GetEntUnloadAction(self, ent)
         end
     end
 
-    if owner ~= ent and (owner.entity:GetParent() or owner.Follower and owner.Follower:IsFollowing()) or not self:IsEntInVirtualRoom(owner) then
+    if owner ~= ent and owner.entity:GetParent() or not self:IsEntInVirtualRoom(owner) then
         return _SKIP
     elseif owner.isplayer or (
             owner:HasAnyTag("irreplaceable", "followsthroughvirtualrooms") or

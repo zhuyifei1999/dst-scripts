@@ -3528,7 +3528,17 @@ local function MakeHat(name)
 
 		if owner ~= nil and (owner.components.health == nil or not owner.components.health:IsDead()) then
 		    local target = data.target
-			if target and target ~= owner and target:IsValid() and target.prefab ~= "gestalt_guard_evolved" and (target.components.health == nil or not target.components.health:IsDead() and not target:HasAnyTag("structure", "wall")) then
+			if target and target ~= owner and target:IsValid() and target.prefab ~= "gestalt_guard_evolved" and 
+				--V2C: This used to be "onattackother" event:
+				--       -triggered BEFORE damage is dealt
+				--       -target CAN already be dead, so we DID need to check IsDead()
+				--     Now uses "onhitother" event:
+				--       -triggered AFTER damage is dealt
+				--       -target CANNOT have been dead before the damage (but can be after), so
+				--        do NOT check IsDead()
+				--(target.components.health == nil or not target.components.health:IsDead()) and
+				not target:HasAnyTag("structure", "wall", "balloon", "smashable", "deck_of_cards")
+			then
 				local x, y, z = target.Transform:GetWorldPosition()
 
 				local gestalt = SpawnPrefab("alterguardianhat_projectile")
@@ -6554,7 +6564,7 @@ local function MakeHat(name)
 		end
 		inst:ListenForEvent("onhitother", inst.bat_bosscorpse_onhitother_fn, owner)
 
-        if not owner:HasTag("equipmentmodel") then
+        if IsLifeDrainable(owner) and not owner:HasTag("equipmentmodel") then
             if owner.components.health then
 		    	owner.components.health:AddRegenSource(inst, TUNING.BAT_BOSS_CORPSEHAT_TICK_VALUE, TUNING.BAT_BOSS_CORPSEHAT_TICK_RATE, "bat_bosscorpsehat")
                 -- only if the owner actually has health, will we regen

@@ -1065,6 +1065,10 @@ end
 
 local function OnSegTimeDirty(inst)
     inst._predictionsleft = SEGMENT_PREDICTED_FRAMES
+
+    if inst._OnSegTimeDirty then
+        inst:_OnSegTimeDirty()
+    end
 end
 
 local function OnDirtPositionDirty(inst)
@@ -1450,6 +1454,10 @@ local function normal_common_postinit(inst)
     inst:AddTag("wet")
 end
 
+local function normal_head_common_postinit(inst)
+    inst:AddTag("nightmarecorruptable") -- added to worm_boss_dirt when applicable in worm_boss_util.lua
+end
+
 local function normal_head_master_postinit(inst)
     inst.sg.mem.canstalkercorrupt = true
 end
@@ -1470,7 +1478,7 @@ local function normal_dirt_master_postinit(inst)
 end
 
 local function normalfn() return commonfn("worm_boss", { "worm_boss_segment", "worm_boss_segment_2_build" }, normal_common_postinit) end
-local function normalheadfn() return commonheadfn("worm_boss", nil, normal_head_master_postinit) end
+local function normalheadfn() return commonheadfn("worm_boss", normal_head_common_postinit, normal_head_master_postinit) end
 local function normaltailfn() return commontailfn("worm_boss") end
 local function normalsegmentfn() return commonsegmentfn("worm_boss_segment", normal_segment_common_postinit) end
 local function normaldirtfn() return commondirtfn("worm_boss", normal_dirt_common_postinit, normal_dirt_master_postinit) end
@@ -1484,9 +1492,36 @@ local function shadow_CalcSanityAura(inst)
     return 0
 end
 
+local function CreateFlameLoop()
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+
+	inst.AnimState:SetBank("worm_boss")
+	inst.AnimState:SetBuild("worm_boss_shadow_build")
+	inst.AnimState:PlayAnimation("fireball", true)
+	inst.AnimState:SetSymbolLightOverride("fire", 1)
+	inst.AnimState:SetSymbolLightOverride("lava_flow", 1)
+
+	return inst
+end
+
 local function shadow_common_postinit(inst)
     inst:AddTag("shadow_aligned")
     inst:AddTag("shadowthrall")
+end
+
+local function shadow_OnColourChanged(inst, r, g, b, a)
+	for i, v in ipairs(inst.highlightchildren) do
+		v.AnimState:SetAddColour(r, g, b, a)
+	end
 end
 
 local function shadow_head_common_postinit(inst)
@@ -1497,6 +1532,18 @@ local function shadow_head_common_postinit(inst)
 	inst.AnimState:SetSymbolLightOverride("head_lips", 1)
 	inst.AnimState:SetSymbolLightOverride("head_teeth", 1)
 	inst.AnimState:SetSymbolLightOverride("red_lure", 1)
+	inst.AnimState:SetSymbolLightOverride("red", 1)
+
+    inst:AddComponent("colouraddersync")
+
+	if not TheNet:IsDedicated() then
+		local flame = CreateFlameLoop()
+		flame.entity:SetParent(inst.entity)
+		flame.Follower:FollowSymbol(inst.GUID, "follow_fireball", nil, nil, nil, true)
+
+		inst.highlightchildren = { flame }
+		inst.components.colouraddersync:SetColourChangedFn(shadow_OnColourChanged)
+	end
 end
 
 local function shadow_tail_common_postinit(inst)
@@ -1506,6 +1553,23 @@ local function shadow_tail_common_postinit(inst)
 	inst.AnimState:SetSymbolLightOverride("worm_spike", 1)
 	inst.AnimState:SetSymbolLightOverride("head_lips", 1)
 	inst.AnimState:SetSymbolLightOverride("head_teeth", 1)
+	inst.AnimState:SetSymbolLightOverride("red", 1)
+end
+
+local function shadow_OnHeadDirty(inst)
+	local flame = CreateFlameLoop()
+	flame.entity:SetParent(inst.entity)
+	flame.Follower:FollowSymbol(inst.GUID, "follow_fireball", nil, nil, nil, true)
+	inst.highlightchildren = { flame }
+end
+
+local function shadow_SetIsHead(inst, boolval)
+    if boolval ~= inst._head:value() then
+        inst._head:set(boolval)
+        if not TheNet:IsDedicated() then
+            shadow_OnHeadDirty(inst)
+        end
+    end
 end
 
 local function shadow_segment_common_postinit(inst)
@@ -1515,14 +1579,22 @@ local function shadow_segment_common_postinit(inst)
 	inst.AnimState:SetSymbolLightOverride("head_lips", 1)
 	inst.AnimState:SetSymbolLightOverride("head_teeth", 1)
 	inst.AnimState:SetSymbolLightOverride("red_lure", 1)
+	inst.AnimState:SetSymbolLightOverride("red", 1)
 
     inst:SetPrefabNameOverride("worm_boss_shadow") -- For death announce.
+
+    inst._head = net_bool(inst.GUID, "worm_boss_shadow_segment.head", "onheaddirty")
+    if not TheWorld.ismastersim then
+        inst:ListenForEvent("onheaddirty", shadow_OnHeadDirty)
+    end
 end
 
 local function shadow_segment_master_postinit(inst)
 	inst:AddComponent("planarentity")
 	inst:AddComponent("planardamage")
 	inst.components.planardamage:SetBaseDamage(TUNING.WORM_BOSS_SHADOW_PLANAR_DAMAGE)
+
+    inst.SetIsHead = shadow_SetIsHead
 end
 
 local function shadow_dirt_common_postinit(inst)
@@ -1530,6 +1602,8 @@ local function shadow_dirt_common_postinit(inst)
     inst:AddTag("shadowthrall")
 
     inst:SetPrefabNameOverride("worm_boss_shadow")
+
+    inst.scrapbook_proxy = "worm_boss_shadow"
 end
 
 local function shadow_dirt_master_postinit(inst)
@@ -1543,7 +1617,6 @@ end
 
 local function shadow_OnHealthDelta(inst, data)
 	if data.newpercent < TUNING.WORM_BOSS_SHADOW_ENRAGED_THRESHOLD then
-        -- TODO need to do a state first
 		inst:RemoveEventCallback("healthdelta", shadow_OnHealthDelta)
 		inst.enraged = true
 		inst:PushEvent("enraged")
@@ -1562,6 +1635,7 @@ local function SpawnPlanarEffectOn(inst, attacker)
 end
 
 local function shadow_master_postinit(inst)
+	inst.scrapbook_anim = "scrapbook_shadow"
     inst.components.lootdropper:SetChanceLootTable("worm_boss_shadow")
     inst.components.health:SetMaxHealth(TUNING.WORM_BOSS_SHADOW_HEALTH)
 

@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "I speak in tongues, but not that one.",
             QUEENBUSY = "Her majesty's schedule must be bananas, hyuyu!",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Can't compete until the course is complete!",
+            KINGSTAFF_COOLDOWN = "Oh shucks! It's stucks!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6360,6 +6361,16 @@ return{
 
 		CHARLIE_BOSS = "Deal is done! Time for fun! Hyuyu!",
         SHROUDEN = "Mr. Doom 'n' Gloom is in the room!",
+        CHARLIEARENA_SPIKE = "They grow from the ground all around!",
+
+        KING_CANE =
+        {
+            GENERIC = "I love a king's things!", -- has a gem slotted in
+            EMPTY = "Ahem! The gem?", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "It's not the same flame!",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

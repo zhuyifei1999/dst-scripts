@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Me not monkey, talk to somebody else!",
             QUEENBUSY = "Glurgh... why she gotta be so busy?",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Glurph! What missing?!",
+            KINGSTAFF_COOLDOWN = "Glurph! Stuck!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "What wrong with scary night lady?",
         SHROUDEN = "Florpt, maybe little bit scared.",
+        CHARLIEARENA_SPIKE = "Sharp, sharp!",
+
+        KING_CANE =
+        {
+            GENERIC = "Old old folk rock stick", -- has a gem slotted in
+            EMPTY = "No rock. Need rock.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "Hmm. Weird fire stick.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "What that?",

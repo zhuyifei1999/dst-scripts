@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "I'm sorry... I don't know what you're trying to say...",
             QUEENBUSY = "She doesn't have time for someone like me.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "It's incomplete. Like me.",
+            KINGSTAFF_COOLDOWN = "It is stuck.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -3529,7 +3530,7 @@ return{
 			CHARGING = "Take us far from here.",
 			DESTABILIZING = "Oh well. I hope it's a quick death.",
 			COOLDOWN = "We can't do that again for awhile.",
-            RITUAL_SUMMONING = "TODO", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
+            RITUAL_SUMMONING = "Have you finally come for me?", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "I think I know where it goes...",
 		LIFEINJECTOR = "We were not meant to cheat death.",
@@ -6344,6 +6345,16 @@ return{
 
 		CHARLIE_BOSS = "She's lost herself.",
         SHROUDEN = "The abyss gazes back.... and walks among us.",
+        CHARLIEARENA_SPIKE = "What makes it pierce the very ground?",
+
+        KING_CANE =
+        {
+            GENERIC = "It belonged to someone who lost everything.", -- has a gem slotted in
+            EMPTY = "It's lifeless without a gem.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "I see the flame, but I feel no warmth.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

@@ -61,6 +61,8 @@ local function OnColourChanged(inst, r, g, b, a)
 	end
 end
 
+local HIGHLIGHT_OVERRIDE = { 0.1, 0.1, 0.1 }
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -95,6 +97,9 @@ local function fn()
 	inst:AddTag("hostile")
 	inst:AddTag("notraptrigger")
 
+	inst.highlightoverride = HIGHLIGHT_OVERRIDE
+	inst.highlightflashaddoverride = 0.1
+
 	inst:AddComponent("spawnfader")
 	inst:AddComponent("colouraddersync")
 
@@ -108,6 +113,9 @@ local function fn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+    inst.scrapbook_hidehealth = true
+	inst.scrapbook_anim = "scrapbook"
 
 	if TARGET_MUST_TAGS == nil then
 		TARGET_MUST_TAGS = { "_combat", "_health" }

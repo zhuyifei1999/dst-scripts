@@ -46,18 +46,11 @@ local brain = require("brains/bat_bossbrain")
 SetSharedLootTable("bat_boss",
 {
 	{ "bat_bosscorpsehat",	1.00 },
-	{ "batwing",			0.25 },
-	{ "guano",				0.15 },
-	{ "monstermeat",		0.10 },
 })
 
 SetSharedLootTable("bat_boss_acidinfused",
 {
 	{ "bat_bosscorpsehat",	1.00 },
-	{ "batwing",			0.5 },
-	{ "guano",				0.3 },
-	{ "monstermeat",		0.2 },
-	{ "nitre",				0.4 },
 })
 
 SetSharedLootTable("bat_boss_shadow",
@@ -374,6 +367,16 @@ local function DropFromOwner(inst)
 	end
 end
 
+local function OnDeath(inst)
+	DropFromOwner(inst)
+	-- add rain immunity to uninfuse because acid build doesnt support unique death state
+	--  (and even if it did, it'd look better to uninfuse here for when we transition to the hat on death)
+	if inst.components.acidinfusible and inst.components.acidinfusible:IsInfused() then
+		local rainimmunity = inst.components.rainimmunity or inst:AddComponent("rainimmunity")
+		rainimmunity:AddSource(inst)
+	end
+end
+
 local function CanJoinAcidBatWave(inst) -- for whether we're available to join a acid bat wave.
 	if inst.components.health:IsDead() then
 		return false
@@ -484,6 +487,8 @@ local function commonfn(build, common_postinit, master_postinit)
 		return inst
 	end
 
+	inst.scrapbook_facing = FACING_DOWNRIGHT
+
 	inst:AddComponent("locomotor")
 	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 	inst.components.locomotor:SetTriggersCreep(false)
@@ -541,6 +546,10 @@ end
 
 --------------------------------------------------------------------------
 
+local function normal_common_postinit(inst)
+    inst:AddTag("nightmarecorruptable")
+end
+
 local function normal_master_postinit(inst)
 	inst:AddComponent("acidinfusible")
 	inst.components.acidinfusible:SetFXLevel(3)
@@ -560,8 +569,10 @@ local function normal_master_postinit(inst)
 	inst.components.sleeper.diminishingreturns = true
 
 	inst.components.health:SetMaxHealth(TUNING.BAT_BOSS_HEALTH)
+    inst.components.health.nofadeout = true
 
 	inst.components.lootdropper:SetChanceLootTable("bat_boss")
+	inst.components.lootdropper.nofling = true
 
 	inst.components.combat:SetRetargetFunction(1.5, RetargetFn)
 	--no KeepTargetFn, deaggro handled by ChaseAndAttack params
@@ -585,7 +596,7 @@ local function normal_master_postinit(inst)
 
 	inst:ListenForEvent("onhitother", OnHitOther)
 	inst:ListenForEvent("startelectrocute", DropFromOwner)
-	inst:ListenForEvent("death", DropFromOwner)
+	inst:ListenForEvent("death", OnDeath)
 
 	inst.NumBatsToSpawn = NumBatsToSpawn
 	inst.CanJoinAcidBatWave = CanJoinAcidBatWave
@@ -593,7 +604,7 @@ local function normal_master_postinit(inst)
 	inst.OnEntitySleep = OnEntitySleep
 end
 
-local function normalfn() return commonfn("bat_boss", nil, normal_master_postinit) end
+local function normalfn() return commonfn("bat_boss", normal_common_postinit, normal_master_postinit) end
 
 --------------------------------------------------------------------------
 
@@ -706,6 +717,8 @@ local function shadow_OnLoadPostPass(inst)--, ents, data)
 end
 
 local function shadow_master_postinit(inst)
+	inst.scrapbook_anim = "scrapbook_shadow"
+
 	inst:AddComponent("planarentity")
 	inst:AddComponent("planardamage")
 	inst.components.planardamage:SetBaseDamage(TUNING.BAT_BOSS_SHADOW_PLANAR_DAMAGE)

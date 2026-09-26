@@ -322,6 +322,11 @@ end
 function PlayerHud:Toggle(targetindicators)
     if self.shown then
         self:Hide()
+        if self.poiindicators then
+            for i, target in ipairs(self.poiindicators) do
+                target:Hide()
+            end
+        end
         if targetindicators and self.targetindicators then
             for i, target in pairs(self.targetindicators) do
                 target:Hide()
@@ -329,6 +334,11 @@ function PlayerHud:Toggle(targetindicators)
         end
     else
         self:Show()
+        if self.poiindicators then
+            for i, target in ipairs(self.poiindicators) do
+                target:Show()
+            end
+        end
         if self.targetindicators then
             for i, target in pairs(self.targetindicators) do
                 target:Show()
@@ -1695,6 +1705,24 @@ function PlayerHud:UpdateClouds(camera)
             TheFocalPoint.SoundEmitter:KillSound("windsound")
             TheMixer:PopMix("high")
         end
+    end
+end
+
+function PlayerHud:AddPOIIndicator(target)
+    if not self.poiindicators then
+        self.poiindicators = {}
+    end
+    table.insert(self.poiindicators, target)
+    if not self.shown then
+        target:Hide()
+    end
+end
+
+function PlayerHud:RemovePOIIndicator(target)
+    if not self.poiindicators then return end
+    table.removearrayvalue(self.poiindicators, target)
+    if not self.shown then
+        target:Show()
     end
 end
 

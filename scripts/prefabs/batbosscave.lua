@@ -24,6 +24,7 @@ end
 
 local function OnAddChild(inst)--, count)
     if inst.components.childspawner.childreninside == inst.components.childspawner.maxchildren then
+        inst:AddTag("nightmarecorruptable")
         if not inst.AnimState:IsCurrentAnimation("eyes") then
             inst.AnimState:PlayAnimation("eyes", true)
         end
@@ -38,13 +39,15 @@ local function OnAddChild(inst)--, count)
 end
 
 local function OnSpawnChild( inst, child )
-    inst.AnimState:PlayAnimation("idle",true)
+    inst:RemoveTag("nightmarecorruptable")
+    inst.AnimState:PlayAnimation("idle")
     inst.SoundEmitter:KillSound("full")
     inst.SoundEmitter:PlaySound("dontstarve/cave/bat_cave_bat_spawn")
 end
 
 local function OnEntityWake(inst)
     if inst.components.childspawner.childreninside == inst.components.childspawner.maxchildren then
+        inst:AddTag("nightmarecorruptable")
         if not inst.AnimState:IsCurrentAnimation("eyes") then
             inst.AnimState:PlayAnimation("eyes", true)
         end
@@ -94,6 +97,11 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     MakeObstaclePhysics(inst, 2.2)
+
+    if not TheNet:IsDedicated() then
+        inst:AddComponent("pointofinterest")
+        inst.components.pointofinterest:SetHeight(50)
+    end
 
     inst.entity:SetPristine()
 

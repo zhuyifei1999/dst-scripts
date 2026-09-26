@@ -1211,7 +1211,7 @@ STRINGS =
 
         -- Rifts 8
 
-
+        CORRUPTNIGHTMARE = "Corrupt",
     },
 
 	WOBY_COMMANDS =
@@ -4756,9 +4756,19 @@ STRINGS =
         ATRIUM_RITUAL_ORGAN_WORM = "Blighted Guts",
 
 		CHARLIE_BOSS = "Shrouded Queen",
+		CHARLIE_BOSS_PROJECTILE = "Swarming Horror", -- for scrapbook
         SHROUDEN = "Umbral Abomination",
 
         CHARLIE_BOSS_RUNNER = "Grim Harrier",
+
+        CHARLIEARENA_SPIKE = "Dreadstone Outcrop",
+
+        SHADOWHAND_SHROUDED = "Horror Hand", -- for scrapbook
+
+        QUEEN_TORCH = "Queen's Torch",
+        KING_CANE = "King's Staff",
+
+        CHARLIEARENA_TELEPORTER = "Exit?", -- TODO
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -7077,12 +7087,12 @@ STRINGS =
 
     STALKER_NPC_PERFORM_FIRST_CORRUPT = -- corrupting a boss creature into its shadow version
     {
-        "You have chosen...",
+        "By your choice, however cruel,",
         "This innocent creature...",
-        "To be woven...",
+        "Be woven...",
         "And made an offering...",
         "To Them.",
-        "As you wish...",
+        "As you command...",
         "It is done.",
         "Rise now, child.",
     },
@@ -7471,7 +7481,7 @@ STRINGS =
     STALKER_NPC_SPAWN = -- spawned after first spawns
     {
         "I arise yet again.",
-        "My slumber ends.",
+        "Ripped from my slumber.",
         "Why do you disturb my rest?",
         "Is this my curse?",
         "Must I see the ruins of my world again?",
@@ -7480,12 +7490,11 @@ STRINGS =
 
     STALKER_NPC_PERFORM_CORRUPT =
     {
-        "Rise anew, child.",
-        "Rise anew and bring glory.",
+        "Awaken to your new life... horrific and fleeting as it may be",
         "We are all pawns.",
         "You are woven.",
         "Your sacrifice will not be forgotten.",
-        "We will make Them pay... make Them suffer.",
+        "Against my will, I was made to rise... so too shall you.",
     },
 
     STALKER_NPC_IDLE =
@@ -7502,22 +7511,25 @@ STRINGS =
         "Have you seen her?",
         "Why do you torment me?",
         "Do you know who I am?",
+        "Know that I would extinguish you, given a thrall's chance.",
     },
 
     STALKER_NPC_FOLLOW_THURIBLE = -- start following thurible
     {
         "Will you not let this old king rest his weary bones?",
-        "You would lead a king like a thrall?",
-        "I shall follow... with every step steeped in shame.",
-        "What choice have I but to walk at your command?",
+        "Who are you to lead a king like a thrall?",
+        "I shall follow... every forced step steeped in shame... and loathing.",
+        "By yon accursed bauble, I am compelled to follow.",
+        "Curse you and that infernal trinket!",
     },
 
     STALKER_NPC_FOLLOWING_THURIBLE = -- while we're following it.
     {
-        "Where are you leading me?",
+        "Where you lead, I wish not follow.",
         "I shall follow you to your doom.",
         "You may prove a greater fool than I.",
-        "Are you lost? For I am.",
+        "Are you lost? For I am... evermore.",
+        "If not for that infernal trinket, you'd not have power over me.",
     },
 
     STALKER_NPC_BIOMES_IDLE = -- idle talk after seeing the biome for the first time, and being within it
@@ -7576,7 +7588,7 @@ STRINGS =
     -- should be one string only
     CHARLIE_NPC_GIVE_SHADOWHEART_INFUSED =
     {
-        "You'll need to call upon an old friend.",
+        "Call upon an old foe. This will make him... a friend.",
     },
 
     -- Monologue on ritual beginning, portal swirls, eye appears, hooray! youre about to be betrayed and apart of the ritual!
@@ -11018,6 +11030,7 @@ STRINGS.UI =
 		INTEGRATEDBACKPACK_DISABLED = "Separated",
 		INTEGRATEDBACKPACK_ENABLED = "Integrated",
         DATACOLLECTION = "Data Collection:",
+        CRASHREPORTS = "Crash Reports:",
         MOVEMENTPREDICTION = "Lag Compensation:",
         MOVEMENTPREDICTION_ENABLED = "Predictive",
         MOVEMENTPREDICTION_DISABLED = "None",
@@ -11139,6 +11152,7 @@ STRINGS.UI =
 			CRAFTINGMENUBUFFEREDBUILDAUTOCLOSE = "Closes the crafting menu when building a structure that is placed in the world.",
 			CRAFTINGHINTALLRECIPES = "Preview the next available research tier or show all locked recipes.",
             DATACOLLECTION = "We collect metrics and telemetry on Don't Starve Together, including how long and how often you play. This information helps us troubleshoot the game, provide rewards, and improve your experience. Refer to https://www.klei.com/privacy-policy for more information.",
+            CRASHREPORTS = "After a crash, offer to send a crash dump and the log to Klei so we can fix it. Turn this off and you will never be asked.",
             LOADING_TIPS = "Learn more about the lore and the gameplay of Don't Starve while your world loads.",
 			TARGETLOCKING = "Focus on one target at a time.",
 			PROMOTIONS = "Display store promotions in the main menus.",
@@ -11560,7 +11574,7 @@ STRINGS.UI =
             ID_DST_USER_CONNECTION_FAILED = "Something went awry while connecting. Please try again.",
             ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a \"friends only\" server, but you're not friends with the host.",
             APP_OWNERSHIP_CHECK_FAILED = "The server says you don't own the game. But you do... right?",
-            SERVER_MODS_NOT_ON_WORKSHOP = "This server requires mods that are not available on the Steam Workshop. You will need to manually download the missing mods.",
+            SERVER_MODS_NOT_ON_WORKSHOP = "This server requires mods you don't have installed, or a different version of a mod you have.\nSubscribe on the Steam Workshop and let Steam update them (or download them manually if they are not Workshop mods), then join again.",
             SERVER_MODS_NOT_ON_WORKSHOP_RAIL = "This server requires mods that are not available. You will need to manually download the missing mods.",
             SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "The server is running mods with an old version. The server owner must update the mods for new players to join.",
             SERVER_MODS_WORKSHOP_FAILURE = "Download of the required mods from the Steam Workshop failed. Please try again.",
@@ -11943,12 +11957,12 @@ STRINGS.UI =
         ENABLEDDISABLED_FILTER = "Both",
         SEARCH = "Search",
         MOD_DEPENDENCIES_TITLE = "Dependencies Required",
-        MOD_HAS_DEPENDENCIES_FMT = "{mod} requires other mods to run, it will subscribe and enable these if you enable this mod:",
+        MOD_HAS_DEPENDENCIES_FMT = "{mod} requires other mods to run. They will be enabled with it once they are installed (Workshop mods can be clicked to open their Workshop page):",
         MOD_DEPENDENTS_TITLE = "Required By Other Mods",
         MOD_HAS_DEPENDENTS_FMT = "{mod} is required for other mods to run, if you disable this mod these mods will be disabled:",
         DISABLE_ALL = "Disable All",
-        REQUIRED_MODS_DOWNLOADING_TITLE = "Required Mods Are Downloading",
-        REQUIRED_MODS_DOWNLOADING = "The game has not finished downloading required mods.\nEither wait until the mods have finished downloading, or disable mods which have dependencies.",
+        REQUIRED_MODS_DOWNLOADING_TITLE = "Required Mods Not Installed",
+        REQUIRED_MODS_DOWNLOADING = "Required mods are not installed yet.\nSubscribe to them on the Workshop and wait until they have been installed, or disable mods which have dependencies.",
         DOWNLOADING_MODS = "Downloading Mods...",
     },
 
@@ -18959,7 +18973,6 @@ STRINGS.SCRAPBOOK = {
         CUTLESS = "Knocks items out of targets inventory.",
         WATERINGCAN = "Adds 25 points of wetness to Garden Soil per use.\n\nCan also put out fires and stop smouldering.",
         FENCEROTATOR = "Rotates rotatable structures like fences, signs and chairs.",
-        HOE = "Use on Garden Soil to create dirt piles where survivors can plant seeds.",
         SADDLEHORN = "Removes saddles from a Beefalo without reducing saddle durability.",
         DUMBBELLRED = "When equipped Wolfgang can Lift to raise his Mightiness.\n\nWhen thrown it creates fire where it lands.",
         DUMBBELLBLUE = "When equipped Wolfgang can Lift to raise his Mightiness.\n\nWhen thrown it increases the coldness of creatures near where it lands.",
@@ -19357,10 +19370,16 @@ STRINGS.SCRAPBOOK = {
 
         -- Rifts 8
 
-        BAT_BOSSCORPSEHAT = "When equipped, leeches your life in exchange for life steal on melee attack. The wearer is considered a monster, and grants neutrality with Batilisks, Hound Batilisk and Naked Mole Bats.",
-        ARMOR_ROCKY = "This armor is incredibly durable, granting 95% protection to its wearer, along with knockback immunity.",
+        BAT_BOSSCORPSEHAT = "When equipped, leeches your life in exchange for life steal on melee attack. The wearer is considered a monster, grants neutrality with Batilisks, Hound Batilisk and Naked Mole Bats, and also prevents Bat Waves during Acid Rain.",
+        ARMOR_ROCKY = "Grants its wearer knockback immunity",
 
         CHARLIE_BOSS_RUNNER = "Echoes of lost souls. Don't get too close.",
+
+        CHARLIE_BOSS = "What have we done?",
+        CHARLIE_BOSS_PROJECTILE = "Chases onto those who dare still bask in the light.",
+
+        KING_CANE = "Socket any gem to use the respective staffs ability.\nBe careful to not overuse, or you will fall as they did.",
+        QUEEN_TORCH = "An eternal flame to push back the shadows.",
     },
 
     -- Full name: "{name} Scrapbook Page"
@@ -19398,6 +19417,27 @@ if POT_GENERATION == false then
 		end
 	end
 end
+
+----------------------------------------------------------------------------
+-- Not used in-game - translated here, then exported to external tools
+----------------------------------------------------------------------------
+STRINGS.EXTERNAL =
+{
+	CRASHREPORTER =
+	{
+		IDS_APP_TITLE = "Don't Starve Together Crash Reporter",
+		IDS_DLG_TITLE = "It appears Don't Starve Together has crashed.\nPlease visit our support page for fixes to common problems: <a>https://support.klei.com</a>",
+		IDS_DLG_INSTRUCTIONS = "Can you describe what was going on in the game when the crash happened?",
+		IDS_DLG_FILES = "Files to include:",
+		IDS_FAILED_TO_SEND = "Crash report failed to send",
+		IDS_SEND = "Send",
+		IDS_ERROR = "Error",
+		IDS_CANCEL = "Cancel",
+		IDS_SUCCESS = "Success",
+		IDS_SEND_SUCCESS = "Crash report sent. Thank you!",
+		IDS_PRIVACY_DISCLAIMER = "Report includes platform information for diagnostic purposes.",
+	},
+}
 
 ----------------------------------------------------------------------------
 -- Include the names and descriptions of the clothing and craftable skins.

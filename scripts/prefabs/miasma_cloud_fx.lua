@@ -414,7 +414,7 @@ local FIRE_CANT_TAGS = { "shadow_fire", "blueflame" }
 local function TestFireFn(guy, inst)
     -- night stick shouldnt burn miasma, return true for stuff that can light, like torch and willows lighter
     if guy.components.burnable and guy.components.equippable then
-        return guy.components.lighter ~= nil
+        return (guy.components.lighter ~= nil) or guy:HasTag("gestaltflame")
     end
 
     return true

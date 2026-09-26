@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Don't know how to speak Cheeky",
             QUEENBUSY = "She very busy! Maybe try later",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Friend not finished",
+            KINGSTAFF_COOLDOWN = "Nope. Stuck", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6317,8 +6318,8 @@ return{
 
         BATBOSSCAVE =
         {
-            GENERIC = "Friend inside?", -- boss bat is inside,
-            VACANT = "No friend home?", -- boss bat is not inside anymore
+            GENERIC = "Who inside?", -- boss bat is inside,
+            VACANT = "No one home?", -- boss bat is not inside anymore
         },
 
         WORM_BOSS_SHADOW = "Oh no!",
@@ -6342,8 +6343,18 @@ return{
             IN_RITUAL = "How float?", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
         },
 
-		CHARLIE_BOSS = "Lady is three friends?",
+		CHARLIE_BOSS = "How lady is three?",
         SHROUDEN = "Never friend",
+        CHARLIEARENA_SPIKE = "Pretty pointy rock",
+
+        KING_CANE =
+        {
+            GENERIC = "Shiny shiny stick", -- has a gem slotted in
+            EMPTY = "Where shiny?", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "Lady fire stick?",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "Friend?",

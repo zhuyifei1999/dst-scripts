@@ -144,9 +144,21 @@ local events =
 	CommonHandlers.OnLocomote(false, true),
 	CommonHandlers.OnFreeze(),
 	CommonHandlers.OnElectrocute(),
-	CommonHandlers.OnDeath(),
 	CommonHandlers.OnSleepEx(),
 	CommonHandlers.OnWakeEx(),
+
+	EventHandler("death", function(inst, data)
+		if not inst.sg:HasStateTag("dead") then
+    	    local use_corpse_state = CommonHandlers.ShouldUseCorpseStateOnLoad(inst, data.cause)
+			if IsBoss(inst) and not IsShadow(inst) then
+				inst.sg:GoToState("death_hat", data)
+    	    elseif use_corpse_state then
+    	        inst.sg:GoToState("corpse", true)
+    	    else
+    	        inst.sg:GoToState("death", data)
+    	    end
+		end
+	end),
 
 	-- Corpse handlers
 	CommonHandlers.OnCorpseChomped(),
@@ -336,6 +348,10 @@ local function TrySummon(inst)
 	for i = 1, num do
 		inst:DoTaskInTime(i/num * math.random(), SpawnBat)
 	end
+end
+
+local function SetBossShadowScale(inst, scale)
+    inst.DynamicShadow:SetSize(2.4 * scale, 1.4 * scale)
 end
 
 local states =
@@ -1455,6 +1471,46 @@ local states =
 				end
 			end),
 		},
+	},
+
+	State{
+		name = "death_hat",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			inst.Transform:SetNoFaced()
+			inst.components.locomotor:StopMoving()
+			inst.AnimState:PlayAnimation("death_hat")
+			RemovePhysicsColliders(inst)
+			inst:AddTag("NOCLICK")
+		end,
+
+		timeline =
+		{
+			FrameEvent(1, function(inst) PlayBatSound(inst, "dontstarve/creatures/bat/death") end),
+			FrameEvent(3, function(inst) PlayBatSound(inst, "dontstarve/creatures/bat/flap") end ),
+			FrameEvent(14, function(inst) SetBossShadowScale(inst, 0.9) end),
+			FrameEvent(15, function(inst) SetBossShadowScale(inst, 0.8) end),
+			FrameEvent(16, function(inst) SetBossShadowScale(inst, 0.7) end),
+			FrameEvent(17, function(inst) SetBossShadowScale(inst, 0.5) end),
+			FrameEvent(18, function(inst) SetBossShadowScale(inst, 0.3) end),
+			FrameEvent(19, function(inst) SetBossShadowScale(inst, 0.1) end),
+			FrameEvent(20, function(inst)
+				SetBossShadowScale(inst, 0)
+				LandFlyingCreature(inst)
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst:DropDeathLoot()
+					inst.persists = false
+					inst:Remove()
+				end
+			end),
+		}
 	},
 
 	--bat_boss_shadow

@@ -1,29 +1,42 @@
+--NOTE: this handles both charlie_boss and shrouden, sorry for the name!
+
 local TEXTURE = "fx/debris.tex"
 local SHADER = "shaders/vfx_particle_add.ksh"
 
 local ROCKTEXTURE = "fx/debris_rock.tex"
+local ROCKGLOWTEXTURE = "fx/debris_rock_glow.tex"
 local ROCKSHADER = "shaders/vfx_particle.ksh"
+
+local EMBERTEXTURE = "fx/snow.tex"
+local EMBERSHADER = "shaders/vfx_particle_add.ksh"
 
 local assets =
 {
 	Asset("ANIM", "anim/atrium_charlie_arena_ground.zip"),
 	Asset("ANIM", "anim/atrium_charlie_arena_ground_portal.zip"),
 
+	Asset("ANIM", "anim/charliearena_rift_fx.zip"),
+
     Asset("IMAGE", TEXTURE),
     Asset("SHADER", SHADER),
     Asset("IMAGE", ROCKTEXTURE),
+    Asset("IMAGE", ROCKGLOWTEXTURE),
     Asset("SHADER", ROCKSHADER),
+    Asset("IMAGE", EMBERTEXTURE),
+    Asset("SHADER", EMBERSHADER),
 }
 
 local prefabs =
 {
 	"charlie_boss",
-	--"shrouden",
 
 	"charliearena_lightray",
 	"miasma_cloud_visual",
     "shadowhand_shrouded",
     "charlie_boss_runner",
+
+    "charliearena_spike",
+    "charliearena_teleporter",
 }
 
 local TILE_SCALE = TILE_SCALE
@@ -37,11 +50,43 @@ local function _dbg_print(...)
 	print("[charlie_boss_trial.lua]:", ...)
 end
 
+local function UntrackCharlieBoss(inst)
+    local boss = inst.components.entitytracker:GetEntity("charlie_boss")
+    if boss then
+        inst.components.entitytracker:ForgetEntity("charlie_boss")
+	    inst:RemoveEventCallback("onremove", inst._oncharliebossremoved, boss)
+	    inst:RemoveEventCallback("track_charlie_boss", inst._oncharliebosssettracking, boss)
+	    inst:RemoveEventCallback("ms_charlie_boss_defeated", inst._oncharliebossdied, boss)
+	    inst:RemoveEventCallback("ms_charliearena_shadowrunners_setenabled", inst._onshadowrunnersenabled, boss)
+	    inst:RemoveEventCallback("ms_charliearena_shadowhands_setenabled", inst._onshadowhandsenabled, boss)
+	    inst:RemoveEventCallback("ms_charliearena_becomeunstable", inst._onarenaunstable, boss)
+	    inst:RemoveEventCallback("ms_charliearena_dreadstonespikes_setenabled", inst._ondreadstonespikesenabled, boss)
+    end
+end
+
 local function TrackCharlieBoss(inst, boss)
-	inst:ListenForEvent("death", inst._oncharliebossdied, boss)
+    UntrackCharlieBoss(inst)
+
+    inst.components.entitytracker:TrackEntity("charlie_boss", boss)
 	inst:ListenForEvent("onremove", inst._oncharliebossremoved, boss)
+	inst:ListenForEvent("track_charlie_boss", inst._oncharliebosssettracking, boss)
+    inst:ListenForEvent("ms_charlie_boss_defeated", inst._oncharliebossdied, boss)
 	inst:ListenForEvent("ms_charliearena_shadowrunners_setenabled", inst._onshadowrunnersenabled, boss)
 	inst:ListenForEvent("ms_charliearena_shadowhands_setenabled", inst._onshadowhandsenabled, boss)
+	inst:ListenForEvent("ms_charliearena_becomeunstable", inst._onarenaunstable, boss)
+    inst:ListenForEvent("ms_charliearena_dreadstonespikes_setenabled", inst._ondreadstonespikesenabled, boss)
+end
+
+local function TrackDreadstoneSpike(inst, spike)
+    inst.dreadstonespikesdata.totalspikescount = inst.dreadstonespikesdata.totalspikescount + 1
+    inst.dreadstonespikesdata.dreadstonespikes[spike] = true
+    spike:ListenForEvent("onremove", inst._onremove_dreadstonespike)
+end
+
+local function UntrackDreadstoneSpike(inst, spike)
+    inst.dreadstonespikesdata.totalspikescount = inst.dreadstonespikesdata.totalspikescount - 1
+    inst.dreadstonespikesdata.dreadstonespikes[spike] = nil
+    spike:RemoveEventCallback("onremove", inst._onremove_dreadstonespike)
 end
 
 local function SpawnTrackedPrefabAtXZ(inst, id, prefab, x, z)
@@ -58,24 +103,35 @@ local function SpawnPrefabAtXZ(prefab, x, z)
 end
 
 local INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY = -3 - 1, 3 + 1, -3 - 1, 3 + 1 -- 1 extra length to take into account overhang
+local INNER_PHASE2_MINX, INNER_PHASE2_MAXX, INNER_PHASE2_MINY, INNER_PHASE2_MAXY = -4 - 1, 4 + 1, -4 - 1, 4 + 1 -- 1 extra length to take into account overhang
 
-local function GetBorderTiles(otx, oty, padding)
+local function GetBoundingBox(inst)
+    if inst._unstable:value() then
+        return INNER_PHASE2_MINX, INNER_PHASE2_MAXX, INNER_PHASE2_MINY, INNER_PHASE2_MAXY
+    end
+
+    return INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY
+end
+
+local function GetBorderTiles(inst, otx, oty, padding)
     padding = padding or 0
     local exits = {}
 
-    for xx = INNER_MINX - padding, INNER_MAXX + padding do
-        local tx, ty = otx + xx, oty + INNER_MINY - padding
+    local minx, maxx, miny, maxy = GetBoundingBox(inst)
+
+    for xx = minx - padding, maxx + padding do
+        local tx, ty = otx + xx, oty + miny - padding
         table.insert(exits, { x = tx, y = ty })
 
-        tx, ty = otx + xx, oty + INNER_MAXY + padding
+        tx, ty = otx + xx, oty + maxy + padding
         table.insert(exits, { x = tx, y = ty })
     end
 
-    for yy = INNER_MINY - padding, INNER_MAXY + padding do
-        local tx, ty = otx + INNER_MINX - padding, oty + yy
+    for yy = miny - padding, maxy + padding do
+        local tx, ty = otx + minx - padding, oty + yy
         table.insert(exits, { x = tx, y = ty })
 
-        tx, ty = otx + INNER_MAXX + padding, oty + yy
+        tx, ty = otx + maxx + padding, oty + yy
         table.insert(exits, { x = tx, y = ty })
     end
 
@@ -83,22 +139,34 @@ local function GetBorderTiles(otx, oty, padding)
 end
 
 local function SpawnBorder(inst)
+    if inst.visuals then
+        for i, v in ipairs(inst.visuals) do
+            v:Remove()
+        end
+    end
+    inst.visuals = {}
+
 	local x, _, z = inst.Transform:GetWorldPosition()
 	local otx, oty = TheWorld.Map:GetTileCoordsAtPoint(x, 0, z)
-	local exits = GetBorderTiles(otx, oty)
+	local exits = GetBorderTiles(inst, otx, oty)
     for i, v in ipairs(exits) do
 		local tx, ty, tz = TheWorld.Map:GetTileCenterPoint(v.x, v.y)
         local cloud = SpawnPrefab("miasma_cloud_arenabordervisual")
 		cloud.entity:SetParent(inst.entity)
 		cloud.Transform:SetPosition(x - tx, 0, z - tz)
+        table.insert(inst.visuals, cloud)
     end
 end
 
-local function InitializeLayout(inst, virtualroomset)
+local function SpawnExitCrack(inst)
 	local x, _, z = inst.Transform:GetWorldPosition()
-    -- local otx, oty = virtualroomset:GetOriginInTiles()
+    SpawnTrackedPrefabAtXZ(inst, "exit", "charliearena_teleporter", x, z):Open()
+end
 
-	local charlie = SpawnTrackedPrefabAtXZ(inst, "charlie_boss", "charlie_boss", x, z)
+local function InitializeLayout(inst)
+	local x, _, z = inst.Transform:GetWorldPosition()
+
+	local charlie = SpawnPrefabAtXZ("charlie_boss", x, z)
 	charlie.sg:GoToState("spawn")
 	TrackCharlieBoss(inst, charlie)
 
@@ -123,11 +191,41 @@ local function InitializeLayout(inst, virtualroomset)
 	SpawnBorder(inst)
 end
 
-local function OnLoadPostPass(inst, ents, data)
-	local ent = inst.components.entitytracker:GetEntity("charlie_boss")
+local function OnSave(inst, data)
+    data.unstable = inst._unstable:value()
+
+    local refs = {}
+
+    data.dreadstonespikes = {}
+    for spike in pairs(inst.dreadstonespikesdata.dreadstonespikes) do
+        table.insert(data.dreadstonespikes, spike.GUID)
+        table.insert(refs, spike.GUID)
+    end
+
+    return refs
+end
+
+local function OnLoadPostPass(inst, newents, data)
+    local ent = inst.components.entitytracker:GetEntity("charlie_boss")
 	if ent then
 		TrackCharlieBoss(inst, ent)
 	end
+
+    if data then
+        if data.dreadstonespikes and ent then
+            for _, spikeuid in ipairs(data.dreadstonespikes) do
+                local spike = newents[spikeuid] and newents[spikeuid].entity
+                if spike then
+                    spike:SetShrouden(ent)
+                    TrackDreadstoneSpike(inst, spike)
+                end
+            end
+        end
+
+        if data.unstable then
+            inst:SetUnstable(true)
+        end
+    end
 
 	SpawnBorder(inst)
 end
@@ -302,7 +400,7 @@ end
 local function OnShadowRunnersTick(inst)
     local totalrunnerscount = inst.shadowrunnersdata.totalrunnerscount
     if totalrunnerscount >= TUNING.CHARLIE_BOSS_RUNNER_MAXCOUNT then
-        return false
+        return
     end
 
     local num_runners = TUNING.CHARLIE_BOSS_RUNNER_BASE_AMOUNT
@@ -319,9 +417,9 @@ local function OnShadowRunnersTick(inst)
 
     local charlieboss = inst.components.entitytracker:GetEntity("charlie_boss")
     for i = 1, num_runners do
-        local totalrunnerscount = inst.shadowrunnersdata.totalrunnerscount
+        totalrunnerscount = inst.shadowrunnersdata.totalrunnerscount
         if totalrunnerscount >= TUNING.CHARLIE_BOSS_RUNNER_MAXCOUNT then
-            return false
+            return
         end
 
         local x, y, z = TryToFindSpawnPointForRunner(inst)
@@ -336,6 +434,8 @@ local function OnShadowRunnersTick(inst)
 			local theta = angle * DEGREES
 			runner.components.locomotor:GoToPoint(Vector3(x + 3 * math.cos(theta), 0, z - 3 * math.sin(theta)), nil, false)
 		end
+
+		runner:ListenForEvent("resetboss", function() runner:Remove() end, charlieboss)
 
         inst.shadowrunnersdata.totalrunnerscount = totalrunnerscount + 1
         inst.shadowrunnersdata.runners[runner] = true
@@ -359,13 +459,110 @@ local function OnShadowRunnersEnabled(inst, enabled)
             inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/horde_warning_LP", "horde_lp")
             inst.shadowrunnersdata.task = inst:DoPeriodicTask(4, OnShadowRunnersTick, 0.3 + math.random() * 0.2)
         end
-    elseif inst.shadowrunnersdata.task then
-        inst.SoundEmitter:KillSound("horde_lp")
-        inst.shadowrunnersdata.task:Cancel()
-        inst.shadowrunnersdata.task = nil
+    else
+        if inst.shadowrunnersdata.task then
+            inst.SoundEmitter:KillSound("horde_lp")
+            inst.shadowrunnersdata.task:Cancel()
+            inst.shadowrunnersdata.task = nil
+        end
         DissipateAllShadowRunners(inst)
     end
 end
+
+local SPIKE_EXCLUDE_RADIUS_SQ = 6.5*6.5 -- can't spawn too close to the center, because the center is a portal
+local BOSS_PADDING_RADIUS = 2 * 2
+
+local SPIKE_CANT_TAGS, SPIKE_ONEOF_TAGS
+local function CanSpawnDreadstoneSpikeAt(inst, pos, boss)
+    if SPIKE_CANT_TAGS == nil then
+        SPIKE_CANT_TAGS = { }
+        SPIKE_ONEOF_TAGS = { "groundspike", "antlion_sinkhole_blocker", "shadowboss", "shadowthrall" }
+    end
+    if inst:GetDistanceSqToPoint(pos) <= SPIKE_EXCLUDE_RADIUS_SQ then
+        return false
+    end
+    if boss:GetDistanceSqToPoint(pos) <= boss:GetPhysicsRadius(0) + BOSS_PADDING_RADIUS then
+        return false
+    end
+    local radius = 1
+    for i, v in ipairs(TheSim:FindEntities(pos.x, 0, pos.z, radius + MAX_PHYSICS_RADIUS, nil, SPIKE_CANT_TAGS, SPIKE_ONEOF_TAGS)) do
+        if v.Physics == nil then
+            return false
+        end
+        local spacing = radius + v:GetPhysicsRadius(0)
+        if v:GetDistanceSqToPoint(pos) < spacing * spacing then
+            return false
+        end
+    end
+    return true
+end
+
+local WalkableOffsetCheckFn
+
+local function SpawnDreadstoneSpikes(inst, boss, pos)
+    if WalkableOffsetCheckFn == nil then
+        WalkableOffsetCheckFn = function(pt) return CanSpawnDreadstoneSpikeAt(inst, pt, boss) end
+    end
+    if CanSpawnDreadstoneSpikeAt(inst, pos, boss) then
+        local spike = SpawnPrefab("charliearena_spike")
+        spike.Transform:SetPosition(pos:Get())
+        spike:OnShroudenSummon(boss)
+        TrackDreadstoneSpike(inst, spike)
+    end
+
+    -- TODO patterns? but right now, just randomness
+    for i = 1, math.random(5, 6) do
+        local offset = FindWalkableOffset(pos, math.random() * TWOPI, 2 + math.random() * 2, 3, false, true, WalkableOffsetCheckFn, false, false)
+        if offset ~= nil then
+            local spike = SpawnPrefab("charliearena_spike")
+            spike.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
+            spike:OnShroudenSummon(boss)
+            TrackDreadstoneSpike(inst, spike)
+        end
+    end
+end
+
+local function OnDreadstoneSpikesTick(inst)
+    local boss = inst.components.entitytracker:GetEntity("charlie_boss")
+    if not boss or not boss.components.grouptargeter then
+        return
+    end
+
+    for player in pairs(boss.components.grouptargeter:GetTargets()) do
+        local pos = player:GetPosition()
+        if TheWorld.Map:IsPointInCharlieBossArena(pos:Get()) and not IsEntityDeadOrGhost(player) then
+            local vx, _, vz = player.Physics:GetVelocity()
+            pos.x = pos.x + (vx * .75)
+            pos.z = pos.z + (vz * .75)
+            SpawnDreadstoneSpikes(inst, boss, pos)
+        end
+    end
+end
+
+local function DestroyAllDreadstoneSpikes(inst)
+    for spike, _ in pairs(inst.dreadstonespikesdata.dreadstonespikes) do
+        spike.persists = false
+        UntrackDreadstoneSpike(inst, spike)
+        spike:DestroyInTime(math.random())
+    end
+end
+
+local function OnDreadstoneSpikesEnabled(inst, enabled)
+    if enabled then
+        if not inst.dreadstonespikesdata.task then
+            inst.dreadstonespikesdata.task = inst:DoPeriodicTask(18, OnDreadstoneSpikesTick, 1.5 + math.random() * 1)
+        end
+    else
+        if inst.dreadstonespikesdata.task then
+            inst.SoundEmitter:KillSound("horde_lp")
+            inst.dreadstonespikesdata.task:Cancel()
+            inst.dreadstonespikesdata.task = nil
+        end
+        DestroyAllDreadstoneSpikes(inst)
+    end
+end
+
+----------------------------------------------------
 
 local function AddPortalLayer(inst, layer, height)
 	local fx = CreateEntity()
@@ -427,8 +624,8 @@ end
 
 ----------------------------------------------------------
 
-local ATRIUM_ARENA_SIZE = 14.55
-local TERRAFORM_BLOCKER_RADIUS = math.ceil(ATRIUM_ARENA_SIZE / 3)
+local ARENA_SIZE = 20
+local TERRAFORM_BLOCKER_RADIUS = math.ceil(ARENA_SIZE / 3)
 
 local function CreateTerraformBlocker(parent)
     local inst = CreateEntity()
@@ -467,11 +664,14 @@ local function IntColour(r, g, b, a)
     return { r / 255, g / 255, b / 255, a / 255 }
 end
 
-local COLOUR_ENVELOPE_NAME = "charliearenaembercolourenvelope"
-local SCALE_ENVELOPE_NAME = "charliearenascaleenvelope"
+local COLOUR_ENVELOPE_NAME = "charliearenadebriscolourenvelope"
+local SCALE_ENVELOPE_NAME = "charliearenadebrisscaleenvelope"
 
 local ROCK_COLOUR_ENVELOPE_NAME = "charliearenarockcolourenvelope"
 local ROCK_SCALE_ENVELOPE_NAME = "charliearenarockscaleenvelope"
+
+local EMBER_COLOUR_ENVELOPE_NAME = "charliearenaembercolourenvelope"
+local EMBER_SCALE_ENVELOPE_NAME = "charliearenaemberscaleenvelope"
 
 local function InitEnvelope()
     EnvelopeManager:AddColourEnvelope(
@@ -511,6 +711,28 @@ local function InitEnvelope()
         }
     )
 
+    EnvelopeManager:AddColourEnvelope(
+        EMBER_COLOUR_ENVELOPE_NAME,
+        {
+            { 0,    IntColour(225, 60, 40, 25) },
+            { .2,   IntColour(235, 90, 80, 200) },
+            { .3,   IntColour(255, 65, 40, 255) },
+            { .6,   IntColour(255, 65, 40, 255) },
+            { .9,   IntColour(255, 65, 40, 230) },
+            { 1,    IntColour(255, 30, 40, 0) },
+        }
+    )
+
+    local ember_max_scale = 0.7
+    EnvelopeManager:AddVector2Envelope(
+        EMBER_SCALE_ENVELOPE_NAME,
+        {
+            {   0, { ember_max_scale, ember_max_scale } },
+            { 0.5, { ember_max_scale * 0.8, ember_max_scale * 0.8 } },
+            {   1, { ember_max_scale * 0.1, ember_max_scale * 0.1 } },
+        }
+    )
+
     InitEnvelope = nil
     IntColour = nil
 end
@@ -525,8 +747,10 @@ local function InitParticles(inst)
 	local MAX_LIFETIME = 40
 	local MIN_LIFETIME = 25
 
+    local EMBER_MAX_LIFETIME = 4
+
     local effect = inst.entity:AddVFXEffect()
-    effect:InitEmitters(2)
+    effect:InitEmitters(3)
 
     effect:SetRenderResources(0, TEXTURE, SHADER)
     effect:SetMaxNumParticles(0, 300)
@@ -543,8 +767,9 @@ local function InitParticles(inst)
     effect:SetUVFrameSize(0, .25, 1)
     effect:SetRotationStatus(0, true)
 
+    -- rock
     effect:SetRenderResources(1, ROCKTEXTURE, ROCKSHADER)
-    effect:SetMaxNumParticles(1, 20)
+    effect:SetMaxNumParticles(1, 25)
     effect:SetMaxLifetime(1, ROCK_MAX_LIFETIME)
     effect:SetColourEnvelope(1, ROCK_COLOUR_ENVELOPE_NAME)
     effect:SetScaleEnvelope(1, ROCK_SCALE_ENVELOPE_NAME)
@@ -555,15 +780,36 @@ local function InitParticles(inst)
     effect:SetUVFrameSize(1, .25, 0.5)
     effect:SetRotationStatus(1, true)
 
+    -- EMBER
+    effect:SetRenderResources(2, EMBERTEXTURE, EMBERSHADER)
+    effect:SetMaxNumParticles(2, 512)
+    effect:SetMaxLifetime(2, EMBER_MAX_LIFETIME)
+    effect:SetColourEnvelope(2, EMBER_COLOUR_ENVELOPE_NAME)
+    effect:SetScaleEnvelope(2, EMBER_SCALE_ENVELOPE_NAME)
+    effect:SetBlendMode(2, BLENDMODE.Additive)
+    effect:EnableBloomPass(2, true)
+	effect:SetSortOrder(2, 0)
+    effect:SetSortOffset(2, 0)
+    effect:SetAcceleration(2, 0, 0.035, 0)
+    effect:SetDragCoefficient(2, 0.08)
+    effect:SetKillOnEntityDeath(2, true)
+
     local tick_time = TheSim:GetTickTime()
+    inst.SetEffectUnstable = function(inst, unstable)
+        effect:SetRenderResources(1, unstable and ROCKGLOWTEXTURE or ROCKTEXTURE, ROCKSHADER)
+        inst.embers_per_tick = unstable and 20 * tick_time or 0
+    end
 
     inst.particles_per_tick = 20 * tick_time
     inst.num_particles_to_emit = inst.particles_per_tick * 2 -- x2 on first tick to populate quickly
-    inst.num_rocks_to_emit = 20
+    inst.num_rocks_to_emit = 25
+    inst.num_embers_to_emit = 0
+    inst.embers_per_tick = 0
 
     local halfheight = 2
     local emitter_shape = CreateBoxEmitter(0, 0, 0, 35, halfheight, 35)
     local emitter_rock_shape = CreateBoxEmitter(0, 0, 0, 35, 4, 35)
+    local emitter_ember_shape = CreateBoxEmitter(0, 0, 0, 20, 0, 20)
 
     -- for discarding
     local minx, maxx, minz, maxz = -3 * TILE_SCALE, 3 * TILE_SCALE, -3 * TILE_SCALE, 3 * TILE_SCALE
@@ -611,6 +857,18 @@ local function InitParticles(inst)
         end
     end
 
+    local function emit_ember_fn()
+        local ox, oy, oz = emitter_ember_shape()
+        local ovx, ovy, ovz = .06 * UnitRand(), 0.15 + 0.15 * math.random(), .06 * UnitRand()
+
+        effect:AddParticle(
+            2,
+            EMBER_MAX_LIFETIME * (math.random() * 0.4 + 0.6), -- lifetime
+            ox, -0.5, oz,   -- position
+            ovx, ovy, ovz -- velocity
+        )
+    end
+
     inst.time = 0
     inst.interval = 0
     EmitterManager:AddEmitter(inst, nil, function()
@@ -627,6 +885,11 @@ local function InitParticles(inst)
             inst.num_rocks_to_emit = inst.num_rocks_to_emit - 1
         end
         inst.num_rocks_to_emit = inst.num_rocks_to_emit + inst.particles_per_tick
+        while inst.num_embers_to_emit > 1 do
+            emit_ember_fn()
+            inst.num_embers_to_emit = inst.num_embers_to_emit - 1
+        end
+        inst.num_embers_to_emit = inst.num_embers_to_emit + inst.embers_per_tick
 
         inst.time = inst.time + tick_time
         inst.interval = inst.interval + 1
@@ -638,6 +901,108 @@ local function InitParticles(inst)
             effect:SetAcceleration(1, 0, rock_val, 0)
         end
     end)
+end
+
+--------------------------------------------------------
+
+local function CreateRiftFX()
+    local inst = CreateEntity()
+
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    --[[Non-networked entity]]
+
+    inst:AddTag("CLASSIFIED")
+    inst:AddTag("NOCLICK")
+
+    inst.Transform:SetEightFaced()
+
+    inst.AnimState:SetBank("charliearena_rift_fx")
+    inst.AnimState:SetBuild("charliearena_rift_fx")
+    inst.AnimState:SetLightOverride(1)
+
+    return inst
+end
+
+local function ResetAndGetPRNG(inst)
+    if inst._seed == nil then
+        local x, _, z = inst.Transform:GetWorldPosition()
+        inst._seed = math.floor(x + 0.5) * math.floor(z + 0.5)
+        inst._prng = PRNG_Uniform()
+    end
+    inst._prng:SetSeed(inst._seed)
+    return inst._prng
+end
+
+local function CreatePortalTears(inst, prng)
+    if inst.portaltearfx then
+        for i, v in ipairs(inst.portaltearfx) do
+            v:Remove()
+        end
+    end
+    inst.portaltearfx = {}
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local count = prng:RandInt(7, 10)
+    local theta = 0
+    local thetastep = TWOPI / count
+    for i = 1, count do
+        local angle = theta / DEGREES
+        local roundedangle = math.floor(angle / 45 + 0.5) * 45
+        local radius = (roundedangle % 90 == 0) and (22 + prng:Rand() * 4) or (30 + prng:Rand() * 4)
+        local fx = CreateRiftFX()
+        fx.entity:SetParent(inst.entity)
+        fx.Transform:SetPosition(math.cos(theta) * radius, 2 + prng:Rand() * 3, -math.sin(theta) * radius)
+        fx.Transform:SetRotation(math.floor(fx:GetAngleToPoint(x, y, z) / 45 + 0.5) * 45)
+
+        local var = tostring(prng:RandInt(3))
+        fx.AnimState:PlayAnimation(var.."_pre")
+        fx.AnimState:PushAnimation(var.."_idle", true)
+        if prng:Rand() < .5 then
+            fx.AnimState:SetScale(-1, 1)
+        end
+        table.insert(inst.portaltearfx, fx)
+
+        local randomval = thetastep * 0.6
+        theta = theta + (thetastep + (prng:Rand() * 2 * randomval - randomval))
+    end
+end
+
+local function OnUnstableDirty(inst)
+    local unstable = inst._unstable:value()
+    inst:SetEffectUnstable(unstable)
+    if unstable then
+        local prng = ResetAndGetPRNG(inst)
+        -- CreatePortalTears(inst, prng)
+    else
+        if inst.portaltearfx then
+            for i, v in ipairs(inst.portaltearfx) do
+                v:Remove()
+            end
+            inst.portaltearfx = nil
+        end
+    end
+end
+
+local function OnServerUnstable(inst, enabled)
+	SpawnBorder(inst)
+    if enabled then
+        TheWorld:PushEvent("ms_charliearena_expand")
+    end
+end
+
+local function SetUnstable(inst, enabled)
+    if enabled ~= inst._unstable:value() then
+        inst._unstable:set(enabled)
+        if not TheNet:IsDedicated() then
+            OnUnstableDirty(inst)
+        end
+
+        OnServerUnstable(inst, enabled)
+    end
 end
 
 --------------------------------------------------------
@@ -674,26 +1039,39 @@ local function fn()
     --Dedicated servers need this too
     AddTerraformBlockers(inst)
 
+    inst._unstable = net_bool(inst.GUID, "charlie_boss_trial.unstable", "onunstabledirty")
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
+        inst:ListenForEvent("onunstabledirty", OnUnstableDirty)
 		return inst
 	end
 
+    inst.SetUnstable = SetUnstable
+
 	inst.components.temperatureoverrider:SetRadius(TUNING.CHARLIE_ARENA_RADIUS)
 	inst.components.temperatureoverrider:SetTemperature(TUNING.CHARLIE_ARENA_TEMPERATURE_OVERRIDE)
+    inst.components.temperatureoverrider:Enable()
 
 	inst:AddComponent("entitytracker")
 
 	inst._oncharliebossdied = function(boss)
+        UntrackCharlieBoss(inst)
         TheWorld:PushEvent("resetvault") -- this resets atrium room
         Shard_SyncCharlieDefeated(true)
+        SpawnExitCrack(inst)
 	end
+
+    inst._oncharliebosssettracking = function(boss, newboss)
+        TrackCharlieBoss(inst, newboss)
+    end
 
     -- charlie boss tries to set these but inst.OnRemoveEntity is called after event callbacks are removed, so we have to listen remove event here.
     inst._oncharliebossremoved = function(boss)
         OnShadowRunnersEnabled(inst, false)
         OnShadowHandsEnabled(inst, false)
+        OnDreadstoneSpikesEnabled(inst, false)
     end
     inst._onshadowrunnersenabled = function(boss, enabled) OnShadowRunnersEnabled(inst, enabled) end
     inst._onshadowhandsenabled = function(boss, enabled) OnShadowHandsEnabled(inst, enabled) end
@@ -721,7 +1099,22 @@ local function fn()
         inst.shadowhandsdata.hands[hand] = nil
     end
 
+    --
+
+    inst._onarenaunstable = function(boss) inst:SetUnstable(true) end
+    inst._ondreadstonespikesenabled = function(boss, enabled) OnDreadstoneSpikesEnabled(inst, enabled) end
+
+    inst.dreadstonespikesdata = {
+        totalspikescount = 0,
+        dreadstonespikes = {},
+    }
+    inst._onremove_dreadstonespike = function(spike)
+        inst.dreadstonespikesdata.totalspikescount = inst.dreadstonespikesdata.totalspikescount - 1
+        inst.dreadstonespikesdata.dreadstonespikes[spike] = nil
+    end
+
 	inst.InitializeLayout = InitializeLayout
+    inst.OnSave = OnSave
 	inst.OnLoadPostPass = OnLoadPostPass
 
 	return inst

@@ -19,19 +19,22 @@ end)
 -- CharlieArenaWatcher.IsInArena doesn't exist because you should check for Map:IsPointInCharlieBossArena, this component just handles telling things to update with changearea event push and other changes
 
 function CharlieArenaWatcher:OnRemoveEntity_Master()
-	for i, v in ipairs(AllPlayers) do
-		if self.playersinarena[v] then
-			v:PushEvent("changearea")
-			if not TheNet:IsDedicated() then
-				TheWorld.Map:SetUndergroundFadeHeight(5) -- revert to caves falloff
+	-- has to be a tick delay, otherwise IsPointInCharlieBossArena still returns true :(
+	TheWorld:DoTaskInTime(0, function()
+		for i, v in ipairs(AllPlayers) do
+			if self.playersinarena[v] then
+				v:PushEvent("changearea", v.components.areaaware and v.components.areaaware:GetCurrentArea())
+				if not TheNet:IsDedicated() then
+					TheWorld.Map:SetUndergroundFadeHeight(5) -- revert to caves falloff
+				end
 			end
 		end
-	end
+	end)
 end
 
 function CharlieArenaWatcher:OnRemoveEntity_Client()
 	if ThePlayer and self.inarena then
-		ThePlayer:PushEvent("changearea")
+		ThePlayer:PushEvent("changearea", ThePlayer.components.areaaware and ThePlayer.components.areaaware:GetCurrentArea())
 	end
 end
 
@@ -48,10 +51,11 @@ function CharlieArenaWatcher:OnUpdate_Master(dt)
 			end
 		elseif self.playersinarena[v] then
 			self.playersinarena[v] = false
-			v:PushEvent("changearea")
+			v:PushEvent("changearea", v.components.areaaware and v.components.areaaware:GetCurrentArea())
 			if not TheNet:IsDedicated() then
 				self.inst.VFXEffect:ClearAllParticles(0)
 				self.inst.VFXEffect:ClearAllParticles(1)
+				self.inst.VFXEffect:ClearAllParticles(2)
 				TheWorld.Map:SetUndergroundFadeHeight(5) -- revert to caves falloff
 			end
 		end
@@ -69,9 +73,10 @@ function CharlieArenaWatcher:OnUpdate_Client(dt)
 			end
 		elseif self.inarena then
 			self.inarena = false
-			ThePlayer:PushEvent("changearea")
+			ThePlayer:PushEvent("changearea", ThePlayer.components.areaaware and ThePlayer.components.areaaware:GetCurrentArea())
 			self.inst.VFXEffect:ClearAllParticles(0)
 			self.inst.VFXEffect:ClearAllParticles(1)
+			self.inst.VFXEffect:ClearAllParticles(2)
 			TheWorld.Map:SetUndergroundFadeHeight(5) -- revert to caves falloff
 		end
 	end

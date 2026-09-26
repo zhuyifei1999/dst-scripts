@@ -118,6 +118,29 @@ end
 
 --------------------------------------------------------------------------
 
+local function OnShroudenSummon(inst, shrouden, target)
+	inst.shrouden = shrouden
+	inst.persists = false
+	inst:ListenForEvent("resetboss", function() inst:Remove() end, shrouden)
+
+	inst:SetPrefabNameOverride(shrouden.prefab) -- for death announce
+	inst:AddTag("NOCLICK")
+	inst:AddTag("notarget")
+	inst:AddTag("toughworker")
+	inst:SetBrain(nil)
+	inst.components.health:SetInvincible(true)
+	inst.components.combat:SetRetargetFunction(nil)
+	inst.components.combat:SetKeepTargetFunction(nil)
+	inst:RemoveEventCallback("attacked", OnAttacked)
+	inst:RemoveEventCallback("newcombattarget", OnNewCombatTarget)
+	inst.components.lootdropper:SetLoot(nil)
+	inst.components.lootdropper.GetWintersFeastOrnaments = nil
+
+	inst.sg:GoToState("shrouden_jump", target)
+end
+
+--------------------------------------------------------------------------
+
 local function GetWintersFeastOrnaments(inst)
 	local hands = inst.components.entitytracker:GetEntity("hands")
 	local wings = inst.components.entitytracker:GetEntity("wings")
@@ -293,6 +316,7 @@ local function fn()
 	inst:SetBrain(brain)
 
 	inst.OnLoadPostPass = OnLoadPostPass
+	inst.OnShroudenSummon = OnShroudenSummon
 
 	return inst
 end

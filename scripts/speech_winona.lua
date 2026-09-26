@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "I can't make sense of all yer hollerin'!",
             QUEENBUSY = "I'll wait, she's got work to do.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "The course ain't set up yet!",
+            KINGSTAFF_COOLDOWN = "It won't budge.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6346,6 +6347,16 @@ return{
 
 		CHARLIE_BOSS = "I know you're in there, Charlie!",
         SHROUDEN = "I'm gonna give you a whuppin' for what you done to Charlie!",
+        CHARLIEARENA_SPIKE = "Who's got time to mine that now?",
+
+        KING_CANE =
+        {
+            GENERIC = "Ready for action!", -- has a gem slotted in
+            EMPTY = "It's missin' a gem.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "What the heck keeps it burnin'?",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

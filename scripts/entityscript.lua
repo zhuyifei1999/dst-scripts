@@ -746,7 +746,9 @@ end
 
 --Can NOT be used on clients
 function EntityScript:GetWetMultiplier()
-	if self:HasTag("wet") then
+    if not self:IsValid() then
+        return 0
+	elseif self:HasTag("wet") then
 		return 1
 	elseif self:HasTag("moistureimmunity") then
         return 0
@@ -768,7 +770,9 @@ end
 
 --Can be used on clients
 function EntityScript:GetIsWet()
-	if self:HasTag("wet") then
+    if not self:IsValid() then
+        return false
+	elseif self:HasTag("wet") then
 		return true
 	elseif self:HasTag("moistureimmunity") then
         return false

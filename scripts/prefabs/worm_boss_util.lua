@@ -522,6 +522,14 @@ local function SpawnTail(inst, chunk, instant)
     return tail
 end
 
+local function CanStalkerCorrupt()
+    return true
+end
+
+local function RedirectStalkerCorruption(inst)
+    return inst.chunk and inst.chunk.head
+end
+
 local function EmergeHead(inst, chunk, instant)
     -- Instant is for loading the game.
     if inst.new_crack then
@@ -553,6 +561,12 @@ local function EmergeHead(inst, chunk, instant)
 
         inst.head = head
         chunk.head = head
+
+        if head:HasTag("nightmarecorruptable") then
+            chunk.dirt_start:AddTag("nightmarecorruptable")
+            chunk.dirt_start.CanStalkerCorrupt = CanStalkerCorrupt
+            chunk.dirt_start.RedirectStalkerCorruption = RedirectStalkerCorruption
+        end
 
         local rotation = math.random()*360
 
@@ -871,6 +885,9 @@ local function AddSegment(inst, chunk, tail, instant)
     if not chunk.head_added then
         chunk.head_added = true
         segment.head = true
+        if segment.SetIsHead then
+            segment:SetIsHead(true)
+        end
     end
 
     if tail then

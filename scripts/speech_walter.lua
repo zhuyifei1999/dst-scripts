@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Um. Sorry, could you repeat that please?",
             QUEENBUSY = "Sorry ma'am, I'll wait until you're ready.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "We can't play until there's a flaghole, Woby!",
+            KINGSTAFF_COOLDOWN = "It won't come out, Woby!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6382,6 +6383,16 @@ return{
 
 		CHARLIE_BOSS = "Woah. Are you the queen of monsters now, ma'am? Your highness?",
         SHROUDEN = "I can't stop staring at it!",
+        CHARLIEARENA_SPIKE = "They grow up so fast! Eh, Woby?",
+
+        KING_CANE =
+        {
+            GENERIC = "Now that is a neat staff!", -- has a gem slotted in
+            EMPTY = "Let's find a gem for it, Woby!", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "That's gotta be a special flame, Wobes!",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Slow down there bud, I can't understand a word you're sayin'.",
             QUEENBUSY = "I've gotta wait politely.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "It needs a flaghole still.",
+            KINGSTAFF_COOLDOWN = "It's stuck in there real good.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6341,6 +6342,16 @@ return{
 
 		CHARLIE_BOSS = "What have we gotten ourselves into, Luce?",
         SHROUDEN = "This might be a rough one, Luce. Love ya.",
+        CHARLIEARENA_SPIKE = "I miss trees.",
+
+        KING_CANE =
+        {
+            GENERIC = "That there's the king of staffs.", -- has a gem slotted in
+            EMPTY = "Needs a gem, I think.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "That's a weird lookin' flame, eh Luce?",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

@@ -29,13 +29,11 @@ local function OnRemove(inst)
     TheWorld:PushEvent("ms_unregister_virtualroom_entity", {inst = inst, roomsetname = VIRTUALROOMSETS.ATRIUM, context = VIRTUALROOMCONTEXT.MARKER})
 end
 
-
 local TILE_SCALE = TILE_SCALE
 local boundingbox = VIRTUALROOM_BOUNDINGBOXES[VIRTUALROOMSETS.ATRIUM]
 local OUTER_MINX, OUTER_MAXX, OUTER_MINY, OUTER_MAXY = boundingbox.minx - 1, boundingbox.maxx + 1, boundingbox.miny - 1, boundingbox.maxy + 1
 local INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY = -3 - 1, 3 + 1, -3 - 1, 3 + 1 -- 1 extra length to take into account overhang
 local CHECK_PLAYERS_DIMENSION_HOPPING_RADIUS = (OUTER_MAXX - OUTER_MINX) * SQRT2 * TILE_SCALE / 2
-local ARENA_DIST_TO_SQUARE_EDGE = 3.5 * TILE_SCALE
 
 local function InBoundingBox(otx, oty, minx, maxx, miny, maxy, tx, ty)
     return (otx + minx) <= tx and tx <= (otx + maxx) and (oty + miny) <= ty and ty <= (oty + maxy)
@@ -86,7 +84,7 @@ local function TeleportToOuter(inst, player, otx, oty, virtualroomset)
     player:PushEventImmediate("vault_teleport", {
         state = "charliearena_teleport",
         onplayerready = function(doer)
-            virtualroomset:TeleportEntities(teleportents, x, y, z, GetTeleportRadius)
+            virtualroomset:TeleportEntities(teleportents, x, y, z, 0)
         end,
     })
 end
@@ -98,21 +96,22 @@ local function CheckPlayersDimensionHopping(inst, virtualroomset)
     for _, player in ipairs(FindPlayersInRange(x, y, z, CHECK_PLAYERS_DIMENSION_HOPPING_RADIUS)) do
         local px, py, pz = player.Transform:GetWorldPosition()
         local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(px, 0, pz)
-
-        if players[player] then
-            if player:HasTag("playerghost") and not InBoundingBox(otx, oty, INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY, tx, ty) then
-                TeleportToOuter(inst, player, otx, oty, virtualroomset)
-            end
-        else
-            if InBoundingBox(otx, oty, OUTER_MINX, OUTER_MAXX, OUTER_MINY, OUTER_MAXY, tx, ty) then
-                local teleportents = { player }
-                player:PushEventImmediate("vault_teleport", {
-                    state = "charliearena_teleport",
-                    fastforward = 4,
-                    onplayerready = function(doer)
-                        virtualroomset:TeleportEntities(teleportents, x, y, z, GetTeleportRadius)
-                    end,
-                })
+        if not player.sg or not player.sg:HasAnyStateTag("doing", "busy") then
+            if players[player] then
+                if player:HasTag("playerghost") and not InBoundingBox(otx, oty, INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY, tx, ty) then
+                    TeleportToOuter(inst, player, otx, oty, virtualroomset)
+                end
+            else
+                if InBoundingBox(otx, oty, OUTER_MINX, OUTER_MAXX, OUTER_MINY, OUTER_MAXY, tx, ty) then
+                    local teleportents = { player }
+                    player:PushEventImmediate("vault_teleport", {
+                        state = "charliearena_teleport",
+                        fastforward = 4,
+                        onplayerready = function(doer)
+                            virtualroomset:TeleportEntities(teleportents, x, y, z, GetTeleportRadius)
+                        end,
+                    })
+                end
             end
         end
     end
@@ -152,6 +151,9 @@ local function OnLoad(inst)
 end
 
 local function OnShowRoom(inst, virtualroomset, roomname, teleportingentsdata)
+    if virtualroomset:IsCurrentRoomLobby() then -- always reset if we're in the lobby now
+        virtualroomset:TryToReset()
+    end
     TryUpdatingPlayersDimensionHopping(inst, virtualroomset)
 end
 
@@ -170,22 +172,6 @@ end
 
 local function OnTeleportedEntity(inst, virtualroomset, ent, x, z)
     SpawnPrefab("atrium_portal_fx").Transform:SetPosition(x, 0, z)
-end
-
-local function OnPlayerTick(inst, virtualroomset, player, x, y, z)
-    if virtualroomset:IsResetting() then
-        -- NOTES(JBK): The boss has been defeated.
-        -- Check for player positions relative to origin to see if they are outside of the border to escape.
-        local otx, oty = virtualroomset:GetOriginInTiles()
-        local cx, cy, cz = inst.Transform:GetWorldPosition()
-        local tx, ty, tz = player.Transform:GetWorldPosition()
-        local dx, dz = tx - cx, tz - cz
-
-        if not (-ARENA_DIST_TO_SQUARE_EDGE < dx and dx < ARENA_DIST_TO_SQUARE_EDGE and -ARENA_DIST_TO_SQUARE_EDGE < dz and dz < ARENA_DIST_TO_SQUARE_EDGE) then
-            -- Target is outside the square.
-            TeleportToOuter(inst, player, otx, oty, virtualroomset)
-        end
-    end
 end
 
 local function centerfn()
@@ -213,7 +199,6 @@ local function centerfn()
     virtualroomset:SetOnReset(OnReset)
     virtualroomset:SetOnPostInit(OnPostInit)
     virtualroomset:SetOnTeleportedEntity(OnTeleportedEntity)
-    virtualroomset:SetOnPlayerTick(OnPlayerTick)
     virtualroomset:SetDoNotRotateRooms(true)
     virtualroomset:SetRoomDefinitions(atriumroom_defs) -- Do last.
     local prngseed = hash(TheNet:GetSessionIdentifier())
@@ -223,8 +208,6 @@ local function centerfn()
     -- we reset at the same time as the vault.
     inst:ListenForEvent("resetvault", function(_world)
         virtualroomset:FlagForReset()
-        -- NOTES(JBK): But only when players have all left the arena.
-        -- FIXME(JBK): Rifts8: VFX presentation for the border.
     end, TheWorld)
 
     inst:ListenForEvent("ms_charliearena_morphatrium", function(_world, data)
@@ -245,11 +228,18 @@ local function centerfn()
         end
     end, TheWorld)
 
+    inst:ListenForEvent("ms_charliearena_expand", function(_world)
+        local tx, ty = virtualroomset:GetOriginInTiles()
+        for y = -4, 4 do
+            for x = -4, 4 do
+                TheWorld.Map:SetTile(tx + x, ty + y, WORLD_TILES.BRICK)
+            end
+        end
+    end, TheWorld)
+
 	inst.inittask = inst:DoStaticTaskInTime(0, OnAdd)
 	inst.OnLoad = OnLoad
 	inst:ListenForEvent("onremove", OnRemove)
-
-    TheWorld:PushEvent("ms_charliearena_registeratriummarker", inst)
 
 	return inst
 end

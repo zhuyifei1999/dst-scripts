@@ -259,6 +259,11 @@ local function mirage_OnUpdate(fx, dt)
 		local a = Remap(fx._t, 0, 0.5, 1, 0)
 		a = a * a * 0.5
 		fx.AnimState:SetMultColour(1, 1, 1, a)
+		if fx.highlightchildren then
+			for i, v in ipairs(fx.highlightchildren) do
+				v.AnimState:SetMultColour(1, 1, 1, a)
+			end
+		end
 	elseif fx.owner:IsValid() then
 		fx.components.updatelooper:RemoveOnUpdateFn(mirage_OnUpdate)
 		fx:RemoveFromScene()
@@ -273,6 +278,27 @@ local function mirage_OnUpdate(fx, dt)
 	else
 		fx:Remove()
 	end
+end
+
+local function CreateFlameLoop()
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+
+	inst.AnimState:SetBank("rocky")
+	inst.AnimState:SetBuild("rocky_boss_shadow_build")
+	inst.AnimState:PlayAnimation("flame_fx", true)
+	inst.AnimState:SetSymbolLightOverride("fx_red", 1)
+	inst.AnimState:SetSymbolLightOverride("fx_flame_red", 1)
+
+	return inst
 end
 
 local function GetMirageFx(inst)
@@ -304,6 +330,18 @@ local function GetMirageFx(inst)
 		if inst:HasTag("shadowthrall") then
 			fx.AnimState:SetSymbolLightOverride("fx_claw", 1)
 			fx.AnimState:SetSymbolLightOverride("red", 1)
+
+			local flame = CreateFlameLoop()
+			flame.entity:SetParent(fx.entity)
+			flame.Follower:FollowSymbol(fx.GUID, "follow_shoulder_L")
+
+			fx.highlightchildren = { flame }
+
+			flame = CreateFlameLoop()
+			flame.entity:SetParent(fx.entity)
+			flame.Follower:FollowSymbol(fx.GUID, "follow_shoulder_R")
+
+			fx.highlightchildren[2] = flame
 		else
 			fx.AnimState:SetSymbolBloom("fx_claw")
 		end
@@ -316,6 +354,12 @@ local function GetMirageFx(inst)
 	fx.AnimState:SetBuild(inst.AnimState:GetBuild())
 	fx.AnimState:Pause()
 	fx.AnimState:SetMultColour(1, 1, 1, 0.5)
+	if fx.highlightchildren then
+		for i, v in ipairs(fx.highlightchildren) do
+			v.AnimState:Pause()
+			v.AnimState:SetMultColour(1, 1, 1, 0.5)
+		end
+	end
 
 	fx.components.updatelooper:AddOnUpdateFn(mirage_OnUpdate)
 	fx._t = 0
@@ -335,6 +379,14 @@ local function MiragePostUpdate(inst)
 					fx.Transform:SetPosition((x + pt.x) / 2, (y + pt.y) / 2, (z + pt.z) / 2)
 					fx.Transform:SetRotation(inst.Transform:GetRotation())
 					fx.AnimState:SetFrame(frame - 1)
+
+					if fx.highlightchildren then
+						for i, v in ipairs(fx.highlightchildren) do
+							local otherchild = inst.highlightchildren[i]
+							local flameframe = otherchild and otherchild.AnimState:GetCurrentAnimationFrame() or math.random(v.AnimState:GetCurrentAnimationNumFrames())
+							v.AnimState:SetFrame(flameframe - 1)
+						end
+					end
 				end
 				pt.x, pt.y, pt.z = x, y, z
 				inst._mirageframe = frame
@@ -533,6 +585,7 @@ end
 --------------------------------------------------------------------------
 
 local function normal_common_postinit(inst)
+    inst:AddTag("nightmarecorruptable")
 	inst.AnimState:SetSymbolBloom("fx_claw")
 
 	inst.isboulder = net_bool(inst.GUID, "rocky_boss.isboulder", "isboulderdirty")
@@ -609,7 +662,13 @@ local function OnUpdateFade(inst, dt)
 			fade = math.min(FADE_OUT_END, fade + 1)
 			inst.fade:set_local(fade)
 		end
-		inst.AnimState:OverrideMultColour(1, 1, 1, (FADE_OUT_END - fade) / (FADE_OUT_END - FADE_OUT_BEGIN))
+		local a = (FADE_OUT_END - fade) / (FADE_OUT_END - FADE_OUT_BEGIN)
+		inst.AnimState:OverrideMultColour(1, 1, 1, a)
+		if inst.highlightchildren then
+			for i, v in ipairs(inst.highlightchildren) do
+				v.AnimState:OverrideMultColour(1, 1, 1, a)
+			end
+		end
 		if fade == FADE_OUT_END then
 			inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateFade)
 			inst.updatingfade = false
@@ -627,13 +686,25 @@ local function OnUpdateFade(inst, dt)
 			inst.fade:set_local(fade)
 		end
 		if fade ~= 0 then
-			inst.AnimState:OverrideMultColour(1, 1, 1, (fade - FADE_IN_BEGIN) / (FADE_IN_END - FADE_IN_BEGIN))
+			local a = (fade - FADE_IN_BEGIN) / (FADE_IN_END - FADE_IN_BEGIN)
+			inst.AnimState:OverrideMultColour(1, 1, 1, a)
+			if inst.highlightchildren then
+				for i, v in ipairs(inst.highlightchildren) do
+					v.AnimState:OverrideMultColour(1, 1, 1, a)
+				end
+			end
 			return
 		end
 	end
 	--done (or invalid)
 	inst.fade:set_local(0)
 	inst.AnimState:OverrideMultColour(1, 1, 1, 1)
+	if inst.highlightchildren then
+		for i, v in ipairs(inst.highlightchildren) do
+			v.AnimState:OverrideMultColour(1, 1, 1, 1)
+			v.AnimState:UsePointFiltering(false)
+		end
+	end
 	inst.AnimState:UsePointFiltering(false)
 	inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateFade)
 	inst.updatingfade = false
@@ -646,6 +717,11 @@ local function OnFadeDirty(inst)
 			inst.updatingfade = true
 			inst.components.updatelooper:AddOnUpdateFn(OnUpdateFade)
 			inst.AnimState:UsePointFiltering(true)
+			if inst.highlightchildren then
+				for i, v in ipairs(inst.highlightchildren) do
+					v.AnimState:UsePointFiltering(true)
+				end
+			end
 			OnUpdateFade(inst, 0)
 		end
 	elseif inst.updatingfade then
@@ -653,6 +729,12 @@ local function OnFadeDirty(inst)
 	else
 		inst.AnimState:OverrideMultColour(1, 1, 1, 1)
 		inst.AnimState:UsePointFiltering(false)
+		if inst.highlightchildren then
+			for i, v in ipairs(inst.highlightchildren) do
+				v.AnimState:OverrideMultColour(1, 1, 1, 1)
+				v.AnimState:UsePointFiltering(false)
+			end
+		end
 	end
 end
 
@@ -721,6 +803,12 @@ local function shadow_OnLoad(inst, data)--, ents)
 	end
 end
 
+local function shadow_OnColourChanged(inst, r, g, b, a)
+	for i, v in ipairs(inst.highlightchildren) do
+		v.AnimState:SetAddColour(r, g, b, a)
+	end
+end
+
 local function shadow_common_postinit(inst)
 	inst:AddTag("shadowthrall")
 	inst:AddTag("shadow_aligned")
@@ -732,6 +820,27 @@ local function shadow_common_postinit(inst)
 	inst.fade = net_smallbyte(inst.GUID, "rocky_boss_shadow.fade", "fadedirty")
 
 	inst:AddComponent("updatelooper")
+	inst:AddComponent("colouraddersync")
+
+	if not TheNet:IsDedicated() then
+		local flame = CreateFlameLoop()
+		flame.entity:SetParent(inst.entity)
+		flame.Follower:FollowSymbol(inst.GUID, "follow_shoulder_L", nil, nil, nil, true)
+		local len = flame.AnimState:GetCurrentAnimationNumFrames()
+		flame.AnimState:SetFrame(math.random(math.floor(len / 4)))
+
+		inst.highlightchildren = { flame }
+
+		flame = CreateFlameLoop()
+		flame.entity:SetParent(inst.entity)
+		flame.Follower:FollowSymbol(inst.GUID, "follow_shoulder_R", nil, nil, nil, true)
+		len = flame.AnimState:GetCurrentAnimationNumFrames()
+		flame.AnimState:SetFrame(math.floor(len / 2) + math.random(math.floor(len / 4)))
+
+		inst.highlightchildren[2] = flame
+
+		inst.components.colouraddersync:SetColourChangedFn(shadow_OnColourChanged)
+	end
 
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("fadedirty", OnFadeDirty)
@@ -739,6 +848,7 @@ local function shadow_common_postinit(inst)
 end
 
 local function shadow_master_postinit(inst)
+	inst.scrapbook_anim = "scrapbook_shadow"
 	--force default sound; otherwise it'll use stone_ coz of "rocky" tag
 	inst.override_combat_impact_sound = "flesh_"
 

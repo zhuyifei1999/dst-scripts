@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Ugh, this weird monkey keeps \"ooking\" and \"eeking\" at me.",
             QUEENBUSY = "Hey! Whatever else you're doing can wait.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Aw crap! The course is missing something!",
+            KINGSTAFF_COOLDOWN = "Ugh, darn thing is stuck.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6347,6 +6348,16 @@ return{
 
 		CHARLIE_BOSS = "You look different... New hair?",
         SHROUDEN = "Am I supposed to be scared or something?",
+        CHARLIEARENA_SPIKE = "Get outta my way stupid evil rock.",
+
+        KING_CANE =
+        {
+            GENERIC = "An old magic stick, big whoop.", -- has a gem slotted in
+            EMPTY = "What good is this stupid thing without a stupid gem?", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "What kinda flame is that supposed to be?",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

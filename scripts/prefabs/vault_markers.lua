@@ -295,6 +295,7 @@ local function centerfn()
     virtualroomset:SetOnVirtualRoomEntitiesChanged(OnVirtualRoomEntitiesChanged)
     virtualroomset:SetOnTeleportedEntity(OnTeleportedEntity)
     virtualroomset:SetTeleportingIntoLobbyProhibited(true)
+    virtualroomset:SetTeleportingOutProhibited(true)
     virtualroomset:SetRoomDefinitions(vaultroom_defs) -- Do last.
     local prngseed = hash(TheNet:GetSessionIdentifier())
     virtualroomset.customdata.prngseed = prngseed

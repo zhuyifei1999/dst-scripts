@@ -59,11 +59,12 @@ end
 local ATTACK_RADIUS_PADDING = 3
 
 local function _Attack(inst, dig, radius_or_params, tagset, targets, repeatdelay, attacker, weapon, projectile)
-	local dist, radius, arc, attack_filterfn, knockback_str, knockback_heavystr, knockback_forcelanded
+	local dist, radius, arc, hitbox, attack_filterfn, knockback_str, knockback_heavystr, knockback_forcelanded
 	if type(radius_or_params) == "table" then
 		dist = radius_or_params.dist or 0
 		radius = radius_or_params.radius
 		arc = radius_or_params.arc
+		hitbox = radius_or_params.hitbox
 		attack_filterfn = radius_or_params.attack_filterfn
 		knockback_str = radius_or_params.knockback_str
 		knockback_heavystr = radius_or_params.knockback_heavystr
@@ -105,13 +106,15 @@ local function _Attack(inst, dig, radius_or_params, tagset, targets, repeatdelay
 			not (v.components.health and v.components.health:IsDead()) and
 			(attack_filterfn == nil or attack_filterfn(v, inst))
 		then
-			local range = radius + v:GetPhysicsRadius(0)
 			local x1, _, z1 = v.Transform:GetWorldPosition()
+			local r1 = v:GetPhysicsRadius(0)
+			local range = radius + r1
 			local dx = x1 - x
 			local dz = z1 - z
 			if dx * dx + dz * dz < range * range and
 				--convert to local space x, and test against arcx
 				(arcx == nil or x + cos_theta * dx - sin_theta * dz > arcx) and
+				(hitbox == nil or hitbox:CollidesWithCircle(x1, z1, r1)) and
 				attacker.components.combat:CanTarget(v)
 			then
 				if targets then
@@ -153,11 +156,12 @@ local WORK_ACTIONS, REGISTERED_WORK_TAGS
 local WORK_AND_DIG_ACTIONS, REGISTERED_WORK_AND_DIG_TAGS
 
 local function _Work(inst, dig, radius_or_params, targets, worker)
-	local dist, radius, arc, work_filterfn
+	local dist, radius, arc, hitbox, work_filterfn
 	if type(radius_or_params) == "table" then
 		dist = radius_or_params.dist or 0
 		radius = radius_or_params.radius
 		arc = radius_or_params.arc
+		hitbox = radius_or_params.hitbox
 		work_filterfn = radius_or_params.work_filterfn
 	else
 		dist = 0
@@ -222,10 +226,12 @@ local function _Work(inst, dig, radius_or_params, targets, worker)
 			(work_filterfn == nil or work_filterfn(v, inst))
 		then
 			local inrange = true
-			if arcx then
+			if arcx or hitbox then
 				--convert to local space x, and test against arcx
-				local x1, y1, z1 = v.Transform:GetWorldPosition()
-				inrange = x + cos_theta * (x1 - x) - sin_theta * (z1 - z) > arcx
+				local x1, _, z1 = v.Transform:GetWorldPosition()
+				inrange =
+					(arcx == nil or x + cos_theta * (x1 - x) - sin_theta * (z1 - z) > arcx) and
+					(hitbox == nil or hitbox:CollidesWithCircle(x1, z1, v:GetPhysicsRadius(0)))
 			end
 			if inrange then
 				local isworkable = false

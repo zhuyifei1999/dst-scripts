@@ -449,6 +449,7 @@ local function fn()
     inst:AddTag("NPCcanaggro")
     inst:AddTag("gestaltmutant")
     inst:AddTag("plantcreature")
+    inst:AddTag("soulless")
 
 	inst.highlightchildren = {}
 
@@ -598,6 +599,7 @@ local function vinefn()
     inst:AddTag("fx")
     inst:AddTag("NOCLICK")
     inst:AddTag("soulless")
+    inst:AddTag("plantcreature")
 
     inst:SetPrefabNameOverride("lunarthrall_plant_vine_end")
 

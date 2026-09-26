@@ -571,7 +571,7 @@ function ModWrangler:InitializeModMain(modname, env, mainfile, safe)
 		end
 
 		if status == false then
-			moderror("Mod: "..ModInfoname(modname), "  Error loading mod!\n"..r.."\n")
+			moderror("Mod: "..ModInfoname(modname).."  Error loading mod!\n"..r.."\n")
 			table.insert( self.failedmods, {name=modname,error=r} )
 			return false
 		else

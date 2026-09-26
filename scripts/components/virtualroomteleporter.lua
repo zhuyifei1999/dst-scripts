@@ -82,6 +82,14 @@ function VirtualRoomTeleporter:GetRoomSetName()
     return self.roomsetname
 end
 
+function VirtualRoomTeleporter:SetTeleportFXPrefab(tpfxprefab)
+    self.tpfxprefab = tpfxprefab
+end
+
+function VirtualRoomTeleporter:GetTeleportFXPrefab()
+    return self.tpfxprefab
+end
+
 function VirtualRoomTeleporter:SetTemporaryTargetRoomName(temporarytargetroomname)
     self.temporarytargetroomname = temporarytargetroomname
 end

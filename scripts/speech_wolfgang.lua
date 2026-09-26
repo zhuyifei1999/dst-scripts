@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Wolfgang does not speak monkey.",
             QUEENBUSY = "Hairy lady is busy. Wolfgang will wait.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Wolfgang need to finish set up course first.",
+            KINGSTAFF_COOLDOWN = "Too stuck for even mighty Wolfgang?!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6341,6 +6342,16 @@ return{
 
 		CHARLIE_BOSS = "Remember Wolfgang helped you?",
         SHROUDEN = "Finally... a match for Mighty Wolfgang.",
+        CHARLIEARENA_SPIKE = "Just what Wolfgang need... more scary spiky rock!",
+
+        KING_CANE =
+        {
+            GENERIC = "A mighty staff for mighty king!", -- has a gem slotted in
+            EMPTY = "It lack power of mighty gem!", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "A nice night light! But Wolfgang no need.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

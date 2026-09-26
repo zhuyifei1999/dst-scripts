@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Odd, I could have sworn I could speak monkey at some point.",
             QUEENBUSY = "I don't care what her title is, it's no excuse to keep me waiting!",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Oh botheration, I've forgotten the flaghole, haven't I?",
+            KINGSTAFF_COOLDOWN = "Oh botheration, it's stuck!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "She gets worse everytime.",
         SHROUDEN = "Let this be the last time.",
+        CHARLIEARENA_SPIKE = "A terrible obstacle!",
+
+        KING_CANE =
+        {
+            GENERIC = "It's rather fancy for my taste.", -- has a gem slotted in
+            EMPTY = "I recall it requires an energy source.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "This should help keep the nasties at bay.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

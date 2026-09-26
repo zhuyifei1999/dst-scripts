@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "I'm not wasting my time with this monkey business.",
             QUEENBUSY = "She's ignoring me... the nerve!",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Ugh! The course is unfinished!",
+            KINGSTAFF_COOLDOWN = "Blasted gem's stuck!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "Charlie? Are you still there?",
         SHROUDEN = "H-hey there, pal... Maxwell here. Big fan of, uh... whatever it is you're doing.",
+        CHARLIEARENA_SPIKE = "Absolutely dreadful.",
+
+        KING_CANE =
+        {
+            GENERIC = "All that power and look where it got you.", -- has a gem slotted in
+            EMPTY = "Utterly useless without a gem.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "This is old magic.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

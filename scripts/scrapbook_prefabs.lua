@@ -2092,23 +2092,30 @@ local PREFABS =
 
     -- ["stalker_npc"] = true,
 
-    -- ["atrium_ritual_organ_bat"] = true,
-    -- ["atrium_ritual_organ_worm"] = true,
-    -- ["atrium_ritual_organ_rocky"] = true,
+    ["atrium_ritual_organ_bat"] = true,
+    ["atrium_ritual_organ_worm"] = true,
+    ["atrium_ritual_organ_rocky"] = true,
 
-    -- ["rocky_boss"] = true,
-    -- ["bat_boss"] = true,
+    ["rocky_boss"] = true,
+    ["bat_boss"] = true,
+    ["batbosscave"] = true,
 
-    -- ["rocky_boss_shadow"] = true,
-    -- ["bat_boss_shadow"] = true,
-    -- ["worm_boss_shadow"] = true,
+    ["rocky_boss_shadow"] = true,
+    ["bat_boss_shadow"] = true,
+    ["worm_boss_shadow"] = true,
 
-    -- ["charlie_boss"] = true,
+    ["charlie_boss"] = true,
+    ["charlie_boss_projectile"] = true,
 
-    -- ["bat_bosscorpsehat"] = true,
-    -- ["armor_rocky"] = true,
+    ["bat_bosscorpsehat"] = true,
+    ["armor_rocky"] = true,
 
-    -- ["charlie_boss_runner"] = true,
+    ["charlie_boss_runner"] = true,
+
+    ["shadowhand_shrouded"] = true,
+
+    ["king_cane"] = true,
+    ["queen_torch"] = true,
 
     -----------------------------------------------
 

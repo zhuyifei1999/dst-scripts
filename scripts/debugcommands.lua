@@ -2569,6 +2569,7 @@ end
 local SCRAPBOOK_IGNORE_UNLOCKABILITY =
 {
     worm_boss = true,
+    worm_boss_shadow = true,
     wx78_backupbody_inventory = true,
 }
 

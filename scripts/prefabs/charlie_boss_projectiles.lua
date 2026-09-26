@@ -246,7 +246,10 @@ local function Launch(inst, caster, targetorpos, x, y, z, dir)
 		inst.targetpos = targetorpos
 	end
 
-	inst.caster = caster
+	if caster then
+		inst.caster = caster
+		inst:ListenForEvent("resetboss", function() inst:Remove() end, caster)
+	end
 	inst.tilt:set(math.random(3, 7))
 	inst.maxturn = 0
 	inst.t = 0
@@ -295,11 +298,18 @@ local function fn()
 		InitializeVisualFx(inst)
 	end
 
+	inst.scrapbook_inspectonseen = true
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst.scrapbook_bank = "charlie_boss"
+	inst.scrapbook_build = "charlie_boss_actions"
+	inst.scrapbook_anim = "air_ripple_atk_loop"
+	inst.scrapbook_planardamage = TUNING.CHARLIE_BOSS_PLANAR_DAMAGE
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(TUNING.CHARLIE_BOSS_PROJECTILE_DAMAGE)

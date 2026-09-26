@@ -332,7 +332,7 @@ function LootDropper:FlingItem(loot, pt)
         local y_speed_variance = self.y_speed_variance or 4
         local y_offset = self.y_offset or 0
 
-        if loot.Physics ~= nil then
+        if loot.Physics ~= nil and not self.nofling then
             local angle = (self.flingtargetpos ~= nil and GetRandomWithVariance(self.inst:GetAngleToPoint(self.flingtargetpos), self.flingtargetvariance or 0) * DEGREES)
                 or math.random() * TWOPI
             local speed = min_speed + math.random() * (max_speed - min_speed)

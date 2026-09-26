@@ -151,7 +151,7 @@ local function FireDistanceTest(inst)
     local fire_x, fire_y, fire_z = inst.fire.Transform:GetWorldPosition()
     local origin = inst.components.knownlocations:GetLocation("origin")
     local fire_distance_sq = distsq(fire_x, fire_z, origin.x, origin.z)
-    if fire_distance_sq > MAX_ARM_DISTANCE_SQ then
+    if (fire_distance_sq > MAX_ARM_DISTANCE_SQ) or FindClosestQueenTorch(inst) then
         Dissipate(inst)
     end
 end
@@ -289,6 +289,8 @@ local function MakeShadowHand(name, data, assets, prefabs)
 
         inst.CanMouseThrough = CanMouseThrough
 
+        inst.scrapbook_inspectonseen = true
+
         if common_postinit then
             common_postinit(inst)
         end
@@ -297,6 +299,8 @@ local function MakeShadowHand(name, data, assets, prefabs)
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst.scrapbook_anim = "hand_in_loop"
 
         inst.arm = nil
         inst.fire = nil
@@ -330,6 +334,9 @@ local function MakeShadowHand(name, data, assets, prefabs)
     return Prefab(name, fn, assets, prefabs)
 end
 
+local function common_postinit_hand_shrouded(inst)
+    inst.AnimState:SetLightOverride(1)
+end
 local function master_postinit_hand_shrouded(inst)
     inst.components.locomotor.walkspeed = TUNING.SHADOWHAND_SHROUDED_SPEED
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
@@ -337,5 +344,5 @@ end
 
 return MakeShadowHand("shadowhand", {build = "shadow_creatures_ground", armprefab = "shadowhand_arm",}, assets, prefabs),
     MakeShadowArm("shadowhand_arm", {build = "shadow_creatures_ground",}, assets),
-    MakeShadowHand("shadowhand_shrouded", {build = "shadow_creatures_ground_shrouded", armprefab = "shadowhand_arm_shrouded", master_postinit = master_postinit_hand_shrouded,}, assets_shrouded, prefabs_shrouded),
+    MakeShadowHand("shadowhand_shrouded", {build = "shadow_creatures_ground_shrouded", armprefab = "shadowhand_arm_shrouded", common_postinit = common_postinit_hand_shrouded, master_postinit = master_postinit_hand_shrouded,}, assets_shrouded, prefabs_shrouded),
     MakeShadowArm("shadowhand_arm_shrouded", {build = "shadow_creatures_ground_shrouded",}, assets_shrouded)

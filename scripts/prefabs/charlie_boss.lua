@@ -12,6 +12,7 @@ local prefabs =
 	"charlie_boss_projectile",
 	"charlie_boss_reflect_projectile_fx",
 	"charlie_boss_vines",
+	"shrouden",
 
 	--loot
 	"temp_beta_msg", --#TEMP_BETA
@@ -37,9 +38,10 @@ local AOEUtil = require("aoeutil")
 
 local AOE_TAGSET
 local function GetAOEAttackTagSet(inst)
+	--Keep in sync with shrouden.lua
 	if AOE_TAGSET == nil then
 		AOE_TAGSET = AOEUtil.AttackTagSet()
-		AOE_TAGSET:AppendCantTags("shadowthrall", "shadow", "shadowcreature", "shadowchesspiece", "shadowboss", "charlie_npc")
+		AOE_TAGSET:AppendCantTags("shadowthrall", "shadow", "shadowcreature", "shadowchesspiece", "shadowboss")
 		AOE_TAGSET:Register()
 	end
 	return AOE_TAGSET
@@ -53,6 +55,20 @@ local function IsEntInArena(ent)
 	return TheWorld.Map:IsPointInCharlieBossArena(ent.Transform:GetWorldPosition())
 end
 
+local function IsInArena(inst)
+	if inst._inarena == nil then
+		inst._inarena = IsEntInArena(inst)
+		inst.components.epicscare:SetRange(inst._inarena and 30 or TUNING.CHARLIE_BOSS_AGGRO_DIST)
+	end
+	return inst._inarena
+end
+
+local function teleport_override_fn(inst)
+	return inst:IsInArena() and inst:GetPosition() or nil
+end
+
+--------------------------------------------------------------------------
+
 local function UpdatePlayerTargets(inst)
 	assert(next(inst._temptbl1) == nil and next(inst._temptbl2) == nil)
 	local toadd = inst._temptbl1
@@ -63,13 +79,9 @@ local function UpdatePlayerTargets(inst)
 		toremove[k] = true
 	end
 
-	local map = TheWorld.Map
 	if inst:IsInArena() then
 		for _, v in ipairs(AllPlayers) do
-			if not (v.components.health:IsDead() or v:HasTag("playerghost")) and
-				v.entity:IsVisible() and
-				IsEntInArena(v)
-			then
+			if not IsEntityDeadOrGhost(v) and v.entity:IsVisible() and IsEntInArena(v) then
 				if toremove[v] then
 					toremove[v] = nil
 				else
@@ -106,8 +118,6 @@ local function RetargetFn(inst)
 	UpdatePlayerTargets(inst)
 
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local map = TheWorld.Map
-	local inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
 	local target = inst.components.combat.target
 	local inrange
 	if target then
@@ -184,6 +194,7 @@ local function SpawnReflectProjectileAtXYZ(inst, x, y, z, rot, targetorpos)
 	local fx = SpawnPrefab("charlie_boss_reflect_projectile_fx")
 	fx.Transform:SetPosition(x, y, z)
 	fx.Transform:SetRotation(rot)
+	fx:ListenForEvent("resetboss", function() inst:Remove() end, inst)
 	fx:ListenForEvent("animover", function(fx)
 		fx:Remove()
 
@@ -390,7 +401,7 @@ end
 
 local function SetShadowHandsEnabled(inst, enable)
 	if enable then
-		if inst:IsInArena() then
+		if not inst.isshadowhandsenabled and inst:IsInArena() then
 			inst.isshadowhandsenabled = true
 			inst:PushEvent("ms_charliearena_shadowhands_setenabled", true)
 		end
@@ -402,7 +413,7 @@ end
 
 local function SetRunnerSpawnsEnabled(inst, enable)
 	if enable then
-		if inst:IsInArena() then
+		if not inst.isrunnerspawnsenabled and inst:IsInArena() then
 			inst.isrunnerspawnsenabled = true
 			inst:PushEvent("ms_charliearena_shadowrunners_setenabled", true)
 		end
@@ -412,19 +423,62 @@ local function SetRunnerSpawnsEnabled(inst, enable)
 	end
 end
 
+local PHASES --forward declare
+
+local function TryReset(inst, force)
+	if inst.sg.currentstate.name == "spawn" or not inst:IsInArena() then
+		inst._resettask:Cancel()
+		inst._resettask = nil
+		return
+	end
+
+	if not force then
+		local _, numplayers = GetPlayersInfoForVirtualRoomSetName(VIRTUALROOMSETS.ATRIUM)
+		if numplayers > 0 then
+			return --reschedule (keep periodic task)
+		end
+	end
+
+	inst._resettask:Cancel()
+	inst._resettask = nil
+
+	local home = inst.components.knownlocations:GetLocation("spawnpoint")
+	if home then
+		inst.Physics:Teleport(home:Get())
+	else
+		local x, z = TheWorld.Map:GetCharlieBossArenaCenterXZ()
+		if x then
+			inst.Physics:Teleport(x, 0, z)
+		end
+	end
+	inst.sg:GoToState("spawn")
+	inst.components.health:SetPercent(1)
+	PHASES[1].fn(inst)
+
+	inst:PushEvent("resetboss")
+end
+
 local function OnNewCombatTarget(inst, data)
 	if inst._disengagetask then
 		inst._disengagetask:Cancel()
 		inst._disengagetask = nil
 	end
+	if inst._resettask then
+		inst._resettask:Cancel()
+		inst._resettask = nil
+	end
 	SetModeSwitching(inst, inst.canmodeswitch)
 	SetShadowHandsEnabled(inst, inst.canshadowhands)
 	SetRunnerSpawnsEnabled(inst, inst.canspawnrunners)
 
-	--#TEMP_BETA
-	if inst.sg.mem.killstarttime == nil and inst:IsInArena() then
-		inst.sg.mem.killstarttime = GetTime()
+	if not inst.sg:HasStateTag("temp_invincible") then
+		inst:SetMusicLevel(3)
 	end
+
+	--#TEMP_BETA
+	--[[if inst.sg.mem.killstarttime == nil and inst:IsInArena() then
+		inst.sg.mem.killstarttime = GetTime()
+	end]]
 end
 
 local function Disengage(inst)
@@ -436,10 +490,18 @@ local function Disengage(inst)
 	inst.components.combat.battlecryenabled = true
 	inst.sg.mem.forcetaunt = nil
 
-	--#TEMP_BETA
-	if inst.sg.mem.killstarttime and not inst.components.health:IsHurt() then
-		inst.sg.mem.killstarttime = nil
+	if inst._resettask == nil then
+		inst._resettask = inst:DoPeriodicTask(3, TryReset, 0)
 	end
+
+	if not inst.sg:HasStateTag("temp_invincible") then
+		inst:SetMusicLevel(inst.components.health:IsDead() and 4 or 0)
+	end
+
+	--#TEMP_BETA
+	--[[if inst.sg.mem.killstarttime and not inst.components.health:IsHurt() then
+		inst.sg.mem.killstarttime = nil
+	end]]
 end
 
 local function OnDroppedTarget(inst)
@@ -454,21 +516,15 @@ local function OnDeath(inst)
 		inst._disengagetask:Cancel()
 		Disengage(inst)
 	end
-end
-
-local function teleport_override_fn(inst)
-	return inst:GetPosition()
-end
-
-local function IsInArena(inst)
-	if inst._inarena == nil then
-		inst._inarena = TheWorld.Map:IsPointInCharlieBossArena(inst.Transform:GetWorldPosition())
-		inst.components.epicscare:SetRange(inst._inarena and 30 or TUNING.CHARLIE_BOSS_AGGRO_DIST)
+	if inst._resettask then
+		inst._resettask:Cancel()
+		inst._resettask = nil
 	end
-	return inst._inarena
+
+	inst:SetMusicLevel(4)
 end
 
-local PHASES =
+PHASES = --forward declared
 {
 	{
 		hp = 1,
@@ -558,11 +614,11 @@ for i = #RUNNER_HP_THRESHOLDS, 1, -1 do
 	table.insert(PHASES, { hp = RUNNER_HP_THRESHOLDS[i], fn = RunnerPhaseFn })
 end
 
-local function OnSave(inst, data)
+--[[local function OnSave(inst, data)
 	if inst.sg.mem.killstarttime then
 		data.killtime = math.floor(GetTime() - inst.sg.mem.killstarttime)
 	end
-end
+end]]
 
 local function OnLoad(inst, data)--, ents)
 	local healthpct = inst.components.health:GetPercent()
@@ -573,22 +629,148 @@ local function OnLoad(inst, data)--, ents)
 			break
 		end
 	end
-	if data and data.killtime then
+	--[[if data and data.killtime then
 		inst.sg.mem.killstarttime = GetTime() - data.killtime
+	end]]
+
+	if inst._resettask == nil and inst._disengagetask == nil and
+		not (inst.components.health:IsDead() or inst.components.combat:HasTarget())
+	then
+		if healthpct >= 1 then
+			--loading to full hp => force reset
+			inst._resettask = inst:DoTaskInTime(0, TryReset, true)
+		else
+			inst._resettask = inst:DoPeriodicTask(3, TryReset)
+		end
 	end
 end
 
-local function OnLongUpdate(inst, dt)
+--[[local function OnLongUpdate(inst, dt)
 	if inst.sg.mem.killstarttime then
 		inst.sg.mem.killstarttime = inst.sg.mem.killstarttime - dt
 	end
+end]]
+
+--------------------------------------------------------------------------
+
+local function CalcSanityAura(inst, observer)
+	return inst:IsInArena() == IsEntInArena(observer) and -TUNING.SANITYAURA_HUGE or 0
 end
 
--- NOTE: we'll set these to false for the case of setting our own fields to false, but event callbacks are cleared by this point
--- so disabling these is in actuality handled by charlie_boss_trial, not here.
-local function OnRemoveEntity(inst)
-	SetShadowHandsEnabled(inst, false)
-	SetRunnerSpawnsEnabled(inst, false)
+local function SanityAuraFalloff(inst, observer, distsq)
+	return not inst:IsInArena() and distsq > 40 * 40 and math.huge or nil
+end
+
+--------------------------------------------------------------------------
+
+local function OnUpdateStandbyLoop(inst, dt)
+	local d = 1
+	if inst.AnimState:IsCurrentAnimation("rise_loop") then
+		if ThePlayer then
+			d = math.sqrt(inst:GetDistanceSqToPoint(ThePlayer.Transform:GetWorldPosition()))
+			d = math.clamp(Remap(d, 5, 14, 1, 0), 0, 1)
+		else
+			d = 0
+		end
+	end
+	if inst._standby == nil then
+		inst._standby = d
+	elseif d > inst._standby then
+		inst._standby = math.min(d, inst._standby + 0.05)
+	elseif d < inst._standby then
+		inst._standby = math.max(d, inst._standby - 0.05)
+	end
+	TheFocalPoint.SoundEmitter:SetParameter("charlie_boss_standby", "proximity", inst._standby)
+end
+
+local function EnableStandbyLoop(inst, enable)
+	if not enable then
+		TheFocalPoint.SoundEmitter:KillSound("charlie_boss_standby")
+		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateStandbyLoop)
+		inst._standby = nil
+	elseif not TheFocalPoint.SoundEmitter:PlayingSound("charlie_boss_standby") then
+		TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_charlie_standbyLP", "charlie_boss_standby")
+		inst.components.updatelooper:AddOnUpdateFn(OnUpdateStandbyLoop)
+		OnUpdateStandbyLoop(inst, 0)
+	end
+end
+
+local function EnableGatewayDimensionBattleMix(inst, enable)
+	if enable then
+		if not inst._gatewaydimensionbattlemix then
+			inst._gatewaydimensionbattlemix = true
+			TheMixer:PushMix("gateway_dimension_battle")
+		end
+	elseif inst._gatewaydimensionbattlemix then
+		inst._gatewaydimensionbattlemix = nil
+		TheMixer:PopMix("gateway_dimension_battle")
+	end
+end
+
+local function SetPlayingMusic(inst, playing, instant)
+	if playing then
+		inst._playingmusic = true
+		local level = inst.music:value()
+		EnableStandbyLoop(inst, level == 1)
+		EnableGatewayDimensionBattleMix(inst, level == 2 or level == 3)
+		if instant and level == 2 then
+			TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_charlie_risepst_stinger")
+		end
+	elseif inst._playingmusic then
+		inst._playingmusic = false
+		EnableStandbyLoop(inst, false)
+		EnableGatewayDimensionBattleMix(inst, false)
+	end
+end
+
+local function PushMusic(inst, instant)
+	if ThePlayer == nil then
+		SetPlayingMusic(inst, false, instant)
+	else
+		local x, _, z = inst.Transform:GetWorldPosition()
+		if IsPointInArena(x, 0, z) then
+			if IsEntInArena(ThePlayer) then
+				SetPlayingMusic(inst, true, instant)
+				ThePlayer:PushEvent("triggeredevent", { name = "charlie_boss", level = inst.music:value() })
+			else
+				SetPlayingMusic(inst, false, instant)
+			end
+		else
+			local dsq = ThePlayer:GetDistanceSqToPoint(x, 0, z)
+			local range = inst._playingmusic and 30 or 20
+			if dsq < range * range then
+				SetPlayingMusic(inst, true, instant)
+				ThePlayer:PushEvent("triggeredevent", { name = "charlie_boss", level = inst.music:value() })
+			elseif dsq >= 40 * 40 then
+				SetPlayingMusic(inst, false, instant)
+			end
+		end
+	end
+end
+
+local function OnMusicDirty(inst)
+	if inst._musictask then
+		inst._musictask:Cancel()
+		inst._musictask = nil
+	end
+
+	if inst.music:value() > 0 then
+		inst._musictask = inst:DoPeriodicTask(1, PushMusic)
+		PushMusic(inst, true)
+	else
+		SetPlayingMusic(inst, false)
+	end
+end
+
+local function SetMusicLevel(inst, level)
+	if level ~= inst.music:value() then
+		inst.music:set(level)
+
+		--Dedicated server does not need to trigger music
+		if not TheNet:IsDedicated() then
+			OnMusicDirty(inst)
+		end
+	end
 end
 
 --------------------------------------------------------------------------
@@ -614,8 +796,21 @@ local function SetCameraFocusLevel(inst, level)
 end
 
 --------------------------------------------------------------------------
+-- NOTE: we'll set these to false for the case of setting our own fields to false, but event callbacks are cleared by this point
+-- so disabling these is in actuality handled by charlie_boss_trial, not here.
+local function OnRemoveEntity(inst)
+	SetPlayingMusic(inst, false)
+
+	if TheWorld.ismastersim then
+		SetShadowHandsEnabled(inst, false)
+		SetRunnerSpawnsEnabled(inst, false)
+	end
+end
+
+--------------------------------------------------------------------------
 
 local LIGHT_OVERRIDE = 1
+local HIGHLIGHT_OVERRIDE = { 0.1, 0.1, 0.1 }
 
 local function AddFollowSymbol(inst, sym, anim)
 	local fx = CreateEntity()
@@ -678,13 +873,21 @@ local function fn()
 	inst:AddTag("monster")
 	inst:AddTag("hostile")
 	inst:AddTag("scarytoprey")
+	inst:AddTag("soulless") --nobody's soul is dropped upon "defeat" of this phase
 	inst:AddTag("shadow_aligned")
 	inst:AddTag("shadowboss")
 	inst:AddTag("epic")
+	inst:AddTag("noepicmusic")
+	inst:AddTag("toughworker")
 
+	inst.music = net_tinybyte(inst.GUID, "charlie_boss.music", "musicdirty")
 	inst.camerafocus = net_tinybyte(inst.GUID, "charlie_boss.camerafocus", "camerafocusdirty")
 
+	inst.highlightoverride = HIGHLIGHT_OVERRIDE
+	inst.highlightflashaddoverride = 0.1
+
 	inst:AddComponent("colouraddersync")
+	inst:AddComponent("updatelooper")
 
 	if not TheNet:IsDedicated() then
 		inst.highlightchildren =
@@ -698,15 +901,19 @@ local function fn()
 		inst.components.colouraddersync:SetColourChangedFn(OnColourChanged)
 	end
 
+	inst.OnRemoveEntity = OnRemoveEntity
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
+		inst:ListenForEvent("musicdirty", OnMusicDirty)
 		inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
 
 		return inst
 	end
 
-	inst:AddComponent("updatelooper")
+	inst.scrapbook_anim = "scrapbook"
+
 	inst:AddComponent("colouradder")
 	inst:AddComponent("inspectable")
 	inst:AddComponent("knownlocations")
@@ -736,7 +943,9 @@ local function fn()
 	inst.components.locomotor.runspeed = TUNING.CHARLIE_BOSS_WALKSPEED
 
 	inst:AddComponent("sanityaura")
-	inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
+	inst.components.sanityaura.aurafn = CalcSanityAura
+	inst.components.sanityaura.fallofffn = SanityAuraFalloff
+	inst.components.sanityaura.max_distsq = 40 * 40
 
 	inst:AddComponent("teleportedoverride")
 	inst.components.teleportedoverride:SetDestPositionFn(teleport_override_fn)
@@ -769,10 +978,10 @@ local function fn()
 	inst.SpawnReflectProjectileAtXYZ = SpawnReflectProjectileAtXYZ
 	inst.WantsToReflectProjectiles = WantsToReflectProjectiles
 	inst.ToggleReflectingProjectiles = ToggleReflectingProjectiles
-	inst.OnSave = OnSave
+	--inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
-	inst.OnLongUpdate = OnLongUpdate
-	inst.OnRemoveEntity = OnRemoveEntity
+	--inst.OnLongUpdate = OnLongUpdate
+	inst.SetMusicLevel = SetMusicLevel
 	inst.SetCameraFocusLevel = SetCameraFocusLevel
 
 	inst:AddComponent("healthtrigger")

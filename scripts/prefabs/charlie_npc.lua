@@ -21,6 +21,23 @@ local function EnableCameraFocus(inst, enable)
     end
 end
 
+local function OnTransformMusic(inst)
+	if ThePlayer then
+		local roomsetname = VIRTUALROOMSETS.ATRIUM
+		local x, y, z = ThePlayer.Transform:GetWorldPosition()
+		if TheWorld.Map:IsPointInVirtualRoomSet(roomsetname, x, y, z) and TheWorld.Map:IsVirtualRoomSetInLobby(roomsetname) then
+			TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_charlie_intro")
+		end
+	end
+end
+
+local function TriggerTransformMusic(inst)
+	inst._transformmusic:push()
+	if not TheNet:IsDedicated() then
+		OnTransformMusic(inst)
+	end
+end
+
 local function OnRemove(inst)
     -- Charliecutscene cmp save/load will handle this not running.
     if inst.atrium ~= nil and inst.atrium.components.charliecutscene ~= nil then
@@ -113,6 +130,7 @@ local function fn()
     npc_talker.speaktime = 3
 
     inst._camerafocus = net_bool(inst.GUID, "charlie_npc._camerafocus", "camerafocusdirty")
+	inst._transformmusic = net_event(inst.GUID, "charlie_npc._transformmusic")
 
     inst.entity:SetPristine()
 
@@ -120,6 +138,7 @@ local function fn()
 
     if not TheWorld.ismastersim then
         inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+		inst:DoTaskInTime(0, inst.ListenForEvent, "charlie_npc._transformmusic", OnTransformMusic)
 
         return inst
     end
@@ -133,6 +152,7 @@ local function fn()
     inst.OnEntityWake = OnEntityWake
 
     inst.EnableCameraFocus = EnableCameraFocus
+	inst.TriggerTransformMusic = TriggerTransformMusic
 
     inst:SetStateGraph("SGcharlie_npc")
     inst:ListenForEvent("ontalk", OnTalk)

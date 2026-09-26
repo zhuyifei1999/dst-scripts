@@ -2220,6 +2220,7 @@ function Tune(overrides)
 
         MOISTURE_SANITY_PENALTY_MAX = -100/(day_time*6), -- Was originally 10 days
 
+        CRAZINESS_TINY = -100/(day_time*4),
         CRAZINESS_SMALL = -100/(day_time*2),
         CRAZINESS_MED = -100/(day_time),
 
@@ -2883,6 +2884,7 @@ function Tune(overrides)
 		VOIDCLOTH_BOOMERANG_SHADOW_LEVEL = 3,
 		--T4
 		THURIBLE_SHADOW_LEVEL = 4,
+        KING_CANE_SHADOW_LEVEL = 4,
 
         LIVINGTREE_CHANCE = 0.55,
         LIVINGTREE_YOUNG_WORK = 15,
@@ -9709,6 +9711,53 @@ function Tune(overrides)
         CHARLIE_BOSS_RUNNER_DAMAGE = 50,
 		CHARLIE_BOSS_RUNNER_TARGET_RANGE = 8,
 		CHARLIE_BOSS_RUNNER_POUNCE_RANGE = 2.5,
+
+		SHROUDEN_HEALTH = 16000,
+		SHROUDEN_WALKSPEED = 3,
+		SHROUDEN_ATTACK_PERIOD = 3,
+		SHROUDEN_ATTACK_RANGE = 10,
+		SHROUDEN_DAMAGE = 225,
+		SHROUDEN_PLANAR_DAMAGE = 35,
+		SHROUDEN_OPTIC_BLAST_PLANAR_DAMAGE = 40,
+		SHROUDEN_PLAYERDAMAGEPERCENT = 0.75,
+		SHROUDEN_AGGRO_DIST = 15,
+		SHROUDEN_KEEP_AGGRO_DIST = 12,
+		SHROUDEN_DEAGGRO_DIST = 30, --backup value; only used if c_spawned outside of arena
+		SHROUDEN_OPTIC_BLAST_CD = 29,
+		SHROUDEN_TELEPORT_CD = 19,
+		SHROUDEN_TAUNT_INTERVAL = 15, --affects how often horns are summoned
+
+        KING_CANE_SPEED_MULT = 1.3,
+        KING_CANE_DAMAGE = wilson_attack*.5,
+        KING_CANE_MAX_CORRUPTION = 100,
+        KING_CANE_CORRUPTION_DECAY_PERIOD = seg_time*0.5,
+        KING_CANE_CORRUPTION_DECAY_AMOUNT = -1,
+
+        KING_CANE_CORRUPTION =
+        {
+            ["redgem"] = 3,
+            ["bluegem"] = 3,
+            ["purplegem"] = 15,
+            ["orangegem"] = 5,
+            ["yellowgem"] = 15,
+            ["greengem"] = 25,
+        },
+
+        KING_CANE_RED_COOLDOWN = 1,
+        KING_CANE_BLUE_COOLDOWN = 1,
+        KING_CANE_PURPLE_COOLDOWN = seg_time*3,
+        KING_CANE_ORANGE_COOLDOWN = 10,
+        KING_CANE_YELLOW_COOLDOWN = seg_time*3,
+        KING_CANE_GREEN_COOLDOWN = seg_time*6,
+
+        KING_CANE_CORRUPT_NIGHTMARE_COOLDOWN = 3,
+        KING_CANE_CORRUPT_BLIGHTED_COOLDOWN = seg_time,
+
+        CHARLIEARENA_SPIKE_WORK = 4,
+        CHARLIEARENA_SPIKE_DAMAGE = 100, -- affected by playerdamagepercent
+
+        QUEEN_TORCH_RADIUS = 10,
+        QUEEN_TORCH_RADIUS_SQ = 10*10,
     }
 
     TUNING_MODIFIERS = {}

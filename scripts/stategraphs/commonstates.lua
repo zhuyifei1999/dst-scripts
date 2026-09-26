@@ -3017,9 +3017,18 @@ CommonStates.AddStalkerCorruptionStates = function(states, timelines, fns)
 
 		events =
 		{
+            EventHandler("interruptcorruption", function(inst)
+                inst.AnimState:PlayAnimation("stun_pst")
+                inst.sg.statemem.exitstate = true
+            end),
 			EventHandler("startcorruption", function(inst)
 				inst.sg:GoToState("stalker_corruption_pre")
 			end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and inst.sg.statemem.exitstate then
+                    inst.sg:GoToState("idle")
+                end
+            end),
 		},
 	})
 

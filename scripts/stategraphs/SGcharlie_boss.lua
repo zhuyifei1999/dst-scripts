@@ -200,16 +200,32 @@ local states =
 			if not inst.AnimState:IsCurrentAnimation("rise_loop") then
 				inst.AnimState:PlayAnimation("rise_loop", true)
 			end
+			inst:SetMusicLevel(1)
 			inst:SetCameraFocusLevel(2)
 			inst.sg.statemem.loops = loops or 0
+			if inst:IsInArena() then
+				local players, numplayers = GetPlayersInfoForVirtualRoomSetName(VIRTUALROOMSETS.ATRIUM)
+				local playernear
+				for k in pairs(players) do
+					if not IsEntityDeadOrGhost(k) then
+						playernear = true
+						break
+					end
+				end
+				if not playernear then
+					inst.sg.statemem.loops = 0
+				end
+			end
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 		end,
 
 		onupdate = function(inst, dt)
-			if dt > 0 and inst.sg.statemem.loops > 3 and
-				not inst.sg.statemem.aggro and inst:IsNearPlayer(8, true)
-			then
-				inst.sg.statemem.aggro = true
+			if dt > 0 and inst.sg.statemem.loops > 3 and not inst.sg.statemem.aggro then
+				local player, dsq = inst:GetNearestPlayer(true)
+				if player and dsq < 36 then
+					inst.sg.statemem.aggro = true
+					inst.components.combat:SetTarget(player)
+				end
 			end
 		end,
 
@@ -226,6 +242,10 @@ local states =
 		onexit = function(inst)
 			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.spawning then
+				inst:SetMusicLevel(
+					(inst.components.health:IsDead() and 4) or
+					(inst.components.combat:HasTarget() and 3) or
+					0)
 				inst:SetCameraFocusLevel(0)
 			end
 		end,
@@ -239,6 +259,7 @@ local states =
 			inst.components.locomotor:Stop()
 			SwitchToNoFaced(inst)
 			inst.AnimState:PlayAnimation("rise_pst")
+			inst:SetMusicLevel(2)
 			inst:SetCameraFocusLevel(2)
 		end,
 
@@ -247,7 +268,6 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/rise_pst_1") end),
 			FrameEvent(53, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/rise_pst_2") end),
-
 
 			FrameEvent(10, function(inst)
 				local targets = {}
@@ -292,6 +312,10 @@ local states =
 
 		onexit = function(inst)
 			TryRestoreSixFaced(inst)
+			inst:SetMusicLevel(
+				(inst.components.health:IsDead() and 4) or
+				(inst.components.combat:HasTarget() and 3) or
+				0)
 			inst:SetCameraFocusLevel(0)
 		end,
 	},
@@ -682,6 +706,8 @@ local states =
 		timeline =
 		{
 			--#SFX
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/charlie_death") end),
+			
 			FrameEvent(6, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.6) end),
 			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.7) end),
 			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_subdued", nil, 0.5) end),
@@ -704,6 +730,26 @@ local states =
 			FrameEvent(69, function(inst)
 				inst:DropDeathLoot()
 				inst.persists = false
+
+				inst.Physics:SetActive(false)
+
+				local home = inst.components.knownlocations:GetLocation("spawnpoint")
+				local x, _, z
+				if home then
+					x, _, z = home:Get()
+				else
+					x, z = TheWorld.Map:GetCharlieBossArenaCenterXZ()
+					if x == nil then
+						x, _, z = inst.Transform:GetWorldPosition()
+					end
+				end
+
+				local shrouden = SpawnPrefab("shrouden")
+				shrouden:TransferAOEAttackTagSetFrom(inst)
+				shrouden.Transform:SetPosition(x, 0, z)
+				shrouden.sg:GoToState("spawn")
+
+				inst:PushEvent("track_charlie_boss", shrouden)
 			end),
 		},
 

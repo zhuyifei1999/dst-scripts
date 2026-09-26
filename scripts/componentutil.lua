@@ -136,6 +136,7 @@ end
 --but aren't really considered "alive".
 
 -- Lifedrain (Batbat, mauler) uses this list
+-- This is also concatenated into SOULLESS_TARGET_TAGS
 NON_LIFEFORM_TARGET_TAGS =
 {
 	"structure",
@@ -143,9 +144,8 @@ NON_LIFEFORM_TARGET_TAGS =
 	"balloon",
 	"groundspike",
 	"smashable",
-	"veggie", --stuff like lureplants... not considered life?
     "deck_of_cards",
-    "plantcreature",
+    "nolife",
 }
 
 --Shadows and Gestalts don't have souls.
@@ -183,7 +183,8 @@ PURE_SHADOW_TARGET_TAGS = {
 }
 
 function IsLifeDrainable(target)
-	return not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable")
+	return (not target:HasAnyTag(NON_LIFEFORM_TARGET_TAGS) or target:HasTag("lifedrainable"))
+        and not target:HasTag("nolifedrainable")
 end
 
 --------------------------------------------------------------------------
@@ -1321,6 +1322,67 @@ function AddIsTileInvalidForPathing_VirtualRoomSet(roomsetname, fn)
     ISTILEINVALIDFORPATHING_HASHES[hash(roomsetname)] = fn
 end
 
+local function GetRoomSetHashes(map, virtualroomsethashes, fx, fy, fz, tx, ty, tz)
+    -- NOTES(JBK): Keep function in sync with VirtualRoomSet on the engine side. [VRSTCMHG]
+    local from_roomsethash, to_roomsethash
+    for _, roomsethash in ipairs(virtualroomsethashes) do
+        if not from_roomsethash and map:IsPointInVirtualRoomSet(roomsethash, fx, fy, fz) then
+            from_roomsethash = roomsethash
+            if to_roomsethash then
+                break
+            end
+        end
+        if not to_roomsethash and map:IsPointInVirtualRoomSet(roomsethash, tx, ty, tz) then
+            to_roomsethash = roomsethash
+            if from_roomsethash then
+                break
+            end
+        end
+    end
+    return from_roomsethash, to_roomsethash
+end
+local function CanVRSTeleportToVRS(map, from_roomsethash, to_roomsethash, fx, fy, fz, tx, ty, tz)
+    -- NOTES(JBK): Keep function in sync with VirtualRoomSet on the engine side. [VRSTCMM]
+    local permitted = true
+    local same_vrs = from_roomsethash == to_roomsethash
+    if same_vrs then
+        if from_roomsethash then
+            -- Teleporting from inside to inside of the VRS.
+            -- Check if the path is clear to allow this.
+            local IsTileInvalidForPathing = ISTILEINVALIDFORPATHING_HASHES[from_roomsethash]
+            permitted = IsPathClear_Internal(map, from_roomsethash, IsTileInvalidForPathing, fx, fy, fz, tx, ty, tz)
+        else
+            -- Teleporting outside to outside of any VRS has no effect here.
+            permitted = true
+        end
+    else
+        -- Different VRS needs to check permissions from each.
+        local from_canleave, to_canjoin = true, true
+        if from_roomsethash then
+            -- Teleporting from inside to outside of the VRS.
+            if map:IsVirtualRoomSetInLobby(from_roomsethash) then
+                -- Some VRS permit teleporting into its lobby which also allows teleporting outside.
+                from_canleave = not map:IsVirtualRoomSetTeleportingInLobbyProhibited(from_roomsethash)
+            else
+                -- Optional if a VRS locks down teleporting out if it is permitted.
+                from_canleave = not map:IsVirtualRoomSetTeleportingOutProhibited(from_roomsethash)
+            end
+        end
+        if to_roomsethash then
+            -- Teleporting from outside to inside of the VRS.
+            if map:IsVirtualRoomSetInLobby(to_roomsethash) then
+                -- Some VRS permit teleporting into its lobby.
+                to_canjoin = not map:IsVirtualRoomSetTeleportingInLobbyProhibited(to_roomsethash)
+            else
+                -- Nothing is permitted to go from out to inside a VRS.
+                to_canjoin = false
+            end
+        end
+        permitted = from_canleave and to_canjoin
+    end
+
+    return permitted
+end
 function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
     local map = TheWorld.Map
 
@@ -1332,40 +1394,8 @@ function IsTeleportingPermittedFromPointToPoint(fx, fy, fz, tx, ty, tz)
 
     local virtualroomsethashes = map:GetVirtualRoomSetHashes()
     if virtualroomsethashes[1] --[[#virtualroomsethashes > 0 optimization]] then
-        local prohibited = false
-        for _, roomsethash in ipairs(virtualroomsethashes) do
-            if map:IsPointInVirtualRoomSet(roomsethash, tx, ty, tz) then
-                if map:IsPointInVirtualRoomSet(roomsethash, fx, fy, fz) then
-                    -- Teleporting from inside to inside of the VRS.
-                    -- Check if the path is clear to allow this.
-                    local IsTileInvalidForPathing = ISTILEINVALIDFORPATHING_HASHES[roomsethash]
-                    prohibited = not IsPathClear_Internal(map, roomsethash, IsTileInvalidForPathing, fx, fy, fz, tx, ty, tz)
-                else
-                    -- Teleporting from outside to inside of the VRS.
-                    if map:IsVirtualRoomSetInLobby(roomsethash) then
-                        -- Some VRS permit teleporting into its lobby.
-                        prohibited = map:IsVirtualRoomSetTeleportingInLobbyProhibited(roomsethash)
-                    else
-                        -- Nothing is permitted to go from out to inside a VRS.
-                        prohibited = true
-                    end
-                end
-                break -- prohibited is set
-            else
-                if map:IsPointInVirtualRoomSet(roomsethash, fx, fy, fz) then
-                    -- Teleporting from inside to outside of the VRS.
-                    if map:IsVirtualRoomSetInLobby(roomsethash) then
-                        -- Some VRS permit teleporting into its lobby which also allows teleporting outside.
-                        prohibited = map:IsVirtualRoomSetTeleportingInLobbyProhibited(roomsethash)
-                    else
-                        -- Optional if a VRS locks down teleporting out if it is permitted.
-                        prohibited = map:IsVirtualRoomSetTeleportingOutProhibited(roomsethash)
-                    end
-                    break -- prohibited is set
-                end
-            end
-        end
-        if prohibited then
+        local from_roomsethash, to_roomsethash = GetRoomSetHashes(map, virtualroomsethashes, fx, fy, fz, tx, ty, tz)
+        if not CanVRSTeleportToVRS(map, from_roomsethash, to_roomsethash, fx, fy, fz, tx, ty, tz) then
             return false
         end
     end
@@ -2274,7 +2304,7 @@ function ShouldItemMimicBeRevealedFor(item, user)
     local userprocsmimics = user.components.socket_shadow_mimicry == nil
     if itemisamimic then
         -- Special cases to always force mimic reveals.
-        if item.prefab == "greenstaff" then
+        if item:HasTag("castonrecipes") then
             -- Ingredients must be earned.
             return true
         end
@@ -2390,3 +2420,9 @@ function FindFirstPrefabInArray(entityarray, prefab)
 end
 
 --------------------------------------------------------------------------
+
+function IsStalkerCorruptable(inst, corrupter)
+    -- check just one state
+    return (inst.sg and inst.sg:HasState("stalker_corruption_pre") and inst.sg.mem.canstalkercorrupt)
+        or (inst.CanStalkerCorrupt and inst:CanStalkerCorrupt(corrupter)) -- batbosscave
+end

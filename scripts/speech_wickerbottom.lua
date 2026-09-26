@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "I believe they're trying to communicate.",
             QUEENBUSY = "She is occupied with other matters at the moment.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "The mini-golf course requires at least a flaghole to be playable.",
+            KINGSTAFF_COOLDOWN = "The gem is quite stuck.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "They have formed an abhorrent triune.",
         SHROUDEN = "They are known by many names.",
+        CHARLIEARENA_SPIKE = "The formation is almost thorn-like.",
+
+        KING_CANE =
+        {
+            GENERIC = "This staff clearly belonged to an ancient king.", -- has a gem slotted in
+            EMPTY = "It lacks a power source, namely a gem.", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "This is no ordinary torch.",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

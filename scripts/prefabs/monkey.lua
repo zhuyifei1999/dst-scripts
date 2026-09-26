@@ -425,6 +425,7 @@ local function fn()
     inst:AddTag("monkey")
     inst:AddTag("animal")
     inst:AddTag("canwearhat")
+    inst:AddTag("nightmarecorruptable")
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

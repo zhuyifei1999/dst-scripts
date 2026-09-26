@@ -428,9 +428,7 @@ end
 local RITUAL_BOSS_NO_TAGS = { "NOCLICK" }
 local RITUAL_BOSS_ONEOF_TAGS = { "_health", "_combat", "worm_boss_piece", "inspectable" }
 local function IsRitualBossValid(guy, inst)
-    -- check just one state
-    return (guy.sg and guy.sg:HasState("stalker_corruption_pre") and guy.sg.mem.canstalkercorrupt)
-        or (guy.CanStalkerCorrupt and guy:CanStalkerCorrupt(inst)) -- batbosscave
+    return IsStalkerCorruptable(guy, inst)
 end
 
 function StalkerBrain:SelectRitualBoss()

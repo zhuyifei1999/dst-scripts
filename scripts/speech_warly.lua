@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Excusez-moi, I'm afraid we have a bit of a language barrier.",
             QUEENBUSY = "Pardonnez-moi, I can see you are busy.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "It's missing the key ingredient! The flaghole!",
+            KINGSTAFF_COOLDOWN = "It is stuck!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -6340,6 +6341,16 @@ return{
 
 		CHARLIE_BOSS = "How can she be even more terrifying?",
         SHROUDEN = "I would like to wake up from this nightmare.",
+        CHARLIEARENA_SPIKE = "So menacing!",
+
+        KING_CANE =
+        {
+            GENERIC = "It seems a powerful instrument!", -- has a gem slotted in
+            EMPTY = "It is missing the key ingredient!", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "It will make a lovely night light!",
+        
+        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

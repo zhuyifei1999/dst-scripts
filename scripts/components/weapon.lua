@@ -152,6 +152,7 @@ function Weapon:LaunchProjectile(attacker, target)
         if self.onprojectilelaunched ~= nil then
             self.onprojectilelaunched(self.inst, attacker, target, proj)
         end
+        self.inst:PushEvent("weapononprojectilelaunched", { attacker = attacker, target = target, projectile = proj })
     end
 end
 

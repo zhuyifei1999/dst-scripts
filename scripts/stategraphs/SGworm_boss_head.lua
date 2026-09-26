@@ -724,8 +724,6 @@ local states =
 		tags = { "busy", "nointerrupt", "noattack", "temp_invincible", "stalkercorruptingstun", },
 
 		onenter = function(inst)
-            -- "stalker_snared_pre"
-            -- "stalker_snared_loop"
 			inst.AnimState:PlayAnimation("stun_pre", false)
 			inst.AnimState:PushAnimation("stun_loop", true)
             inst.worm.components.health:SetInvincible(true)
@@ -733,9 +731,18 @@ local states =
 
 		events =
 		{
+            EventHandler("interruptcorruption", function(inst)
+                inst.AnimState:PlayAnimation("stun_pst")
+                inst.sg.statemem.exitstate = true
+            end),
 			EventHandler("startcorruption", function(inst)
 				inst.sg:GoToState("stalker_corruption_pre")
 			end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and inst.sg.statemem.exitstate then
+                    inst.sg:GoToState("idle") -- assuming pushanim param (true for rocky and bat)
+                end
+            end),
 		},
 
         onexit = function(inst)

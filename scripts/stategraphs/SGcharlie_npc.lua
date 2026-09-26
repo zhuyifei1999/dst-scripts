@@ -296,6 +296,8 @@ local states =
             if inst.sg.statemem.gate then
                 inst:ForceFacePoint(inst.sg.statemem.gate.Transform:GetWorldPosition())
             end
+
+			inst:TriggerTransformMusic()
         end,
 
         timeline =

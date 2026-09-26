@@ -1766,6 +1766,9 @@ local actionhandlers =
 			inst.sg.statemem.charging = true
 			return "club_putt_pre"
 		end),
+
+    -- Rifts 8
+    ActionHandler(ACTIONS.CORRUPTNIGHTMARE, "castspell"),
 }
 
 local events =
@@ -1949,13 +1952,15 @@ local events =
     EventHandler("knockback", function(inst, data)
 		if not inst.components.health:IsDead() then
 			if inst:HasTag("wereplayer") then
-				inst.sg.mem.laststuntime = GetTime()
-				if data ~= nil then
-					data = shallowcopy(data)
-					data.repeller = data.knocker
-					inst.sg:GoToState("repelled", data)
-				else
-					inst.sg:GoToState("hit")
+				if not inst.sg:HasStateTag("nointerrupt") then
+					inst.sg.mem.laststuntime = GetTime()
+					if data ~= nil then
+						data = shallowcopy(data)
+						data.repeller = data.knocker
+						inst.sg:GoToState("repelled", data)
+					else
+						inst.sg:GoToState("hit")
+					end
 				end
             elseif inst.sg:HasStateTag("wxshielding")
                 and (inst.components.skilltreeupdater ~= nil and inst.components.skilltreeupdater:IsActivated("wx78_circuitry_gammabuffs_2")) then
@@ -1973,7 +1978,7 @@ local events =
                     knockbackdata = data,
                     isshield = inst.sg.statemem.isshield,
                 })
-            else
+			elseif not inst.sg:HasStateTag("nointerrupt") then
                 if inst.components.inventory:EquipHasTag("superheavyarmor") then
                     inst:PushEvent("knockbackblocked")
                     inst.sg:GoToState("hit")
@@ -2565,6 +2570,7 @@ local events =
 		    	target = inst.sg.statemem.target,
 		    	onplayerpending = data and data.onplayerpending,
 		    	onplayerready = data and data.onplayerready,
+                fxprefab = data and data.fxprefab,
 		    })
             --#TEMP DELETEME
             if data.fastforward then
@@ -14710,6 +14716,7 @@ local states =
 		events =
 		{
 			EventHandler("spitout", function(inst, data)
+				inst.sg:RemoveStateTag("nointerrupt")
 				local attacker = data ~= nil and data.spitter or inst.sg.statemem.attacker
 				if attacker ~= nil and attacker:IsValid() then
 					local rot = data.rot or attacker.Transform:GetRotation() + 180
@@ -14846,6 +14853,7 @@ local states =
 				DoHurtSound(inst)
 			end),
 			EventHandler("spitout", function(inst, data)
+				inst.sg:RemoveStateTag("nointerrupt")
 				local attacker = data ~= nil and data.spitter or inst.sg.statemem.attacker
 				if attacker and attacker:IsValid() then
 					local rot = data.rot or attacker.Transform:GetRotation() + 180
@@ -16051,14 +16059,23 @@ local states =
             inst.sg.statemem.stafflight.Transform:SetPosition(inst.Transform:GetWorldPosition())
             inst.sg.statemem.stafflight:SetUp(colour, 1.9, .33)
 
+            local buffaction = inst:GetBufferedAction()
 			if staff ~= nil and staff.components.aoetargeting ~= nil then
-                local buffaction = inst:GetBufferedAction()
 				if buffaction ~= nil then
 					inst.sg.statemem.targetfx = staff.components.aoetargeting:SpawnTargetFXAt(buffaction:GetDynamicActionPoint())
                     if inst.sg.statemem.targetfx ~= nil then
                         inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
                     end
                 end
+            end
+
+            -- more up to date way of getting staff but leaving old code alone
+            local actualstaff = buffaction and buffaction.invobject
+            local act = buffaction and buffaction.action
+            local target = buffaction and buffaction.target
+            if actualstaff and actualstaff.components.corruption and target and act == ACTIONS.CORRUPTNIGHTMARE then
+                inst.sg.statemem.corruptactstaff = actualstaff
+                inst.sg.statemem.corruptacttarget = target
             end
 
             if staff ~= nil then
@@ -16070,10 +16087,14 @@ local states =
 
         timeline =
         {
-            TimeEvent(13 * FRAMES, function(inst)
+            FrameEvent(13, function(inst)
                 inst.SoundEmitter:PlaySound(inst.sg.statemem.castsound)
+                if inst.sg.statemem.corruptactstaff ~= nil and inst.sg.statemem.corruptactstaff:IsValid()
+                    and inst.sg.statemem.corruptacttarget ~= nil and inst.sg.statemem.corruptacttarget:IsValid() then
+                    inst.sg.statemem.corruptactstaff.components.corruption:OnTargetCorruptable(inst.sg.statemem.corruptacttarget, inst)
+                end
             end),
-            TimeEvent(53 * FRAMES, function(inst)
+            FrameEvent(53, function(inst)
                 if inst.sg.statemem.targetfx ~= nil then
                     if inst.sg.statemem.targetfx:IsValid() then
                         OnRemoveCleanupTargetFX(inst)
@@ -16085,7 +16106,7 @@ local states =
                 --V2C: NOTE! if we're teleporting ourself, we may be forced to exit state here!
                 inst:PerformBufferedAction()
             end),
-			TimeEvent(69 * FRAMES, function(inst)
+			FrameEvent(69, function(inst)
 				inst.sg:RemoveStateTag("busy")
 				if inst.components.playercontroller ~= nil then
 					inst.components.playercontroller:Enable(true)
@@ -16114,6 +16135,10 @@ local states =
             end
             if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
                 OnRemoveCleanupTargetFX(inst)
+            end
+            if inst.sg.statemem.corruptactstaff ~= nil and inst.sg.statemem.corruptactstaff:IsValid()
+                and inst.sg.statemem.corruptacttarget ~= nil and inst.sg.statemem.corruptacttarget:IsValid() then
+                inst.sg.statemem.corruptactstaff.components.corruption:OnUntargetCorruptable(inst.sg.statemem.corruptacttarget, inst)
             end
         end,
     },
@@ -19998,6 +20023,7 @@ local states =
 					target = inst.sg.statemem.target,
 					onplayerpending = data and data.onplayerpending,
 					onplayerready = data and data.onplayerready,
+                    fxprefab = data and data.fxprefab,
 				})
                 return true
 			end),
@@ -20025,7 +20051,7 @@ local states =
 				inst.AnimState:PushAnimation("channel_loop", true)
 			end
 
-			SpawnPrefab("vault_portal_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+			SpawnPrefab((data and data.fxprefab) or "vault_portal_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
 
 			if inst.components.playercontroller then
 				inst.components.playercontroller:Enable(false)

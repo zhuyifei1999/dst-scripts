@@ -347,6 +347,7 @@ local function fn()
     inst:AddTag("NPCcanaggro")
 	inst:AddTag("NPC_workable")
     inst:AddTag("plantcreature")
+    inst:AddTag("nolife") -- doesn't really die or get hurt, just reduced to a lesser form(the bulb)
 
     inst.MiniMapEntity:SetIcon("eyeplant.png")
 

@@ -15,6 +15,32 @@ SimTearingDown = false
 SimShuttingDown = false
 PerformingRestart = false
 
+known_error_key = nil
+global_error_widget = nil
+ScriptErrorWidget = require "widgets/scripterrorwidget"
+local pending_global_error = nil
+
+-- Moved so failed on mod parse can show the error screen
+function SetGlobalErrorWidget(...)
+    if global_error_widget ~= nil then -- only first error!
+        return
+    elseif TheFrontEnd == nil then
+        if pending_global_error == nil then
+            pending_global_error = { n = select("#", ...), ... }
+        end
+        return
+    end
+    global_error_widget = ScriptErrorWidget(...)
+end
+
+function ShowPendingGlobalError()
+    local err = pending_global_error
+    pending_global_error = nil
+    if err ~= nil then
+        SetGlobalErrorWidget(unpack(err, 1, err.n))
+    end
+end
+
 function SavePersistentString(name, data, encode, callback)
     if TheFrontEnd then
         TheFrontEnd:ShowSavingIndicator()
@@ -1414,6 +1440,7 @@ function Start()
 
     ---The screen manager
     TheFrontEnd = FrontEnd()
+    ShowPendingGlobalError()
     require("gamelogic")
 
     known_assert(TheSim:CanWriteConfigurationDirectory(), "CONFIG_DIR_WRITE_PERMISSION")
