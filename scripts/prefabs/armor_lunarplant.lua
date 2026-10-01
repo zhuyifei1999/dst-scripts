@@ -23,8 +23,8 @@ local huskprefabs =
 	"hitsparks_reflect_fx",
 }
 
-local function OnHit_Vines(owner, data, inst)
-	if owner == nil or not ShouldProcOnAttackedOrBlocked(inst, owner, data) then
+local function OnHit_Vines(owner, data)
+	if owner == nil or data == nil then
 		return
 	end
 
@@ -40,10 +40,8 @@ local function OnHit_Vines(owner, data, inst)
     end
 end
 
-local function OnBlocked(owner, data, inst)
-	if ShouldProcOnAttackedOrBlocked(inst, owner, data) then
-		owner.SoundEmitter:PlaySound("dontstarve/common/together/armor/cactus")
-	end
+local function OnBlocked(owner, data)
+	owner.SoundEmitter:PlaySound("dontstarve/common/together/armor/cactus")
 end
 
 local function OnEnabledSetBonus(inst)
@@ -63,10 +61,7 @@ local function onequip(inst, owner)
 		owner.AnimState:OverrideSymbol("swap_body", inst.build, "swap_body")
 	end
 
-	if inst._onblocked_basic == nil then
-		inst._onblocked_basic = function(owner, data) OnBlocked(owner, data, inst) end
-	end
-	inst:ListenForEvent("blocked", inst._onblocked_basic, owner)
+	inst:ListenForEvent("blocked", OnBlocked, owner)
 
 	if owner:HasTag("plantkin") then
 		if inst._onblocked then
@@ -91,8 +86,7 @@ end
 local function onunequip(inst, owner)
 	owner.AnimState:ClearOverrideSymbol("swap_body")
 
-	inst:RemoveEventCallback("blocked", inst._onblocked_basic, owner)
-	inst._onblocked_basic = nil
+	inst:RemoveEventCallback("blocked", OnBlocked, owner)
 
 	--"plantkin" (wormwood) events--
 	if inst._onblocked then
@@ -237,7 +231,7 @@ local function commonfn(build, common_postinit, master_postinit)
 end
 
 local function master_postinit(inst)
-	inst._onblocked = function(owner, data) OnHit_Vines(owner, data, inst) end
+	inst._onblocked = OnHit_Vines
 
     require("prefabs/skilltree_defs").CUSTOM_FUNCTIONS.wortox.SetupLunarResists(inst)
 end
@@ -283,7 +277,7 @@ local function OnAttackOther(owner, data, inst)
 end
 
 local function OnHuskBlocked(owner, data, inst)
-	if inst._cdtask == nil and ShouldProcOnAttackedOrBlocked(inst, owner, data) then
+    if inst._cdtask == nil and data ~= nil and not data.redirected then
         DoThorns(inst, owner)
     end
 end

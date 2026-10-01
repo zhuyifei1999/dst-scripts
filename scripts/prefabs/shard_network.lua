@@ -39,7 +39,6 @@ local function fn()
     inst:AddComponent("shard_daywalkerspawner")
     inst:AddComponent("shard_mermkingwatcher")
     inst:AddComponent("shard_wagbossinfo")
-    inst:AddComponent("shard_charlieinfo")
 
     inst.OnRemoveEntity = OnRemoveEntity
 

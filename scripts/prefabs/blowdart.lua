@@ -181,7 +181,7 @@ local function fireattack(inst, attacker, target)
 	    target.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_impact_fire")
 	end
 
-	target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
+    target:PushEvent("attacked", {attacker = attacker, damage = 0})
     -- NOTES(JBK): Valid check in case the event removed the target.
     if target:IsValid() then
         if target.components.burnable then

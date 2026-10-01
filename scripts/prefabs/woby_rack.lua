@@ -59,25 +59,56 @@ local function OnPostUpdateFading(inst)
 	end
 end
 
-local function OnJiggleLoopFn(inst)
-	_ResetRandomizer(_rnd1)
-	for _, v in ipairs(inst.slots) do
-		v.fx.AnimState:PlayAnimation("loop_swing_run"..tostring(_GetNextRandomizer(_rnd1)), true)
+local function OnUpdate(inst)--, dt)
+	local moving, running, nopredict
+	if inst.owner.sg then
+		moving = inst.owner.sg:HasStateTag("moving")
+	else
+		moving = inst.owner:HasTag("moving")
 	end
-end
+	if moving then
+		running =
+			inst.owner.AnimState:IsCurrentAnimation("run_woby_loop") or
+			inst.owner.AnimState:IsCurrentAnimation("sprint_woby_loop") or
+			inst.owner.AnimState:IsCurrentAnimation("run_woby_pre")
+		nopredict = false
+	else
+		running = false
+		if inst.ismastersim and inst.owner.sg then
+			nopredict = inst.owner.sg:HasStateTag("nopredict") or inst.owner.sg:HasStateTag("pausepredict")
+		else
+			nopredict = inst.owner:HasTag("nopredict") or inst.owner:HasTag("pausepredict") or (inst.owner.player_classified and inst.owner.player_classified.pausepredictionframes:value() > 0)
+		end
+	end
 
-local function OnJiggleOneShotFn(inst)
-	_ResetRandomizer(_rnd1)
-	_ResetRandomizer(_rnd2)
-	for _, v in ipairs(inst.slots) do
-		v.fx.AnimState:PlayAnimation("pst_swing_settle"..tostring(_GetNextRandomizer(_rnd1)))
-		v.fx.AnimState:PushAnimation("idle_sway"..tostring(_GetNextRandomizer(_rnd2)))
+	if running then
+		if not inst.wasrunning then
+			_ResetRandomizer(_rnd1)
+			for i, v in ipairs(inst.slots) do
+				v.fx.AnimState:PlayAnimation("loop_swing_run"..tostring(_GetNextRandomizer(_rnd1)), true)
+			end
+		end
+	elseif inst.wasrunning --stopped running
+		or (inst.wasmoving and not moving) --stopped walking
+		or (nopredict and not inst.wasnopredict) --hit?
+	then
+		_ResetRandomizer(_rnd1)
+		_ResetRandomizer(_rnd2)
+		for i, v in ipairs(inst.slots) do
+			v.fx.AnimState:PlayAnimation("pst_swing_settle"..tostring(_GetNextRandomizer(_rnd1)))
+			v.fx.AnimState:PushAnimation("idle_sway"..tostring(_GetNextRandomizer(_rnd2)))
+		end
 	end
+
+	inst.wasmoving = moving
+	inst.wasrunning = running
+	inst.wasnopredict = nopredict
 end
 
 local function OnEntitySleep(inst)
 	if inst._updating then
 		inst._updating = false
+		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdate)
 		inst.components.updatelooper:RemovePostUpdateFn(OnPostUpdateFading)
 		SetFadeColour(inst, 1, 1, 1, 1)
 	end
@@ -87,11 +118,14 @@ local function OnEntityWake(inst)
 	if not inst._updating then
 		inst._updating = true
 		inst._fading = false
+		inst.wasmoving = false
+		inst.wasrunning = false
+		inst.wasnopredict = false
+		inst.components.updatelooper:AddOnUpdateFn(OnUpdate)
 		inst.components.updatelooper:AddPostUpdateFn(OnPostUpdateFading)
+		OnUpdate(inst, 0)
 	end
 end
-
-local JIGGLE_RUN_ANIMS = { "run_woby_loop", "sprint_woby_loop", "run_woby_pre" }
 
 local function OnOwnerChanged(inst, owner)
 	for i, v in ipairs(inst.slots) do
@@ -103,18 +137,15 @@ local function OnOwnerChanged(inst, owner)
 			SetFadeColour(inst, 1, 1, 1, 1)
 		end
 		inst:RemoveComponent("updatelooper")
-		inst:RemoveComponent("autojiggle")
 		inst.OnEntitySleep = nil
 		inst.OnEntityWake = nil
 		inst._updating = nil
 		inst._fading = nil
+		inst.wasmoving = nil
+		inst.wasrunning = nil
+		inst.wasnopredict = nil
 	elseif inst.components.updatelooper == nil then
 		inst:AddComponent("updatelooper")
-		inst:AddComponent("autojiggle")
-		inst.components.autojiggle:SetOnJiggleLoopFn(OnJiggleLoopFn)
-		inst.components.autojiggle:SetOnJiggleOneShotFn(OnJiggleOneShotFn)
-		inst.components.autojiggle:OverrideRunAnims(JIGGLE_RUN_ANIMS)
-		inst.components.autojiggle:SetOwner(owner)
 		if TheWorld.ismastersim then
 			inst.ismastersim = true
 			inst.OnEntitySleep = OnEntitySleep
@@ -125,8 +156,6 @@ local function OnOwnerChanged(inst, owner)
 		else
 			OnEntityWake(inst)
 		end
-	else
-		inst.components.autojiggle:SetOwner(owner)
 	end
 end
 
@@ -144,19 +173,9 @@ local function _OnSlotDirty(inst, v)
 		v.fx.AnimState:ClearOverrideSymbol("rope")
 		v.fx.AnimState:OverrideSymbol("swap_dried", v.build:value(), v.name:value())
 	end
-	if inst:GetTimeAlive() > 0 and not inst:IsAsleep() then
-		local moving
-		if inst.owner then
-			if inst.owner.sg then
-				moving = inst.owner.sg:HasStateTag("moving")
-			else
-				moving = inst.owner:HasTag("moving")
-			end
-		end
-		if not moving then
-			v.fx.AnimState:PlayAnimation("bounce_change"..tostring(math.random(3)))
-			v.fx.AnimState:PushAnimation("idle_sway"..tostring(math.random(3)))
-		end
+	if not inst.wasmoving and inst:GetTimeAlive() > 0 and not inst:IsAsleep() then
+		v.fx.AnimState:PlayAnimation("bounce_change"..tostring(math.random(3)))
+		v.fx.AnimState:PushAnimation("idle_sway"..tostring(math.random(3)))
 	end
 end
 

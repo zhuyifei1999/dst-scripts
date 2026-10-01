@@ -206,7 +206,6 @@ return{
             NOTAMONKEY = "I believe they're trying to communicate.",
             QUEENBUSY = "She is occupied with other matters at the moment.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "The mini-golf course requires at least a flaghole to be playable.",
-            KINGSTAFF_COOLDOWN = "The gem is quite stuck.", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -1255,13 +1254,6 @@ return{
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "It would seem I am vulnerable to the flames once more.",--fire immunity expired
     ANNOUNCE_SECURITY_PULSE_FOLLOWING = "It is attracted to this device.", -- Security spark attached to us due to us holding Waymark Compass.
 
-    -- Rifts 8
-
-    -- after the final fight when Charlie goes MIA and isn't the night monster anymore
-	ANNOUNCE_GRUE_NOCHARLIE = "A noise! But no floral scent?",
-	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "OUCH! Who dares?!",
---fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
-
 	BATTLECRY =
 	{
 		GENERIC = "Combat!",
@@ -1711,12 +1703,7 @@ return{
 		CAVE_BANANA = "All of them are genetically identical.",
 		CAVE_BANANA_COOKED = "Somewhat better.",
 		CAVE_BANANA_TREE = "The seeds must have fallen down a sinkhole.",
-        ROCKY =
-        {
-            GENERIC = "Their carapace is made of rocks.",
-            BOULDER = "A large sedimentary rock.", -- in boulder state, it looks like a normal boulder
-            ACID = "The acid rain is demineralizing its exoskeleton.", -- in acid form
-        },
+		ROCKY = "Their carapace is made of rocks.",
 
 		COMPASS =
 		{
@@ -1733,11 +1720,7 @@ return{
 
         HOUNDSTOOTH = "Made of calcium and brimstone.",
         ARMORSNURTLESHELL = "It is quite capacious.",
-        BAT =
-        {
-            GENERIC = "A flying mammal.",
-            ACID = "The acid rain has induced a frenzied state.", -- in acid form
-        },
+        BAT = "A flying mammal.",
         BATBAT = "Interesting. This weapon appears to be alive.",
         BATWING = "Technically edible.",
         BATWING_COOKED = "Technically edible.",
@@ -3526,7 +3509,6 @@ return{
 			CHARGING = "It is storing power.",
 			DESTABILIZING = "We'd best not be around when it goes off.",
 			COOLDOWN = "We must be patient.",
-            RITUAL_SUMMONING = "And there it is. The eye that watches and waits from beyond the realm. Though it seems its long wait has finally come to an end.", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "The key to that old gateway.",
 		LIFEINJECTOR = "The mold appears to have medicinal properties.",
@@ -4547,8 +4529,6 @@ return{
 			LORE1 = "It appears the ancient king has forfeited his very essence to the darkness.",
 			LORE2 = "A depiction of an extinction-level event.",
 			LORE3 = "These must be the soldier caste of the ancient insect society.",
-            --
-            LORE1_STALKER = "You've no doubt learned a great deal since then.", -- when the stalker/king is with you, different inspect for the king statue!
 		},
 
         ARCHIVE_RESONATOR = {
@@ -5384,12 +5364,7 @@ return{
 		SHADOWTHRALL_WINGS = "Its wings seem to be utilized for propulsion, not to remain airborne.",
 		SHADOWTHRALL_MOUTH = "A sensible person would avoid the toothy maw.",
 
-        CHARLIE_NPC =
-        {
-            GENERIC = "I'd like to give that young lady a stern talking to!", -- scene 1, first appearance of charlie to repair the gateway
-            SCENE2 = "I'm afraid we've become complicit in that young lady's dark ritual.", -- scene 2, charlie appears again to socket the key and place the ritual down
-            SCENE3 = "I'm afraid we've become complicit in that young lady's dark ritual.", -- scene 3, the gateway has both keys, and the sacrifice pieces are set up in the ritual, she appears to tell you to activate it
-        },
+        CHARLIE_NPC = "I'd like to give that young lady a stern talking to!",
         CHARLIE_HAND = "It requires materials.",
 
         NITRE_FORMATION = "The acidic rain seems to have caused a chemical reaction, producing these formations.",
@@ -6296,61 +6271,6 @@ return{
 
         CARNIVALGAME_GOLFPROP_FAN = "The ball path must be adjusted to account for the wind.", -- fan that blows wind and pushes in a direction
 
-        -- Rifts 8
-
-        ROCKY_BOSS =
-        {
-            GENERIC = "Homarus maximus. One would be wise to avoid its major chela.",
-            BOULDER = "That is no ordinary boulder.", -- in boulder form
-            ACID = "Even this species is affected by the acid.",
-        },
-		ROCKY_BOSS_SHADOW = "It seems the shadow has penetrated its protective armor.",
-        BAT_BOSS =
-        {
-            GENERIC = "Canisvolans sanguinarius.",
-            ACID = "It appears to be in a state of frenzy.",
-        },
-		BAT_BOSS_SHADOW = "It is corrupted now.",
-
-        BATBOSSCAVE =
-        {
-            GENERIC = "It's a bat cave, but larger. The implication is obvious.", -- boss bat is inside,
-            VACANT = "It looks vacant.", -- boss bat is not inside anymore
-        },
-
-        WORM_BOSS_SHADOW = "One can safely assume this deadly creature has become far more dangerous once corrupted.",
-
-        ARMOR_ROCKY = "The creature's carapace now affords us similar protection.",
-        BAT_BOSSCORPSEHAT = "I believe it confers upon its wearer some of its vitality-draining ability.",
-
-        ATRIUM_RITUAL_ORGAN_ROCKY =
-        {
-            GENERIC = "The corrupted major chela.",
-            IN_RITUAL = "The offering is in place.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-        ATRIUM_RITUAL_ORGAN_BAT =
-        {
-            GENERIC = "Even its voice was corrupted.",
-            IN_RITUAL = "The offering is in place.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-        ATRIUM_RITUAL_ORGAN_WORM =
-        {
-            GENERIC = "There are few darker places than the bowels of a giant corrupted worm.",
-            IN_RITUAL = "The offering is in place.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-
-		CHARLIE_BOSS = "They have formed an abhorrent triune.",
-        SHROUDEN = "They are known by many names.",
-        CHARLIEARENA_SPIKE = "The formation is almost thorn-like.",
-
-        KING_CANE =
-        {
-            GENERIC = "This staff clearly belonged to an ancient king.", -- has a gem slotted in
-            EMPTY = "It lacks a power source, namely a gem.", -- can socket a gem inside (can be heavy on hint)
-        },
-        QUEEN_TORCH = "This is no ordinary torch.",
-        
-        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",
@@ -6375,4 +6295,6 @@ return{
     },
 
     WENDY_SKILLTREE_EASTEREGG = "only_used_by_wendy",
+
+
 }

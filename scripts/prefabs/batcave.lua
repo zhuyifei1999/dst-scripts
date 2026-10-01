@@ -19,15 +19,13 @@ local function ReturnChildren(inst)
 	end
 end
 
-local function onnear(inst, player)
+local function onnear(inst)
     if inst.components.childspawner.childreninside >= inst.components.childspawner.maxchildren then
         local tries = 10
         while inst.components.childspawner:CanSpawn() and tries > 0 do
-            local bat = inst.components.childspawner:SpawnChild(player)
-            if bat then
-                if bat.components.hauntable then
-                    bat.components.hauntable:Panic(4)
-                end
+            local bat = inst.components.childspawner:SpawnChild()
+            if bat ~= nil then
+                bat:DoTaskInTime(0, function() bat:PushEvent("panic") end)
             end
             tries = tries - 1
         end
@@ -39,10 +37,7 @@ end
 local function onaddchild( inst, count )
     if inst.components.childspawner.childreninside == inst.components.childspawner.maxchildren then
         inst.AnimState:PlayAnimation("eyes",true)
-
-        if not inst.SoundEmitter:PlayingSound("full") then
-            inst.SoundEmitter:PlaySound("dontstarve/cave/bat_cave_warning", "full")
-        end
+        inst.SoundEmitter:PlaySound("dontstarve/cave/bat_cave_warning", "full")
     end
 end
 
@@ -55,9 +50,7 @@ end
 local function OnEntityWake(inst)
     if inst.components.childspawner.childreninside == inst.components.childspawner.maxchildren then
         inst.AnimState:PlayAnimation("eyes",true)
-        if not inst.SoundEmitter:PlayingSound("full") then
-            inst.SoundEmitter:PlaySound("dontstarve/cave/bat_cave_warning", "full")
-        end
+        inst.SoundEmitter:PlaySound("dontstarve/cave/bat_cave_warning", "full")
     end
 end
 
@@ -94,10 +87,7 @@ local function fn()
 
     MakeObstaclePhysics(inst, 1.3)
 
-    inst:AddTag("batcave")
-
     inst.entity:SetPristine()
-
     if not TheWorld.ismastersim then
         return inst
     end

@@ -192,9 +192,6 @@ function DoReload()
 	end
 	MonkeyPatchClasses()
 	package.path = backup_package_path
-
-	TheSim:Reload()
-
 	print("after hotswap")
 end
 

@@ -96,10 +96,7 @@ local function OnInit(inst, self)
 end
 
 local function OnAreaChanged(inst, data)
-    inst.components.playervision:SetNightmareVision(
-        (data ~= nil and data.tags ~= nil and table.contains(data.tags, "Nightmare")) or
-        TheWorld.Map:IsPointInCharlieBossArena(inst.Transform:GetWorldPosition())
-    )
+    inst.components.playervision:SetNightmareVision(data ~= nil and data.tags ~= nil and table.contains(data.tags, "Nightmare"))
 end
 
 local PlayerVision = Class(function(self, inst)

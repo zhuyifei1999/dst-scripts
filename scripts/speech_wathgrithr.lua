@@ -206,7 +206,6 @@ return{
             NOTAMONKEY = "Speak plainly! I understand not thine chittering.",
             QUEENBUSY = "Something else hath caught her attention.",
             CARNIVALGAME_GOLFGAME_NOTREADY = "This arena awaiteth its completion!",
-            KINGSTAFF_COOLDOWN = "'Tis stuck fast!", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -1255,13 +1254,6 @@ return{
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Once again may the fire scorch mine mortal hide.",--fire immunity expired
     ANNOUNCE_SECURITY_PULSE_FOLLOWING = "It seemeth I have a new companion.", -- Security spark attached to us due to us holding Waymark Compass.
 
-    -- Rifts 8
-
-    -- after the final fight when Charlie goes MIA and isn't the night monster anymore
-	ANNOUNCE_GRUE_NOCHARLIE = "Show yourself!",
-	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "Coward!",
---fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
-
 	BATTLECRY =
 	{
 		GENERIC = "Valhalla awaits!",
@@ -1711,12 +1703,7 @@ return{
 		CAVE_BANANA = "Monkey food.",
 		CAVE_BANANA_COOKED = "Warmed monkey food.",
 		CAVE_BANANA_TREE = "A flimsy monkey tree.",
-        ROCKY =
-        {
-            GENERIC = "He may be a worthy combat comrade.",
-            BOULDER = "Smash!", -- in boulder state, it looks like a normal boulder
-            ACID = "No glory is won by felling so diminished a foe.", -- in acid form
-        },
+		ROCKY = "He may be a worthy combat comrade.",
 
 		COMPASS =
 		{
@@ -1733,11 +1720,7 @@ return{
 
         HOUNDSTOOTH = "A token of a successful conquest.",
         ARMORSNURTLESHELL = "A shield of sorts.",
-        BAT =
-        {
-            GENERIC = "Dark winged meat.",
-            ACID = "Come forth, hungry beast!", -- in acid form
-        },
+        BAT = "Dark winged meat.",
         BATBAT = "Winged spear!",
         BATWING = "Like the wings of my helm, only meatier.",
         BATWING_COOKED = "Cooked dark wing.",
@@ -3526,7 +3509,6 @@ return{
 			CHARGING = "Soon it will open the path!",
 			DESTABILIZING = "Trickery! The Bifrost was of Loki!",
 			COOLDOWN = "It shan't work again for some time.",
-            RITUAL_SUMMONING = "Cursed eye! Prepare to have thy sight pierced by mine steel!", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "Heimdallr's key to the Bifrost.",
 		LIFEINJECTOR = "This will return me to top form.",
@@ -4547,8 +4529,6 @@ return{
 			LORE1 = "It doth seem Lord Insect hath struck a fell bargain.",
 			LORE2 = "What vile force could claim so many souls?",
 			LORE3 = "I doth dare these stone warriors to rouse from slumber and cross blades with me!",
-            --
-            LORE1_STALKER = "The cruelest fate is a mournful ghost forced to gaze upon its former self.", -- when the stalker/king is with you, different inspect for the king statue!
 		},
 
         ARCHIVE_RESONATOR = {
@@ -5384,12 +5364,7 @@ return{
 		SHADOWTHRALL_WINGS = "Thou art swift, but not swift enough!",
 		SHADOWTHRALL_MOUTH = "I shall wipe that grin off thine face.",
 
-        CHARLIE_NPC =
-        {
-            GENERIC = "At last, you reveal yourself!", -- scene 1, first appearance of charlie to repair the gateway
-            SCENE2 = "What dost thou scheme, Lady of Shadows?", -- scene 2, charlie appears again to socket the key and place the ritual down
-            SCENE3 = "What dost thou scheme, Lady of Shadows?", -- scene 3, the gateway has both keys, and the sacrifice pieces are set up in the ritual, she appears to tell you to activate it
-        },
+        CHARLIE_NPC = "At last, you reveal yourself!",
         CHARLIE_HAND = "It seeks an offering.",
 
         NITRE_FORMATION = "A boon from the burning rain.",
@@ -6296,61 +6271,6 @@ return{
 
         CARNIVALGAME_GOLFPROP_FAN = "Keep thy cursed winds from mine ball!", -- fan that blows wind and pushes in a direction
 
-        -- Rifts 8
-
-        ROCKY_BOSS =
-        {
-            GENERIC = "A worthy foe! One snap of that dreadful claw could end a saga!",
-            BOULDER = "'Tis a strange boulder... Smash!", -- in boulder form
-            ACID = "Doth the cursed rain corrode its armor?",
-        },
-		ROCKY_BOSS_SHADOW = "It maketh shadows its armor!",
-        BAT_BOSS =
-        {
-            GENERIC = "Flying hellhound! I'll cast thee back to Hades!",
-            ACID = "Its eyes shine with a sinister glow!",
-        },
-		BAT_BOSS_SHADOW = "The flying hellhound is one with the night!",
-
-        BATBOSSCAVE =
-        {
-            GENERIC = "Come forth, craven beast, and face me!", -- boss bat is inside,
-            VACANT = "The beast is absent from its lair.", -- boss bat is not inside anymore
-        },
-
-        WORM_BOSS_SHADOW = "Foul snake beast has a skin of shadow!",
-
-        ARMOR_ROCKY = "I thank thee for thy armor, comrade.",
-        BAT_BOSSCORPSEHAT = "Mayhap this vile beast will lend me its life-draining power.",
-
-        ATRIUM_RITUAL_ORGAN_ROCKY =
-        {
-            GENERIC = "Thy fearsome claw shall make a fine sacrifice.",
-            IN_RITUAL = "The offering hath been accepted.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-        ATRIUM_RITUAL_ORGAN_BAT =
-        {
-            GENERIC = "The very voice of that winged monstrosity.",
-            IN_RITUAL = "The offering hath been accepted.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-        ATRIUM_RITUAL_ORGAN_WORM =
-        {
-            GENERIC = "No worthier offering than the bowels of this beast.",
-            IN_RITUAL = "The offering hath been accepted.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-
-		CHARLIE_BOSS = "So it hath come to this, Lady of Shadows. Very well... let us clash!",
-        SHROUDEN = "At last we meet, accursed one! My destiny awaits!",
-        CHARLIEARENA_SPIKE = "'Tis surely a sign of Ragnarok!",
-
-        KING_CANE =
-        {
-            GENERIC = "A staff fit for Odin himself.", -- has a gem slotted in
-            EMPTY = "'Tis bereft of its power source.", -- can socket a gem inside (can be heavy on hint)
-        },
-        QUEEN_TORCH = "This flame must have burned since the days of Surtr's sword!",
-        
-        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",
@@ -6375,4 +6295,6 @@ return{
     },
 
     WENDY_SKILLTREE_EASTEREGG = "only_used_by_wendy",
+
+
 }

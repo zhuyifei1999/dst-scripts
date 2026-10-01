@@ -471,7 +471,7 @@ local COMPONENT_ACTIONS =
             if inst.replica.inventoryitem:CanBePickedUp(doer) and
                 doer.replica.inventory ~= nil and
                 (doer.replica.inventory:GetNumSlots() > 0 or inst.replica.equippable ~= nil) and
-				not (inst:HasTag("catchable") or (inst:HasTag("fire") and not inst:HasAnyTag("lighter", "torch")) or inst:HasTag("smolder")) and
+				not (inst:HasTag("catchable") or (inst:HasTag("fire") and not inst:HasTag("lighter")) or inst:HasTag("smolder")) and
                 (not inst:HasTag("spider") or (doer:HasTag("spiderwhisperer") and right)) and
 				(right or not inst:HasTag("heavy") or inst:HasTag("heavylift_lmb")) and
                 not (right and inst.replica.container ~= nil and inst.replica.equippable == nil) then
@@ -654,7 +654,7 @@ local COMPONENT_ACTIONS =
         end,
 
         pickable = function(inst, doer, actions)
-            if inst:HasTag("pickable") and not inst:HasAnyTag("fire", "intense") then
+            if inst:HasTag("pickable") and not (inst:HasTag("fire") or inst:HasTag("intense")) then
                 table.insert(actions, ACTIONS.PICK)
             end
         end,
@@ -879,7 +879,7 @@ local COMPONENT_ACTIONS =
             if inst:HasTag("teleporter") then
                 if inst:HasTag("climbable") then
                     table.insert(actions, ACTIONS.CLIMB)
-                elseif not inst:HasAnyTag("townportal", "virtualroomteleporter") then
+                elseif not inst:HasAnyTag("townportal", "vault_teleporter") then
                     table.insert(actions, ACTIONS.JUMPIN)
                 elseif right and not doer:HasTag("channeling") then
                     table.insert(actions, ACTIONS.TELEPORT)
@@ -1573,10 +1573,10 @@ local COMPONENT_ACTIONS =
 
         preservative = function(inst, doer, target, actions, right)
 			if right and target.replica.health == nil
-                and target:HasAnyTag("fresh", "stale", "spoiled")
+				and (target:HasTag("fresh") or target:HasTag("stale") or target:HasTag("spoiled"))
 				and target:HasTag("cookable")
-                and not target:HasAnyTag("deployable", "smallcreature")
-                then
+				and not target:HasTag("deployable")
+				and not target:HasTag("smallcreature") then
 					table.insert(actions, ACTIONS.APPLYPRESERVATIVE)
 			end
         end,
@@ -2021,7 +2021,7 @@ local COMPONENT_ACTIONS =
 
         blinkstaff = function(inst, doer, pos, actions, right, target)
             local x,y,z = pos:Get()
-            if right and not inst:HasTag("nomagiccast") and (TheWorld.Map:IsAboveGroundAtPoint(x,y,z) or TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") and not doer:HasTag("rotatingboat") then
+            if right and (TheWorld.Map:IsAboveGroundAtPoint(x,y,z) or TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") and not doer:HasTag("rotatingboat") then
                 local doerx, doery, doerz = doer.Transform:GetWorldPosition()
                 if IsTeleportingPermittedFromPointToPoint(doerx, doery, doerz, x, y, z) then
                     table.insert(actions, ACTIONS.BLINK)
@@ -2153,7 +2153,7 @@ local COMPONENT_ACTIONS =
         end,
 
 		spellcaster = function(inst, doer, pos, actions, right, target)
-            if not right or inst:HasTag("nomagiccast") then
+            if not right then
                 return
             end
 
@@ -2264,16 +2264,6 @@ local COMPONENT_ACTIONS =
                     (inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp(doer)) then
                     table.insert(actions, ACTIONS.COOK)
                 end
-            end
-        end,
-
-        corruption = function(inst, doer, target, actions, right)
-            if inst:HasTag("nomagiccast") then
-                return
-            end
-
-            if right and inst:HasTag("corrupted") and target:HasTag("nightmarecorruptable") and not target:HasTag("nomagic") then
-                table.insert(actions, ACTIONS.CORRUPTNIGHTMARE)
             end
         end,
 
@@ -2427,10 +2417,6 @@ local COMPONENT_ACTIONS =
 		end,
 
         spellcaster = function(inst, doer, target, actions, right)
-            if inst:HasTag("nomagiccast") then
-                return
-            end
-
             for k,v in pairs(SPELLTYPES) do
                 if inst:HasTag(v.."_spellcaster") and not doer:HasTag(v.."_spelluser") then
                     return
@@ -2908,10 +2894,6 @@ local COMPONENT_ACTIONS =
 		end,
 
         spellcaster = function(inst, doer, actions)
-            if inst:HasTag("nomagiccast") then
-                return
-            end
-
             for k,v in pairs(SPELLTYPES) do
                 if inst:HasTag(v.."_spellcaster") and not doer:HasTag(v.."_spelluser") then
                     return

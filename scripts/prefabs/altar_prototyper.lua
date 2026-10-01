@@ -264,8 +264,9 @@ local function common_fn(anim)
     inst._activecount = 0
 
     inst:AddComponent("inspectable")
-    inst:AddComponent("stalkerinspectable")
+
     inst:AddComponent("prototyper")
+
     inst:AddComponent("workable")
 
     MakeHauntableWork(inst)
@@ -446,8 +447,6 @@ local function broken_fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.components.stalkerinspectable:SetNameOverride("ancient_altar")
 
     inst:AddComponent("repairable")
     inst.components.repairable.repairmaterial = MATERIALS.THULECITE

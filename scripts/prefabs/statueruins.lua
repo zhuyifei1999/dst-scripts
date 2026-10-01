@@ -280,9 +280,6 @@ local function commonfn(small)
 
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("stalkerinspectable")
-    inst.components.stalkerinspectable:SetNameOverride(small and "ruins_statue_head" or "ruins_statue_mage")
-
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
@@ -315,7 +312,7 @@ local function gem(small)
         return inst
     end
 
-    SetGemmed(inst, GetRandomItem(gemlist))
+    SetGemmed(inst, GetRandomItem(gemlist), small)
 
     return inst
 end

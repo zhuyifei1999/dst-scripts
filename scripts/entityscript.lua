@@ -746,9 +746,7 @@ end
 
 --Can NOT be used on clients
 function EntityScript:GetWetMultiplier()
-    if not self:IsValid() then
-        return 0
-	elseif self:HasTag("wet") then
+	if self:HasTag("wet") then
 		return 1
 	elseif self:HasTag("moistureimmunity") then
         return 0
@@ -762,7 +760,7 @@ function EntityScript:GetWetMultiplier()
     else
         return
         (
-			(TheWorld.state.iswet and not self:HasTag("rainimmunity") and TheWorld.Map:CanPointHaveRain(self.Transform:GetWorldPosition())) or
+			(TheWorld.state.iswet and not self:HasTag("rainimmunity")) or
 			(self:HasTag("swimming") and not self:HasTag("likewateroffducksback"))
         ) and 1 or 0
     end
@@ -770,9 +768,7 @@ end
 
 --Can be used on clients
 function EntityScript:GetIsWet()
-    if not self:IsValid() then
-        return false
-	elseif self:HasTag("wet") then
+	if self:HasTag("wet") then
 		return true
 	elseif self:HasTag("moistureimmunity") then
         return false
@@ -782,7 +778,7 @@ function EntityScript:GetIsWet()
     if replica then
         return replica:IsWet()
     else
-		return (TheWorld.state.iswet and not self:HasTag("rainimmunity") and TheWorld.Map:CanPointHaveRain(self.Transform:GetWorldPosition()))
+		return (TheWorld.state.iswet and not self:HasTag("rainimmunity"))
             or (self:HasTag("swimming") and not self:HasTag("likewateroffducksback"))
     end
 end
@@ -1401,9 +1397,10 @@ end
 
 -- consider using IsNear if you're checking if something is inside/outside a certain horizontal distance
 function EntityScript:GetDistanceSqToInst(inst)
-	local p1x, _, p1z = self.Transform:GetWorldPosition()
-	local p2x, _, p2z = inst.Transform:GetWorldPosition()
-	return math2d.DistSq(p1x, p1z, p2x, p2z)
+    assert(self:IsValid() and inst:IsValid())
+    local p1x, p1y, p1z = self.Transform:GetWorldPosition()
+    local p2x, p2y, p2z = inst.Transform:GetWorldPosition()
+    return distsq(p1x, p1z, p2x, p2z)
 end
 
 function EntityScript:IsNear(otherinst, dist)
@@ -1415,8 +1412,8 @@ function EntityScript:GetDistanceSqToPoint(x, y, z)
     if x and not y and not z then
         x, y, z = x:Get()
     end
-	local x1, _, z1 = self.Transform:GetWorldPosition()
-	return math2d.DistSq(x, z, x1, z1)
+    local x1, y1, z1 = self.Transform:GetWorldPosition()
+    return distsq(x, z, x1, z1)
 end
 
 function EntityScript:IsNearPlayer(range, isalive)
@@ -1431,8 +1428,8 @@ end
 
 function EntityScript:GetDistanceSqToClosestPlayer(isalive)
     local x, y, z = self.Transform:GetWorldPosition()
-	local player, dsq = FindClosestPlayer(x, y, z, isalive)
-	return dsq or math.huge
+    local player, distsq = FindClosestPlayer(x, y, z, isalive)
+    return distsq or math.huge
 end
 
 function EntityScript:FaceAwayFromPoint(dest, force)

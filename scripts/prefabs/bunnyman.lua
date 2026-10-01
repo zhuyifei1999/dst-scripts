@@ -343,8 +343,6 @@ end
 
 local SCRAPBOOK_HIDE_LAYERS = { "hat", "ARM_carry", "HAIR_HAT" }
 
-local DIET = { FOODTYPE.VEGGIE, FOODTYPE.RAW }
-
 local function fn()
     local inst = CreateEntity()
 
@@ -368,8 +366,6 @@ local function fn()
     inst:AddTag("manrabbit")
     inst:AddTag("scarytoprey")
     inst:AddTag("regular_bunnyman")
-    inst:AddTag("canwearhat")
-    inst:AddTag("nightmarecorruptable")
 
     inst.AnimState:SetBank("manrabbit")
     inst.AnimState:PlayAnimation("idle_loop", true)
@@ -419,7 +415,8 @@ local function fn()
 
     ------------------------------------------
     inst:AddComponent("eater")
-    inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetCanEatRaw()
 
     ------------------------------------------
     inst:AddComponent("combat")

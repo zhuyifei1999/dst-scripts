@@ -391,7 +391,6 @@ local function fn_bunnyman()
     inst:AddTag("manrabbit")
     inst:AddTag("scarytoprey")
     inst:AddTag("rabbitking_manrabbit")
-    inst:AddTag("canwearhat")
 
     inst.AnimState:SetBank("manrabbit")
     inst.AnimState:PlayAnimation("idle_loop", true)

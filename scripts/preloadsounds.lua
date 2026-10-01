@@ -259,9 +259,6 @@ local MainSounds =
 
     "rifts7.fev",
     "rifts7.fsb",
-
-    "rifts8.fev",
-    "rifts8.fsb",
 }
 
 function PreloadSoundList(list)

@@ -111,7 +111,6 @@ local function common_fn(build)
     inst:AddTag("tree")
     inst:AddTag("evergreens")
     inst:AddTag("largecreature")
-    inst:AddTag("plantcreature")
 
     inst.AnimState:SetBank("leif")
     inst.AnimState:SetBuild(build)

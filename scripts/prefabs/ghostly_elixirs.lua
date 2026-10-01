@@ -4,7 +4,7 @@ local NO_TAGS_NO_PLAYERS =	{ "INLIMBO", "notarget", "noattack", "wall", "player"
 local COMBAT_TARGET_TAGS = { "_combat" }
 
 local onattacked_shield = function(inst, data)
-	if not ShouldProcOnAttackedOrBlocked(inst, inst, data) then
+ 	if data.redirected then
  		return
  	end
 

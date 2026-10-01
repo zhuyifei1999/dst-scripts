@@ -381621,6 +381621,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_fancy"
 msgid "It's almost too fancy for its task."
 msgstr "華麗得幾乎不適合幹活。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_fire
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_fire"
+msgid "It's the hottest new Terramite!"
+msgstr "最火的新款蟎地爬！"
+
 #. STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_spikey
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_spikey"
 msgid "It's covered in spikes, and full of spikes!"
@@ -401765,6 +401770,11 @@ msgstr "B.U.D.D.Y."
 msgctxt "STRINGS.SKIN_NAMES.wagdrone_rolling_fancy"
 msgid "Gilded Terramite"
 msgstr "鍍金蟎地爬"
+
+#. STRINGS.SKIN_NAMES.wagdrone_rolling_fire
+msgctxt "STRINGS.SKIN_NAMES.wagdrone_rolling_fire"
+msgid "Alit Terramite"
+msgstr "烈火蟎地爬"
 
 #. STRINGS.SKIN_NAMES.wagdrone_rolling_spikey
 msgctxt "STRINGS.SKIN_NAMES.wagdrone_rolling_spikey"
@@ -438400,49 +438410,4 @@ msgstr "看不到要評判的選手，你看到了嗎？"
 msgctxt "STRINGS.YOTB_TOO_LATE_PRIZE"
 msgid "Sorry, can't wait any longer. Bye now."
 msgstr "抱歉，我等不了了。再見。"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_APP_TITLE
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_APP_TITLE"
-msgid "Don't Starve Together Crash Reporter"
-msgstr "Don't Starve Together崩潰報告程序"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_DLG_TITLE
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_DLG_TITLE"
-msgid "It appears Don't Starve Together has crashed.\nPlease visit our support page for fixes to common problems: <a>https://support.klei.com</a>"
-msgstr "Don't Starve Together似乎出錯關閉了。\n若需查看普遍問題的解決方法，請訪問我們的幫助頁面： <a>https://support.klei.com</a>"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_FAILED_TO_SEND
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_FAILED_TO_SEND"
-msgid "Crash report failed to send"
-msgstr "崩潰反饋發送失敗"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_SEND
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_SEND"
-msgid "Send"
-msgstr "發送"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_ERROR
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_ERROR"
-msgid "Error"
-msgstr "錯誤"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_CANCEL
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_CANCEL"
-msgid "Cancel"
-msgstr "取消"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_SUCCESS
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_SUCCESS"
-msgid "Success"
-msgstr "成功"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_SEND_SUCCESS
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_SEND_SUCCESS"
-msgid "Crash report sent. Thank you!"
-msgstr "報告已發送。謝謝你！"
-
-#. STRINGS.EXTERNAL.CRASHREPORTER.IDS_PRIVACY_DISCLAIMER
-msgctxt "STRINGS.EXTERNAL.CRASHREPORTER.IDS_PRIVACY_DISCLAIMER"
-msgid "Report includes platform information for diagnostic purposes."
-msgstr "報告單包含平台信息，僅用於診斷。"
 

@@ -144,11 +144,8 @@ end
 
 local TARGET_DSQ = TARGET_DIST * TARGET_DIST
 local function KeepTargetFn(inst, target)
-	if inst:IsInLimbo() or not inst.components.combat:CanTarget(target) then
-		return false
-	end
-	local pt = inst.components.knownlocations:GetLocation("spawnpoint")
-	return pt == nil or target:GetDistanceSqToPoint(pt) < TARGET_DSQ
+    return not inst:IsInLimbo() and inst.components.combat:CanTarget(target)
+        and target:GetDistanceSqToPoint(inst.components.knownlocations:GetLocation("spawnpoint")) < TARGET_DSQ
 end
 
 local function OnAttacked(inst, data)

@@ -30,17 +30,33 @@ function FindClosest:Visit()
 
 			-- Has all of the tags
 			if valid_target and self.tags ~= nil then
-                valid_target = self.targ:HasAllTags(self.tags)
+				for i,k in ipairs(self.tags) do
+					if not self.targ:HasTag(k) then
+						valid_target = false
+						break
+					end
+				end
 			end
 
 			-- Has none of the tags
 			if valid_target and self.exclude_tag ~= nil then
-                valid_target = not self.targ:HasAnyTag(self.exclude_tag)
+				for i,k in ipairs(self.exclude_tag) do
+					if self.targ:HasTag(k) then
+						valid_target = false
+						break
+					end
+				end
 			end
 
 			-- Has or or more of the tags
 			if valid_target and self.one_of_tags ~= nil then
-                valid_target = self.targ:HasAnyTag(self.one_of_tags)
+				valid_target = false
+				for i,k in ipairs(self.one_of_tags) do
+					if self.targ:HasTag(k) then
+						valid_target = true
+						break
+					end
+				end
 			end
 
 			if not valid_target then

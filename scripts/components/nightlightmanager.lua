@@ -49,16 +49,14 @@ function NightLightManager:GetNightLightsWithFilter(filterfn, ...)
     return returns
 end
 
-function NightLightManager:FindClosestNightLightFromListToInst(nightlights, inst, filterfn)
+function NightLightManager:FindClosestNightLightFromListToInst(nightlights, inst)
     local closestnightlight = nil
     local smallestsqdist = nil
     for _, nightlight in ipairs(nightlights) do
-        if filterfn == nil or filterfn(inst, nightlight) then
-            local dsq = nightlight:GetDistanceSqToInst(inst)
-            if smallestsqdist == nil or dsq < smallestsqdist then
-                smallestsqdist = dsq
-                closestnightlight = nightlight
-            end
+        local dsq = nightlight:GetDistanceSqToInst(inst)
+        if smallestsqdist == nil or dsq < smallestsqdist then
+            smallestsqdist = dsq
+            closestnightlight = nightlight
         end
     end
 

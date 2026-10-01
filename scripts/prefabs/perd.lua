@@ -92,7 +92,6 @@ end
 --------------------------------------------------------------------------
 
 local SCRAPBOOK_HIDE_SYMBOLS = { "hat" }
-local DIET = { FOODTYPE.VEGGIE, FOODTYPE.RAW }
 
 local function fn()
     local inst = CreateEntity()
@@ -138,7 +137,8 @@ local function fn()
     inst:SetBrain(brain)
 
     inst:AddComponent("eater")
-    inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetCanEatRaw()
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetWakeTest(ShouldWake)

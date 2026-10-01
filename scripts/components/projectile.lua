@@ -25,9 +25,6 @@ local Projectile = Class(function(self, inst)
     self.onmiss = nil
     self.oncaught = nil
 
-	--self.ondeflect = nil
-	--self.keepondeflect = false
-
     self.stimuli = nil
 
 	--self.has_damage_set = nil -- set to true if the projectile has its own damage set, instead of needed to get it from the launching weapon
@@ -127,14 +124,6 @@ end
 
 function Projectile:SetOnMissFn(fn)
     self.onmiss = fn
-end
-
-function Projectile:SetOnDeflectFn(fn)
-	self.ondeflect = fn
-end
-
-function Projectile:SetKeepOnDeflect(keep)
-	self.keepondeflect = keep
 end
 
 function Projectile:SetCanCatch(cancatch)
@@ -255,9 +244,6 @@ function Projectile:Hit(target)
 			attacker.components.combat.ignorehitrange = true
 			attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
 			attacker.components.combat.ignorehitrange = false
-		end
-		if not self.inst:IsValid() then
-			return
 		end
     end
     if self.onhit ~= nil then
@@ -527,15 +513,6 @@ end
 
 function Projectile:IsBounced()
 	return self.bounced == true
-end
-
-function Projectile:Deflect(deflector)
-	if self.ondeflect then
-		self.ondeflect(self.inst, self.owner, deflector)
-	end
-	if not self.keepondeflect then
-		self.inst:Remove()
-	end
 end
 
 return Projectile

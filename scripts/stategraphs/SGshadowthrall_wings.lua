@@ -39,9 +39,7 @@ end
 
 local TEAM_ATTACK_COOLDOWN = 1.5
 local function SetTeamAttackCooldown(inst, isstart)
-	if inst.shrouden then
-		return
-	elseif isstart then
+	if isstart then
 		inst.sg.mem.lastattack = GetTime()
 		inst.components.combat:StartAttack()
 	else
@@ -87,8 +85,6 @@ local function SetTeamAttackCooldown(inst, isstart)
 		inst.formation = nil
 	end
 end
-
-local SHROUDEN_LAUNCH_OFFSET = Vector3(1.5, 4.3, 0)
 
 local states =
 {
@@ -354,120 +350,6 @@ local states =
 				end
 			end),
 		},
-	},
-
-	State{
-		name = "shrouden_flyby",
-		tags = { "busy", "attack", "jumping", "nointerrupt", "noattack", "temp_invincible" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("portal_loop", true)
-
-			ToggleOffCharacterCollisions(inst)
-			inst.Physics:SetMotorVelOverride(8, 0, 0)
-
-			inst.SoundEmitter:PlaySound("rifts2/thrall_wings/cast_f25")
-
-			inst.sg.statemem.period = 0.17
-			inst.sg.statemem.delay = 0
-			if TheWorld.Map:IsPointInCharlieBossArena(inst.Transform:GetWorldPosition()) then
-				inst.sg.statemem.inarena = true
-			else
-				inst.sg:SetTimeout(3)
-			end
-		end,
-
-		onupdate = function(inst, dt)
-			inst.sg.statemem.delay = inst.sg.statemem.delay - dt
-			if inst.sg.statemem.delay <= 0 then
-				inst.sg.statemem.delay = inst.sg.statemem.delay + inst.sg.statemem.period
-
-				local x, y, z = inst.Transform:GetWorldPosition()
-				if inst.sg.statemem.inarena and not (TheWorld.Map:IsPointInCharlieBossArena(x, y, z) and TheWorld.Map:IsValidTileAtPoint(x, y, z)) then
-					inst.sg.statemem.flyby = true
-					inst.sg:GoToState("shrouden_flyby_pst")
-					return
-				end
-
-				local theta = inst.Transform:GetRotation() * DEGREES
-				local x1 = x + 2 * math.cos(theta)
-				local z1 = z - 2 * math.sin(theta)
-				theta = theta - HALFPI + PI * math.random()
-				local dist = 2 + 6 * math.random()
-				x1 = x1 + dist * math.cos(theta)
-				z1 = z1 - dist * math.sin(theta)
-
-				--try snap to nearest target
-				if inst.shrouden and inst.shrouden.components.grouptargeter then
-					local mindsq = 4
-					local minx2, minz2
-					for k in pairs(inst.shrouden.components.grouptargeter:GetTargets()) do
-						if k:IsValid() and not IsEntityDeadOrGhost(k) then
-							local x2, _, z2 = k.Transform:GetWorldPosition()
-							local dsq = math2d.DistSq(x1, z1, x2, z2)
-							if dsq < mindsq then
-								mindsq = dsq
-								minx2, minz2 = x2, z2
-								break
-							end
-						end
-					end
-					if minx2 then
-						x1, z1 = minx2, minz2
-					end
-				end
-
-				local proj = SpawnPrefab("shadowthrall_projectile_fx")
-				proj.Physics:Teleport(x, y, z)
-				proj.components.complexprojectile:SetLaunchOffset(SHROUDEN_LAUNCH_OFFSET)
-				proj.components.complexprojectile:Launch(Vector3(x1, 0, z1), inst)
-			end
-		end,
-
-		ontimeout = function(inst)
-			inst.sg.statemem.flyby = true
-			inst.sg:GoToState("shrouden_flyby_pst")
-		end,
-
-		onexit = function(inst)
-			if not inst.sg.statemem.flyby then
-				inst.Physics:ClearMotorVelOverride()
-				inst.Physics:Stop()
-
-				local x, _, z = inst.Transform:GetWorldPosition()
-				ToggleOnAllObjectCollisionsAt(inst, x, z)
-			end
-		end,
-	},
-
-	State{
-		name = "shrouden_flyby_pst",
-		tags = { "busy", "jumping", "nointerrupt", "noattack", "temp_invincible" },
-
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("portal_pst")
-
-			--ToggleOffCharacterCollisions(inst)
-			--inst.Physics:SetMotorVelOverride(8, 0, 0)
-		end,
-
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst:Remove()
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			inst.Physics:ClearMotorVelOverride()
-			inst.Physics:Stop()
-
-			local x, _, z = inst.Transform:GetWorldPosition()
-			ToggleOnAllObjectCollisionsAt(inst, x, z)
-		end,
 	},
 }
 

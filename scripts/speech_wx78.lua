@@ -206,7 +206,6 @@ return{
             NOTAMONKEY = "CEASE YOUR RIDICULOUS MOUTH NOISES, LESSER HUMANOID",
             QUEENBUSY = "I WILL NOT BE IGNORED",
             CARNIVALGAME_GOLFGAME_NOTREADY = "MISSING COMPONENT: FLAGHOLE",
-            KINGSTAFF_COOLDOWN = "ERROR: COMPONENT STUCK", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -1255,13 +1254,6 @@ return{
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "HEAT SHIELD FAILING",--fire immunity expired
     ANNOUNCE_SECURITY_PULSE_FOLLOWING = "WARNING, ATTACHMENT FORMED", -- Security spark attached to us due to us holding Waymark Compass.
 
-    -- Rifts 8
-
-    -- after the final fight when Charlie goes MIA and isn't the night monster anymore
-	ANNOUNCE_GRUE_NOCHARLIE = "THREAT DETECTED",
-	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "ERROR: UNKNOWN ATTACKER",
---fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
-
 	BATTLECRY =
 	{
 		GENERIC = "I WILL DESTROY YOU",
@@ -1711,12 +1703,7 @@ return{
 		CAVE_BANANA = "MORE CARBON",
 		CAVE_BANANA_COOKED = "THESE FOOD THINGS ARE SO TEDIOUS",
 		CAVE_BANANA_TREE = "LIFE FINDS A WAY, UNFORTUNATELY",
-        ROCKY =
-        {
-            GENERIC = "MY SHELL IS NICER",
-            BOULDER = "LUMPY", -- in boulder state, it looks like a normal boulder
-            ACID = "HA HA! EXOSKELETON DOWNGRADED", -- in acid form
-        },
+		ROCKY = "MY SHELL IS NICER",
 
 		COMPASS =
 		{
@@ -1733,11 +1720,7 @@ return{
 
         HOUNDSTOOTH = "MASTICATING EDGE",
         ARMORSNURTLESHELL = "HOUSING MODULE",
-        BAT =
-        {
-            GENERIC = "FLYING RAT",
-            ACID = "ERRATIC BEHAVIOR DETECTED", -- in acid form
-        },
+        BAT = "FLYING RAT",
         BATBAT = "AHHAHA! FREE POWER!",
         BATWING = "FLYING MECHANISM",
         BATWING_COOKED = "BROKEN FLYING MECHANISM",
@@ -3526,7 +3509,6 @@ return{
 			CHARGING = "GATEWAY CHARGING",
 			DESTABILIZING = "IT WAS A DEATHTRAP ALL ALONG",
 			COOLDOWN = "COOLDOWN IN PROGRESS",
-            RITUAL_SUMMONING = "HOW DARE YOU STARE AT ME", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "FOR ACTIVATING, NOT UNLOCKING",
 		LIFEINJECTOR = "I HAVE MIXED FEELINGS ABOUT THIS",
@@ -4547,8 +4529,6 @@ return{
 			LORE1 = "INTEGRITY CHECK FAILED. CORRUPTION DETECTED",
 			LORE2 = "HA... HA?",
 			LORE3 = "YOU DARE TAKE UP ARMS AGAINST A SUPERIOR BEING?",
-            --
-            LORE1_STALKER = "HA HA! IT'S YOU!", -- when the stalker/king is with you, different inspect for the king statue!
 		},
 
         ARCHIVE_RESONATOR = {
@@ -5384,12 +5364,7 @@ return{
 		SHADOWTHRALL_WINGS = "COME CLOSER SO I CAN PUNCH YOU",
 		SHADOWTHRALL_MOUTH = "KEEP SMILING...",
 
-        CHARLIE_NPC =
-        {
-            GENERIC = "ALL THAT POWER AND SHE STILL CLINGS TO THAT ORGANIC FORM", -- scene 1, first appearance of charlie to repair the gateway
-            SCENE2 = "SUSPICIOUS USER IDENTIFIED. CATASTROPHIC OUTCOME LIKELY. ASSESSMENT: FUN", -- scene 2, charlie appears again to socket the key and place the ritual down
-            SCENE3 = "SUSPICIOUS USER IDENTIFIED. CATASTROPHIC OUTCOME LIKELY. ASSESSMENT: FUN", -- scene 3, the gateway has both keys, and the sacrifice pieces are set up in the ritual, she appears to tell you to activate it
-        },
+        CHARLIE_NPC = "ALL THAT POWER AND SHE STILL CLINGS TO THAT ORGANIC FORM",
         CHARLIE_HAND = "OFFERING REQUIRED",
 
         NITRE_FORMATION = "IT GREW, BUT NOT IN A GROSS ORGANIC WAY",
@@ -6296,61 +6271,6 @@ return{
 
         CARNIVALGAME_GOLFPROP_FAN = "AIRFLOW DEVICE. ANNOYING", -- fan that blows wind and pushes in a direction
 
-        -- Rifts 8
-
-        ROCKY_BOSS =
-        {
-            GENERIC = "IMPRESSIVE EXOSKELETON",
-            BOULDER = "IRREGULAR GEOLOGICAL FORMATION", -- in boulder form
-            ACID = "CORROSIVE DEPOSITS ACCUMULATING",
-        },
-		ROCKY_BOSS_SHADOW = "EXOSKELETON CORRUPTED",
-        BAT_BOSS =
-        {
-            GENERIC = "OVERGROWN BLOODSUCKING FLYING FLESHSACK",
-            ACID = "THREAT LEVEL ELEVATED",
-        },
-		BAT_BOSS_SHADOW = "INFECTED WITH SHADOW DISEASE",
-
-        BATBOSSCAVE =
-        {
-            GENERIC = "DISGUSTING FLESHY OCCUPANT DETECTED", -- boss bat is inside,
-            VACANT = "NO LIFEFORMS DETECTED", -- boss bat is not inside anymore
-        },
-
-        WORM_BOSS_SHADOW = "VILE FLESH ROTTED INSIDE AND OUT",
-
-        ARMOR_ROCKY = "NOW I WILL HAVE BONUS DOUBLE ARMOR. WIN",
-        BAT_BOSSCORPSEHAT = "I MAY NEVER RECOVER FROM WEARING THAT ON MY HEAD",
-
-        ATRIUM_RITUAL_ORGAN_ROCKY =
-        {
-            GENERIC = "LETHAL IMPLEMENT DETACHED",
-            IN_RITUAL = "DISGUSTING PAYLOAD SECURED", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-        ATRIUM_RITUAL_ORGAN_BAT =
-        {
-            GENERIC = "GROTESQUE VOCAL MODULE",
-            IN_RITUAL = "DISGUSTING PAYLOAD SECURED", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-        ATRIUM_RITUAL_ORGAN_WORM =
-        {
-            GENERIC = "POOPSACK FROM A FLESHSACK",
-            IN_RITUAL = "DISGUSTING PAYLOAD SECURED`", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
-        },
-
-		CHARLIE_BOSS = "HOST CORRUPTED",
-        SHROUDEN = "KNEEL BEFORE ME. I MAY PERMIT YOUR ESCAPE",
-        CHARLIEARENA_SPIKE = "NICE",
-
-        KING_CANE =
-        {
-            GENERIC = "FIT FOR A KING... ME", -- has a gem slotted in
-            EMPTY = "MISSING COMPONENT", -- can socket a gem inside (can be heavy on hint)
-        },
-        QUEEN_TORCH = "NOT AFRAID OF DARK. MINE ANYWAY",
-        
-        CHARLIEARENA_TELEPORTER = "TODO",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",
@@ -6375,4 +6295,6 @@ return{
     },
 
     WENDY_SKILLTREE_EASTEREGG = "only_used_by_wendy",
+
+
 }

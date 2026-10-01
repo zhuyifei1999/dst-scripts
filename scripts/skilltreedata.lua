@@ -6,16 +6,12 @@ local NILDATA = nil -- Local cache to have same copy across all instances of Ski
 local SkillTreeData = Class(function(self)
     self.activatedskills = {}
     self.skillxp = {}
-    NILDATA = NILDATA or self:EncodeSkillTreeData(nil, false) -- NOTES(JBK): This the default output when no data is available.
+    NILDATA = NILDATA or self:EncodeSkillTreeData() -- NOTES(JBK): This the default output when no data is available.
     self.NILDATA = NILDATA
 
     --self.save_enabled = nil
     --self.dirty = nil
 end)
-
-function SkillTreeData:_dbg_print(...)
-    --print("[SkillTreeData]", ...)
-end
 
 function SkillTreeData:RespecSkills(characterprefab) -- More efficient handling of this action.
     self.activatedskills[characterprefab] = nil
@@ -202,7 +198,7 @@ end
 -- NOTES(JBK): These do not have use case out of the data layer they are here in case mods want to make their own handlers. Do not call.
 
 function SkillTreeData:OPAH_DoBackup()
-    self:_dbg_print("OPAH_DoBackup")
+    --print("[OPAH] TheSkillTree:DoBackup")
     local characterprefab = ThePlayer.prefab
     self.save_enabled = nil -- We will get a bunch of events from the server do not write to disk every time.
     -- The server is intending to send the client its known state to the local player.
@@ -211,7 +207,6 @@ function SkillTreeData:OPAH_DoBackup()
         -- We have data on the local client, try to preserve it.
         self.activatedskills_backup = deepcopy(self.activatedskills)
         self.activatedskills = {}
-        self:_dbg_print("Made a backup.")
     end
 
     -- Send off stats to the server it should know of.
@@ -224,7 +219,7 @@ function SkillTreeData:OPAH_DoBackup()
     self.skip_validation = true
 end
 function SkillTreeData:OPAH_Ready()
-    self:_dbg_print("OPAH_Ready")
+    --print("[OPAH] TheSkillTree:Ready")
     local characterprefab = ThePlayer.prefab
     -- The server is done sending the client data on the activated skills it knows of.
     -- The local player will first check if the states are identical and if so disregard preservation entirely.
@@ -234,7 +229,6 @@ function SkillTreeData:OPAH_Ready()
             self.activatedskills[characterprefab] ~= nil and -- Has a reason to check keys to backup.
             table.keysareidentical(self.activatedskills[characterprefab], self.activatedskills_backup[characterprefab]) -- Keys are identical, no reason to backup.
         then
-            self:_dbg_print("Keys identical no need for backup.")
             -- There is no need to backup this table for this character.
             self.activatedskills = self.activatedskills_backup
             self.activatedskills_backup = nil
@@ -266,7 +260,7 @@ function SkillTreeData:DecodeSkillTreeData(data)
     return activatedskills, skillxp
 end
 
-function SkillTreeData:EncodeSkillTreeData(characterprefab, donotusebackup)
+function SkillTreeData:EncodeSkillTreeData(characterprefab)
     local skillxp_backup = self.skillxp_backup or 0
     local skillxp = self.skillxp[characterprefab]
     if skillxp == nil then
@@ -274,12 +268,7 @@ function SkillTreeData:EncodeSkillTreeData(characterprefab, donotusebackup)
     end
     skillxp = math.max(skillxp, skillxp_backup) -- Do not lose experience.
 
-    local activatedskills
-    if donotusebackup then
-        activatedskills = self.activatedskills[characterprefab]
-    else
-        activatedskills = self.activatedskills_backup and self.activatedskills_backup[characterprefab] or self.activatedskills[characterprefab]
-    end
+    local activatedskills = self.activatedskills_backup and self.activatedskills_backup[characterprefab] or self.activatedskills[characterprefab]
     if activatedskills == nil then
         return string.format("!|%d", skillxp)
     end
@@ -298,7 +287,7 @@ function SkillTreeData:EncodeSkillTreeData(characterprefab, donotusebackup)
 end
 
 function SkillTreeData:Save(force_save, characterprefab)
-    self:_dbg_print("Save")
+    --print("[STData] Save")
     if force_save or (self.save_enabled and self.dirty) then
         local str
         if characterprefab == "LOADFIXUP" then
@@ -313,7 +302,7 @@ function SkillTreeData:Save(force_save, characterprefab)
 end
 
 function SkillTreeData:Load()
-    self:_dbg_print("Load")
+    --print("[STData] Load")
     self.activatedskills = {}
     self.skillxp = {}
     if TheNet:IsDedicated() then
@@ -330,7 +319,7 @@ function SkillTreeData:Load()
                     for characterprefab, activatedskills in pairs(skilltree_data.activatedskills) do
                         local skillxp = skilltree_data.skillxp[characterprefab]
                         if skillxp == nil or not self:ValidateCharacterData(characterprefab, activatedskills, skillxp) then
-                            self:_dbg_print("Load clearing skill tree for character due to bad state", characterprefab)
+                            --print("[STData] Load clearing skill tree for character due to bad state", characterprefab)
                             skilltree_data.activatedskills[characterprefab] = nil
                             needs_save = true
                         end
@@ -371,10 +360,10 @@ end
 function SkillTreeData:UpdateSaveState(characterprefab)
     self.dirty = true
     if self.save_enabled then
-        self:_dbg_print("UpdateSaveState", characterprefab)
+        --print("[STData] UpdateSaveState", characterprefab)
         local metadef = SKILLTREE_METAINFO[characterprefab]
         if metadef and not metadef.modded and not TheNet:IsDedicated() and table.contains(DST_CHARACTERLIST, characterprefab) then
-            TheInventory:SetSkillTreeValue(characterprefab, self:EncodeSkillTreeData(characterprefab, false))
+            TheInventory:SetSkillTreeValue(characterprefab, self:EncodeSkillTreeData(characterprefab))
         end
         self:Save(true, characterprefab)
 
@@ -451,7 +440,7 @@ function SkillTreeData:ValidateCharacterData(characterprefab, activatedskills, s
 end
 
 function SkillTreeData:ApplyCharacterData(characterprefab, skilltreedata)
-    self:_dbg_print("ApplyCharacterData", characterprefab, skilltreedata)
+    --print("[STData] ApplyCharacterData", characterprefab, skilltreedata)
     local activatedskills, skillxp = self:DecodeSkillTreeData(skilltreedata)
     if self:ValidateCharacterData(characterprefab, activatedskills, skillxp) then
         self.skillxp[characterprefab] = math.max(self.skillxp[characterprefab] or 0, skillxp)
@@ -462,7 +451,7 @@ function SkillTreeData:ApplyCharacterData(characterprefab, skilltreedata)
 end
 
 function SkillTreeData:ApplyOnlineProfileData()
-    self:_dbg_print("ApplyOnlineProfileData")
+    --print("[STData] ApplyOnlineProfileData")
     if not self.synced and
         (TheInventory:HasSupportForOfflineSkins() or not (TheFrontEnd ~= nil and TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode())) and
         TheInventory:HasDownloadedInventory() then

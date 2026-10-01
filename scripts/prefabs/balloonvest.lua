@@ -11,26 +11,23 @@ local prefabs =
 	"balloon_pop_body",
 }
 
-local function OnOwnerAttackedFn(owner, data, inst)
-	if inst.components.poppable and ShouldProcOnAttackedOrBlocked(inst, owner, data) then
-		inst.components.poppable:Pop()
+local function onownerattackedfn(inst, data)
+    local balloon = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) or nil
+    if balloon ~= nil and balloon.components.poppable ~= nil then
+		balloon.components.poppable:Pop()
     end
 end
 
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_body", "balloonvest", "swap_body")
 	inst.components.fueled:StartConsuming()
-	if inst._onownerattackedfn == nil then
-		inst._onownerattackedfn = function(owner, data) OnOwnerAttackedFn(owner, data, inst) end
-	end
-	inst:ListenForEvent("attacked", inst._onownerattackedfn, owner)
+    inst:ListenForEvent("attacked", onownerattackedfn, owner)
 end
 
 local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst.components.fueled:StopConsuming()
-	inst:RemoveEventCallback("attacked", inst._onownerattackedfn, owner)
-	inst._onownerattackedfn = nil
+	inst:RemoveEventCallback("attacked", onownerattackedfn, owner)
 end
 
 local function onequiptomodel(inst)

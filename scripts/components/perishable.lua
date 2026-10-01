@@ -95,7 +95,7 @@ local function Update(inst, dt)
 			end
 		else
 			modifier = TUNING.PERISH_GROUND_MULT
-			if TheWorld.state.isacidraining and inst.components.rainimmunity == nil and TheWorld.Map:CanPointHaveAcidRain(pos.x, 0, pos.z) then
+			if TheWorld.state.isacidraining and inst.components.rainimmunity == nil then
                 local rate = (inst.components.moisture and inst.components.moisture:_GetMoistureRateAssumingRain() or TheWorld.state.precipitationrate)
                 local percent_to_reduce = rate * TUNING.ACIDRAIN_PERISHABLE_ROT_PERCENT * dt
 
@@ -178,10 +178,12 @@ function Perishable:Dilute(number, timeleft)
 end
 
 function Perishable:AddTime(time)
-	local old_val = self.perishremainingtime
-	self.perishremainingtime = math.min(time + self.perishremainingtime, self.perishtime)
-    if math.floor(old_val*100) ~= math.floor(self.perishremainingtime*100) then
-		self.inst:PushEvent("perishchange", {percent = self:GetPercent()})
+    if self.updatetask ~= nil then
+		local old_val = self.perishremainingtime
+		self.perishremainingtime = math.min(time + self.perishremainingtime, self.perishtime)
+        if math.floor(old_val*100) ~= math.floor(self.perishremainingtime*100) then
+			self.inst:PushEvent("perishchange", {percent = self:GetPercent()})
+		end
 	end
 end
 

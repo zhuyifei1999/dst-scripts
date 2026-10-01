@@ -49,7 +49,6 @@ self.inst = inst
 -- Private
 local _world = TheWorld
 local _ismastersim = _world.ismastersim
-local _activatedplayer = nil
 local _state = nil
 local _debrispersecond = 1 -- how much junk falls
 local _mammalsremaining = 0
@@ -553,20 +552,8 @@ end or nil
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function CanHearQuaker()
-    local player = ThePlayer
-    if player then
-        local x, y, z = player.Transform:GetWorldPosition()
-        if _world.Map:IsPointInCharlieBossArena(x, y, z) then
-            return false
-        end
-    end
-
-    return true
-end
-
 local function OnQuakeSoundIntensityDirty()
-    if _quakesoundintensity:value() > 0 and CanHearQuaker() then
+    if _quakesoundintensity:value() > 0 then
         if not _world.SoundEmitter:PlayingSound("earthquake") then
             _world.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "earthquake")
         end
@@ -577,30 +564,13 @@ local function OnQuakeSoundIntensityDirty()
 end
 
 local function OnMiniQuakeSoundIntensityDirty()
-    if _miniquakesoundintensity:value() and CanHearQuaker() then
+    if _miniquakesoundintensity:value() then
         if not _world.SoundEmitter:PlayingSound("miniearthquake") then
             _world.SoundEmitter:PlaySound("dontstarve/cave/earthquake", "miniearthquake")
             _world.SoundEmitter:SetParameter("miniearthquake", "intensity", 1)
         end
     elseif _world.SoundEmitter:PlayingSound("miniearthquake") then
         _world.SoundEmitter:KillSound("miniearthquake")
-    end
-end
-
-local function player_OnChangeArea(inst, area)
-    OnQuakeSoundIntensityDirty()
-    OnMiniQuakeSoundIntensityDirty()
-end
-
-local function OnPlayerActivated(src, player)
-    _activatedplayer = player
-    player:ListenForEvent("changearea", player_OnChangeArea)
-end
-
-local function OnPlayerDeactivated(src, player)
-    if _activatedplayer == player then
-        _activatedplayer = nil
-        player:ListenForEvent("changearea", player_OnChangeArea)
     end
 end
 
@@ -626,11 +596,9 @@ local OnMiniQuake = _ismastersim and function(src, data)
     _miniquakesoundintensity:set(true)
 
     local pos = data.pos or data.target:GetPosition()
-    if _world.Map:CanPointHaveQuaker(pos.x, pos.y, pos.z) then
-        local dt = data.duration / data.num
-        for t = 0, data.duration - dt * .5, dt do
-            inst:DoTaskInTime(t, _OnMiniQuakeSpawn, pos, data.rad, data.minrad, data.debrisfn)
-        end
+    local dt = data.duration / data.num
+    for t = 0, data.duration - dt * .5, dt do
+        inst:DoTaskInTime(t, _OnMiniQuakeSpawn, pos, data.rad, data.minrad, data.debrisfn)
     end
 
     ShakeAllCamerasWithFilter(CanPlayerHaveQuaker, CAMERASHAKE.FULL, data.duration, .02, .5, data.target, 40)
@@ -640,12 +608,10 @@ local OnMiniQuake = _ismastersim and function(src, data)
 end or nil
 
 local OnExplosion = _ismastersim and function(src, data)
-    if not data.pt or TheWorld.Map:CanPointCauseQuaker(data.pt:Get()) then
-        if _state == QUAKESTATE.WAITING then
-            SetNextQuake(_quakedata, GetTaskRemaining(_task) - data.damage)
-        elseif _state == QUAKESTATE.WARNING then
-            WarnQuake(inst, _quakedata)
-        end
+    if _state == QUAKESTATE.WAITING then
+        SetNextQuake(_quakedata, GetTaskRemaining(_task) - data.damage)
+    elseif _state == QUAKESTATE.WARNING then
+        WarnQuake(inst, _quakedata)
     end
 end or nil
 
@@ -730,9 +696,6 @@ end
 if not TheNet:IsDedicated() then
     inst:ListenForEvent("quakesoundintensitydirty", OnQuakeSoundIntensityDirty)
     inst:ListenForEvent("miniquakesoundintensitydirty", OnMiniQuakeSoundIntensityDirty)
-
-    inst:ListenForEvent("playeractivated", OnPlayerActivated, _world)
-    inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated, _world)
 end
 
 --Register events

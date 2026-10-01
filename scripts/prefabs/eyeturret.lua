@@ -198,10 +198,15 @@ local function itemfn()
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetSinks(true)
 
+    MakeHauntableLaunch(inst)
+
+    --Tag to make proper sound effects play on hit.
+    inst:AddTag("largecreature")
+
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
-
-    MakeHauntableLaunch(inst)
+    --inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    --inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
 
     return inst
 end

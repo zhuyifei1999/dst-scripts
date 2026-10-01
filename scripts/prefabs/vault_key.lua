@@ -92,7 +92,6 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst:AddComponent("inspectable")
     inst:AddComponent("tradable")
-	inst:AddComponent("stalkerinspectable")
 
     MakeHauntableLaunch(inst)
 

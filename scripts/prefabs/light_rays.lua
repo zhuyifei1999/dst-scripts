@@ -1,4 +1,4 @@
-local assets =
+local assets=
 {
     Asset("ANIM", "anim/lightrays.zip"),
 }
@@ -10,6 +10,10 @@ local RAYS_ID ={
 }
 local function OnEntityWake(inst)
     inst.Transform:SetRotation(45)
+end
+
+local function OnEntitySleep(inst)
+
 end
 
 local function showlightrays(inst)
@@ -37,6 +41,10 @@ local function hidelightrays(inst)
     inst.intensity_target = 0
 end
 
+local function fadelightrays(inst)
+    inst.intensity_target = 0.5        
+end
+
 local function updateintensity(inst)
     local inc = 0.5/ (5 * 30)
     if inst.intensity ~= inst.intensity_target then
@@ -44,7 +52,7 @@ local function updateintensity(inst)
             inst.intensity = math.min(inst.intensity + inc, inst.intensity_target)
         elseif inst.intensity > inst.intensity_target then
             inst.intensity = math.max(inst.intensity - inc, inst.intensity_target)
-        end
+        end 
     end
 
     if inst.intensity <= 0 and not inst.rayshidden then
@@ -54,10 +62,15 @@ local function updateintensity(inst)
     if inst.intensity > 0 and inst.rayshidden then
         inst.rayshidden = nil
         showlightrays(inst)
-    end
+    end        
+end
+
+local function OnRays(inst, phase)
+
 end
 
 local function OnPhase(inst, phase)
+
     if phase == "dusk" then
         inst._rays:set(RAYS_ID.DUSK)
     end
@@ -79,22 +92,21 @@ local function makefn()
 
     local function fn(Sim)
         local inst = CreateEntity()
-
-        inst.entity:AddTransform()
-        inst.entity:AddAnimState()
+        local trans = inst.entity:AddTransform()
+        local anim = inst.entity:AddAnimState()
+        inst.entity:AddNetwork()        
+        inst.entity:AddLight()        
         inst.entity:AddSoundEmitter()
-        inst.entity:AddNetwork()
+        trans:SetEightFaced()
 
-        inst.Transform:SetEightFaced()
-
+        inst.OnEntitySleep = OnEntitySleep
         inst.OnEntityWake = OnEntityWake
 
-        inst.AnimState:SetBank("lightrays")
-        inst.AnimState:SetBuild("lightrays")
-        inst.AnimState:PlayAnimation("idle_loop", true)
-
+        anim:SetBank("lightrays")
+        anim:SetBuild("lightrays")
+        anim:PlayAnimation("idle_loop", true)
         inst:AddTag("lightrays")
-        inst:AddTag("exposure")
+        inst:AddTag("exposure")    
         inst:AddTag("ignorewalkableplatforms")
 
         inst.persists = false
@@ -111,13 +123,13 @@ local function makefn()
         inst:ListenForEvent("raysdirty", function()
             local rays = inst._rays:value()
             if rays == RAYS_ID.DAY then
-                if not inst.lastphasefullmoon then
+                if not inst.lastphasefullmoon then 
                     inst.intensity_target = 1
                 end
             elseif rays == RAYS_ID.DUSK then
                 inst.intensity_target = 0.3
             else
-                if TheWorld.state.isfullmoon then
+                if TheWorld.state.isfullmoon then 
                     inst.intensity_target = 1
                 else
                     hidelightrays(inst)
@@ -140,6 +152,13 @@ local function makefn()
         if not TheWorld.ismastersim then
             return inst
         end
+
+--        inst:AddComponent("colourtweener")
+--        inst.components.colourtweener:StartTween({255/255,177/255,32/255,1}, 0)
+
+        
+
+
 
         inst:WatchWorldState("phase", OnPhase)
 

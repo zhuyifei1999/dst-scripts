@@ -26,7 +26,6 @@ local BloodOver =  Class(Widget, function(self, owner)
 
     local function _Flash() self:Flash() end
     local function _UpdateState() self:UpdateState() end
-	local function _DelayedUpdateState() self.inst:DoTaskInTime(0, _UpdateState) end
 
     self.inst:ListenForEvent("badaura", _Flash, owner)
     self.inst:ListenForEvent("attacked", function(_, data)
@@ -43,8 +42,6 @@ local BloodOver =  Class(Widget, function(self, owner)
     self.inst:ListenForEvent("stopoverheating", _UpdateState, owner)
 	self.inst:ListenForEvent("startlunarburn", _UpdateState, owner)
 	self.inst:ListenForEvent("stoplunarburn", _UpdateState, owner)
-	self.inst:ListenForEvent("startbatcorpsehatdrain", _DelayedUpdateState, owner)
-	self.inst:ListenForEvent("stopbatcorpsehatdrain", _DelayedUpdateState, owner)
     self.inst:DoTaskInTime(0, _UpdateState)
 end)
 
@@ -64,13 +61,6 @@ function BloodOver:UpdateState()
 
 	local health = self.owner.replica.health
 	if health and WagBossUtil.HasLunarBurnDamage(health:GetLunarBurnFlags()) then
-		self:TurnOn()
-		return
-	end
-
-	local inventory = self.owner.replica.inventory
-	local hat = inventory and inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-	if hat and hat:HasTag("bathat") then
 		self:TurnOn()
 		return
 	end

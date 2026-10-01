@@ -111,7 +111,6 @@ local function fn()
     inst:AddTag("wormwood_pet")
     inst:AddTag("noauradamage")
     inst:AddTag("soulless")
-    inst:AddTag("plantcreature")
 
     inst:SetPrefabNameOverride("carrat")
 

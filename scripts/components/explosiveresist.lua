@@ -5,22 +5,17 @@ local ExplosiveResist = Class(function(self,inst)
     self.decaytime = TUNING.EXPLOSIVE_RESIST_DECAY_TIME
     self.decaydelay = TUNING.EXPLOSIVE_RESIST_DECAY_DELAY
     self.delayremaining = 0
-    self.enabled = true
 end)
 
-function ExplosiveResist:Enable(boolval)
-    self.enabled = boolval or false
-end
-
 function ExplosiveResist:OnExplosiveDamage(damage, src)
-    if damage > 0 and self.enabled then
+    if damage > 0 then
         self.delayremaining = self.decaydelay
         self:DoDelta(damage / self.maxresistdamage)
     end
 end
 
 function ExplosiveResist:GetResistance()
-    return self.enabled and self.resistance or 0
+    return self.resistance
 end
 
 function ExplosiveResist:DoDelta(delta)

@@ -152,7 +152,7 @@ function AcidInfusible:OnInfuse()
         end
     end
 
-    if self.fxlevel ~= nil and not self.inst:IsAsleep() then
+    if self.fxlevel ~= nil then
         self:SpawnFX()
     end
 
@@ -192,7 +192,7 @@ end
 --------------------------------------------------------------------------
 
 function AcidInfusible:SpawnFX()
-    self:KillFX(true)
+    self:KillFX()
 
     self._fx = self.inst:SpawnChild("acidsmoke_fx")
 
@@ -201,30 +201,14 @@ function AcidInfusible:SpawnFX()
     end
 end
 
-function AcidInfusible:KillFX(immediate)
+function AcidInfusible:KillFX()
     if self._fx ~= nil then
         if self._fx:IsValid() then
-            if immediate then
-                self._fx:Remove()
-            else
-                local time = self._fx.AnimState:GetCurrentAnimationLength() - self._fx.AnimState:GetCurrentAnimationTime() + FRAMES
-                self._fx:DoTaskInTime(time, self._fx.Remove)
-            end
+            local time = self._fx.AnimState:GetCurrentAnimationLength() - self._fx.AnimState:GetCurrentAnimationTime() + FRAMES
+            self._fx:DoTaskInTime(time, self._fx.Remove)
         end
         self._fx = nil
     end
-end
-
---------------------------------------------------------------------------
-
-function AcidInfusible:OnEntityWake()
-    if self.infused and self.fxlevel then
-        self:SpawnFX()
-    end
-end
-
-function AcidInfusible:OnEntitySleep()
-    self:KillFX(true)
 end
 
 --------------------------------------------------------------------------

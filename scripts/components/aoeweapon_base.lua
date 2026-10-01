@@ -139,7 +139,9 @@ local function TestGround(x, z)
 end
 
 function AOEWeapon_Base:OnToss(doer, target, sourceposition, basespeed, startradius)
-    DeactivateInventoryItemBeforeLaunch(target)
+    if target.components.mine ~= nil then
+        target.components.mine:Deactivate()
+    end
 
     if target.Physics and not target.components.inventoryitem.nobounce and target.Physics:IsActive() then
         startradius = math.max(startradius or 0, doer:GetPhysicsRadius(0) + target:GetPhysicsRadius(0))
@@ -179,13 +181,8 @@ function AOEWeapon_Base:OnToss(doer, target, sourceposition, basespeed, startrad
         end
 
         local speed = (basespeed or 1) + math.random()
-		if not TryTeleportToLaunchPos(target, x0 + startradius * cosa, 0.1, z0 + startradius * sina) then
-			target.Physics:Teleport(x1, math.max(y1, 0.1), z1)
-		end
+		TryTeleportToLaunchPos(target, x0 + startradius * cosa, 0.1, z0 + startradius * sina)
         target.Physics:SetVel(cosa * speed, speed * 5 + math.random() * 2, sina * speed)
-		if target.components.inventoryitem then
-			target.components.inventoryitem:SetLanded(false, true)
-		end
     end
 end
 

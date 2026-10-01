@@ -147,13 +147,10 @@ local ModsTab = Class(Widget, function(self, servercreationscreen, settings)
     self.out_of_date_badge:SetPosition(-22,-20)
     self.out_of_date_badge:SetCount(0)
 
-    local allmodsitems = { { widget = self.updateallbutton, } }
-    if CanDownloadWorkshopMods() then
-        table.insert(allmodsitems, 1, { widget = self.cleanallbutton, })
-    else
-        self.mods_page:AddChild(self.cleanallbutton):Hide()
-    end
-    self.allmodsmenu = self.mods_page:AddChild(Menu(allmodsitems, 65, true))
+    self.allmodsmenu = self.mods_page:AddChild(Menu({
+                { widget = self.cleanallbutton, },
+                { widget = self.updateallbutton, },
+        }, 65, true))
     self.allmodsmenu:SetPosition(-420, -323)
     self.servercreationscreen:RepositionModsButtonMenu(self.allmodsmenu, self.selectedmodmenu)
 
@@ -1589,7 +1586,7 @@ end
 function ModsTab:DoFocusHookups()
     local tomiddlecol = self.subscreener:GetActiveSubscreenFn()
 
-    self.subscreener.menu:SetFocusChangeDir(MOVE_DOWN, self.allmodsmenu, 1)
+    self.subscreener.menu:SetFocusChangeDir(MOVE_DOWN, self.cleanallbutton)
 
     if self.mods_scroll_list then
         self.mods_scroll_list:SetFocusChangeDir(MOVE_RIGHT, self.selectedmodmenu)

@@ -375,12 +375,6 @@ function HealthBadge:SetPercent(val, max, penaltypercent)
     self.topperanim:GetAnimState():SetPercent("anim", 1 - penaltypercent)
 end
 
-local function IsBatCorpseHatDrain(self)
-	local inventory = self.owner.replica.inventory
-	local hat = inventory and inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-	return hat ~= nil and hat:HasTag("bathat")
-end
-
 function HealthBadge:OnUpdate(dt)
     if TheNet:IsServerPaused() then return end
 
@@ -392,9 +386,7 @@ function HealthBadge:OnUpdate(dt)
 		)) or
         (self.owner.replica.hunger ~= nil and self.owner.replica.hunger:IsStarving()) or
         self.acidsizzling ~= nil or
-		next(self.corrosives) or
-		IsBatCorpseHatDrain(self)
-	then
+        next(self.corrosives) ~= nil then
         down = "_most"
     elseif self.owner.IsOverheating ~= nil and self.owner:IsOverheating() then
         down = self.owner:HasTag("heatresistant") and "_more" or "_most"

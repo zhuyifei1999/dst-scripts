@@ -63,8 +63,6 @@ local function onload(inst, data)
 	SetScarfBuild(inst)
 end
 
-local DIET = { FOODTYPE.VEGGIE, FOODTYPE.RAW }
-
 local function fn()
     local inst = CreateEntity()
 
@@ -121,7 +119,8 @@ local function fn()
     inst:AddComponent("knownlocations")
 
     inst:AddComponent("eater")
-    inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetCanEatRaw()
 
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(AcceptTest)

@@ -409,8 +409,7 @@ function DownloadMods( server_listing )
             end
 
             if mod.all_clients_require_mod then
-                --with no download to fetch the exact version, an installed compatible version has to do
-                if not KnownModIndex:DoesModExist( mod.mod_name, mod.version ) and (CanDownloadWorkshopMods() or not KnownModIndex:DoesModExist( mod.mod_name, mod.version, mod.version_compatible )) then
+                if not KnownModIndex:DoesModExist( mod.mod_name, mod.version ) then
                     print("Failed to find mod "..mod.mod_name.." v:"..mod.version )
 
                     have_required_mods = false
@@ -498,7 +497,8 @@ end
 
 function JoinServer(server_listing, optional_password_override)
     local function send_response(password)
-        local start_worked = TheNet:JoinServerResponse( false, server_listing.guid, password, server_listing.row )
+        -- Just pass the guid in here, the network manager should have this listing
+        local start_worked = TheNet:JoinServerResponse( false, server_listing.guid, password )
 
         if start_worked then
             DisableAllDLC()

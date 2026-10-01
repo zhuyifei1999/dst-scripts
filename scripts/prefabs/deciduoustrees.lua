@@ -588,7 +588,6 @@ local function chop_down_tree(inst, chopper)
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
-        inst:RemoveTag("plantcreature")
 		inst.sg.mem.burn_on_electrocute = nil
 		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
@@ -691,7 +690,6 @@ local function _OnBurnt2(inst)
         inst.monster = false
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
-        inst:RemoveTag("plantcreature")
 		inst.sg.mem.burn_on_electrocute = nil
 		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
@@ -709,7 +707,6 @@ local function OnBurnt(inst, immediate)
             inst.monster = false
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
-            inst:RemoveTag("plantcreature")
 			inst.sg.mem.burn_on_electrocute = nil
 			inst.sg.mem.noelectrocute = true
             inst.sg:GoToState("empty")
@@ -809,7 +806,6 @@ local function DoStartMonster(inst, starttimeoffset)
         inst.AnimState:ClearOverrideSymbol("mouth")
     end
     if inst.components.combat == nil then
-        inst:AddTag("plantcreature")
         inst:AddComponent("combat")
 		inst.sg.mem.noelectrocute = nil
 		inst.sg.mem.burn_on_electrocute = true
@@ -879,7 +875,6 @@ local function StopMonster(inst)
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
-        inst:RemoveTag("plantcreature")
 		inst.sg.mem.burn_on_electrocute = nil
 		inst.sg.mem.noelectrocute = true
         ClearCollidesWithElectricField(inst)
@@ -965,7 +960,6 @@ local function OnEntityWake(inst)
             inst.monster_duration = nil
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
-            inst:RemoveTag("plantcreature")
 			inst.sg.mem.burn_on_electrocute = nil
 			inst.sg.mem.noelectrocute = true
         end
@@ -1083,7 +1077,6 @@ local function onload(inst, data)
             end
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
-            inst:RemoveTag("plantcreature")
 			inst.sg.mem.burn_on_electrocute = nil
 			inst.sg.mem.noelectrocute = true
             inst.sg:GoToState("empty")

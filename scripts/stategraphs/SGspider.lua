@@ -333,7 +333,7 @@ local states =
 
     State{
         name = "warrior_attack",
-		tags = { "attack", "busy", "jumping" },
+        tags = {"attack", "canrotate", "busy", "jumping"},
 
         onenter = function(inst, target)
             inst.components.locomotor:Stop()

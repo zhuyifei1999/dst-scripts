@@ -206,8 +206,6 @@ local function OnEntityWake(inst)
     end
 end
 
-local DIET = { FOODTYPE.MEAT, FOODTYPE.HORRIBLE }
-
 local function fn()
     local inst = CreateEntity()
 
@@ -245,7 +243,8 @@ local function fn()
     inst.sounds = sounds
 
     inst:AddComponent("eater")
-    inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetDiet({ FOODTYPE.MEAT }, { FOODTYPE.MEAT })
+    inst.components.eater:SetCanEatHorrible()
     inst.components.eater:SetStrongStomach(true) -- can eat monster meat!
 
     inst:AddComponent("combat")

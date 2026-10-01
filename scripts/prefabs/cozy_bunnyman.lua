@@ -436,8 +436,6 @@ local function OnLoad(inst, data)
     end
 end
 
-local DIET = { FOODTYPE.VEGGIE, FOODTYPE.RAW }
-
 local function fn()
     local inst = CreateEntity()
 
@@ -461,7 +459,6 @@ local function fn()
     inst:AddTag("manrabbit")
     inst:AddTag("scarytoprey")
     inst:AddTag("cozy_bunnyman")
-    inst:AddTag("canwearhat")
 
     inst.AnimState:SetBank("manrabbit")
     inst.AnimState:PlayAnimation("idle_loop", true)
@@ -530,7 +527,8 @@ local function fn()
 
     ------------------------------------------
     inst:AddComponent("eater")
-    inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetCanEatRaw()
 
     ------------------------------------------
     inst:AddComponent("combat")

@@ -106,12 +106,6 @@ local function ReleaseSpiderFollowers(inst)
     end
 end
 
-local function OnAttacked_ReleaseSpiderFollowers(inst, data)
-	if not IsEquipmentOnAttackedOrBlocked(inst, inst, data) then
-		ReleaseSpiderFollowers(inst)
-	end
-end
-
 local function master_postinit(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 	
@@ -142,7 +136,7 @@ local function master_postinit(inst)
     inst.components.locomotor.fasteroncreep = true
     --inst.components.locomotor:SetFasterOnCreep(true)
 
-	inst:ListenForEvent("attacked",      OnAttacked_ReleaseSpiderFollowers)
+    inst:ListenForEvent("attacked",      ReleaseSpiderFollowers)
     inst:ListenForEvent("onattackother", ReleaseSpiderFollowers)
     inst:ListenForEvent("death",         ReleaseSpiderFollowers)
     inst:ListenForEvent("onremove",      ReleaseSpiderFollowers)

@@ -86,7 +86,6 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	inst:AddTag("CLASSIFIED")
-	inst:AddTag("pseudorangedweapon")
 
 	inst.entity:SetPristine()
 

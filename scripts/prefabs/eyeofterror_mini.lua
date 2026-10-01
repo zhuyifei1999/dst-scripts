@@ -81,7 +81,7 @@ local function OnAttacked(inst, data)
     end
 end
 
-local DIET = { FOODTYPE.MEAT, FOODTYPE.HORRIBLE }
+local DIET = { FOODTYPE.MEAT }
 local function commonfn(build, tags)
     local inst = CreateEntity()
 
@@ -150,6 +150,7 @@ local function commonfn(build, tags)
     ------------------
     inst:AddComponent("eater")
     inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetCanEatHorrible()
     inst.components.eater:SetStrongStomach(true)
 
     ------------------

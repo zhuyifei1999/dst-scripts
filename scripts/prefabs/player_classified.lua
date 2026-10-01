@@ -1085,24 +1085,6 @@ fns.OnCraftedExtraElixirDirty = function(inst)
     end
 end
 
-fns.OnWormDigestionSoundDirty = function(inst)
-    if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        if inst.wormdigestionsound:value() then
-            if inst._parent.components.playerhearing then
-                inst._parent.components.playerhearing:OverrideDSPEnabled("wormdigestionmuffle", true)
-            end
-            if not TheFocalPoint.SoundEmitter:PlayingSound("worm_boss_digest") then
-                TheFocalPoint.SoundEmitter:PlaySound("rifts4/worm_boss/beingdigested_lp", "worm_boss_digest")
-            end
-        else
-            if inst._parent.components.playerhearing then
-                inst._parent.components.playerhearing:OverrideDSPEnabled("wormdigestionmuffle", false)
-            end
-            TheFocalPoint.SoundEmitter:KillSound("worm_boss_digest")
-        end
-    end
-end
-
 fns.StartFarmingMusicEvent = function(inst)
     inst._parent:PushEvent("playfarmingmusic")
 end
@@ -1270,8 +1252,7 @@ local function RegisterNetListeners_common(inst)
     inst:ListenForEvent("inspectacles_gamedirty", fns.OnInspectaclesGameDirty)
     inst:ListenForEvent("roseglasses_cooldowndirty", fns.OnRoseGlassesCooldownDirty)
     inst:ListenForEvent("wortoxpanflutebuffdirty", fns.OnWortoxPanfluteBuffDirty)
-    inst:ListenForEvent("craftedextraelixirdirty", fns.OnCraftedExtraElixirDirty)
-    inst:ListenForEvent("wormdigestionsounddirty", fns.OnWormDigestionSoundDirty)
+    inst:ListenForEvent("craftedextraelixirdirty",fns.OnCraftedExtraElixirDirty)
 end
 
 local function RegisterNetListeners(inst)
@@ -1645,10 +1626,6 @@ local function fn()
 
 	--foley sound overrides
 	inst.playinghorseshoesounds = net_bool(inst.GUID, "foley.playinghorseshoesounds")
-
-    -- worm digestion
-    inst.wormdigestionsound = net_bool(inst.GUID, "wormdigestionsound", "wormdigestionsounddirty")
-    inst.wormdigestionsound:set(false)
 
     --Morgue variables
     inst.isdeathbypk = net_bool(inst.GUID, "morgue.isdeathbypk", "morguedirty")

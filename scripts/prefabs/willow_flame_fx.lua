@@ -53,7 +53,6 @@ local function settarget(inst,target,life,source)
     local maxdeflect = 30
 
     if life > 0 then
-		inst.components.deflectable:SetOwner(source)
 
         inst.shadowfire_task = inst:DoTaskInTime(0.1,function()
 
@@ -122,8 +121,12 @@ local function settarget(inst,target,life,source)
                 local dist = inst:GetDistanceSqToInst(target)
 
                 if dist<CLOSERANGE*CLOSERANGE then
+
+                    local blast = SpawnPrefab("willow_shadow_fire_explode")
+                    local pos = Vector3(target.Transform:GetWorldPosition())
+                    blast.Transform:SetPosition(pos.x,pos.y,pos.z)
+
                     local weapon = inst
-					local x, y, z = target.Transform:GetWorldPosition()
 
                     source.components.combat.ignorehitrange = true
                     source.components.combat.ignoredamagereflect = true
@@ -134,10 +137,6 @@ local function settarget(inst,target,life,source)
                     source.components.combat.ignoredamagereflect = false
 
                     theta = nil
-
-					if inst:IsValid() then -- removed if deflected
-						SpawnPrefab("willow_shadow_fire_explode").Transform:SetPosition(x, y, z)
-					end
                 else
                     local pt = Vector3(target.Transform:GetWorldPosition())
                     local angle = inst:GetAngleToPoint(pt.x,pt.y,pt.z)
@@ -190,7 +189,7 @@ local function shadowfn()
 
     inst.AnimState:SetBank("shadow_fire_fx")
     inst.AnimState:SetBuild("shadow_fire_fx")
-	inst.AnimState:PlayAnimation("anim1")
+    inst.AnimState:PlayAnimation("anim"..math.random(1,3),false)
 
     inst.AnimState:SetMultColour(0, 0, 0, .6)
     inst.AnimState:SetFinalOffset(3)
@@ -198,21 +197,12 @@ local function shadowfn()
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
     inst:AddTag("willow_shadow_flame")
-	inst:AddTag("pseudorangedweapon")
-
-	--deflectable (from deflectable component) added to pristine state for optimization
-	inst:AddTag("deflectable")
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-	local rnd = math.random(3)
-	if rnd ~= 1 then
-		inst.AnimState:PlayAnimation("anim"..tostring(rnd))
-	end
 
     inst.persists = false
 
@@ -227,12 +217,16 @@ local function shadowfn()
     inst:AddComponent("planardamage")
     inst.components.planardamage:SetBaseDamage(TUNING.WILLOW_LUNAR_FIRE_PLANAR_DAMAGE * 3)
 
+
     inst:AddComponent("damagetypebonus")
     inst.components.damagetypebonus:AddBonus("lunar_aligned", inst, TUNING.WILLOW_SHADOW_FIRE_BONUS)
 
-	inst:AddComponent("deflectable")
 
-	inst:ListenForEvent("animover", inst.Remove)
+    inst:ListenForEvent("animover", function()
+        if inst.AnimState:IsCurrentAnimation("anim1") or inst.AnimState:IsCurrentAnimation("anim2") or inst.AnimState:IsCurrentAnimation("anim3") then
+            inst:Remove()
+        end
+    end)
 
     inst.settarget = settarget
 

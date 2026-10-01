@@ -241,14 +241,11 @@ local function OnTerraform(inst)
 end
 
 local function OnHitOther(inst, data)
-	if not (data and data.from_doattack) then
-		return
-	end
 	local target = data.target
 	if target ~= nil and (
 		data.weapon == nil or (
 			(data.weapon.components.inventoryitem ~= nil and data.weapon.components.inventoryitem:IsHeldBy(inst)) and
-			not IsRangedWeapon(data.weapon)
+			(data.weapon.components.weapon == nil or data.weapon.components.weapon.projectile == nil)
 		)) then
 		local delta = target:HasTag("epic") and TUNING.WOLFGANG_MIGHTINESS_ATTACK_GAIN_GIANT
 					or target:HasTag("smallcreature") and TUNING.WOLFGANG_MIGHTINESS_ATTACK_GAIN_SMALLCREATURE

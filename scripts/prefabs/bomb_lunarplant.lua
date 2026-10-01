@@ -12,38 +12,26 @@ local prefabs =
 	"reticuleaoeping",
 }
 
-local function ConfigureExplosive(inst, attacker, explodetarget) -- explodes immediately
+local function OnHit(inst, attacker, target)
+	local x, y, z = inst.Transform:GetWorldPosition()
+
 	if inst.components.planardamage == nil then
 		inst:AddComponent("planardamage")
 		inst.components.planardamage:SetBaseDamage(TUNING.BOMB_LUNARPLANT_PLANAR_DAMAGE)
-
-		inst:AddComponent("damagetypebonus")
-		inst.components.damagetypebonus:AddBonus("shadow_aligned", inst, TUNING.WEAPONS_LUNARPLANT_VS_SHADOW_BONUS)
 	end
+
+	inst.SoundEmitter:KillSound("toss")
+
 	inst:AddComponent("explosive")
 	inst.components.explosive.explosiverange = TUNING.BOMB_LUNARPLANT_RANGE
 	inst.components.explosive.explosivedamage = 0
 	inst.components.explosive.lightonexplode = false
-	if attacker then
-		if inst.ispvp then
-			inst.components.explosive:SetPvpAttacker(attacker)
-		else
-			inst.components.explosive:SetAttacker(attacker)
-		end
+	if inst.ispvp then
+		inst.components.explosive:SetPvpAttacker(attacker)
+	else
+		inst.components.explosive:SetAttacker(attacker)
 	end
-	inst.components.explosive:OnBurnt(explodetarget)
-end
-
-local function ExplodeOnChew(inst, explodetarget) -- for worm_boss
-	ConfigureExplosive(inst, nil, explodetarget)
-end
-
-local function OnHit(inst, attacker, target)
-	local x, y, z = inst.Transform:GetWorldPosition()
-
-	inst.SoundEmitter:KillSound("toss")
-
-	ConfigureExplosive(inst, attacker, nil)
+	inst.components.explosive:OnBurnt()
 	--exploding should have removed me
 
 	SpawnPrefab("bomb_lunarplant_explode_fx").Transform:SetPosition(x, y, z)
@@ -243,8 +231,6 @@ local function fn()
 	inst.components.equippable:SetOnEquip(onequip)
 	inst.components.equippable:SetOnUnequip(onunequip)
 	inst.components.equippable.equipstack = true
-
-	inst.ExplodeOnChew = ExplodeOnChew -- for worm_boss
 
 	MakeHauntableLaunch(inst)
 

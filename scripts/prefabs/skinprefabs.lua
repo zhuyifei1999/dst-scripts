@@ -3117,7 +3117,7 @@ table.insert(prefs, CreatePrefabSkin("coldfirepit_an",
 	base_prefab = "coldfirepit",
 	type = "item",
 	rarity = "Loyal",
-	init_fn = function(inst) coldfirepit_init_fn(inst, "coldfirepit_an", Vector3(0, 0, 0)) end,
+	init_fn = function(inst, skin_custom) coldfirepit_init_fn(inst, "coldfirepit_an", skin_custom) end,
 	skin_tags = { "COLDFIREPIT", "ARTNOUVEAU", "CRAFTABLE", },
 	release_group = 150,
 }))
@@ -12695,6 +12695,16 @@ table.insert(prefs, CreatePrefabSkin("wagdrone_rolling_fancy",
 	init_fn = function(inst, skin_custom) wagdrone_rolling_init_fn(inst, "wagdrone_rolling_fancy", skin_custom) end,
 	skin_tags = { "WAGDRONE_ROLLING", },
 	release_group = 167,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wagdrone_rolling_fire",
+{
+	base_prefab = "wagdrone_rolling",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) wagdrone_rolling_init_fn(inst, "wagdrone_rolling_fire", skin_custom) end,
+	skin_tags = { "WAGDRONE_ROLLING", },
+	release_group = 185,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wagdrone_rolling_spikey",

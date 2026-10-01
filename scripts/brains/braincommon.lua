@@ -1,6 +1,5 @@
 require "behaviours/wander"
 require "behaviours/panic"
-require "behaviours/runaway"
 
 local BrainCommon = {}
 --------------------------------------------------------------------------
@@ -657,20 +656,5 @@ local function PossessChassis(self, update_rate)
 end
 
 BrainCommon.PossessChassisNode = PossessChassis
-
---------------------------------------------------------------------------
-
-local function GetRunAwayTarget(inst)
-    return FindClosestQueenTorch(inst)
-end
-local RUN_AWAY_QUEEN_TORCH_DATA = { getfn = GetRunAwayTarget }
-local RUN_AWAY_QUEEN_TORCH_DIST = 10
-local STOP_RUN_AWAY_QUEEN_TORCH_DIST = 15
-
-local function RunAwayFromQueenTorch(self)
-    return RunAway(self.inst, RUN_AWAY_QUEEN_TORCH_DATA, RUN_AWAY_QUEEN_TORCH_DIST, STOP_RUN_AWAY_QUEEN_TORCH_DIST)
-end
-
-BrainCommon.RunAwayFromQueenTorch = RunAwayFromQueenTorch
 
 return BrainCommon

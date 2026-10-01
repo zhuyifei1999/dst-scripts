@@ -487,17 +487,7 @@ local function PlaceLayout(layout, prefabs, position)
             y = math.floor(y*100) / 100.0
 
             if TheWorld.Map:IsLandTileAtPoint(x, 0, y) then
-                local prefab = prefabs[idx].prefab
-                if TheWorld.Map:NodeAtPointHasTag(x, 0, y, "fumarolearea") then
-                    if prefab == "flower_cave" then
-                        prefab = "flower_cave_withered"
-                    elseif prefab == "flower_cave_double" then
-                        prefab = "flower_cave_double_withered"
-                    elseif prefab == "flower_cave_triple" then
-                        prefab = "flower_cave_triple_withered"
-                    end
-                end
-                local ent = SpawnPrefab(prefab)
+                local ent = SpawnPrefab(prefabs[idx].prefab)
 
                 if ent ~= nil then
                     CleanUpPoint(x, y)

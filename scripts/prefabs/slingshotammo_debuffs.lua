@@ -468,7 +468,6 @@ local function HorrorFuelFxFn()
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
     inst:AddTag("notarget")
-	inst:AddTag("pseudoprojectile")
 
     inst.AnimState:SetBank("slingshot_shadowcurse")
     inst.AnimState:SetBuild("slingshot_shadowcurse")
@@ -490,8 +489,6 @@ local function HorrorFuelFxFn()
 
     inst:AddComponent("damagetypebonus")
     inst.components.damagetypebonus:AddBonus("lunar_aligned", inst, TUNING.SLINGSHOT_AMMO_VS_LUNAR_BONUS)
-
-	inst:AddComponent("deflectable")
 
     inst.Restart = HorrorFuel_Restart
     inst._task2 = inst:DoTaskInTime(0, HorrorFuel_AnimOver)

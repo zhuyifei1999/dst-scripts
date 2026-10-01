@@ -82,7 +82,10 @@ end
 local function CanHatTarget(inst, target)
     if target == nil or
         target.components.inventory == nil or
-        not (target.components.inventory.isopen or target:HasTag("canwearhat") or
+        not (target.components.inventory.isopen or
+            target:HasTag("pig") or
+            target:HasTag("manrabbit") or
+            target:HasTag("equipmentmodel") or
             (inst._loading and target:HasTag("player"))) then
         --NOTE: open inventory implies player, so we can skip "player" tag check
         --      closed inventory on player means they shouldn't be able to equip
@@ -90,7 +93,7 @@ local function CanHatTarget(inst, target)
         return false
     end
     local hat = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-	return not (hat and hat:HasTag("monsterhat"))
+    return hat == nil or hat.prefab ~= inst.prefab
 end
 
 local RETARGET_MUST_TAGS = { "_combat" }
@@ -137,6 +140,12 @@ end
 
 local function OnEquip(inst, owner)
     --Start feeding!
+
+    if not CanHatTarget(inst, owner) then
+        owner.components.inventory:Unequip(EQUIPSLOTS.HEAD)
+        return
+    end
+
     inst._light.Light:Enable(true)
     inst._light._lightlevel:set(true)
     inst._light._lightframe:set(inst._light._lightframe:value())
@@ -275,7 +284,6 @@ local function fn()
 	inst:AddTag("hostile")
 	inst:AddTag("slurper")
     inst:AddTag("mufflehat")
-	inst:AddTag("monsterhat")
 
     inst.entity:SetPristine()
 

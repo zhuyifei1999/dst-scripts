@@ -365,7 +365,6 @@ local function dispencerfn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("lootdropper")
-    inst:AddComponent("stalkerinspectable")
 
     inst:AddComponent("activatable")
     inst.components.activatable.OnActivate = OnActivate

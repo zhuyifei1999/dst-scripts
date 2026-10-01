@@ -1,48 +1,20 @@
-local SpDamageUtil = require("components/spdamageutil")
 
 local assets =
 {
     Asset("ANIM", "anim/worm_boss.zip"),
     Asset("ANIM", "anim/worm_boss_segment.zip"),
     Asset("ANIM", "anim/worm_boss_segment_2_build.zip"),
-	Asset("ANIM", "anim/stalker_corrupt_fx_build.zip"),
     Asset("SCRIPT", "scripts/prefabs/worm_boss_util.lua"),
-}
-
-local assets_shadow =
-{
-	Asset("ANIM", "anim/worm_boss.zip"),
-	Asset("ANIM", "anim/worm_boss_segment.zip"),
-	Asset("ANIM", "anim/worm_boss_shadow_build.zip"),
-	Asset("ANIM", "anim/worm_boss_segment_shadow_build.zip"),
-	Asset("ANIM", "anim/worm_boss_segment_shadow_2_build.zip"),
-	Asset("ANIM", "anim/worm_boss_shadow_spike.zip"),
-	Asset("ANIM", "anim/stalker_corrupt_fx_build.zip"),
-	Asset("SCRIPT", "scripts/prefabs/worm_boss_util.lua"),
 }
 
 local prefabs =
 {
-    "worm_boss_shadow",
-    "worm_boss_tail",
     "worm_boss_dirt",
     "worm_boss_dirt_ground_fx",
     "worm_boss_head",
     "worm_boss_segment",
     "chesspiece_wormboss_sketch",
     "winter_ornament_boss_wormboss",
-}
-
-local prefabs_shadow =
-{
-	"atrium_ritual_organ_worm",
-	"horrorfuel",
-	"nightmarefuel",
-    "worm_boss_shadow_dirt",
-    "worm_boss_dirt_ground_fx",
-    "worm_boss_shadow_head",
-    "worm_boss_shadow_segment",
-    "worm_boss_shadow_tail",
 }
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -65,33 +37,10 @@ SetSharedLootTable("worm_boss",
     { "chesspiece_wormboss_sketch", 1.00 },
 })
 
-SetSharedLootTable("worm_boss_shadow",
-{
-    { "atrium_ritual_organ_worm",   1.00 },
-	{ "horrorfuel",					1.00 },
-	{ "horrorfuel",					1.00 },
-	{ "horrorfuel",					0.67 },
-	{ "nightmarefuel",				1.00 },
-	{ "nightmarefuel",				0.33 },
-	{ "nightmarefuel",				0.33 },
-
-    { "fused_shadeling_bomb",       1.00 },
-})
-
 -----------------------------------------------------------------------------------------------------------------------
 
-local function IsShadow(inst)
-    return inst:HasTag("shadowthrall")
-end
-
 local function GenerateLoot(inst, pos, loot)
-    local loottable = IsShadow(inst) and
-    {
-        horrorfuel = 8,
-        nightmarefuel = 12,
-    }
-    or
-    {
+    local loottable = {
         boneshard = 15,
         rocks = 10,
         flint = 10,
@@ -134,19 +83,20 @@ local SHAKE_DIST = 40
 local RETARGET_MUST_TAGS  = { "_combat" }
 local RETARGET_CANT_TAGS  = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" }
 local RETARGET_ONEOF_TAGS = { "character", "animal", "monster" }
-local SHADOW_RETARGET_CANT_TAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost", "shadowthrall", "shadowboss", "stalker" }
 
 local function RetargetFn(inst)
     local head = next(inst.chunks) ~= nil and inst.chunks[#inst.chunks].dirt_start or nil
 
-    return FindEntity(
+    local target = FindEntity(
         head or inst,
         TUNING.WORM_BOSS_TARGET_DIST,
         function(guy) return inst.components.combat:CanTarget(guy) end,
         RETARGET_MUST_TAGS,
-        IsShadow(inst) and SHADOW_RETARGET_CANT_TAGS or RETARGET_CANT_TAGS,
+        RETARGET_CANT_TAGS,
         RETARGET_ONEOF_TAGS
     )
+
+    return target
 end
 
 local function KeepTargetFn(inst, target)
@@ -196,14 +146,7 @@ local NUM_THORNS_TO_KNOCKBACK = 3
 local function ProcessThornDamage(inst, target)
     inst.SoundEmitter:PlaySound("rifts4/worm_boss/spike_slice")
 
-    local damagetypemult = inst.components.damagetypebonus ~= nil and inst.components.damagetypebonus:GetBonus(target) or 1
-    local spdmg = SpDamageUtil.CollectSpDamage(inst)
-	if spdmg ~= nil and damagetypemult ~= 1 then
-		spdmg = SpDamageUtil.ApplyMult(spdmg, damagetypemult)
-	end
-
-    local dmg = PlayerDamageMod(target, TUNING.WORM_BOSS_SPINES, TUNING.WORM_BOSS_PLAYERDAMAGEPERCENT)
-    target.components.combat:GetAttacked(inst, dmg, nil, nil, spdmg)
+    target.components.combat:GetAttacked(inst, TUNING.WORM_BOSS_SPINES)
 
     local owner = inst.worm or inst
     owner._thorns_targets = owner._thorns_targets or {}
@@ -350,10 +293,6 @@ local function DeserializePosition(data)
     return Vector3(data.x, 0, data.z)
 end
 
---[[
-NOTE:
-The save load are also used to transform the boss into shadow version, so that we get the same chunks in the same spots
-]]
 local function OnSave(inst, data)
     data.state = inst.state
 
@@ -377,7 +316,7 @@ local function OnSave(inst, data)
             data.luck_num = lucky_user and GetEntityLuck(lucky_user) or 0
         end
 
-    elseif not inst._storinghoundedupgrade then -- HACK flag to not save the chunks when storing ourselves in hounded component
+    else
         if inst.createnewchunktask ~= nil   then
             data.new_chunk_pos = SerializePosition(inst.createnewchunktask._target_pt)
         end
@@ -401,9 +340,6 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if inst._OnLoad then
-        inst:_OnLoad(data)
-    end
 
     if data == nil then
         return
@@ -419,10 +355,9 @@ local function OnLoad(inst, data)
     local headchunk = nil
 
     if data.chunks ~= nil then
-        local numchunks = #data.chunks
-        local head = data.new_chunk_pos == nil and numchunks or nil -- The head is always the last chunk, if it exist...
-        local worm_length = WORMBOSS_UTILS.GetWormLength(inst)
-        local tail = numchunks >= worm_length and 1 or nil -- The tail is always the first chunk, when it's complete.
+        local head = data.new_chunk_pos == nil and #data.chunks or nil -- The head is always the last chunk, if it exist...
+        local tail = #data.chunks > WORMBOSS_UTILS.WORM_LENGTH and 1 or nil -- The tail is always the first chunk, when it's complete.
+
         for i, chunkdata in ipairs(data.chunks) do
             local newchunk = WORMBOSS_UTILS.CreateNewChunk(inst, DeserializePosition(chunkdata.groundpoint_start), true)
 
@@ -432,25 +367,19 @@ local function OnLoad(inst, data)
 
             if i == tail then
                 newchunk.lastrun = true
-                -- remove extra dirt
+
+                -- Create the things that would be there if the chunk is a tail.
+                WORMBOSS_UTILS.SpawnDirt(inst, newchunk, newchunk.groundpoint_end, false, true)
                 newchunk.dirt_start:Remove()
-                newchunk.dirt_start = nil
             end
 
             if i == head then
                 headchunk = newchunk
             else
-                WORMBOSS_UTILS.SpawnDirt(inst, newchunk, newchunk.groundpoint_end, false, true)
-                newchunk.head_added = true
                 newchunk.state = WORMBOSS_UTILS.CHUNK_STATE.MOVING
 
                 -- Update the chunks until we have a regular chunk or we have turned into a tail prefab.
                 while not newchunk.loopcomplete and newchunk.tail == nil do
-                    WORMBOSS_UTILS.UpdateChunk(inst, newchunk, FRAMES, true)
-                end
-
-                newchunk.state = WORMBOSS_UTILS.CHUNK_STATE.IDLE
-                for _ = 1, 30 do
                     WORMBOSS_UTILS.UpdateChunk(inst, newchunk, FRAMES, true)
                 end
             end
@@ -562,11 +491,6 @@ local function Worm_TestForRemoval(inst)
         end
     end
 
-    if not inst.components.health:IsDead() then
-        inst._storinghoundedupgrade = true -- HACK flag for OnSave, we don't actually want to save the chunks, since we want to do the respawn anim over again
-        TheWorld:PushEvent("hounded_storeupgraded", inst)
-        inst._storinghoundedupgrade = nil
-    end
     inst:Remove()
 end
 
@@ -596,7 +520,7 @@ local function Worm_GetSegmentFromPool(inst)
     local segment = table.remove(inst.segment_pool)
 
     if segment == nil then
-        segment = SpawnPrefab(inst.segmentprefab or "worm_boss_segment")
+        segment = SpawnPrefab("worm_boss_segment")
     else
         segment:Restart()
     end
@@ -627,7 +551,7 @@ local function hounded_overridelocation(inst,pt)
 end
 -----------------------------------------------------------------------------------------------------------------------
 
-local function commonfn(build, segmentbuilds, common_postinit, master_postinit) -- FIXME(DiogoW): Can this one be a CLASSIFIED/non-networked prefab?
+local function fn() -- FIXME(DiogoW): Can this one be a CLASSIFIED/non-networked prefab?
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -640,30 +564,25 @@ local function commonfn(build, segmentbuilds, common_postinit, master_postinit) 
     inst:AddTag("groundpound_immune")
     inst:AddTag("worm_boss_piece")
     inst:AddTag("epic")
+    inst:AddTag("wet")
 
     inst:SetPhysicsRadiusOverride(1.15)
     inst.Physics:SetActive(false)
+
+    inst.entity:SetPristine()
+
 
     if not TheNet:IsDedicated() then
         inst._playingmusic = false
         inst:DoPeriodicTask(1, PushMusic, 0)
     end
 
-    inst.build = build
-    inst.segment_builds = segmentbuilds
-
-	if common_postinit then
-		common_postinit(inst)
-	end
-
-    inst.entity:SetPristine()
-
     if not TheWorld.ismastersim then
         return inst
     end
 
     inst.scrapbook_bank  = "worm_boss"
-    inst.scrapbook_build = build
+    inst.scrapbook_build = "worm_boss"
     inst.scrapbook_anim  = "head_idle_loop"
 
     inst.child_scale = 1
@@ -692,12 +611,9 @@ local function commonfn(build, segmentbuilds, common_postinit, master_postinit) 
     inst.components.combat:SetDefaultDamage(TUNING.WORM_BOSS_DAMAGE)
     inst.components.combat:SetRetargetFunction(1, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
-    inst.components.combat.playerdamagepercent = TUNING.WORM_BOSS_PLAYERDAMAGEPERCENT
 
     inst:AddComponent("updatelooper")
     inst.components.updatelooper:AddOnUpdateFn(OnUpdate)
-
-	inst:AddComponent("damagetyperesist")
 
     inst._ondeath = OnDeath
     inst._ondeathended = OnDeathEnded
@@ -717,10 +633,6 @@ local function commonfn(build, segmentbuilds, common_postinit, master_postinit) 
 
     inst.OnRemoveEntity = OnRemoveEntity
 
-	if master_postinit then
-		master_postinit(inst)
-	end
-
     return inst
 end
 
@@ -730,7 +642,7 @@ local function OnSyncOwnerDirty(inst)
     inst:OnSetHighlightOwners(inst.syncowner1:value(), inst.syncowner2:value())
 end
 
-local function HighlightHandler_OnRemoveEntity(inst)
+function HighlightHandler_OnRemoveEntity(inst)
     for _, owner in pairs(inst._owners) do
         if owner.components.colouradder ~= nil then
             owner.components.colouradder:DetachChild(inst)
@@ -742,7 +654,7 @@ local function HighlightHandler_OnRemoveEntity(inst)
     end
 end
 
-local function SetHighlightOwners(inst, owner1, owner2)
+function SetHighlightOwners(inst, owner1, owner2)
     if inst.syncowner1 ~= nil then
         inst.syncowner1:set(owner1)
     end
@@ -814,7 +726,7 @@ local function AddHighlightHandler(inst)
     end
 end
 
-local function commonheadfn(build, common_postinit, master_postinit)
+local function headfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -834,13 +746,10 @@ local function commonheadfn(build, common_postinit, master_postinit)
     inst.AnimState:SetBank("worm_boss")
     inst.AnimState:SetBuild("worm_boss")
     inst.AnimState:PlayAnimation("head_idle_loop")
+
     inst.AnimState:SetFinalOffset(-3)
 
     AddHighlightHandler(inst)
-
-    if common_postinit then
-        common_postinit(inst)
-    end
 
     inst.entity:SetPristine()
 
@@ -852,20 +761,17 @@ local function commonheadfn(build, common_postinit, master_postinit)
 
     inst:AddComponent("lootdropper") -- Used in worm_boss_util.lua
 
+
     inst:SetStateGraph("SGworm_boss_head")
 
     inst.persists = false
-
-    if master_postinit then
-        master_postinit(inst)
-    end
 
     return inst
 end
 
 -----------------------------------------------------------------------------------------------------------------------
 
-local function commontailfn(build, common_postinit, master_postinit)
+local function tailfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -883,15 +789,11 @@ local function commontailfn(build, common_postinit, master_postinit)
     inst.Physics:SetActive(false)
 
     inst.AnimState:SetBank("worm_boss")
-    inst.AnimState:SetBuild(build)
+    inst.AnimState:SetBuild("worm_boss")
     inst.AnimState:PlayAnimation("tail_idle_loop")
     inst.AnimState:SetFinalOffset(-3)
 
     AddHighlightHandler(inst)
-
-    if common_postinit then
-        common_postinit(inst)
-    end
 
     inst.entity:SetPristine()
 
@@ -907,10 +809,6 @@ local function commontailfn(build, common_postinit, master_postinit)
 
     inst.persists = false
 
-    if master_postinit then
-        master_postinit(inst)
-    end
-
     return inst
 end
 
@@ -919,7 +817,6 @@ end
 local THORNS_AOE_RADIUS = 2
 local THORNS_AOE_MUST_TAGS  =  { "_combat" }
 local THRORNS_AOE_CANT_TAGS =  { "worm_boss_piece", "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" }
-local SHADOW_THORNS_AOE_CANT_TAGS = ConcatArrays({ "shadowthrall", "shadowboss", "stalker" }, THRORNS_AOE_CANT_TAGS)
 
 local AOE_DAMAGE_RADIUS_PADDING = 3
 
@@ -930,7 +827,7 @@ local function DoThornDamage(inst)
 
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    for _, target in ipairs(TheSim:FindEntities(x, y, z, THORNS_AOE_RADIUS + AOE_DAMAGE_RADIUS_PADDING, THORNS_AOE_MUST_TAGS, IsShadow(inst) and SHADOW_THORNS_AOE_CANT_TAGS or THRORNS_AOE_CANT_TAGS)) do
+    for _, target in ipairs(TheSim:FindEntities(x, y, z, THORNS_AOE_RADIUS + AOE_DAMAGE_RADIUS_PADDING, THORNS_AOE_MUST_TAGS, THRORNS_AOE_CANT_TAGS)) do
         if target ~= inst and
             not inst.ignore[target] and
             target:IsValid() and not target:IsInLimbo() and
@@ -1014,7 +911,7 @@ end
 local SEGMENT_PREDICTED_FRAMES = 3
 
 local function CLIENT_Segment_OnUpdate(inst, dt)
-	if inst.electrocuteframes and inst.electrocuteframes:value() > 0 then
+	if inst.electrocuteframes:value() > 0 then
 		local frames = inst.electrocuteframes:value() - 1
 		local scale = Remap(frames % 5, 4, 0, 0.85, 1)
 		inst.electrocuteframes:set_local(frames)
@@ -1065,10 +962,6 @@ end
 
 local function OnSegTimeDirty(inst)
     inst._predictionsleft = SEGMENT_PREDICTED_FRAMES
-
-    if inst._OnSegTimeDirty then
-        inst:_OnSegTimeDirty()
-    end
 end
 
 local function OnDirtPositionDirty(inst)
@@ -1080,7 +973,7 @@ local function OnHitEvent(inst)
     inst._hit = 1
 end
 
-local function commonsegmentfn(build, common_postinit, master_postinit)
+local function segmentfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -1098,10 +991,12 @@ local function commonsegmentfn(build, common_postinit, master_postinit)
     inst.Transform:SetEightFaced()
 
     inst.AnimState:SetBank("worm_boss")
-    inst.AnimState:SetBuild(build)
+    inst.AnimState:SetBuild("worm_boss_segment")
     inst.AnimState:PlayAnimation("segment")
 
     inst.AnimState:SetFinalOffset(-3)
+
+    inst:SetPrefabNameOverride("worm_boss") -- For death announce.
 
     AddHighlightHandler(inst)
 
@@ -1117,10 +1012,7 @@ local function commonsegmentfn(build, common_postinit, master_postinit)
     inst._dirt_end_z   = net_float(inst.GUID, "worm_boss_segment._dirt_end_z"  , "dirtpositiondirty")
 
     inst.hitevent = net_event(inst.GUID, "worm_boss_segment.hitevent")
-
-    if common_postinit then
-        common_postinit(inst)
-    end
+	inst.electrocuteframes = net_smallbyte(inst.GUID, "worm_boss_segment.electrocuteframes")
 
     inst.entity:SetPristine()
 
@@ -1130,7 +1022,7 @@ local function commonsegmentfn(build, common_postinit, master_postinit)
 
         inst:AddComponent("updatelooper")
         inst.components.updatelooper:AddOnUpdateFn(CLIENT_Segment_OnUpdate)
-
+        
         inst:ListenForEvent("segtimedirty", OnSegTimeDirty)
         inst:ListenForEvent("dirtpositiondirty", OnDirtPositionDirty)
         inst:ListenForEvent("worm_boss_segment.hitevent", OnHitEvent)
@@ -1151,23 +1043,19 @@ local function commonsegmentfn(build, common_postinit, master_postinit)
 
     inst.persists = false
 
-    if master_postinit then
-        master_postinit(inst)
-    end
-
     return inst
 end
 
 -----------------------------------------------------------------------------------------------------------------------
 
 local function Dirt_EmergeHead(inst)
-    inst:RemoveTag("notarget")
-    inst.components.groundpounder:GroundPound()
-    ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .03, .7, inst, SHAKE_DIST)
-    WORMBOSS_UTILS.ToggleOnPhysics(inst)
-    WORMBOSS_UTILS.EmergeHead(inst.worm, inst.chunk)
+        inst:RemoveTag("notarget")
+        inst.components.groundpounder:GroundPound()
+        ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .03, 1, inst, SHAKE_DIST)
+        WORMBOSS_UTILS.ToggleOnPhysics(inst)
+        WORMBOSS_UTILS.EmergeHead(inst.worm, inst.chunk)
 
-    inst:dirt_playanimation("dirt_emerge")
+        inst:dirt_playanimation("dirt_emerge")
 end
 
 local function Dirt_OnAnimOver(inst)
@@ -1177,7 +1065,7 @@ local function Dirt_OnAnimOver(inst)
 
     elseif inst.AnimState:IsCurrentAnimation("dirt_pre") then
         inst.components.groundpounder:GroundPound()
-        ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .03, .7, inst, SHAKE_DIST)
+        ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .03, 1, inst, SHAKE_DIST)
         inst:dirt_playanimation("dirt_idle")
 
     elseif inst.AnimState:IsCurrentAnimation("dirt_emerge_loop_pre") then
@@ -1190,7 +1078,7 @@ local function Dirt_OnAnimOver(inst)
                 inst.worm.new_crack.Transform:SetPosition(pt.x, 0, pt.z)
             end
         end)
-    elseif inst.AnimState:IsCurrentAnimation("dirt_pre_slow") or inst.AnimState:IsCurrentAnimation("dirt_shadow_pre_slow") then
+    elseif inst.AnimState:IsCurrentAnimation("dirt_pre_slow") then
         Dirt_EmergeHead(inst)
     elseif inst.AnimState:IsCurrentAnimation("dirt_segment_in_pre") then
         if inst.chunk ~= nil and inst.chunk.ease > 0 then
@@ -1253,16 +1141,6 @@ local function Dirt_OnAttacked(inst, data)
     end
 end
 
-local function DirtShadow_OnAttacked(inst, data)
-    if inst.chunk ~= nil and inst.worm.state ~= WORMBOSS_UTILS.STATE.DEAD then
-        inst.chunk.hit = 1
-
-        if inst.chunk.tail then
-            inst.chunk.tail:PushEvent("attacked")
-        end
-    end
-end
-
 local function Dirt_OnElectrocute(inst, data)
 	if inst._last_electrocute_time == nil or inst._last_electrocute_time + TUNING.ELECTROCUTE_DEFAULT_DURATION < GetTime() then
 		DoElectrocute(inst, data)
@@ -1310,7 +1188,7 @@ local function dirt_playanimation(inst, anim, loop)
         inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_pre")
     elseif inst.AnimState:IsCurrentAnimation("dirt_pst") then
         inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_pst_fast")
-    elseif inst.AnimState:IsCurrentAnimation("dirt_pre_slow") or inst.AnimState:IsCurrentAnimation("dirt_shadow_pre_slow") then
+    elseif inst.AnimState:IsCurrentAnimation("dirt_pre_slow") then
         inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_pre_slow")
     elseif inst.AnimState:IsCurrentAnimation("dirt_pst_slow") then
         inst.SoundEmitter:PlaySound("rifts4/worm_boss/dirt_pst_slow")
@@ -1327,12 +1205,12 @@ end
 
 local function CalcSanityAura(inst)
     if inst.chunk and (inst.chunk.head or not inst.chunk.dirt_end ) and inst.worm and inst.worm.state ~= WORMBOSS_UTILS.STATE.DEAD then
-        return inst.worm.components.combat.target ~= nil and -TUNING.SANITYAURA_LARGE or -TUNING.SANITYAURA_MED
+        return inst.worm.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
     end
     return 0
 end
 
-local function commondirtfn(build, common_postinit, master_postinit)
+local function dirtfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -1345,7 +1223,7 @@ local function commondirtfn(build, common_postinit, master_postinit)
     inst.Transform:SetEightFaced()
 
     inst.AnimState:SetBank("worm_boss")
-    inst.AnimState:SetBuild(build)
+    inst.AnimState:SetBuild("worm_boss")
     inst.AnimState:PlayAnimation("dirt_idle")
     inst.AnimState:SetFinalOffset(0)
 
@@ -1355,16 +1233,15 @@ local function commondirtfn(build, common_postinit, master_postinit)
     inst:AddTag("hostile")
     inst:AddTag("groundpound_immune")
     inst:AddTag("worm_boss_piece")
+    inst:AddTag("wet")
+
+    inst:SetPrefabNameOverride("worm_boss")
 
     inst:AddComponent("highlightchild")
 
     inst.scrapbook_proxy = "worm_boss"
 
     inst.dirt_playanimation = dirt_playanimation
-
-    if common_postinit then
-        common_postinit(inst)
-    end
 
     inst.entity:SetPristine()
 
@@ -1379,9 +1256,8 @@ local function commondirtfn(build, common_postinit, master_postinit)
     inst.components.health:SetInvincible(true)
 
     inst:AddComponent("combat")
-    -- (OMAR): These weren't used? This dirtfn never attacks directly.
-    -- inst.components.combat:SetDefaultDamage(TUNING.WORM_BOSS_DAMAGE)
-    -- inst.components.combat.playerdamagepercent = TUNING.WORM_BOSS_PLAYERDAMAGEPERCENT
+    inst.components.combat:SetDefaultDamage(TUNING.WORM_BOSS_DAMAGE)
+    inst.components.combat.playerdamagepercent = 0.75
     inst.components.combat.redirectdamagefn = Dirt_DamageRedirectFn
 
     inst:AddComponent("groundpounder")
@@ -1398,18 +1274,14 @@ local function commondirtfn(build, common_postinit, master_postinit)
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aurafn = CalcSanityAura
 
-    inst:AddComponent("explosiveresist")
-
+    inst:ListenForEvent("attacked", Dirt_OnAttacked)
+	inst:ListenForEvent("electrocute", Dirt_OnElectrocute)
     inst:ListenForEvent("animover", Dirt_OnAnimOver)
 
     inst.persists = false
 
     inst.SoundEmitter:PlaySound("rifts4/worm_boss/movement", "speed")
     inst.SoundEmitter:SetParameter("speed", "intensity", 0)
-
-    if master_postinit then
-        master_postinit(inst)
-    end
 
     return inst
 end
@@ -1448,230 +1320,10 @@ local function dirt_ground_fx_fn()
     return inst
 end
 
------------------------------------------------------------------------------------------------------------------------
-
-local function normal_common_postinit(inst)
-    inst:AddTag("wet")
-end
-
-local function normal_head_common_postinit(inst)
-    inst:AddTag("nightmarecorruptable") -- added to worm_boss_dirt when applicable in worm_boss_util.lua
-end
-
-local function normal_head_master_postinit(inst)
-    inst.sg.mem.canstalkercorrupt = true
-end
-
-local function normal_segment_common_postinit(inst)
-	inst.electrocuteframes = net_smallbyte(inst.GUID, "worm_boss_segment.electrocuteframes")
-    inst:SetPrefabNameOverride("worm_boss") -- For death announce.
-end
-
-local function normal_dirt_common_postinit(inst)
-    inst:AddTag("wet")
-    inst:SetPrefabNameOverride("worm_boss")
-end
-
-local function normal_dirt_master_postinit(inst)
-    inst:ListenForEvent("attacked", Dirt_OnAttacked)
-	inst:ListenForEvent("electrocute", Dirt_OnElectrocute)
-end
-
-local function normalfn() return commonfn("worm_boss", { "worm_boss_segment", "worm_boss_segment_2_build" }, normal_common_postinit) end
-local function normalheadfn() return commonheadfn("worm_boss", normal_head_common_postinit, normal_head_master_postinit) end
-local function normaltailfn() return commontailfn("worm_boss") end
-local function normalsegmentfn() return commonsegmentfn("worm_boss_segment", normal_segment_common_postinit) end
-local function normaldirtfn() return commondirtfn("worm_boss", normal_dirt_common_postinit, normal_dirt_master_postinit) end
-
------------------------------------------------------------------------------------------------------------------------
-
-local function shadow_CalcSanityAura(inst)
-    if inst.chunk and (inst.chunk.head or not inst.chunk.dirt_end ) and inst.worm and inst.worm.state ~= WORMBOSS_UTILS.STATE.DEAD then
-        return inst.worm.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
-    end
-    return 0
-end
-
-local function CreateFlameLoop()
-	local inst = CreateEntity()
-
-	inst:AddTag("FX")
-	--[[Non-networked entity]]
-	--inst.entity:SetCanSleep(false) --commented out; follow parent sleep instead
-	inst.persists = false
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddFollower()
-
-	inst.AnimState:SetBank("worm_boss")
-	inst.AnimState:SetBuild("worm_boss_shadow_build")
-	inst.AnimState:PlayAnimation("fireball", true)
-	inst.AnimState:SetSymbolLightOverride("fire", 1)
-	inst.AnimState:SetSymbolLightOverride("lava_flow", 1)
-
-	return inst
-end
-
-local function shadow_common_postinit(inst)
-    inst:AddTag("shadow_aligned")
-    inst:AddTag("shadowthrall")
-end
-
-local function shadow_OnColourChanged(inst, r, g, b, a)
-	for i, v in ipairs(inst.highlightchildren) do
-		v.AnimState:SetAddColour(r, g, b, a)
-	end
-end
-
-local function shadow_head_common_postinit(inst)
-    inst:AddTag("shadow_aligned")
-    inst:AddTag("shadowthrall")
-	inst.AnimState:SetBuild("worm_boss_shadow_build")
-	inst.AnimState:SetSymbolLightOverride("worm_spike", 1)
-	inst.AnimState:SetSymbolLightOverride("head_lips", 1)
-	inst.AnimState:SetSymbolLightOverride("head_teeth", 1)
-	inst.AnimState:SetSymbolLightOverride("red_lure", 1)
-	inst.AnimState:SetSymbolLightOverride("red", 1)
-
-    inst:AddComponent("colouraddersync")
-
-	if not TheNet:IsDedicated() then
-		local flame = CreateFlameLoop()
-		flame.entity:SetParent(inst.entity)
-		flame.Follower:FollowSymbol(inst.GUID, "follow_fireball", nil, nil, nil, true)
-
-		inst.highlightchildren = { flame }
-		inst.components.colouraddersync:SetColourChangedFn(shadow_OnColourChanged)
-	end
-end
-
-local function shadow_tail_common_postinit(inst)
-    inst:AddTag("shadow_aligned")
-    inst:AddTag("shadowthrall")
-	inst.AnimState:SetBuild("worm_boss_shadow_build")
-	inst.AnimState:SetSymbolLightOverride("worm_spike", 1)
-	inst.AnimState:SetSymbolLightOverride("head_lips", 1)
-	inst.AnimState:SetSymbolLightOverride("head_teeth", 1)
-	inst.AnimState:SetSymbolLightOverride("red", 1)
-end
-
-local function shadow_OnHeadDirty(inst)
-	local flame = CreateFlameLoop()
-	flame.entity:SetParent(inst.entity)
-	flame.Follower:FollowSymbol(inst.GUID, "follow_fireball", nil, nil, nil, true)
-	inst.highlightchildren = { flame }
-end
-
-local function shadow_SetIsHead(inst, boolval)
-    if boolval ~= inst._head:value() then
-        inst._head:set(boolval)
-        if not TheNet:IsDedicated() then
-            shadow_OnHeadDirty(inst)
-        end
-    end
-end
-
-local function shadow_segment_common_postinit(inst)
-    inst:AddTag("shadow_aligned")
-    inst:AddTag("shadowthrall")
-	inst.AnimState:SetSymbolLightOverride("worm_spike", 1)
-	inst.AnimState:SetSymbolLightOverride("head_lips", 1)
-	inst.AnimState:SetSymbolLightOverride("head_teeth", 1)
-	inst.AnimState:SetSymbolLightOverride("red_lure", 1)
-	inst.AnimState:SetSymbolLightOverride("red", 1)
-
-    inst:SetPrefabNameOverride("worm_boss_shadow") -- For death announce.
-
-    inst._head = net_bool(inst.GUID, "worm_boss_shadow_segment.head", "onheaddirty")
-    if not TheWorld.ismastersim then
-        inst:ListenForEvent("onheaddirty", shadow_OnHeadDirty)
-    end
-end
-
-local function shadow_segment_master_postinit(inst)
-	inst:AddComponent("planarentity")
-	inst:AddComponent("planardamage")
-	inst.components.planardamage:SetBaseDamage(TUNING.WORM_BOSS_SHADOW_PLANAR_DAMAGE)
-
-    inst.SetIsHead = shadow_SetIsHead
-end
-
-local function shadow_dirt_common_postinit(inst)
-    inst:AddTag("shadow_aligned")
-    inst:AddTag("shadowthrall")
-
-    inst:SetPrefabNameOverride("worm_boss_shadow")
-
-    inst.scrapbook_proxy = "worm_boss_shadow"
-end
-
-local function shadow_dirt_master_postinit(inst)
-    inst.components.sanityaura.aurafn = shadow_CalcSanityAura
-	inst:AddComponent("planarentity")
-	inst:AddComponent("planardamage")
-	inst.components.planardamage:SetBaseDamage(TUNING.WORM_BOSS_SHADOW_PLANAR_DAMAGE)
-
-    inst:ListenForEvent("attacked", DirtShadow_OnAttacked)
-end
-
-local function shadow_OnHealthDelta(inst, data)
-	if data.newpercent < TUNING.WORM_BOSS_SHADOW_ENRAGED_THRESHOLD then
-		inst:RemoveEventCallback("healthdelta", shadow_OnHealthDelta)
-		inst.enraged = true
-		inst:PushEvent("enraged")
-	end
-end
-
-local function shadow_OnLoad(inst, data)--, ents)
-	if inst.components.health:GetPercent() < TUNING.WORM_BOSS_SHADOW_ENRAGED_THRESHOLD then
-		inst:RemoveEventCallback("healthdelta", shadow_OnHealthDelta)
-		inst.enraged = true
-	end
-end
-
-local function SpawnPlanarEffectOn(inst, attacker)
-    return inst.components.combat.redirected_from -- Set in combat:GetAttacked
-end
-
-local function shadow_master_postinit(inst)
-	inst.scrapbook_anim = "scrapbook_shadow"
-    inst.components.lootdropper:SetChanceLootTable("worm_boss_shadow")
-    inst.components.health:SetMaxHealth(TUNING.WORM_BOSS_SHADOW_HEALTH)
-
-	inst:AddComponent("planarentity")
-    inst.components.planarentity.spawn_effect_on = SpawnPlanarEffectOn
-	inst:AddComponent("planardamage")
-	inst.components.planardamage:SetBaseDamage(TUNING.WORM_BOSS_SHADOW_PLANAR_DAMAGE)
-
-	inst:ListenForEvent("healthdelta", shadow_OnHealthDelta)
-    inst._OnLoad = shadow_OnLoad
-
-    inst.headprefab = "worm_boss_shadow_head"
-    inst.tailprefab = "worm_boss_shadow_tail"
-    inst.segmentprefab = "worm_boss_shadow_segment"
-    inst.dirtprefab = "worm_boss_shadow_dirt"
-end
-
-local function shadowfn() return commonfn("worm_boss_shadow_build", { "worm_boss_segment_shadow_build", "worm_boss_segment_shadow_2_build" }, shadow_common_postinit, shadow_master_postinit) end
-local function shadowheadfn() return commonheadfn("worm_boss_shadow_build", shadow_head_common_postinit) end
-local function shadowtailfn() return commontailfn("worm_boss_shadow_build", shadow_tail_common_postinit) end
-local function shadowsegmentfn() return commonsegmentfn("worm_boss_segment_shadow_build", shadow_segment_common_postinit, shadow_segment_master_postinit) end
-local function shadowdirtfn() return commondirtfn("worm_boss_shadow_build", shadow_dirt_common_postinit, shadow_dirt_master_postinit) end
-
------------------------------------------------------------------------------------------------------------------------
-
 return
-    Prefab("worm_boss",                normalfn,          assets, prefabs),
-    Prefab("worm_boss_head",           normalheadfn,      assets),
-    Prefab("worm_boss_tail",           normaltailfn,      assets),
-    Prefab("worm_boss_segment",        normalsegmentfn,   assets),
-    Prefab("worm_boss_dirt",           normaldirtfn,      assets),
-    --
-    Prefab("worm_boss_shadow",         shadowfn,          assets_shadow, prefabs_shadow),
-    Prefab("worm_boss_shadow_head",    shadowheadfn,      assets_shadow),
-    Prefab("worm_boss_shadow_tail",    shadowtailfn,      assets_shadow),
-    Prefab("worm_boss_shadow_segment", shadowsegmentfn,   assets_shadow),
-    Prefab("worm_boss_shadow_dirt",    shadowdirtfn,      assets_shadow),
-    --
-    Prefab("worm_boss_dirt_ground_fx", dirt_ground_fx_fn, assets)
+    Prefab("worm_boss",                fn,                assets, prefabs),
+    Prefab("worm_boss_head",           headfn,            assets, prefabs),
+    Prefab("worm_boss_tail",           tailfn,            assets, prefabs),
+    Prefab("worm_boss_segment",        segmentfn,         assets, prefabs),
+    Prefab("worm_boss_dirt",           dirtfn,            assets, prefabs),
+    Prefab("worm_boss_dirt_ground_fx", dirt_ground_fx_fn, assets, prefabs)

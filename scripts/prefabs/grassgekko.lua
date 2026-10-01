@@ -102,7 +102,6 @@ local function fn()
     inst:AddTag("smallcreature")
     inst:AddTag("animal")
     inst:AddTag("grassgekko")
-    inst:AddTag("plantcreature")
 
     --herdmember (from herdmember component) added to pristine state for optimization
     inst:AddTag("herdmember")

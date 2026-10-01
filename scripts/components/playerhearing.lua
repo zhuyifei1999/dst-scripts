@@ -4,7 +4,6 @@ local DSP =
 {
     mufflehat =
     {
-        equiptag = true,
         lowdsp =
         {
             ["set_music"] = 750,
@@ -18,30 +17,14 @@ local DSP =
         },
         duration = DURATION,
     },
-    wormdigestionmuffle =
-    {
-        lowdsp =
-        {
-            ["set_music"] = 600,
-            ["set_ambience"] = 600,
-            ["set_sfx/set_ambience"] = 600,
-            ["set_sfx/movement"] = 600,
-            ["set_sfx/creature"] = 2500,
-            ["set_sfx/player"] = 600,
-            ["set_sfx/voice"] = 600,
-            ["set_sfx/sfx"] = 600,
-        },
-        duration = DURATION,
-    },
 }
 
-local function UpdateDSP(inst)
+local function OnEquipChanged(inst)
     local self = inst.components.playerhearing
     local inventory = inst.replica.inventory
     local dirty = false
     for k, v in pairs(DSP) do
-        if (v.equiptag and self[k] == not inventory:EquipHasTag(k))
-            or (not v.equiptag and self[k] ~= self.overridedsp[k]) then
+        if self[k] == not inventory:EquipHasTag(k) then
             self[k] = not self[k]
             dirty = true
         end
@@ -49,10 +32,6 @@ local function UpdateDSP(inst)
     if dirty then
         self:UpdateDSPTables()
     end
-end
-
-local function OnEquipChanged(inst)
-    UpdateDSP(inst)
 end
 
 local function OnInit(inst, self)
@@ -70,20 +49,13 @@ end
 local PlayerHearing = Class(function(self, inst)
     self.inst = inst
 
-    self.overridedsp = {}
     for k, v in pairs(DSP) do
         self[k] = false
-        self.overridedsp[k] = false
     end
     self.dsptables = {}
 
     inst:DoTaskInTime(0, OnInit, self)
 end)
-
-function PlayerHearing:OverrideDSPEnabled(dsp, enabled)
-    self.overridedsp[dsp] = enabled or false
-    UpdateDSP(self.inst)
-end
 
 function PlayerHearing:GetDSPTables()
     return self.dsptables

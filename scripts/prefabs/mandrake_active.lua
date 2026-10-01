@@ -153,7 +153,6 @@ local function fn()
     inst:AddTag("character")
     inst:AddTag("small")
     inst:AddTag("smallcreature")
-    inst:AddTag("plantcreature")
 
     inst.entity:SetPristine()
 

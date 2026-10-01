@@ -708,6 +708,7 @@ local function MakeSpiderDenFn(den_level)
 
         inst:AddTag("cavedweller")
         inst:AddTag("structure")
+		inst:AddTag("lifedrainable") -- by batbat (since it normally doesn't drain from structures)
         inst:AddTag("beaverchewable") -- by werebeaver
         inst:AddTag("hostile")
         inst:AddTag("spiderden")

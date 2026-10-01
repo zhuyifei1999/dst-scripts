@@ -7,6 +7,16 @@ local function onchargetime(self)
     end
 end
 
+local function oncurrent(self, current)
+    local pct = current / self.total
+end
+
+local function ontotal(self, total)
+    if self.current ~= nil then
+        oncurrent(self, self.current)
+    end
+end
+
 local Rechargeable = Class(function(self, inst)
     self.inst = inst
     self.total = 180
@@ -23,6 +33,8 @@ end,
 nil,
 {
     chargetime = onchargetime,
+    current = oncurrent,
+    total = ontotal,
 })
 
 function Rechargeable:OnRemoveFromEntity()
@@ -55,7 +67,6 @@ function Rechargeable:OnUpdate(dt)
     local chargetime = self.chargetime * (1 + self.chargetimemod:Get())
     self:SetCharge(chargetime > 0 and self.current + dt * self.total / chargetime or self.total, true)
 end
-Rechargeable.LongUpdate = Rechargeable.OnUpdate
 
 function Rechargeable:SetMaxCharge(val)
     if self.total ~= val then

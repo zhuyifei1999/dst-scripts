@@ -110,7 +110,7 @@ local function GetStatus(inst)
         or nil
 end
 
-local DIET = { FOODTYPE.MEAT, FOODTYPE.HORRIBLE }
+local DIET = { FOODTYPE.MEAT }
 local function fn()
     local inst = CreateEntity()
 
@@ -194,6 +194,7 @@ local function fn()
     ------------------
     inst:AddComponent("eater")
     inst.components.eater:SetDiet(DIET, DIET)
+    inst.components.eater:SetCanEatHorrible()
     inst.components.eater:SetStrongStomach(true) -- can eat monster meat!
     inst.components.eater:SetCanEatRawMeat(true)
 

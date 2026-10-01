@@ -443,7 +443,6 @@ local function fn()
     inst:AddTag("smallcreature")
     inst:AddTag("lightbattery")
     inst:AddTag("lunar_aligned")
-    inst:AddTag("plantcreature")
 
     MakeInventoryFloatable(inst)
 
