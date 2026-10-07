@@ -101,7 +101,6 @@ local function SetMaterial(inst, materialid)
 end
 
 local MOONCHESS_MUST_TAGS = { "chess_moonevent" }
-local MOONCHESS_CANT_TAGS = { "INLIMBO" }
 
 local function DoStruggle(inst, count)
     if inst.forcebreak then
@@ -115,8 +114,6 @@ local function DoStruggle(inst, count)
             end)
         end
     else
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, MOONCHESS_MUST_TAGS, MOONCHESS_CANT_TAGS)
         inst.AnimState:PlayAnimation("jiggle")
         inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
         inst._task =
@@ -145,13 +142,18 @@ local function CheckMorph(inst)
     end
 
 	if PIECES[inst.pieceid].moonevent and
-		(TheWorld.state.isfullmoon or TheWorld.state.isnewmoon) and
+		((not TheWorld:HasTag("cave") and (TheWorld.state.isfullmoon or TheWorld.state.isnewmoon)) or inst.forcestruggle) and
 		not inst:IsAsleep()
 	then
         StartStruggle(inst)
     else
         StopStruggle(inst)
     end
+end
+
+local function ForceStruggle(inst, struggle) -- from kings staff
+    inst.forcestruggle = struggle
+    CheckMorph(inst)
 end
 
 local function onequip(inst, owner)
@@ -237,13 +239,8 @@ local function onload(inst, data)
 			inst:StopWatchingWorldState("isfullmoon", CheckMorph)
             inst:StopWatchingWorldState("isnewmoon", CheckMorph)
             inst:RemoveEventCallback("shadowchessroar", OnShadowChessRoar)
+            inst:RemoveEventCallback("forcechessstruggle", ForceStruggle)
         end
-    end
-end
-
-local function islightgymweight(id)
-    if PIECES[id].gymweight then
-
     end
 end
 
@@ -302,6 +299,7 @@ local function makepiece(pieceid, materialid)
         if PIECES[pieceid].moonevent and (materialid == nil or MATERIALS[materialid].name ~= MOONGLASS_NAME) then
             inst:AddTag("chess_moonevent")
             inst:AddTag("event_trigger")
+            inst:AddTag("nightmarecorruptable")
         end
 
         inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)
@@ -349,15 +347,18 @@ local function makepiece(pieceid, materialid)
         inst.OnLoad = onload
         inst.OnSave = onsave
 
-        if not TheWorld:HasTag("cave") and (materialid == nil or MATERIALS[materialid].name ~= MOONGLASS_NAME) then
+        if (materialid == nil or MATERIALS[materialid].name ~= MOONGLASS_NAME) then
             if PIECES[pieceid].moonevent then
                 inst.OnEntityWake = CheckMorph
                 inst.OnEntitySleep = CheckMorph
-				inst:WatchWorldState("isfullmoon", CheckMorph)
-                inst:WatchWorldState("isnewmoon", CheckMorph)
+                if not TheWorld:HasTag("cave") then
+				    inst:WatchWorldState("isfullmoon", CheckMorph)
+                    inst:WatchWorldState("isnewmoon", CheckMorph)
+                end
+                inst:ListenForEvent("forcechessstruggle", ForceStruggle)
             end
 
-            inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
+            inst:ListenForEvent("shadowchessroar", OnShadowChessRoar) -- this can happen in caves through kings staff
         end
 
         inst.pieceid = pieceid

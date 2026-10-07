@@ -223,6 +223,34 @@ local function TryReturnItemToFeeder(inst)
 	end
 end
 
+--------------------------------------------------------------------------
+
+local function SetGooBuild(inst, build)
+	if inst.sg.mem.goo_build ~= build then
+		if inst.sg.mem.goo_build then
+			inst.AnimState:ClearOverrideBuild(inst.sg.mem.goo_build)
+			if inst.sg.mem.goo_build == "goo_vines" then
+				inst.AnimState:SetSymbolLightOverride("goo_vine_red", 0)
+				inst.AnimState:SetSymbolLightOverride("goo_vine_black", 0)
+				inst.AnimState:SetSymbolLightOverride("goo_vines", 0)
+				inst.SoundEmitter:KillSound("goo_vines_loop")
+			end
+		end
+		inst.sg.mem.goo_build = build
+		if build then
+			inst.AnimState:AddOverrideBuild(build)
+			if build == "goo_vines" then
+				inst.AnimState:SetSymbolLightOverride("goo_vine_red", 1)
+				inst.AnimState:SetSymbolLightOverride("goo_vine_black", 1)
+				inst.AnimState:SetSymbolLightOverride("goo_vines", 1)
+				inst.SoundEmitter:PlaySound("rifts/lunarthrall/vine_move", "goo_vines_loop")
+			end
+		end
+	end
+end
+
+--------------------------------------------------------------------------
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -444,6 +472,7 @@ local events =
         function(inst, data)
             if inst.components.health ~= nil and not inst.components.health:IsDead() and inst.components.pinnable ~= nil then
                 if inst.components.pinnable.canbepinned then
+					inst.sg.statemem.isstillpinned = true
                     inst.sg:GoToState("pinned_pre", data)
                 elseif inst.components.pinnable:IsStuck() then
                     --V2C: Since sg events are queued, it's possible we're no longer pinnable
@@ -504,6 +533,7 @@ local events =
             elseif inst.sg:HasStateTag("shell") then
                 inst.sg:GoToState("shell_hit")
             elseif inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("pinned_hit")
 			elseif data.stimuli == "electric" and inst.sg:HasStateTag("electrocute") and inst.sg:GetTimeInState() < 3 * FRAMES then
 				return --Do nothing
@@ -580,7 +610,12 @@ local events =
 					inst.sg:GoToState("wx_shield_hit")
 				end
             else
-                inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
+                if inst.components.inventory:EquipHasTag("superheavyarmor") then
+                    inst:PushEvent("knockbackblocked")
+                    inst.sg:GoToState("hit")
+                else
+                    inst.sg:GoToState((data.forcelanded or inst.components.inventory:EquipHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
+                end
             end
         end
     end),
@@ -2800,6 +2835,7 @@ local states =
             end
 
             if inst.components.pinnable == nil or not inst.components.pinnable:IsStuck() then
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
                 return
             end
@@ -2808,7 +2844,13 @@ local states =
             inst:ClearBufferedAction()
 
             inst.AnimState:OverrideSymbol("swap_goosplat", inst.components.pinnable.goo_build or "goo", "swap_goosplat")
-            inst.AnimState:PlayAnimation("hit")
+
+			if inst.components.pinnable.goo_build == "goo_vines" then
+				SetGooBuild(inst, "goo_vines")
+				inst.AnimState:PlayAnimation("distress_pre")
+			else
+				inst.AnimState:PlayAnimation("hit")
+			end
 
             inst.components.inventory:Hide()
             inst:PushEvent("ms_closepopups")
@@ -2817,6 +2859,7 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
             end),
             EventHandler("animover", function(inst)
@@ -2828,10 +2871,14 @@ local states =
         },
 
         onexit = function(inst)
+			inst.AnimState:ClearOverrideSymbol("swap_goosplat")
             if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
                 inst.components.inventory:Show()
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
             end
-            inst.AnimState:ClearOverrideSymbol("swap_goosplat")
         end,
     },
 
@@ -2841,12 +2888,17 @@ local states =
 
         onenter = function(inst)
             if inst.components.pinnable == nil or not inst.components.pinnable:IsStuck() then
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
                 return
             end
 
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
+
+			if inst.components.pinnable.goo_build == "goo_vines" then
+				SetGooBuild(inst, "goo_vines")
+			end
 
             inst.AnimState:PlayAnimation("distress_loop", true)
             inst.SoundEmitter:PlaySound("dontstarve/creatures/spat/spit_playerstruggle", "struggling")
@@ -2858,13 +2910,20 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
             end),
         },
 
         onexit = function(inst)
-            inst.components.inventory:Show()
             inst.SoundEmitter:KillSound("struggling")
+			if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
+				inst.components.inventory:Show()
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
+			end
         end,
     },
 
@@ -2875,6 +2934,10 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
+
+			if inst.components.pinnable.goo_build == "goo_vines" then
+				SetGooBuild(inst, "goo_vines")
+			end
 
             inst.AnimState:PlayAnimation("hit_goo")
 
@@ -2888,6 +2951,7 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
+				inst.sg.statemem.isstillpinned = true
                 inst.sg:GoToState("breakfree")
             end),
             EventHandler("animover", function(inst)
@@ -2900,7 +2964,11 @@ local states =
 
         onexit = function(inst)
             if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
                 inst.components.inventory:Show()
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
             end
         end,
     },
@@ -2930,10 +2998,15 @@ local states =
         },
 
         onexit = function(inst)
-            inst.components.inventory:Show()
+			if not inst.sg.statemem.isstillpinned then
+				SetGooBuild(inst, nil)
+				inst.components.inventory:Show()
+				if inst.components.pinnable then
+					inst.components.pinnable:Unstick()
+				end
+			end
         end,
     },
-
 
     State{
         name = "electrocute",

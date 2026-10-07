@@ -76,15 +76,6 @@ local function ImpactFx(inst, attacker, target)
     end
 end
 
-local function OnAttack(inst, attacker, target)
-	if target ~= nil and target:IsValid() and attacker ~= nil and attacker:IsValid() then
-		if inst.ammo_def ~= nil and inst.ammo_def.onhit ~= nil then
-			inst.ammo_def.onhit(inst, attacker, target)
-		end
-		ImpactFx(inst, attacker, target)
-	end
-end
-
 local function OnPreHit(inst, attacker, target)
 	if inst.ammo_def ~= nil and inst.ammo_def.onprehit ~= nil then
 		inst.ammo_def.onprehit(inst, attacker, target)
@@ -96,9 +87,24 @@ local function OnPreHit(inst, attacker, target)
 end
 
 local function OnHit(inst, attacker, target)
-    if target ~= nil and target:IsValid() and target.components.combat ~= nil then
-		target.components.combat:RemoveShouldAvoidAggro(attacker)
+	if target and target:IsValid() then
+		if attacker and attacker:IsValid() then
+			if inst.ammo_def and inst.ammo_def.onhit then
+				inst.ammo_def.onhit(inst, attacker, target)
+			end
+
+			if not target:IsValid() then
+				target = nil
+			elseif attacker:IsValid() then
+				ImpactFx(inst, attacker, target)
+			end
+		end
+
+		if target and target.components.combat then
+			target.components.combat:RemoveShouldAvoidAggro(attacker)
+		end
 	end
+
     inst:Remove()
 end
 
@@ -442,12 +448,15 @@ local HORROR_PERIOD = 1
 local INITIAL_RND_PERIOD = 0.35
 
 local function RecycleHorrorDebuffFX(fx, pool)
+	fx.components.deflectable:SetOwner(nil)
+	fx.components.deflectable:SetOnDeflectFn(nil)
 	fx:RemoveFromScene()
 	table.insert(pool, fx)
 end
 
 local function OnUpdate_HorrorFuel(target, attacker, data, endtime, first)
-	if not (target.components.health and target.components.health:IsDead()) and
+	if not data.deflected and
+		not (target.components.health and target.components.health:IsDead()) and
 		target.components.combat and target.components.combat:CanBeAttacked()
 	then
 		local rnd = math.random(math.clamp(NUM_HORROR_VARIATIONS - #data.tasks, 2, NUM_HORROR_VARIATIONS / 2))
@@ -467,6 +476,8 @@ local function OnUpdate_HorrorFuel(target, attacker, data, endtime, first)
 			fx.onrecyclefn = RecycleHorrorDebuffFX
 		end
 		fx.entity:SetParent(target.entity)
+		fx.components.deflectable:SetOwner(attacker)
+		fx.components.deflectable:SetOnDeflectFn(function() data.deflected = true end)
 		fx:Restart(attacker, target, variation, data.pool, first)
 	end
 
@@ -1217,7 +1228,6 @@ local function projectile_fn(ammo_def)
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(ammo_def.damage)
-	inst.components.weapon:SetOnAttack(OnAttack)
 
     inst:AddComponent("projectile")
     inst.components.projectile:SetSpeed(25)

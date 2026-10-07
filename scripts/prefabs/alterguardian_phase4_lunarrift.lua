@@ -823,7 +823,7 @@ local function CalcSanityAura(inst, observer)
 end
 
 local function SanityAuraFalloff(inst, observer, distsq)
-	return not inst._sanityaura_inarena and distsq > ENTER_DOMAIN_RANGE_SQ and math.huge or nil
+	return not inst._sanityaura_inarena and distsq > ENTER_DOMAIN_RANGE_SQ and math.huge or 1
 end
 
 --------------------------------------------------------------------------

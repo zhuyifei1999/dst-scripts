@@ -194,6 +194,21 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_yothknights",
     },
 
+	charlie_boss =
+	{
+		"", --silence for standby loop (played by prefab instead to control dynamic paramter)
+		"", --silence,											+[gateway_dimension_battle mix]
+		"dontstarve/music/music_epicfight_charlie_battle", --	+[gateway_dimension_battle mix]
+		"", --silence, (no mix)
+	},
+
+	shrouden =
+	{
+		"", --silence,											+[gateway_dimension_battle mix]
+		"dontstarve/music/music_epicfight_charlie_battle", --	+[gateway_dimension_battle mix]
+		"", --silence, (no mix)
+	},
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",

@@ -425,6 +425,7 @@ local function fn()
 	--Only get TOSS action via PointSpecialActions
     inst:AddTag("special_action_toss")
 	inst:AddTag("keep_equip_toss")
+	inst:AddTag("torch")
 
 	MakeInventoryFloatable(inst, "med", nil, 0.68)
 

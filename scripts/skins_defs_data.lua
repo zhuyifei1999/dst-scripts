@@ -5220,6 +5220,7 @@ TheInventory:AddScrapbook15Key( "767287F" ) -- armor_bramble
 TheInventory:AddScrapbook15Key( "CA5FD0FF" ) -- armor_carrotlure
 TheInventory:AddScrapbook5Key( "E8455075" ) -- armor_lunarplant
 TheInventory:AddScrapbook15Key( "A433636F" ) -- armor_lunarplant_husk
+TheInventory:AddScrapbook4Key( "A5A28CF4" ) -- armor_rocky
 TheInventory:AddScrapbook14Key( "ADFDB7AE" ) -- armor_sanity
 TheInventory:AddScrapbook6Key( "7CBFBBA6" ) -- armor_voidcloth
 TheInventory:AddScrapbook1Key( "4AEB6641" ) -- armordragonfly
@@ -5243,6 +5244,9 @@ TheInventory:AddScrapbook8Key( "8EA00A08" ) -- atrium_gate
 TheInventory:AddScrapbook2Key( "D6109CA2" ) -- atrium_key
 TheInventory:AddScrapbook9Key( "E4DB1099" ) -- atrium_light
 TheInventory:AddScrapbook8Key( "BDDF1BF8" ) -- atrium_overgrowth
+TheInventory:AddScrapbook8Key( "344B2AC8" ) -- atrium_ritual_organ_bat
+TheInventory:AddScrapbook7Key( "9203B487" ) -- atrium_ritual_organ_rocky
+TheInventory:AddScrapbook0Key( "E1397FE0" ) -- atrium_ritual_organ_worm
 TheInventory:AddScrapbook9Key( "2B025ED9" ) -- atrium_rubble
 TheInventory:AddScrapbook1Key( "D7A1A9A1" ) -- atrium_statue
 TheInventory:AddScrapbook14Key( "303BFDCE" ) -- axe
@@ -5268,7 +5272,11 @@ TheInventory:AddScrapbook5Key( "8C2B6AF5" ) -- barnaclestuffedfishhead
 TheInventory:AddScrapbook12Key( "4CED8C7C" ) -- barnaclesushi
 TheInventory:AddScrapbook14Key( "B62E6DE" ) -- barnaclinguine
 TheInventory:AddScrapbook5Key( "30A307B5" ) -- bat
+TheInventory:AddScrapbook7Key( "DA957AB7" ) -- bat_boss
+TheInventory:AddScrapbook8Key( "F52D21A8" ) -- bat_boss_shadow
+TheInventory:AddScrapbook8Key( "4E619BC8" ) -- bat_bosscorpsehat
 TheInventory:AddScrapbook0Key( "7F46D7C0" ) -- batbat
+TheInventory:AddScrapbook15Key( "10E6E6AF" ) -- batbosscave
 TheInventory:AddScrapbook2Key( "58B7E9E2" ) -- batcave
 TheInventory:AddScrapbook5Key( "3DDED035" ) -- bathbomb
 TheInventory:AddScrapbook8Key( "5F64BA68" ) -- batnose
@@ -5441,6 +5449,9 @@ TheInventory:AddScrapbook13Key( "F584B4FD" ) -- cave_vent_rock
 TheInventory:AddScrapbook0Key( "B88DB840" ) -- cavein_boulder
 TheInventory:AddScrapbook11Key( "27841B6B" ) -- ceviche
 TheInventory:AddScrapbook13Key( "EC8853AD" ) -- charcoal
+TheInventory:AddScrapbook10Key( "9117A01A" ) -- charlie_boss
+TheInventory:AddScrapbook14Key( "48621E2E" ) -- charlie_boss_projectile
+TheInventory:AddScrapbook5Key( "5F431D95" ) -- charlie_boss_runner
 TheInventory:AddScrapbook14Key( "FF56904E" ) -- charlie_stage_post
 TheInventory:AddScrapbook8Key( "5810C628" ) -- chessjunk
 TheInventory:AddScrapbook6Key( "5FBEEFE6" ) -- chesspiece_anchor
@@ -5889,6 +5900,7 @@ TheInventory:AddScrapbook8Key( "21D1D968" ) -- kelp_cooked
 TheInventory:AddScrapbook9Key( "959A18B9" ) -- kelp_dried
 TheInventory:AddScrapbook13Key( "79BEDA7D" ) -- kelphat
 TheInventory:AddScrapbook7Key( "87CB6FD7" ) -- killerbee
+TheInventory:AddScrapbook13Key( "735DE41D" ) -- king_cane
 TheInventory:AddScrapbook14Key( "34E4C31E" ) -- klaus
 TheInventory:AddScrapbook7Key( "1AD06237" ) -- klaus_sack
 TheInventory:AddScrapbook11Key( "3884DFAB" ) -- klaussackkey
@@ -6338,6 +6350,7 @@ TheInventory:AddScrapbook7Key( "122F70D7" ) -- purebrilliance
 TheInventory:AddScrapbook14Key( "9D92CCE" ) -- purpleamulet
 TheInventory:AddScrapbook3Key( "2AE7E3B3" ) -- purplegem
 TheInventory:AddScrapbook4Key( "95246054" ) -- purplemooneye
+TheInventory:AddScrapbook7Key( "623CB4C7" ) -- queen_torch
 TheInventory:AddScrapbook10Key( "9C9A403A" ) -- rabbit
 TheInventory:AddScrapbook1Key( "69387001" ) -- rabbithat
 TheInventory:AddScrapbook10Key( "5BC167BA" ) -- rabbithole
@@ -6391,6 +6404,8 @@ TheInventory:AddScrapbook12Key( "E02458AC" ) -- rock_moon_shell
 TheInventory:AddScrapbook15Key( "5719E47F" ) -- rock_petrified_tree
 TheInventory:AddScrapbook14Key( "9CE1EAEE" ) -- rocks
 TheInventory:AddScrapbook4Key( "9CE1EAF4" ) -- rocky
+TheInventory:AddScrapbook8Key( "CAFE4638" ) -- rocky_boss
+TheInventory:AddScrapbook7Key( "6EA227E7" ) -- rocky_boss_shadow
 TheInventory:AddScrapbook9Key( "EF20C9B9" ) -- rook
 TheInventory:AddScrapbook9Key( "976FCDF9" ) -- rook_nightmare
 TheInventory:AddScrapbook2Key( "EF21C9F2" ) -- rope
@@ -6460,6 +6475,7 @@ TheInventory:AddScrapbook12Key( "E5FD54AC" ) -- shadow_knight
 TheInventory:AddScrapbook2Key( "EB84E712" ) -- shadow_leech
 TheInventory:AddScrapbook8Key( "20A450D8" ) -- shadow_rook
 TheInventory:AddScrapbook15Key( "25FD132F" ) -- shadowhand
+TheInventory:AddScrapbook0Key( "740DA490" ) -- shadowhand_shrouded
 TheInventory:AddScrapbook6Key( "203935E6" ) -- shadowheart
 TheInventory:AddScrapbook5Key( "DABFCDA5" ) -- shadowheart_infused
 TheInventory:AddScrapbook6Key( "3C8E66A6" ) -- shadowrift_portal
@@ -7002,6 +7018,7 @@ TheInventory:AddScrapbook0Key( "DBB6ADC0" ) -- wood_table_square
 TheInventory:AddScrapbook13Key( "B51D5ECD" ) -- woodcarvedhat
 TheInventory:AddScrapbook3Key( "D7C5DE33" ) -- worm
 TheInventory:AddScrapbook9Key( "E11601B9" ) -- worm_boss
+TheInventory:AddScrapbook6Key( "E98C3E26" ) -- worm_boss_shadow
 TheInventory:AddScrapbook3Key( "93186CB3" ) -- wormhole
 TheInventory:AddScrapbook3Key( "95CB0B43" ) -- wormlight
 TheInventory:AddScrapbook2Key( "4E3893E2" ) -- wormlight_lesser
@@ -9651,7 +9668,7 @@ TheInventory:AddScrapbook12Key( "4374C56C" ) -- yellowstaff
 --TheInventory:AddItemIDPairing(2696, "wagdrone_rolling_fire")
 
 if TheInventory.AddFreeItemForEveryone == nil then
-    TheInventory:ValidateWithSignature( "7d1da8b5d8785619e32830c50479bf6588f95de81c1bad442cdea6ad7f26f1751c7159f629b63e20f37f57ecae153a592e5946a95cb94ca363beed50fc086671dbfdc792d0209700df09f67c5249b69cb1c4b7da89355e55c9aee125a21d00d73926265f61d370811e55d61f19394c08bbcea15fe31bb96893ac73c8c300a6d5fcb9a04779eedbea3ae1e5e3a8beb9d03a3a67102228c967dff96ba5c98cb456f1e64a16a7947bee9b6685cd655554a428f85d7de3dbcfc034358d97c879cd3bc689c1cc9788c62b230985c6f96f6259c3e34ea4fbbd7f1b54996c2882338dfd3155c266eada20af8237aa2d0cc8ac520a3705db2aa089244881a712ac76ec2f324e7f8cbb8828a40b37029443434b2d171c08b11d7253a8f12ee3e68510165767da96a6f27c863f4b6f04db114b2da5d59106f590883b13547cc0418d7b303bdf3184eeb9359e97dd6a56c38e1311d3c674f7d7df260a63525cf046d7ea33869b608c7da4093117de06542d228600e009e83c4eea9ad478b8b6fe09b373b6a73da304719ab9ac801c2e64854118cb37cab86af1b4d970c0c5a85a855526ca5b26b37e7f68063d26b379b696133558bff84e227c7d55c828b66feb0b1a5f33dff9077788b0956ff6f1f33c16671c37b538b5b8b39b365a7b402380e4968c10a74c8ee34cd5dffe8ed21a32ea883b2f096e407885ef7f70380b87c946067f9183" )
+    TheInventory:ValidateWithSignature( "a748cf928419c4f30ca56bd14753bb94367ea2a87cc77912bf1ebebb6aac2bc68271edd8d8389b57e7c8cda2ed586df7a0f6302a8a7dc0936d9ce2af5422b0730f044d67bc03071a9f909d8cf6993b85b06f486a3e7975a7ec945a4791ffb57f2177171768ddb5745ac012f4614249b60044f6db0cdd3cc0ead0d34790ffae27136dbda0f4bf748b0f3638402d4ca065e15a78e703cc77e8a9966fedca8bc5b8eaeaabb6256d69baa9a447fcb36ed03d81e4f1fc0813f1bb7af2e388c04583fde021779c3ca287daf1ce5a55ebff20005a57ac68e6a149890c6133c20e211a4f0ec8de79d881c5960453dfa568f29dbb8bc36d809154de09d94ea2161eecb06d4a1dfbbb8807793b632e3b905f0cc17adce0cf2b4d2bd8a01bc58537ef17c640882afd1cd84b0448964534db6b1db6fb1ac4ff18b4dc24095481f0400536363327bfa3b69e7f40bbb3a65f060f6e32c901e2f6b1d84dfa545d87b90c88611a7fb84446b3bdcc1364e43a95872fa2f07b3183a5b70b94317846725cca2611283129e565c939609c3c89cdff8ddf052d6b199d4478dde45649ecf57ec2c9be76a88474dbcc7a5ec6923df845aee13c5b9ee517bde2cd297c6ef248495f65f463027ab09eb2a3f246223746d9293c309ff90adbe036b9300cd35a4f4869e3a3bb01d1c9532eca28ac405da99b4d84d322a6035b4f04b6716e247280b758c7fec030" )
 else -- Temporary protection guard for platforms missing the engine change 2.
 
 -- These are free items for everyone and are not networked.
@@ -9731,7 +9748,7 @@ TheInventory:AddFreeItemForEveryone("meatrack_hermit_multi_yule") -- 176
 TheInventory:AddFreeItemForEveryone("meatrack_hermit_yule") -- 176
 TheInventory:AddFreeItemForEveryone("hermit_chair_rocking_yule") -- 176
 
-TheInventory:ValidateWithSignature( "86acbfaa5b9faac45ca8fb6f7d124692596b593c13b85a9947e7fca1e349ab3c688c61b019487bb622cde0bbaa26351cabd4aeb76afb3ed737799783030a630b9a974c83f0318d8b8244699b92eec95059ea6a92db400553ea6d4f35b34eb914669ad95216c2187e6dc87ce6037be0263e3b21b5a552f2e43d60aa7b14a2b875cefd2cdb7f4a1e517dd516bc997d1d166ffdcc8c3dcdbe92d26459f2c003d731e380386f4c3489d6f310eaa652afe96551e2767aadd693eb854ab40a16442629d314823cf5599baa8946c8c0dcfc86d4e335e7e164848c104027dd9b27111066b85ad5f5c92ed2723df63c8b1b64a9500f01e1bfd6589abd204279da79b85628b47a9b84f4b094fff32b6dabceebeb504d037a108ada5ad3ad959e8c5e0bd87d15faef354b39d5ae12be279495393357462592652192e63ab1689f7fab68378baf708f9cd6ddf5420e37226b8f5bff1b035ea32fc20f05006b944d40637dd4ea8e28ee8e8cafd9c8408975b969af58968ededb93923d9f5489a751a92b94aa68b27728b2d6003876666e96662da939cdf5fe9a8b0c1e250dff37ec687c4e4e19b0b75c742e876bc9a2ae24041be8b3a86b31bcfe9a802eda3e885ada40202e79efadd5e75b9cadc26e1fed32785b15df2fee6c858748fcdf67e58081cf2587be5a107a35e7aa007abdb66867585f45ec94723c1457064314413d665364e8440b" )
+TheInventory:ValidateWithSignature( "3ce30d78f9eac4ff9a5a3c4e5138c4970463f5846bdc6f8170f3dc4bfce70e31240aa277a6f55bb0781a606208ac54f5ec54ee0f1ab118b7601099db3154c2dcf46538658849e359f839f2666c375a1dc8cd1b121ddeaae6744d2474115fd2d6e503b92b512799c30c3fe108d81115aa170dec32c4de9c08343d5098f070980b38c940622536fe11e3dfb4ef4b05607fbc0fff2beaa45730d5c236b550924f368d10507b35fccda2a60785ff520d0d113155615019c8ebcf6fd73e32a8f0be5d29c3a59575f3986bdba0671910053525b5bf0905b3046e90d481cab675fa8313768947b1a7c8721cfb1fc3efd81e7f11ccc0586abb4125f8e62b220e7c91c8abf24ac82dfe963946c3393442c343a9362f75e78f6e9c042f2352e221aba30191e67319562438ff9db9a053d7a5f48478db8e0695ebb27d6fedca6aedfcbbb6d69489f9834bd27faf119cf3b595891f1064c30847518f77f31ece378f336850e0d2a21ccf143268e071183f30087ae3f42404ebc66d5fe275fdb56533cc2a443bfff5ef91de33a57e65978b3b635d7c529b37bc37da9a9726319e751f9afc2da0f423723f36ad66a4868da17d76d9dc05a02c841a2dffe52d832071692dd1cd820cbc801ae410b3df2c4f6d2ecabbded6a19ac19fc9778d762732271d5d4630c834b95f260132b8bda6f084b598720c1b4f87dd48668ad3bd4933ce02f41eca15" )
 
 end -- Temporary protection guard for platforms missing the engine change 2.
 

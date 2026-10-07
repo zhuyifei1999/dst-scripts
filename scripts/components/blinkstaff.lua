@@ -60,9 +60,7 @@ function BlinkStaff:Blink(pt, caster)
     local casterx, castery, casterz = caster.Transform:GetWorldPosition()
     if not IsTeleportingPermittedFromPointToPoint(casterx, castery, casterz, pt.x, pt.y, pt.z) then
         return false
-    elseif (caster.sg ~= nil and caster.sg.currentstate.name ~= "quicktele") or
-        not TheWorld.Map:IsPassableAtPoint(pt:Get()) or
-        TheWorld.Map:IsGroundTargetBlocked(pt) then
+    elseif not TheWorld.Map:IsPassableAtPoint(pt:Get()) or TheWorld.Map:IsGroundTargetBlocked(pt) then
         return false
     elseif self.blinktask ~= nil then
         self.blinktask:Cancel()
@@ -90,6 +88,7 @@ function BlinkStaff:Blink(pt, caster)
     if self.onblinkfn ~= nil then
         self.onblinkfn(self.inst, pt, caster)
     end
+    self.inst:PushEvent("onblink", { pt = pt, caster = caster })
 
     return true
 end

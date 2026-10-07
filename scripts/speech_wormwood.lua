@@ -206,6 +206,7 @@ return{
             NOTAMONKEY = "Don't know how to speak Cheeky",
             QUEENBUSY = "She very busy! Maybe try later",
             CARNIVALGAME_GOLFGAME_NOTREADY = "Friend not finished",
+            KINGSTAFF_COOLDOWN = "Nope. Stuck", -- can't give it a new gem because it's on cooldown
         },
         GIVE_TACKLESKETCH =
 		{
@@ -1258,6 +1259,17 @@ return{
     ANNOUNCE_HEALINGSALVE_FUMAROLEBUFF_DONE = "Hm. Cooling feeling gone...",--fire immunity expired
     ANNOUNCE_SECURITY_PULSE_FOLLOWING = "Hello, friend! Follow!", -- Security spark attached to us due to us holding Waymark Compass.
 
+    -- Rifts 8
+
+    -- after the final fight when Charlie goes MIA and isn't the night monster anymore
+	ANNOUNCE_GRUE_NOCHARLIE = "Someone here?",
+	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "Ouch!",
+--fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
+
+	ANNOUNCE_STOMP_SHROUDEN = "Squish never friend",
+
+    ANNOUNCE_DREADSTONE_SPIKE_EXPLODING = "Moon head make pointy rock BOOM!", -- exploding because of enlightenment.
+
 	BATTLECRY =
 	{
 		GENERIC = "Attack!",
@@ -1707,7 +1719,12 @@ return{
 		CAVE_BANANA = "Mmmmm...",
 		CAVE_BANANA_COOKED = "Smokey",
 		CAVE_BANANA_TREE = "Friend with Sweet Hair",
-		ROCKY = "Rock Pinchy",
+        ROCKY =
+        {
+            GENERIC = "Rock Pinchy",
+            BOULDER = "Rock. Hello", -- in boulder state, it looks like a normal boulder
+            ACID = "Rock Pinchy smaller?", -- in acid form
+        },
 
 		COMPASS =
 		{
@@ -1724,7 +1741,11 @@ return{
 
         HOUNDSTOOTH = "Sharp. Ouch!",
         ARMORSNURTLESHELL = "Anyone hiding?",
-        BAT = "Flying Claws!",
+        BAT =
+        {
+            GENERIC = "Flying Claws!",
+            ACID = "Flying Claws hungry!", -- in acid form
+        },
         BATBAT = "Flying Claw Whacker",
         BATWING = "Can't fly anymore",
         BATWING_COOKED = "Little chewy. And claw-y",
@@ -3513,6 +3534,7 @@ return{
 			CHARGING = "Oh. What's it doing?",
 			DESTABILIZING = "Looks sick",
 			COOLDOWN = "Tired?",
+            RITUAL_SUMMONING = "Bad eye", -- ritual is actively summoning, shrouden has appeared through the gate in the form of the eye, its looks between players, and charlie.
         },
         ATRIUM_KEY = "Goes where?",
 		LIFEINJECTOR = "Makes strong!",
@@ -4533,6 +4555,8 @@ return{
 			LORE1 = "Dark inside Bug King",
 			LORE2 = "Not sleeping",
 			LORE3 = "Hi, friends! Why mad?",
+            --
+            LORE1_STALKER = "Poor Bug King", -- when the stalker/king is with you, different inspect for the king statue!
 		},
 
         ARCHIVE_RESONATOR = {
@@ -5368,7 +5392,12 @@ return{
 		SHADOWTHRALL_WINGS = "Scary Flier",
 		SHADOWTHRALL_MOUTH = "Bad smile!",
 
-        CHARLIE_NPC = "Hello lady!",
+        CHARLIE_NPC =
+        {
+            GENERIC = "Hello lady!", -- scene 1, first appearance of charlie to repair the gateway
+            SCENE2 = "Help lady?", -- scene 2, charlie appears again to socket the key and place the ritual down
+            SCENE3 = "Help lady?", -- scene 3, the gateway has both keys, and the sacrifice pieces are set up in the ritual, she appears to tell you to activate it
+        },
         CHARLIE_HAND = "Want something?",
 
         NITRE_FORMATION = "Bunch of Pow Rocks",
@@ -6275,6 +6304,66 @@ return{
 
         CARNIVALGAME_GOLFPROP_FAN = "Windy friend", -- fan that blows wind and pushes in a direction
 
+        -- Rifts 8
+
+        ROCKY_BOSS =
+        {
+            GENERIC = "Big pinchy!",
+            BOULDER = "Rock?", -- in boulder form
+            ACID = "Big pinchy ouchie?",
+        },
+		ROCKY_BOSS_SHADOW = "What wrong big pinchy?",
+        BAT_BOSS =
+        {
+            GENERIC = "Flying mouth!",
+            ACID = "Big glow eyes!",
+        },
+		BAT_BOSS_SHADOW = "Flying mouth all shadow!",
+
+        BATBOSSCAVE =
+        {
+            GENERIC = "Who inside?", -- boss bat is inside,
+            VACANT = "No one home?", -- boss bat is not inside anymore
+        },
+
+        WORM_BOSS_SHADOW = "Oh no!",
+
+        ARMOR_ROCKY = "Where Rock Pinchy insides?",
+        BAT_BOSSCORPSEHAT = "Flying mouth hat?",
+
+        ATRIUM_RITUAL_ORGAN_ROCKY =
+        {
+            GENERIC = "Big pinchy pincher",
+            IN_RITUAL = "How float?", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+        ATRIUM_RITUAL_ORGAN_BAT =
+        {
+            GENERIC = "From inside flying mouth",
+            IN_RITUAL = "How float?", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+        ATRIUM_RITUAL_ORGAN_WORM =
+        {
+            GENERIC = "Smell big wiggly poop!",
+            IN_RITUAL = "How float?", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
+        },
+
+		CHARLIE_BOSS = "How lady is three?",
+		SHROUDEN =
+		{
+			GENERIC = "Never friend",
+			PUDDLE = "Bye bye never friend!",
+		},
+
+        CHARLIEARENA_SPIKE = "Pretty pointy rock",
+
+        KING_CANE =
+        {
+            GENERIC = "Shiny shiny stick", -- has a gem slotted in
+            EMPTY = "Where shiny?", -- can socket a gem inside (can be heavy on hint)
+        },
+        QUEEN_TORCH = "Lady fire stick?",
+        
+        CHARLIEARENA_TELEPORTER = "Take all things",
     },
 
     DESCRIBE_GENERIC = "Friend?",
@@ -6299,6 +6388,4 @@ return{
     },
 
     WENDY_SKILLTREE_EASTEREGG = "only_used_by_wendy",
-
-
 }

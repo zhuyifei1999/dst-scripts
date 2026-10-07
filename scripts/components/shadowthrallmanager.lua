@@ -178,6 +178,10 @@ function self:RegisterFissure(inst)
     end
 end
 
+function self:IsRegisteredFissure(inst)
+    return _potential_fissures[inst]
+end
+
 local function TrackOtherThralls(thrall, other1name, other1, other2name, other2)
 	if thrall and thrall.components.entitytracker then
 		if other1 then
@@ -439,7 +443,10 @@ function self:SpawnThrallFromPoint(prefabname, x, z, angle, delay)
 end
 
 function self:OnDreadstoneMineCooldown(fromload)
-    _dreadstone_regen_task = nil
+    if _dreadstone_regen_task ~= nil then
+        _dreadstone_regen_task:Cancel()
+        _dreadstone_regen_task = nil
+    end
     if _fissure then
         _fissure:OnDreadstoneMineCooldown(fromload)
     end
@@ -500,11 +507,14 @@ end
 
 function self:ControlFissure(fissure)
     if not _fissure then
-        fissure:OnNightmarePhaseChanged("controlled", false)
+        fissure:OnNightmarePhaseChanged("controlled", false, true)
         _fissure = fissure -- After OnNightmarePhaseChanged.
         _fissure_animating = true
         --print("ControlFissure", _fissure)
+        return true
     end
+
+    return false
 end
 
 function self:GetControlledFissure()

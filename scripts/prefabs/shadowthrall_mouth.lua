@@ -148,11 +148,53 @@ local function OnLoad(inst, data)
 	end
 end
 
+--------------------------------------------------------------------------
+
+local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
+	if other.prefab == "charliearena_spike" and
+		not inst.sg.statemem.collided and
+		(	inst.sg.currentstate.name == "shrouden_bite" or
+			inst.sg.currentstate.name == "shrouden_bite_loop"
+		) and
+		inst:IsValid()
+	then
+		local rot = inst.Transform:GetRotation()
+		local rot1 = inst:GetAngleToPoint(world_position_on_a_x, 0, world_position_on_a_z)
+		if DiffAngle(rot, rot1) < 75 then
+			inst.sg.statemem.collided = true
+		end
+	end
+end
+
+local function OnShroudenSummon(inst, shrouden, target)
+	inst.shrouden = shrouden
+	inst.persists = false
+	inst:ListenForEvent("resetboss", function() inst:Remove() end, shrouden)
+
+	inst:SetPrefabNameOverride(shrouden.prefab) -- for death announce
+	inst:AddTag("NOCLICK")
+	inst:AddTag("notarget")
+	inst:AddTag("toughworker")
+	inst:SetBrain(nil)
+	inst.components.health:SetInvincible(true)
+	inst.components.combat:SetRetargetFunction(nil)
+	inst.components.combat:SetKeepTargetFunction(nil)
+	inst.components.planardamage:AddBonus(shrouden, TUNING.SHROUDEN_SUMMONS_BONUS_PLANAR_DAMAGE, "summoned")
+	inst.components.lootdropper:SetLoot(nil)
+	inst.components.lootdropper:SetLootSetupFn(nil)
+	--inst.components.lootdropper.GetWintersFeastOrnaments = nil
+
+	inst.Physics:SetCollisionCallback(OnCollide)
+
+	inst.sg:GoToState("shrouden_bite", target)
+end
+
+--------------------------------------------------------------------------
+
 --Runs on clients
 local function CanMouseThrough(inst)
 	return inst:HasTag("stealth"), true
 end
-
 
 local function lootsetfn(lootdropper)
     lootdropper:AddChanceLoot("lucky_goldnugget", 1)
@@ -161,7 +203,6 @@ local function lootsetfn(lootdropper)
     lootdropper:AddChanceLoot("lucky_goldnugget", 1)
     lootdropper:AddChanceLoot("lucky_goldnugget", 1)    
 end
-
 
 local function fn()
 	local inst = CreateEntity()
@@ -257,7 +298,7 @@ local function fn()
 	inst.OnRemoveEntity = OnRemoveEntity_Server
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
-
+	inst.OnShroudenSummon = OnShroudenSummon
 
     if IsSpecialEventActive(SPECIAL_EVENTS.YOTS) then
         inst.components.lootdropper:SetLootSetupFn(lootsetfn)
