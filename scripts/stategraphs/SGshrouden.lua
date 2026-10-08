@@ -157,6 +157,32 @@ local function SetClickable(inst, clickable, keeplight)
 	end
 end
 
+local function ConfigureFlying(inst, enable)
+	if enable then
+		inst:AddTag("flying")
+		inst:AddTag("notraptrigger")
+		inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+		inst:PushEvent("ms_escape_rooted")
+	else
+		inst:RemoveTag("flying")
+		inst:RemoveTag("notraptrigger")
+		inst.components.locomotor:EnableGroundSpeedMultiplier(true)
+	end
+end
+
+local function ConfigureUnderground(inst, enable)
+	if enable then
+		inst:AddTag("notraptrigger")
+		inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+		inst:SetGelEnabled(true)
+		inst:PushEvent("ms_escape_rooted")
+	else
+		inst:RemoveTag("notraptrigger")
+		inst.components.locomotor:EnableGroundSpeedMultiplier(true)
+		inst:SetGelEnabled(false)
+	end
+end
+
 local function SetPuddleLayerEnabled(inst, enable)
 	if enable then
 		inst.AnimState:SetSortOrder(-1)
@@ -730,7 +756,7 @@ local states =
 			FrameEvent(91, function(inst)
 				inst.sg:AddStateTag("noattack")
 				ToggleOffAllObjectCollisions(inst)
-				inst:SetGelEnabled(true)
+				ConfigureUnderground(inst, true)
 			end),
 			FrameEvent(94, function(inst)
 				inst.sg.statemem.keepnofaced = true
@@ -744,7 +770,7 @@ local states =
 			if not inst.sg.statemem.death then
 				HidePuddleEye(inst)
 				inst:SetCameraFocusEnabled(false)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -773,7 +799,7 @@ local states =
 			SetPuddleLayerEnabled(inst, true)
 			inst:SetCameraFocusEnabled(true)
 			SetClickable(inst, false, true)
-			inst:SetGelEnabled(true)
+			ConfigureUnderground(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			local x, y, z = inst.Transform:GetWorldPosition()
@@ -811,7 +837,7 @@ local states =
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
 				SetClickable(inst, true)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -833,7 +859,7 @@ local states =
 			SetPuddleLayerEnabled(inst, true)
 			--inst:SetCameraFocusEnabled(true)
 			SetClickable(inst, false, true)
-			inst:SetGelEnabled(true)
+			ConfigureUnderground(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			local x, y, z = inst.Transform:GetWorldPosition()
@@ -871,7 +897,7 @@ local states =
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
 				SetClickable(inst, true)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -892,7 +918,7 @@ local states =
 			ShowPuddleEye(inst, "death_puddle_loop2", true)
 			SetPuddleLayerEnabled(inst, true)
 			SetClickable(inst, false, true)
-			inst:SetGelEnabled(true)
+			ConfigureUnderground(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			local x, y, z = inst.Transform:GetWorldPosition()
@@ -923,7 +949,7 @@ local states =
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
 				SetClickable(inst, true)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -944,7 +970,7 @@ local states =
 			ShowPuddleEye(inst, "death_puddle_hit")
 			SetPuddleLayerEnabled(inst, true)
 			SetClickable(inst, false, true)
-			inst:SetGelEnabled(true)
+			ConfigureUnderground(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 			inst.sg.statemem.nostomp = true
 			inst.sg.mem.numstomps = (inst.sg.mem.numstomps or 0) + 1
@@ -993,7 +1019,7 @@ local states =
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
 				SetClickable(inst, true)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -1014,7 +1040,7 @@ local states =
 			ShowPuddleEye(inst, "final_blow")
 			SetPuddleLayerEnabled(inst, true)
 			SetClickable(inst, false)
-			inst:SetGelEnabled(true)
+			ConfigureUnderground(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 1)
@@ -1024,7 +1050,7 @@ local states =
 		{
 			--#SFX
 			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/death_a") end),
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts4/goop/spit_out", nil, 0.6) end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts4/goop/spit_out", nil, 0.4) end),
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/shrouden_death_final") end),
 
 			FrameEvent(1, function(inst)
@@ -1062,9 +1088,8 @@ local states =
 		ontimeout = function(inst)
 			if inst:IsInArena() then
 				inst:PushEvent("ms_charlie_boss_defeated")
-			else
-				inst:Remove()
 			end
+			inst:Remove()
 		end,
 
 		onexit = function(inst)
@@ -1073,7 +1098,7 @@ local states =
 			SetPuddleLayerEnabled(inst, false)
 			inst:SetCameraFocusEnabled(false)
 			SetClickable(inst, true)
-			inst:SetGelEnabled(false)
+			ConfigureUnderground(inst, false)
 			if inst.sg.mem.isobstaclepassthrough then
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -1165,7 +1190,7 @@ local states =
 		name = "attack_loop",
 		tags = { "attack", "busy" },
 
-		onenter = function(inst)
+		onenter = function(inst, dbg_summonprefab)
 			inst.components.locomotor:Stop()
 			inst.components.combat:RestartCooldown()
 			SwitchToEightFaced(inst)
@@ -1197,6 +1222,8 @@ local states =
 			inst.sg.statemem.targets = {}
 			inst.sg.statemem.workdelay = 0
 
+			inst.sg.statemem.dbg_summonprefab = dbg_summonprefab
+
 			if _dbg_draw then
 				hitbox:DebugDraw()
 			end
@@ -1220,8 +1247,9 @@ local states =
 		timeline =
 		{
 			FrameEvent(0, function(inst)
-				inst.sg.statemem.summontargets = {}
-				if inst.sg.mem.exsummon_stocked then
+				if inst.sg.statemem.dbg_summonprefab then
+					inst.sg.statemem.summonprefab = inst.sg.statemem.dbg_summonprefab
+				elseif inst.sg.mem.exsummon_stocked then
 					inst.sg.mem.exsummon_stocked = false
 					local summons = inst.sg.mem.exsummons
 					if summons == nil then
@@ -1296,6 +1324,7 @@ local states =
 					inst.sg.statemem.summonprefab == "shadowthrall_wings" and
 					15 or
 					0
+				inst.sg.statemem.summontargets = {}
 				DoPortalSummon(inst, inst.sg.statemem.summonprefab, inst.Transform:GetRotation() + inst.sg.statemem.offsgn * offs, inst.sg.statemem.summontargets)
 			end),
 			FrameEvent(5, function(inst)
@@ -1486,7 +1515,7 @@ local states =
 			end),
 			FrameEvent(13, function(inst)
 				ToggleOffAllObjectCollisions(inst)
-				inst:SetGelEnabled(true)
+				ConfigureUnderground(inst, true)
 			end),
 			FrameEvent(16, function(inst)
 				--cut to loop and start movement early
@@ -1498,7 +1527,7 @@ local states =
 		onexit = function(inst)
 			if not inst.sg.statemem.teleporting then
 				SetClickable(inst, true)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -1520,7 +1549,7 @@ local states =
 
 			SetClickable(inst, false)
 			ToggleOffAllObjectCollisions(inst)
-			inst:SetGelEnabled(true)
+			ConfigureUnderground(inst, true)
 
 			if not EntityScript.is_instance(target_or_pos) then
 				inst.sg.statemem.targetpos = target_or_pos
@@ -1585,10 +1614,13 @@ local states =
 					inst.sg.statemem.target and
 					inst.sg.statemem.target.components.locomotor
 				then
-					maxspeed = math.clamp(Remap(inst.sg.statemem.target.components.locomotor:GetRunSpeed(), 6, 7.5, minspeed, maxspeed), minspeed, maxspeed)
+					local runspeed = inst.sg.statemem.target.components.locomotor:GetRunSpeed()
+					maxspeed = math.clamp(Remap(runspeed, 6, 7.5, minspeed, maxspeed), minspeed, maxspeed)
+					runspeed = math.max(8, runspeed)
+					if runspeed < maxspeed then
+						maxspeed = math.clamp(Remap(dist, 3, 9, runspeed, maxspeed), runspeed, maxspeed)
+					end
 				end
-				maxspeed = math.max(maxspeed, inst.sg.statemem.maxspeed or 0)
-				inst.sg.statemem.maxspeed = maxspeed
 
 				local speed = inst.sg.statemem.targetpos and maxspeed or math.min(maxspeed, dist * 3)
 				if inst.sg.statemem.speed then
@@ -1635,7 +1667,7 @@ local states =
 			if not inst.sg.statemem.teleporting then
 				SetPuddleLayerEnabled(inst, false)
 				SetClickable(inst, true)
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 				if inst.sg.mem.isobstaclepassthrough then
@@ -1698,6 +1730,7 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts2/shrouden/teleport_out") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
 
 			FrameEvent(3, function(inst)
 				SetPuddleLayerEnabled(inst, false)
@@ -1738,7 +1771,7 @@ local states =
 				end
 				inst.sg.statemem.targets = nil
 				inst.sg.statemem.aoeparams = nil
-				inst:SetGelEnabled(false)
+				ConfigureUnderground(inst, false)
 			end),
 			FrameEvent(33, function(inst)
 				if inst.components.health:IsDead() then
@@ -1775,7 +1808,7 @@ local states =
 			end
 			inst:SetCameraFocusEnabled(false) --#TEMP #TODO used as temp spawn state
 			SetPuddleLayerEnabled(inst, false)
-			inst:SetGelEnabled(false)
+			ConfigureUnderground(inst, false)
 			if inst.sg:HasStateTag("jumping") then
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
@@ -1814,6 +1847,7 @@ local states =
 			FrameEvent(11, function(inst)
 				inst.sg:AddStateTag("noattack")
 				SetClickable(inst, false)
+				ConfigureFlying(inst, true)
 				ToggleOffAllObjectCollisions(inst)
 			end),
 			FrameEvent(15, function(inst)
@@ -1836,6 +1870,7 @@ local states =
 			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.opticblasting then
 				SetClickable(inst, true)
+				ConfigureFlying(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -1860,12 +1895,15 @@ local states =
 			inst.AnimState:PlayAnimation("optic_blast_pre2")
 
 			SetClickable(inst, false)
+			ConfigureFlying(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			local fx = SpawnPrefab("shrouden_optic_blast_fx")
 			fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 			fx:InitBlast(inst)
 			inst.sg.statemem.fx = fx
+
+			inst:PushEvent("teleported")
 		end,
 
 		timeline =
@@ -1877,7 +1915,6 @@ local states =
 				inst.sg:RemoveStateTag("invisible")
 			end),
 			FrameEvent(10, function(inst)
-				inst.sg:RemoveStateTag("noattack")
 				SetClickable(inst, true)
 			end),
 		},
@@ -1900,6 +1937,7 @@ local states =
 			TryRestoreSixFaced(inst)
 			SetClickable(inst, true)
 			if not inst.sg.statemem.opticblasting then
+				ConfigureFlying(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -1913,7 +1951,7 @@ local states =
 
 	State{
 		name = "optic_blast_loop",
-		tags = { "attack", "busy", "nointerrupt", "jumping" },
+		tags = { "attack", "busy", "nointerrupt", "noattack", "jumping" },
 
 		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
@@ -1921,6 +1959,7 @@ local states =
 			SwitchToNoFaced(inst)
 			inst.AnimState:PlayAnimation("optic_blast_loop", true)
 
+			ConfigureFlying(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			if data and data.target and data.target:IsValid() then
@@ -2029,6 +2068,7 @@ local states =
 			inst.Physics:ClearMotorVelOverride()
 			inst.Physics:Stop()
 			if not inst.sg.statemem.opticblasting then
+				ConfigureFlying(inst, false)
 				if inst.sg.mem.isobstaclepassthrough then
 					local x, _, z = inst.Transform:GetWorldPosition()
 					ToggleOnAllObjectCollisionsAt(inst, x, z)
@@ -2042,13 +2082,14 @@ local states =
 
 	State{
 		name = "optic_blast_pst",
-		tags = { "busy", "nointerrupt" },
+		tags = { "busy", "nointerrupt", "noattack" },
 
 		onenter = function(inst, success)
 			inst.components.locomotor:Stop()
 			SwitchToNoFaced(inst)
 			inst.AnimState:PlayAnimation("optic_blast_pst")
 
+			ConfigureFlying(inst, true)
 			ToggleOffAllObjectCollisions(inst)
 
 			inst.sg.statemem.success = success
@@ -2059,7 +2100,12 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_pst") end),
 
+			FrameEvent(12, function(inst)
+				inst.sg:RemoveStateTag("noattack")
+			end),
 			FrameEvent(17, function(inst)
+				ConfigureFlying(inst, false)
+
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)
 
@@ -2109,6 +2155,7 @@ local states =
 
 		onexit = function(inst)
 			TryRestoreSixFaced(inst)
+			ConfigureFlying(inst, false)
 			if inst.sg.mem.isobstaclepassthrough then
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)

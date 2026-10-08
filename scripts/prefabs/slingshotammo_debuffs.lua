@@ -150,10 +150,10 @@ local function PureBrilliance_OnOwnerAttacked(inst, owner, data)
         return -- Don't trigger itself!
     end
 
-    local attacker_spdmg = data.attacker ~= nil and SpDamageUtil.CollectSpDamage(data.attacker) or 0
-    local weapon_spdmg   = data.weapon ~= nil   and SpDamageUtil.CollectSpDamage(data.weapon)   or 0
+	local spdmg = data.attacker and SpDamageUtil.CollectSpDamage(data.attacker)
+	spdmg = data.weapon and SpDamageUtil.CollectSpDamage(data.weapon, spdmg)
 
-    if attacker_spdmg == 0 and weapon_spdmg == 0 then
+	if spdmg == nil or spdmg.planar == nil then
         return -- Only triggered by planar attacks.
     end
 
@@ -240,6 +240,7 @@ local function PureBrillianceMarkFn()
 
     inst:AddTag("CLASSIFIED")
     inst:AddTag("attacktriggereddebuff")
+	inst:AddTag("notarget")
 
     inst._onattackedfn = function(owner, data) PureBrilliance_OnOwnerAttacked(inst, owner, data) end
 

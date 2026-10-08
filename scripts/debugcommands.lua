@@ -5305,3 +5305,45 @@ function d_checkspecialevents()
         end
     end
 end
+
+function d_spawnitemswithskins(releasegroup)
+    local userid = ThePlayer and ThePlayer.userid or nil
+    if not userid then
+        print("Err: You need to be in the world with a userid before this can work.")
+        return
+    end
+
+    if not releasegroup then
+        releasegroup = require("versioning_skins").VERSION
+    end
+    
+    local BADITEMSTOSPAWN = {
+        ["boat"] = true,
+        ["boat_grass"] = true,
+    }
+    for _, character in ipairs(DST_CHARACTERLIST) do
+        BADITEMSTOSPAWN[character] = true
+    end
+
+    local x, y, z = ThePlayer.Transform:GetWorldPosition()
+    local padding = 0.5
+    for prefab, skins in orderedPairs(GetPrefabSkinsForReleaseGroup(releasegroup)) do
+        if not BADITEMSTOSPAWN[prefab] then
+            local ent = SpawnPrefab(prefab)
+            if not ent.AnimState then
+                print("Skipping ent without an AnimState:", ent)
+                ent:Remove()
+            else
+                local x1, y1, x2, y2 = ent.AnimState:GetVisualBB()
+                local width = x2 - x1
+                x = x - x1
+                ent.Transform:SetPosition(x, y, z)
+                for i, skin in ipairs(skins) do
+                    ent = SpawnPrefab(prefab, skin, nil, userid)
+                    ent.Transform:SetPosition(x, y, z - i * (width + padding))
+                end
+                x = x + x2 + padding
+            end
+        end
+    end
+end

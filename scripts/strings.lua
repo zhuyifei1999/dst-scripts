@@ -19392,6 +19392,7 @@ STRINGS.SCRAPBOOK = {
 
         CHARLIE_BOSS = "What have we done?",
         CHARLIE_BOSS_PROJECTILE = "Chases those who dare still bask in the light.",
+        SHROUDEN = "We just want to go home.",
 
         KING_CANE = "Socket any gem to use the respective staffs ability.\nBe careful to not overuse, or you will fall as they did.",
         QUEEN_TORCH = "An eternal flame to push back the shadows.",

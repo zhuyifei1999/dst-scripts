@@ -71,6 +71,6 @@ do -- Scope block.
 end
 
 local MAJOR_VERSION = VERSIONING.GAMEIDS[#VERSIONING.GAMEIDS]
-VERSIONING.CURRENTVERSION = string.format("%s_%s", MAJOR_VERSION, require("versioning_skins"))
+VERSIONING.CURRENTVERSION = string.format("%s_%d", MAJOR_VERSION, require("versioning_skins").VERSION)
 VERSIONING.UPDATENAME = VERSIONING.NAMES[#VERSIONING.NAMES]
 return VERSIONING

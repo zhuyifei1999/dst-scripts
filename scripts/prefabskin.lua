@@ -1701,6 +1701,25 @@ armor_lunarplant_husk_clear_fn = function(inst) basic_clear_fn(inst, "armor_luna
 wagdrone_rolling_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "wagdrone_rolling") end
 wagdrone_rolling_clear_fn = function(inst) basic_clear_fn(inst, "wagdrone_rolling") end
 
+thurible_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "thurible")
+    if inst._body then
+        inst._body.AnimState:SetSkin(build_name, "thurible")
+    end
+end
+thurible_clear_fn = function(inst)
+    basic_clear_fn(inst, "thurible")
+    if inst._body then
+        inst._body.AnimState:SetBuild("thurible")
+    end
+end
+
+voidclothhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_voidcloth") end
+voidclothhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_voidcloth") end
+
+armor_voidcloth_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "armor_voidcloth") end
+armor_voidcloth_clear_fn = function(inst) basic_clear_fn(inst, "armor_voidcloth") end
+
 --------------------------------------------------------------------------
 --[[ rabbithouse skin functions ]]
 --------------------------------------------------------------------------

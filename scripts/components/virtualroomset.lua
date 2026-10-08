@@ -312,7 +312,7 @@ function VirtualRoomSet:TryStartTeleportSequence(teleportingentsdata)
     end
 
     if teleportingentsdata.virtualroomteleporter then
-        teleportingentsdata.virtualroomteleporter:OnDepart()
+        teleportingentsdata.virtualroomteleporter:OnDepart(self)
     end
     for player, _ in pairs(players) do
         player:PushEventImmediate("vault_teleport", {
@@ -910,6 +910,10 @@ function VirtualRoomSet:SetDoNotRotateRooms(donotrotaterooms) -- For use with vi
     self.donotrotaterooms = donotrotaterooms or nil
 end
 
+function VirtualRoomSet:SetKeepInventoryItemsthroughReset(keepinventoryitemsthroughreset)
+    self.keepinventoryitemsthroughreset = keepinventoryitemsthroughreset or nil
+end
+
 function VirtualRoomSet:SetTeleportingIntoLobbyProhibited(prohibited)
     self.map:SetVirtualRoomSetTeleportingInLobbyProhibited(self.roomsetname, prohibited)
 end
@@ -992,7 +996,8 @@ local function _GetEntUnloadAction(self, ent)
         return _SKIP
     elseif owner.isplayer or (
             owner:HasAnyTag("irreplaceable", "followsthroughvirtualrooms") or
-            (owner.components.migrationpetowner and owner.components.migrationpetowner:GetPet())
+            (owner.components.migrationpetowner and owner.components.migrationpetowner:GetPet()) or
+            (owner.components.inventoryitem and self.keepinventoryitemsthroughreset and self.resetting)
         ) and not owner:HasAnyTag("forcedtosavethroughvirtualrooms") then
         return _KEEP
     end

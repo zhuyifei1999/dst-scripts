@@ -33,7 +33,16 @@ local TILE_SCALE = TILE_SCALE
 local boundingbox = VIRTUALROOM_BOUNDINGBOXES[VIRTUALROOMSETS.ATRIUM]
 local OUTER_MINX, OUTER_MAXX, OUTER_MINY, OUTER_MAXY = boundingbox.minx - 1, boundingbox.maxx + 1, boundingbox.miny - 1, boundingbox.maxy + 1
 local INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY = -3 - 1, 3 + 1, -3 - 1, 3 + 1 -- 1 extra length to take into account overhang
+local INNER_PHASE2_MINX, INNER_PHASE2_MAXX, INNER_PHASE2_MINY, INNER_PHASE2_MAXY = -4 - 1, 4 + 1, -4 - 1, 4 + 1 -- 1 extra length to take into account overhang
 local CHECK_PLAYERS_DIMENSION_HOPPING_RADIUS = (OUTER_MAXX - OUTER_MINX) * SQRT2 * TILE_SCALE / 2
+
+local function GetArenaBoundingBox(inst)
+    if inst.unstable then
+        return INNER_PHASE2_MINX, INNER_PHASE2_MAXX, INNER_PHASE2_MINY, INNER_PHASE2_MAXY
+    end
+
+    return INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY
+end
 
 local function InBoundingBox(otx, oty, minx, maxx, miny, maxy, tx, ty)
     return (otx + minx) <= tx and tx <= (otx + maxx) and (oty + miny) <= ty and ty <= (oty + maxy)
@@ -96,9 +105,10 @@ local function CheckPlayersDimensionHopping(inst, virtualroomset)
     for _, player in ipairs(FindPlayersInRange(x, y, z, CHECK_PLAYERS_DIMENSION_HOPPING_RADIUS)) do
         local px, py, pz = player.Transform:GetWorldPosition()
         local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(px, 0, pz)
-        if not player.sg or not player.sg:HasAnyStateTag("doing", "busy") then
+        if not player.sg or not player.sg:HasAnyStateTag("doing", "busy", "devoured") then
             if players[player] then
-                if player:HasTag("playerghost") and not InBoundingBox(otx, oty, INNER_MINX, INNER_MAXX, INNER_MINY, INNER_MAXY, tx, ty) then
+                local minx, maxx, miny, maxy = GetArenaBoundingBox(inst)
+                if player:HasTag("playerghost") and not InBoundingBox(otx, oty, minx, maxx, miny, maxy, tx, ty) then
                     TeleportToOuter(inst, player, otx, oty, virtualroomset)
                 end
             else
@@ -152,6 +162,9 @@ end
 
 local function OnShowRoom(inst, virtualroomset, roomname, teleportingentsdata)
     if virtualroomset:IsCurrentRoomLobby() then -- always reset if we're in the lobby now
+        if virtualroomset.teleportingentsdata then
+            virtualroomset.teleportingentsdata.radius = function() return 1.5 + math.random() * 3 end
+        end
         virtualroomset:TryToReset()
     end
     TryUpdatingPlayersDimensionHopping(inst, virtualroomset)
@@ -201,14 +214,11 @@ local function centerfn()
     virtualroomset:SetOnTeleportedEntity(OnTeleportedEntity)
     virtualroomset:SetDoNotRotateRooms(true)
     virtualroomset:SetRoomDefinitions(atriumroom_defs) -- Do last.
+    virtualroomset:SetKeepInventoryItemsthroughReset(true)
     local prngseed = hash(TheNet:GetSessionIdentifier())
     virtualroomset.customdata.prngseed = prngseed
     virtualroomset.scratchpad.prng = PRNG_Uniform(prngseed)
 
-    -- we reset at the same time as the vault.
-    inst:ListenForEvent("resetvault", function(_world)
-        virtualroomset:FlagForReset()
-    end, TheWorld)
 
     inst:ListenForEvent("ms_charliearena_morphatrium", function(_world, data)
         local x, _, z = virtualroomset:GetOrigin()
@@ -235,6 +245,7 @@ local function centerfn()
                 TheWorld.Map:SetTile(tx + x, ty + y, WORLD_TILES.BRICK)
             end
         end
+        inst.unstable = true
     end, TheWorld)
 
 	inst.inittask = inst:DoStaticTaskInTime(0, OnAdd)

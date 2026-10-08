@@ -337,7 +337,10 @@ local function UpdatePlayerTargets(inst)
 
 	if inst:IsInArena() then
 		for _, v in ipairs(AllPlayers) do
-			if not IsEntityDeadOrGhost(v) and v.entity:IsVisible() and IsEntInArena(v) then
+			if not IsEntityDeadOrGhost(v) and
+				(v.entity:IsVisible() or v.sg:HasStateTag("devoured")) and
+				IsEntInArena(v)
+			then
 				if toremove[v] then
 					toremove[v] = nil
 				else
@@ -346,11 +349,19 @@ local function UpdatePlayerTargets(inst)
 			end
 		end
 	else
-		for _, v in ipairs(FindPlayersInRange(x, 0, z, TUNING.SHROUDEN_DEAGGRO_DIST, true)) do
-			if toremove[v] then
-				toremove[v] = nil
-			else
-				table.insert(toadd, v)
+		local rangesq = TUNING.SHROUDEN_DEAGGRO_DIST * TUNING.SHROUDEN_DEAGGRO_DIST
+		for _, v in ipairs(AllPlayers) do
+			if not IsEntityDeadOrGhost(v) and
+				(v.entity:IsVisible() or v.sg:HasStateTag("devoured"))
+			then
+				local x1, _, z1 = v.Transform:GetWorldPosition()
+				if math2d.DistSq(x, z, x1, z1) < rangesq and not IsPointInArena(x1, 0, z1) then
+					if toremove[v] then
+						toremove[v] = nil
+					else
+						table.insert(toadd, v)
+					end
+				end
 			end
 		end
 	end
@@ -423,7 +434,7 @@ local function KeepTargetFn(inst, target)
 	elseif inst:IsInArena() then
 		return IsEntInArena(target)
 	end
-	return inst:IsNear(target, TUNING.SHROUDEN_DEAGGRO_DIST)
+	return inst:IsNear(target, TUNING.SHROUDEN_DEAGGRO_DIST) and not IsEntInArena(target)
 end
 
 local function TryAggro(inst, attacker)
@@ -568,11 +579,14 @@ local PHASES =
 	},
 }
 
-local DEESCALATE_TIME = 30
+local DEESCALATE_TIME = 20
 
 local function CalcThreatLevel(inst, dps)
 	local numthreatlevels = #TUNING.SHROUDEN_ATTACK_PERIOD
 	local level = math.floor(Remap(dps, 150, 375, 1, numthreatlevels))
+	if inst.components.grouptargeter:GetNumTargets() <= 1 then
+		level = level - 1
+	end
 	return math.clamp(level, 1, numthreatlevels)
 end
 
@@ -1251,6 +1265,9 @@ local function fn()
 
 		return inst
 	end
+
+	inst.scrapbook_anim = "scrapbook"
+	inst.scrapbook_overridebuild = "shrouden_voidcloth"
 
 	inst.recentlycharged = {}
 	inst.Physics:SetCollisionCallback(OnCollide)

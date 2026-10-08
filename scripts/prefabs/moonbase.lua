@@ -213,6 +213,9 @@ local function ToggleMoonCharge(inst)
             HideColdStar(inst)
 
             if inst._staffinst ~= nil then
+                if inst._staffinst.SetFxOwner then
+                    inst._staffinst:SetFxOwner(nil)
+                end
                 inst:RemoveChild(inst._staffinst)
                 inst._staffinst:ReturnToScene()
 				inst._staffinst.components.inventoryitem:InheritWorldWetnessAtTarget(inst)

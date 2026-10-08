@@ -361188,6 +361188,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SHIELDOFTERROR"
 msgid "Can be repaired by feeding it food."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SHROUDEN
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SHROUDEN"
+msgid "We just want to go home."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SIESTAHUT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SIESTAHUT"
 msgid "Useable in the day.\n\nSurvivor recovers 2 Health per second and 1 Sanity per second but consumes 0.33 Hunger per second. It also reduces 1 Wetness per second and lowers temperature 1 degree per second down to 40 degrees."

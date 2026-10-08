@@ -28,6 +28,7 @@ local function onequip(inst, owner)
         inst.fx:Remove()
     end
     inst.fx = SpawnPrefab("armor_voidcloth_fx")
+    inst.fx.owningitem = inst
     inst.fx:AttachToOwner(owner)
 
 	if owner.components.sanity ~= nil then
@@ -219,9 +220,30 @@ local function fx_AttachToOwner(inst, owner)
 	if owner.components.colouradder ~= nil then
 		owner.components.colouradder:AttachChild(inst)
 	end
+    if inst.owningitem and inst.skinbuildhash then
+        local skinbuild = inst.owningitem.AnimState:GetSkinBuild()
+        if skinbuild then
+            inst.skinbuildhash:set(skinbuild)
+        end
+    end
     --Dedicated server does not need to spawn the local fx
     if not TheNet:IsDedicated() then
         fx_SpawnFxForOwner(inst, owner)
+    end
+end
+
+local function fx_skinhashdirty(inst)
+    if inst.fx ~= nil then
+        local skinbuildhash = inst.skinbuildhash:value()
+        if skinbuildhash ~= 0 then
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetSkin(skinbuildhash, fx.build)
+            end
+        else
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetBuild(fx.build)
+            end
+        end
     end
 end
 
@@ -235,8 +257,13 @@ local function fxfn()
 
 	inst:AddComponent("colouraddersync")
 
+    inst.skinbuildhash = net_hash(inst.GUID, "armor_voidcloth_fx.skinbuildhash", "skinhashdirty")
+
     inst.entity:SetPristine()
 
+    if not TheNet:IsDedicated() then
+        inst:ListenForEvent("skinhashdirty", fx_skinhashdirty)
+    end
     if not TheWorld.ismastersim then
         inst.OnEntityReplicated = fx_OnEntityReplicated
 

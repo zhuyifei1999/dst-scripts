@@ -204,8 +204,8 @@ local TRIGGERED_DANGER_MUSIC =
 
 	shrouden =
 	{
-		"", --silence,											+[gateway_dimension_battle mix]
-		"dontstarve/music/music_epicfight_charlie_battle", --	+[gateway_dimension_battle mix]
+		"", --silence,									+[gateway_dimension_battle mix]
+		"dontstarve/music/music_epicfight_shrouden", --	+[gateway_dimension_battle mix]
 		"", --silence, (no mix)
 	},
 

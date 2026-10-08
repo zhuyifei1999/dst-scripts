@@ -327,6 +327,15 @@ local function OnEntityWake(inst)
     end
 end
 
+local function OnRemoveEntity(inst)
+    if AllowShadowThralls[inst.prefab] then
+        local shadowthrallmanager = TheWorld.components.shadowthrallmanager
+        if shadowthrallmanager then
+            shadowthrallmanager:UnregisterFissure(inst)
+        end
+    end
+end
+
 local function OnPreLoad(inst, data)
     WorldSettings_ChildSpawner_PreLoad(inst, data, TUNING.NIGHTMAREFISSURE_RELEASE_TIME, TUNING.NIGHTMAREFISSURE_REGEN_TIME)
 	if data ~= nil and data.temp then
@@ -557,6 +566,7 @@ local function Make(name, build, lightcolour, fxname, masterinit)
 
         inst.OnEntityWake = OnEntityWake
         inst.OnEntitySleep = OnEntitySleep
+        inst.OnRemoveEntity = OnRemoveEntity
 
 		inst.MakeTempFissure = MakeTempFissure
 

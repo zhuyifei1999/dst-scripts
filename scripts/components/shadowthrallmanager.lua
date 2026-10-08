@@ -202,9 +202,14 @@ function self:OnSpawnThralls()
             local angles = { angle - 50 - math.random() * 10, angle - 5 + math.random() * 10, angle + 50 + math.random() * 10 }
             local delays = { 0, .6, 1.2 }
             local prefab_hands, prefab_horns, prefab_wings
-            if self.thralltype == THRALL_TYPES.SHADOW.TRIO then
+            local thralltype = self.thralltype
+            if thralltype == nil then
+                -- we got here because we corrupted forcefully with King's Staff
+                thralltype = math.random() < 0.5 and THRALL_TYPES.SHADOW.TRIO or THRALL_TYPES.SHADOW.MOUTH
+            end
+            if thralltype == THRALL_TYPES.SHADOW.TRIO then
                 prefab_hands, prefab_horns, prefab_wings = "shadowthrall_hands", "shadowthrall_horns", "shadowthrall_wings"
-            elseif self.thralltype == THRALL_TYPES.SHADOW.MOUTH then
+            elseif thralltype == THRALL_TYPES.SHADOW.MOUTH then
                 prefab_hands, prefab_horns, prefab_wings = "shadowthrall_mouth", "shadowthrall_mouth", "shadowthrall_mouth"
             end
 

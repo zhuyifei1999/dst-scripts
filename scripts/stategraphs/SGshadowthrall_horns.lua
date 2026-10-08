@@ -691,9 +691,13 @@ local states =
 				local target = inst.sg.statemem.target
 				if target and target:IsValid() then
 					local x1, _, z1 = target.Transform:GetWorldPosition()
-					local vx, _, vz = target.Physics:GetVelocity()
-					local dx = x1 + vx * dt - x
-					local dz = z1 + vz * dt - z
+					local dx = x1 - x
+					local dz = z1 - z
+					if target.Physics then
+						local vx, _, vz = target.Physics:GetVelocity()
+						dx = dx + vx * dt
+						dz = dz + vz * dt
+					end
 					if dx ~= 0 or dz ~= 0 then
 						local rot1 = math.atan2(-dz, dx) * RADIANS
 						local diff = ReduceAngle(rot1 - rot)

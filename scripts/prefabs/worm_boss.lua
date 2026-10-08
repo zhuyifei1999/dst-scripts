@@ -16,7 +16,6 @@ local assets_shadow =
 	Asset("ANIM", "anim/worm_boss_shadow_build.zip"),
 	Asset("ANIM", "anim/worm_boss_segment_shadow_build.zip"),
 	Asset("ANIM", "anim/worm_boss_segment_shadow_2_build.zip"),
-	Asset("ANIM", "anim/worm_boss_shadow_spike.zip"),
 	Asset("ANIM", "anim/stalker_corrupt_fx_build.zip"),
 	Asset("SCRIPT", "scripts/prefabs/worm_boss_util.lua"),
 }

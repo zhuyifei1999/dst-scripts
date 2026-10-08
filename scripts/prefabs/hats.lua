@@ -4046,6 +4046,7 @@ local function MakeHat(name)
 			inst.fx:Remove()
 		end
 		inst.fx = SpawnPrefab("voidclothhat_fx")
+        inst.fx.owningitem = inst
 		inst.fx:AttachToOwner(owner)
 
 		voidcloth_setbuffowner(inst, owner)
@@ -7168,10 +7169,27 @@ fns2.voidclothhat_fx_buffeddirty = function(inst)
 	end
 end
 
+fns2.voidclothhat_fx_skinhashdirty = function(inst)
+    if inst.fx ~= nil then
+        local skinbuildhash = inst.skinbuildhash:value()
+        if skinbuildhash ~= 0 then
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetSkin(skinbuildhash, "hat_voidcloth")
+            end
+        else
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetBuild("hat_voidcloth")
+            end
+        end
+    end
+end
+
 fns2.voidclothhat_fx_common_postinit = function(inst)
 	inst.buffed = net_bool(inst.GUID, "voidclothhat_fx.buffed", "buffeddirty")
+    inst.skinbuildhash = net_hash(inst.GUID, "voidclothhat_fx.skinbuildhash", "skinhashdirty")
 	if not TheNet:IsDedicated() then
 		inst:ListenForEvent("buffeddirty", fns2.voidclothhat_fx_buffeddirty)
+		inst:ListenForEvent("skinhashdirty", fns2.voidclothhat_fx_skinhashdirty)
 	end
 end
 

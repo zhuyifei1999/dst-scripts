@@ -353,12 +353,16 @@ local function StartWideBeam(inst)
 
 	inst.components.updatelooper:AddOnUpdateFn(UpdateBeamAOE)
 	EnableSmoke(inst, true)
+
+	inst.SoundEmitter:KillSound("loop")
+	inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_big_LP", "loop")
 end
 
 local function MakeWide(inst)
 	if inst.AnimState:IsCurrentAnimation("beam_basic_loop") then
 		inst.AnimState:PlayAnimation("beam_wide_pre")
 		inst.AnimState:PushAnimation("beam_wide_loop")
+		inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_transition")
 
 		inst.components.updatelooper:RemoveOnUpdateFn(UpdateBeamAOE)
 		inst.components.updatelooper:AddOnUpdateFn(UpdateBeamLightPre)

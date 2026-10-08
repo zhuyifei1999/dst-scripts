@@ -10891,6 +10891,10 @@ local states =
                 cooldown = math.max(cooldown, 24 * FRAMES)
             end
 
+            if equip and equip.DoGemShine then -- king_cane
+                inst.sg.statemem.kingstaff = equip
+            end
+
             inst.sg:SetTimeout(cooldown)
 
             if target ~= nil then
@@ -10924,6 +10928,9 @@ local states =
             TimeEvent(5 * FRAMES, function(inst)
                 if inst.sg.statemem.ismoose and not inst.sg.statemem.ismoosesmash then
                     inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/moose/punch", nil, nil, true)
+                end
+                if inst.sg.statemem.kingstaff and inst.sg.statemem.kingstaff:IsValid() then
+                    inst.sg.statemem.kingstaff:DoGemShine()
                 end
             end),
             TimeEvent(6 * FRAMES, function(inst)
@@ -16051,9 +16058,13 @@ local states =
             local staff = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             local colour = staff ~= nil and staff.fxcolour or { 1, 1, 1 }
 
-            inst.sg.statemem.stafffx = SpawnPrefab(inst.components.rider:IsRiding() and "staffcastfx_mount" or "staffcastfx")
-            inst.sg.statemem.stafffx.entity:SetParent(inst.entity)
-            inst.sg.statemem.stafffx:SetUp(colour)
+            if staff.DoGemShine then
+                staff:DoGemShine()
+            else
+                inst.sg.statemem.stafffx = SpawnPrefab(inst.components.rider:IsRiding() and "staffcastfx_mount" or "staffcastfx")
+                inst.sg.statemem.stafffx.entity:SetParent(inst.entity)
+                inst.sg.statemem.stafffx:SetUp(colour)
+            end
 
             inst.sg.statemem.stafflight = SpawnPrefab("staff_castinglight")
             inst.sg.statemem.stafflight.Transform:SetPosition(inst.Transform:GetWorldPosition())

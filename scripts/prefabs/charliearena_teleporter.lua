@@ -187,12 +187,8 @@ local function RemoveHauntable(inst)
 end
 
 --V2C: doing this instead of putting the sound on the fx, so we don't have so many sound instances.
-local function OnDepart(inst)
-	-- inst.SoundEmitter:PlaySound("rifts6/vault_portal/teleport_fx")
-end
-
-local function OnArrive(inst)
-	-- inst.SoundEmitter:PlaySound("rifts6/vault_portal/teleport_arrive_FX")
+local function OnDepart(inst, virtualroomset)
+	virtualroomset:FlagForReset() -- we only reset when teleporting out through the hole
 end
 
 local function SetOpen(inst)
@@ -323,7 +319,6 @@ local function fn()
     virtualroomteleporter:SetDirection(VIRTUALROOMDIRECTIONS.OUT)
     virtualroomteleporter:SetTeleportFXPrefab("atrium_portal_fx")
     virtualroomteleporter:SetOnDepart(OnDepart)
-    virtualroomteleporter:SetOnArrive(OnArrive)
     virtualroomteleporter:SetOnForceRegisterEntity(OnForceRegisterEntity)
     virtualroomteleporter:SetTeleportDestinationPositionOverride(TeleportDestinationPositionOverride)
 

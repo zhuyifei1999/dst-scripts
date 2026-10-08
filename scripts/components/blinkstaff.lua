@@ -45,6 +45,9 @@ local function OnBlinked(caster, self, dpt)
     elseif caster.sg.statemem.onstopblinking ~= nil then
         caster.sg.statemem.onstopblinking()
     end
+    if self.inst.DoGemShine then
+        self.inst:DoGemShine()
+    end
 	local pt = dpt:GetPosition()
     local casterx, castery, casterz = caster.Transform:GetWorldPosition()
 	if pt ~= nil and TheWorld.Map:IsPassableAtPoint(pt:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pt) and IsTeleportingPermittedFromPointToPoint(casterx, castery, casterz, pt.x, pt.y, pt.z) then -- NOTES(JBK): Keep in sync with wortox. [BATELE]

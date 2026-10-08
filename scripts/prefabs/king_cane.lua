@@ -15,6 +15,8 @@ local prefabs =
     "king_cane_fx",
 }
 
+local easing = require("easing")
+
 local staff_common = require("prefabs/staff_common")
 local stafffns = staff_common.fns
 
@@ -61,10 +63,11 @@ local function SetFxOwner(inst, owner)
     end
 end
 
-local function OnChangeHighlightOwner(inst, owner) -- inst is the fx here
-    -- piggybacking off highlightchild owner networking to change corruptfx and gemfx 
+local function fx_OnChangeHighlightOwner(inst, owner) -- inst is the fx here
+    -- piggybacking off highlightchild owner networking to change corruptfx and gemfx
     if not TheNet:IsDedicated() then
-        local followguid = (owner.prefab == "king_cane" and owner or inst).GUID
+        -- note: can't check prefab name because this can be called during construction, so checking netvar existence instead
+        local followguid = (owner._gem ~= nil and owner or inst).GUID
         inst.corruptfx.Follower:FollowSymbol(followguid, "follow", nil, nil, nil, true)
         inst.gemfx.Follower:FollowSymbol(followguid, "swap_gem", nil, nil, nil, true)
         inst.gemfx.components.highlightchild:SetOwner(owner)
@@ -83,12 +86,6 @@ local function OnEquip(inst, owner)
     owner.AnimState:Hide("ARM_normal")
 
     SetFxOwner(inst, owner)
-
-    if owner.components.playerspeedmult then
-        owner.components.playerspeedmult:SetCappedPredictedSpeedMult(inst, TUNING.KING_CANE_SPEED_MULT)
-    elseif owner.components.locomotor then
-        owner.components.locomotor:SetExternalSpeedMultiplier(inst, "king_cane", TUNING.KING_CANE_SPEED_MULT)
-    end
 end
 
 local function OnUnequip(inst, owner)
@@ -100,12 +97,6 @@ local function OnUnequip(inst, owner)
     end
 
     SetFxOwner(inst, nil)
-
-    if owner.components.playerspeedmult then
-        owner.components.playerspeedmult:RemoveCappedPredictedSpeedMult(inst)
-    elseif owner.components.locomotor then
-        owner.components.locomotor:RemoveExternalSpeedMultiplier(inst, "king_cane")
-    end
 end
 
 local function GetGemId(gemtype)
@@ -154,6 +145,10 @@ local function OnGemDirty(inst)
 end
 
 local function SetGem(inst, gemtype)
+    -- reset hauntable
+    inst:RemoveComponent("hauntable")
+    MakeHauntableLaunch(inst)
+
     inst.gem = gemtype
     inst._gem:set(gemtype)
     if not TheNet:IsDedicated() then
@@ -189,6 +184,7 @@ local function OnCorruptedFn(inst)
     inst.dodischarge = true
     inst:AddComponent("shadowdominance")
     inst.components.trader:Disable()
+    UpdateFxLevel(inst, TUNING.KING_CANE_CORRUPTION_HIGH)
 end
 
 local function OnUncorruptedFn(inst)
@@ -207,8 +203,11 @@ local function OnCorruptionCurrentFn(inst, current)
 end
 
 local function DoCorruption(inst)
-    inst.fx:DoGemShine()
     inst.components.corruption:DoDelta(TUNING.KING_CANE_CORRUPTION[inst.gem])
+end
+
+local function DoGemShine(inst)
+    inst.fx:DoGemShine()
 end
 
 local function GetDappernessFn(inst)
@@ -316,8 +315,7 @@ local function fn()
     inst.components.equippable:SetOnUnequip(OnUnequip)
     inst.components.equippable:SetDappernessFn(GetDappernessFn)
     inst.components.equippable.is_magic_dapperness = true
-    -- NOTE: speed mult done in OnEquip/OnUnequip to follow speed mult cap rule
-    -- inst.components.equippable.walkspeedmult = TUNING.KING_CANE_SPEED_MULT
+    inst.components.equippable.walkspeedmult = TUNING.KING_CANE_SPEED_MULT
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.KING_CANE_DAMAGE)
@@ -345,10 +343,10 @@ local function fn()
     inst:ListenForEvent("onspellcast", DoCorruption)
     inst:ListenForEvent("onblink", DoCorruption)
     inst:ListenForEvent("weapononprojectilelaunched", DoCorruption)
-    ---
 
     MakeHauntableLaunch(inst)
 
+    inst.DoGemShine = DoGemShine
     inst.SetFxOwner = SetFxOwner -- for moonbase
     inst.OnSave = OnSave
     inst.OnPreLoad = OnPreLoad
@@ -358,18 +356,30 @@ end
 
 -------------------------
 
-local function OnGemShineDirty(inst)
-    -- TODO
-end
-
-local function DoGemShine(inst)
-    inst.gemshine:push()
-    if not TheNet:IsDedicated() then
-        OnGemShineDirty(inst)
+local function fx_OnGemShineDirty(inst)
+    local parent = inst.entity:GetParent()
+    if parent then
+        if parent.isplayer then
+            if parent.AnimState:IsCurrentAnimation("staff_pre") then
+                inst.gemfx:Shine()
+            elseif parent.AnimState:IsCurrentAnimation("atk_pre") or parent.AnimState:IsCurrentAnimation("player_atk_pre")
+                or parent.AnimState:IsCurrentAnimation("atk") or parent.AnimState:IsCurrentAnimation("player_atk") then
+                inst.gemfx:QuickShine()
+            end
+        else -- We got here through haunting probably.
+            inst.gemfx:QuickShine()
+        end
     end
 end
 
-local function OnGemFxDirty(inst)
+local function fx_DoGemShine(inst)
+    inst.gemshine:push()
+    if not TheNet:IsDedicated() then
+        fx_OnGemShineDirty(inst)
+    end
+end
+
+local function fx_OnGemFxDirty(inst)
     local gemtype = inst.gem:value()
     if gemtype ~= "" then
         inst.gemfx.AnimState:OverrideSymbol("swap_gem", "king_cane", "swap_"..gemtype)
@@ -378,11 +388,11 @@ local function OnGemFxDirty(inst)
     end
 end
 
-local function SetGemType(inst, gemtype)
+local function fx_SetGemType(inst, gemtype)
     if gemtype ~= inst.gem:value() then
         inst.gem:set(gemtype)
         if not TheNet:IsDedicated() then
-            OnGemFxDirty(inst)
+            fx_OnGemFxDirty(inst)
         end
     end
 end
@@ -407,11 +417,12 @@ local function CreateCorruptionFX()
 	return inst
 end
 
-local function OnColourChanged(inst, r, g, b, a)
+local function fx_OnColourChanged(inst, r, g, b, a)
     inst.corruptfx.AnimState:SetAddColour(r, g, b, a)
+    inst.gemfx.AnimState:SetAddColour(r, g, b, a)
 end
 
-local function OnFXLevelDirty(inst)
+local function fx_OnFXLevelDirty(inst)
     local val = inst.level:value()
     if val == 0 then
         inst.corruptfx:Hide()
@@ -421,13 +432,63 @@ local function OnFXLevelDirty(inst)
     end
 end
 
-local function SetFXLevel(inst, level)
+local function fx_SetFXLevel(inst, level)
     if level ~= inst.level:value() then
         inst.level:set(level)
         if not TheNet:IsDedicated() then
-            OnFXLevelDirty(inst)
+            fx_OnFXLevelDirty(inst)
         end
     end
+end
+
+local gem_StopUpdatingLightOverride
+local function gem_UpdateLightOverride(inst)
+    if inst.AnimState:IsCurrentAnimation("cast_gem") then
+        local frame = inst.AnimState:GetCurrentAnimationFrame()
+        inst.AnimState:SetLightOverride(
+            (frame >= 48 and (1 - easing.inQuad(frame - 48, 0, 1, 58 - 48))) or
+            (frame >= 23 and 1) or
+            (frame >= 12 and easing.outQuart(frame - 12, 0, 1, 22 - 12)) or
+            0
+        )
+    elseif inst.AnimState:IsCurrentAnimation("quickcast_gem") then
+        local frame = inst.AnimState:GetCurrentAnimationFrame()
+        inst.AnimState:SetLightOverride(
+            (frame >= 13 and (1 - easing.inQuad(frame - 13, 0, 1, 17 - 13))) or
+            (frame >= 8 and 1) or
+            (frame >= 4 and easing.outQuart(frame - 4, 0, 1, 7 - 4)) or
+            0
+        )
+    else
+        inst.AnimState:SetLightOverride(0)
+        gem_StopUpdatingLightOverride(inst)
+    end
+end
+
+local function gem_StartUpdatingLightOverride(inst)
+	if not inst.isupdatinglightoverride then
+		inst.isupdatinglightoverride = true
+        inst.components.updatelooper:AddPostUpdateFn(gem_UpdateLightOverride)
+    end
+end
+
+gem_StopUpdatingLightOverride = function(inst)
+    if inst.isupdatinglightoverride then
+        inst.isupdatinglightoverride = nil
+        inst.components.updatelooper:RemovePostUpdateFn(gem_UpdateLightOverride)
+    end
+end
+
+local function gem_Shine(inst)
+    inst.AnimState:PlayAnimation("cast_gem")
+    inst.AnimState:PushAnimation("idle_gem", true)
+    gem_StartUpdatingLightOverride(inst)
+end
+
+local function gem_QuickShine(inst)
+    inst.AnimState:PlayAnimation("quickcast_gem")
+    inst.AnimState:PushAnimation("idle_gem", true)
+    gem_StartUpdatingLightOverride(inst)
 end
 
 local function CreateGemFX()
@@ -445,14 +506,18 @@ local function CreateGemFX()
 	inst.AnimState:PlayAnimation("idle_gem", true)
 
 	inst:AddComponent("highlightchild")
+	inst:AddComponent("updatelooper")
+
+    inst.Shine = gem_Shine
+    inst.QuickShine = gem_QuickShine
 
 	return inst
 end
 
-local function fxOnEntityReplicated(inst)
+local function fx_OnEntityReplicated(inst)
     local owner = inst.entity:GetParent()
     if owner ~= nil then
-        OnChangeHighlightOwner(inst, owner)
+        fx_OnChangeHighlightOwner(inst, owner)
     end
 end
 
@@ -471,7 +536,7 @@ local function fxfn()
     inst.AnimState:PlayAnimation("swap_loop1", true)
 
     inst:AddComponent("highlightchild")
-    inst.components.highlightchild:SetOnChangeOwnerFn(OnChangeHighlightOwner)
+    inst.components.highlightchild:SetOnChangeOwnerFn(fx_OnChangeHighlightOwner)
 	inst:AddComponent("colouraddersync")
 
     inst.gemshine = net_event(inst.GUID, "king_cane_fx.gemshine")
@@ -487,22 +552,22 @@ local function fxfn()
         inst.gemfx = CreateGemFX()
         inst.gemfx.entity:SetParent(inst.entity)
 		inst.gemfx.Follower:FollowSymbol(inst.GUID, "swap_gem", nil, nil, nil, true)
-		inst.components.colouraddersync:SetColourChangedFn(OnColourChanged)
+		inst.components.colouraddersync:SetColourChangedFn(fx_OnColourChanged)
     end
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        inst.OnEntityReplicated = fxOnEntityReplicated
-        inst:ListenForEvent("gemdirty", OnGemFxDirty)
-        inst:ListenForEvent("leveldirty", OnFXLevelDirty)
-        inst:ListenForEvent("king_cane_fx.gemshine", OnGemShineDirty)
+        inst.OnEntityReplicated = fx_OnEntityReplicated
+        inst:ListenForEvent("gemdirty", fx_OnGemFxDirty)
+        inst:ListenForEvent("leveldirty", fx_OnFXLevelDirty)
+        inst:ListenForEvent("king_cane_fx.gemshine", fx_OnGemShineDirty)
         return inst
     end
 
-    inst.DoGemShine = DoGemShine
-    inst.SetGemType = SetGemType
-    inst.SetFXLevel = SetFXLevel
+    inst.DoGemShine = fx_DoGemShine
+    inst.SetGemType = fx_SetGemType
+    inst.SetFXLevel = fx_SetFXLevel
     inst.persists = false
 
     return inst

@@ -1,5 +1,7 @@
 --NOTE: this handles both charlie_boss and shrouden, sorry for the name!
 
+local easing = require("easing")
+
 local TEXTURE = "fx/debris.tex"
 local SHADER = "shaders/vfx_particle_add.ksh"
 
@@ -563,25 +565,57 @@ local function OnDreadstoneSpikesTick(inst, targetcds)
         return
     end
 
+	local num = boss.components.grouptargeter:GetNumTargets()
+	if num <= 0 then
+		return
+	end
+
 	local t = GetTime()
+	--local cdscale = math.clamp(Remap(num, 1, 6, 1, 3), 1, 3)
+	local force0cd = math.random(num)
+
 	for player in pairs(boss.components.grouptargeter:GetTargets()) do
 		local cd = TUNING.CHARLIEARENA_SPIKE_SANITY_CD[2]
 		local mode = "random"
 		if player.components.sanity then
 			if player.components.sanity:IsLunacyMode() then
-				cd = Remap(player.components.sanity:GetPercent(), 0, 1, unpack(TUNING.CHARLIEARENA_SPIKE_LUNACY_CD))
+				local lowcd, highcd = unpack(TUNING.CHARLIEARENA_SPIKE_LUNACY_CD)
+				local lowpct, highpct = 0.2, TUNING.SANITY_BECOME_ENLIGHTENED_THRESH
+				local pct = math.clamp(player.components.sanity:GetPercentWithPenalty(), lowpct, highpct)
+				local cd1 = easing.inQuad(pct - lowpct, lowcd, highcd - lowcd, highpct - lowpct)
+				local cd2 = Remap(pct, lowpct, highpct, lowcd, highcd)
+				cd = (cd1 + cd2) * 0.5
 				mode = "trap"
 			else
-				cd = Remap(player.components.sanity:GetPercent(), 0, 1, unpack(TUNING.CHARLIEARENA_SPIKE_SANITY_CD))
+				local lowcd, highcd = unpack(TUNING.CHARLIEARENA_SPIKE_SANITY_CD)
+				local lowpct, highpct = TUNING.SANITY_BECOME_INSANE_THRESH, 0.8
+				local pct = math.clamp(player.components.sanity:GetPercentWithPenalty(), lowpct, highpct)
+				local cd1 = easing.outQuad(pct - lowpct, lowcd, highcd - lowcd, highpct - lowpct)
+				local cd2 = Remap(pct, lowpct, highpct, lowcd, highcd)
+				cd = (cd1 + cd2) * 0.5
 			end
 		end
-		if (targetcds[player] or 0) + cd < t then
+		--cd = cd * cdscale
+		if player.components.health and player.components.health:IsInvincible() then
 			local x, _, z = player.Transform:GetWorldPosition()
-			if TheWorld.Map:IsPointInCharlieBossArena(x, 0, z) and not IsEntityDeadOrGhost(player) then
-				local vx, _, vz = player.Physics:GetVelocity()
-				local pos = Vector3(x + vx * 0.5, 0, z + vz * 0.5)
-				SpawnDreadstoneSpikes(inst, boss, pos, mode)
+			if TheWorld.Map:IsPointInCharlieBossArena(x, 0, z) then
+				--reset cd to max when reviving
 				targetcds[player] = t
+			end
+		else
+			local lastspiket = targetcds[player]
+			if lastspiket == nil then
+				force0cd = force0cd - 1
+				lastspiket = force0cd == 0 and -math.huge or t - cd * math.max(0, GetRandomMinMax(-0.25, 1))
+			end
+			if lastspiket + cd < t then
+				local x, _, z = player.Transform:GetWorldPosition()
+				if TheWorld.Map:IsPointInCharlieBossArena(x, 0, z) and not IsEntityDeadOrGhost(player) then
+					local vx, _, vz = player.Physics:GetVelocity()
+					local pos = Vector3(x + vx * 0.5, 0, z + vz * 0.5)
+					SpawnDreadstoneSpikes(inst, boss, pos, mode)
+					targetcds[player] = t
+				end
 			end
 		end
     end
@@ -993,7 +1027,7 @@ local function CreatePortalTears(inst, prng)
     inst.portaltearfx = {}
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local count = prng:RandInt(7, 10)
+    local count = prng:RandInt(6, 7)
     local theta = 0
     local thetastep = TWOPI / count
     for i = 1, count do
@@ -1008,9 +1042,6 @@ local function CreatePortalTears(inst, prng)
         local var = tostring(prng:RandInt(1))
         fx.AnimState:PlayAnimation(var.."_pre")
         fx.AnimState:PushAnimation(var.."_idle", true)
-        if prng:Rand() < .5 then
-            fx.AnimState:SetScale(-1, 1)
-        end
         table.insert(inst.portaltearfx, fx)
 
         local randomval = thetastep * 0.6

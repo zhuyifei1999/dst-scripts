@@ -121,6 +121,7 @@ end
 local function OnShroudenSummon(inst, shrouden, target)
 	inst.shrouden = shrouden
 	inst.persists = false
+	inst.OnEntitySleep = inst.Remove
 	inst:ListenForEvent("resetboss", function() inst:Remove() end, shrouden)
 
 	inst:SetPrefabNameOverride(shrouden.prefab) -- for death announce

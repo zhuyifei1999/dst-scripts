@@ -11,7 +11,7 @@ local prefabs =
 }
 
 local function OnPlayerNear(inst, player)
-    if inst.components.childspawner.childreninside >= inst.components.childspawner.maxchildren then
+    if inst.components.childspawner.childreninside >= 1 then
         local tries = 10
         while inst.components.childspawner:CanSpawn() and tries > 0 do
             inst.components.childspawner:SpawnChild(player)
@@ -23,7 +23,7 @@ local function OnPlayerNear(inst, player)
 end
 
 local function OnAddChild(inst)--, count)
-    if inst.components.childspawner.childreninside == inst.components.childspawner.maxchildren then
+    if inst.components.childspawner.childreninside >= 1 then
         inst:AddTag("nightmarecorruptable")
         if not inst.AnimState:IsCurrentAnimation("eyes") then
             inst.AnimState:PlayAnimation("eyes", true)
@@ -46,7 +46,7 @@ local function OnSpawnChild( inst, child )
 end
 
 local function OnEntityWake(inst)
-    if inst.components.childspawner.childreninside == inst.components.childspawner.maxchildren then
+    if inst.components.childspawner.childreninside >= 1 then
         inst:AddTag("nightmarecorruptable")
         if not inst.AnimState:IsCurrentAnimation("eyes") then
             inst.AnimState:PlayAnimation("eyes", true)

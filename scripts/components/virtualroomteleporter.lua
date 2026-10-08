@@ -36,9 +36,9 @@ function VirtualRoomTeleporter:SetOnArrive(OnArrive)
     self.onarrive = OnArrive
 end
 
-function VirtualRoomTeleporter:OnDepart()
+function VirtualRoomTeleporter:OnDepart(virtualroomset)
     if self.ondepart then
-        self.ondepart(self.inst)
+        self.ondepart(self.inst, virtualroomset)
     end
 end
 

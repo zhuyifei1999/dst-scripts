@@ -2117,6 +2117,8 @@ local PREFABS =
     ["king_cane"] = true,
     ["queen_torch"] = true,
 
+    ["shrouden"] = true,
+
     -----------------------------------------------
 
     --["archive_switch"] = true, proxy for archive_switch_base

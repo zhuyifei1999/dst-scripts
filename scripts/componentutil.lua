@@ -1445,6 +1445,10 @@ function IsTeleportLinkingPermittedFromPoint(fx, fy, fz)
         return false
     end
 
+    if map:IsPointInCharlieBossArena(fx, fy, fz) then
+        return false
+    end
+
     return true
 end
 

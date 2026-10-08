@@ -133,6 +133,9 @@ local function onhauntred(inst, haunter)
                 end
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            if inst.DoGemShine then
+                inst:DoGemShine()
+            end
             return true
         end
     end
@@ -219,6 +222,9 @@ local function onhauntblue(inst, haunter)
                 end
             end
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            if inst.DoGemShine then
+                inst:DoGemShine()
+            end
             return true
         end
     end
@@ -446,6 +452,9 @@ local function onhauntpurple(inst)
         if target ~= nil then
             teleport_func(inst, target)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            if inst.DoGemShine then
+                inst:DoGemShine()
+            end
             return true
         end
     end
@@ -498,6 +507,9 @@ local function onhauntorange(inst)
                 pos.z = pos.z + offset.z
                 inst.components.blinkstaff:Blink(pos, target)
                 inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+                if inst.DoGemShine then
+                    inst:DoGemShine()
+                end
                 return true
             end
         end
@@ -741,6 +753,9 @@ local function onhauntgreen(inst)
             destroystructure(inst, target)
             SpawnPrefab("collapse_small").Transform:SetPosition(target.Transform:GetWorldPosition())
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            if inst.DoGemShine then
+                inst:DoGemShine()
+            end
             return true
         end
     end
@@ -788,6 +803,9 @@ local function onhauntlight(inst)
         if offset ~= nil then
             createlight(inst, nil, pos + offset)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+            if inst.DoGemShine then
+                inst:DoGemShine()
+            end
             return true
         end
     end

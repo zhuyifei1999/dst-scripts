@@ -816,6 +816,26 @@ function GetTypeForItem(item)
 end
 
 
+function GetPrefabSkinsForReleaseGroup(releasegroup)
+    local allprefabskins = {}
+
+    for prefab, skins in pairs(PREFAB_SKINS) do
+        for _, skin in ipairs(skins) do
+            if GetReleaseGroup(skin) == releasegroup then
+                local prefabskins = allprefabskins[prefab]
+                if not prefabskins then
+                    prefabskins = {}
+                    allprefabskins[prefab] = prefabskins
+                end
+                table.insert(prefabskins, skin)
+            end
+        end
+    end
+
+    return allprefabskins
+end
+
+
 function DoesItemHaveTag(item, tag)
 	local tags = nil
 	if CLOTHING[item] then
