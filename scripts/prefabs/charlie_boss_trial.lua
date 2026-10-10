@@ -17,8 +17,6 @@ local assets =
 	Asset("ANIM", "anim/atrium_charlie_arena_ground.zip"),
 	Asset("ANIM", "anim/atrium_charlie_arena_ground_portal.zip"),
 
-	Asset("ANIM", "anim/charliearena_rift_fx.zip"),
-
     Asset("IMAGE", TEXTURE),
     Asset("SHADER", SHADER),
     Asset("IMAGE", ROCKTEXTURE),
@@ -310,7 +308,7 @@ local function TryToFindHandTargetForPlayer(inst, player)
     for _, ent in ipairs(ents) do
         if not SHROUDED_HAND_TARGETS[ent] then
             if ent:HasTag("torch") then -- Torches have fire tag must be before.
-                if ent.components.fueled then
+                if ent.components.fueled and ent.components.burnable and ent.components.burnable:IsBurning() then
                     return ent
                 end
             elseif ent:HasTag("fire") then
@@ -986,83 +984,9 @@ end
 
 --------------------------------------------------------
 
-local function CreateRiftFX()
-    local inst = CreateEntity()
-
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    --[[Non-networked entity]]
-
-    inst:AddTag("CLASSIFIED")
-    inst:AddTag("NOCLICK")
-
-    inst.Transform:SetEightFaced()
-
-    inst.AnimState:SetBank("charliearena_rift_fx")
-    inst.AnimState:SetBuild("charliearena_rift_fx")
-    inst.AnimState:SetLightOverride(1)
-
-    return inst
-end
-
-local function ResetAndGetPRNG(inst)
-    if inst._seed == nil then
-        local x, _, z = inst.Transform:GetWorldPosition()
-        inst._seed = math.floor(x + 0.5) * math.floor(z + 0.5)
-        inst._prng = PRNG_Uniform()
-    end
-    inst._prng:SetSeed(inst._seed)
-    return inst._prng
-end
-
-local function CreatePortalTears(inst, prng)
-    if inst.portaltearfx then
-        for i, v in ipairs(inst.portaltearfx) do
-            v:Remove()
-        end
-    end
-    inst.portaltearfx = {}
-
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local count = prng:RandInt(6, 7)
-    local theta = 0
-    local thetastep = TWOPI / count
-    for i = 1, count do
-        local angle = theta / DEGREES
-        local roundedangle = math.floor(angle / 45 + 0.5) * 45
-        local radius = (roundedangle % 90 == 0) and (22 + prng:Rand() * 4) or (30 + prng:Rand() * 4)
-        local fx = CreateRiftFX()
-        fx.entity:SetParent(inst.entity)
-        fx.Transform:SetPosition(math.cos(theta) * radius, 2 + prng:Rand() * 3, -math.sin(theta) * radius)
-        fx.Transform:SetRotation(math.floor(fx:GetAngleToPoint(x, y, z) / 45 + 0.5) * 45)
-
-        local var = tostring(prng:RandInt(1))
-        fx.AnimState:PlayAnimation(var.."_pre")
-        fx.AnimState:PushAnimation(var.."_idle", true)
-        table.insert(inst.portaltearfx, fx)
-
-        local randomval = thetastep * 0.6
-        theta = theta + (thetastep + (prng:Rand() * 2 * randomval - randomval))
-    end
-end
-
 local function OnUnstableDirty(inst)
     local unstable = inst._unstable:value()
     inst:SetEffectUnstable(unstable)
-    if unstable then
-        local prng = ResetAndGetPRNG(inst)
-        -- CreatePortalTears(inst, prng)
-    else
-        if inst.portaltearfx then
-            for i, v in ipairs(inst.portaltearfx) do
-                v:Remove()
-            end
-            inst.portaltearfx = nil
-        end
-    end
 end
 
 local function OnServerUnstable(inst, enabled)
@@ -1151,7 +1075,8 @@ local function fn()
 
 	inst._oncharliebossdied = function(boss)
         UntrackCharlieBoss(inst)
-        TheWorld:PushEvent("resetvault") -- this resets atrium room
+        TheWorld:PushEvent("resetvault") -- defeating fuelweaver also resets vault
+        TheWorld:PushEvent("ms_defeated_shrouden")
         Shard_SyncCharlieDefeated(true)
         SpawnExitCrack(inst)
 	end

@@ -123,13 +123,13 @@ local HONEY_LEVELS =
 		min_scale = 1.05,
 		max_scale = 1.35,
 		threshold = 6,
-		duration = 32,
+		duration = 24,
 	},
 	{
 		min_scale = 1.05,
 		max_scale = 1.35,
 		threshold = 3,
-		duration = 32,
+		duration = 24,
 	},
 }
 
@@ -664,6 +664,7 @@ local function OnNewCombatTarget(inst, data)
 end
 
 local function Disengage(inst)
+	inst._disengagetask:Cancel()
 	inst._disengagetask = nil
 	SetDreadstoneSpikesSpawnsEnabled(inst, false)
 	inst.components.combat.battlecryenabled = true
@@ -678,16 +679,26 @@ local function Disengage(inst)
 	end
 end
 
+local function TryDisengageTick(inst)
+	if inst.components.grouptargeter:GetNumTargets() > 0 then
+		inst._disengagetask._numticks = 0
+	elseif inst._disengagetask._numticks < 9 then
+		inst._disengagetask._numticks = inst._disengagetask._numticks + 1
+	else
+		Disengage(inst)
+	end
+end
+
 local function OnDroppedTarget(inst)
 	if inst._disengagetask == nil then
-		inst._disengagetask = inst:DoTaskInTime(10, Disengage)
+		inst._disengagetask = inst:DoPeriodicTask(1, TryDisengageTick)
+		inst._disengagetask._numticks = 0
 	end
 end
 
 local function OnDeath(inst)
 	inst.components.combat:DropTarget()
 	if inst._disengagetask then
-		inst._disengagetask:Cancel()
 		Disengage(inst)
 	end
 	if inst._resettask then
@@ -1099,7 +1110,9 @@ end
 
 local function DisplayNameFn(inst)
 	if ThePlayer then
-		if ThePlayer:HasTag("shadowthrall_parasite_mask") then
+		if ThePlayer:HasTag("player_shadow_aligned") then
+			return STRINGS.NAMES.SHROUDEN_ALLEGIANCE
+		elseif ThePlayer:HasTag("shadowthrall_parasite_mask") then
 			return STRINGS.NAMES.SHROUDEN_VOIDMASQUE
 		elseif ThePlayer.replica.inventory and ThePlayer.replica.inventory:EquipHasTag("ancient_reader") then
 			return STRINGS.NAMES.SHROUDEN_OTHER

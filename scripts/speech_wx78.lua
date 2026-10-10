@@ -6324,7 +6324,7 @@ return{
 
         WORM_BOSS_SHADOW = "VILE FLESH ROTTED INSIDE AND OUT",
 
-        ARMOR_ROCKY = "NOW I WILL HAVE BONUS DOUBLE ARMOR. WIN",
+        ARMOR_ROCKY = "MORE ARMOR? YES",
         BAT_BOSSCORPSEHAT = "I MAY NEVER RECOVER FROM WEARING THAT ON MY HEAD",
 
         ATRIUM_RITUAL_ORGAN_ROCKY =
@@ -6357,7 +6357,7 @@ return{
             GENERIC = "FIT FOR A KING... ME", -- has a gem slotted in
             EMPTY = "MISSING COMPONENT", -- can socket a gem inside (can be heavy on hint)
         },
-        QUEEN_TORCH = "NOT AFRAID OF DARK. MINE ANYWAY",
+        QUEEN_TORCH = "ONLY FLESHBAGS FEAR DARKNESS. SO IT'S MINE",
         
         CHARLIEARENA_TELEPORTER = "LEAVE NO ITEMS BEHIND",
     },

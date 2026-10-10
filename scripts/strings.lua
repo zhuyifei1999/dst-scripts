@@ -4759,6 +4759,7 @@ STRINGS =
 		CHARLIE_BOSS = "Shrouded Queen",
 		CHARLIE_BOSS_PROJECTILE = "Swarming Horror", -- for scrapbook
         SHROUDEN = "Umbral Abomination",
+        SHROUDEN_ALLEGIANCE = "Shrouden",
         SHROUDEN_VOIDMASQUE = "Tenebrau",
         SHROUDEN_OTHER = "The Other",
 
@@ -19394,7 +19395,7 @@ STRINGS.SCRAPBOOK = {
         CHARLIE_BOSS_PROJECTILE = "Chases those who dare still bask in the light.",
         SHROUDEN = "We just want to go home.",
 
-        KING_CANE = "Socket any gem to use the respective staffs ability.\nBe careful to not overuse, or you will fall as they did.",
+        KING_CANE = "Increases movement speed by 30% when held. Socket any gem to use the respective staffs ability.\nBe careful to not overuse, or you will fall as they did.",
         QUEEN_TORCH = "An eternal flame to push back the shadows.",
     },
 

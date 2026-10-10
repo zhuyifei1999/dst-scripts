@@ -113,10 +113,6 @@ local function onattack_red(inst, attacker, target, skipsanity)
         target.components.combat:SuggestTarget(attacker)
     end
 
-    if inst.components.rechargeable and inst.dodischarge then
-        inst.components.rechargeable:Discharge(TUNING.KING_CANE_RED_COOLDOWN)
-    end
-
     target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
 end
 
@@ -196,10 +192,6 @@ local function onattack_blue(inst, attacker, target, skipsanity)
 
     if target.sg ~= nil and not target.sg:HasStateTag("frozen") then
         target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
-    end
-
-    if inst.components.rechargeable and inst.dodischarge then
-        inst.components.rechargeable:Discharge(TUNING.KING_CANE_BLUE_COOLDOWN)
     end
 
 	--V2C: valid check in case any of the previous callbacks or events removed the target

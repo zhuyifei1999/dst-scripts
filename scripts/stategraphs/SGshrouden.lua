@@ -116,7 +116,27 @@ local events =
 }
 
 local function DoRoarShake(inst)
-	ShakeAllCameras(CAMERASHAKE.FULL, 2, 0.035, 0.1, inst, 40)
+	ShakeAllCameras(CAMERASHAKE.FULL, 2.5, 0.035, 0.14, inst, 40)
+end
+
+local function DoRoar2Shake(inst)
+	ShakeAllCameras(CAMERASHAKE.FULL, 1.9, 0.04, 0.15, inst, 40)
+end
+
+local function DoTeleportDownShake(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 0.7, 0.026, 0.1, inst, 20)
+end
+
+local function DoTeleportUpShake(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 1.2, 0.03, 0.15, inst, 20)
+end
+
+local function DoLiftOffShake(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 0.4, 0.03, 0.12, inst, 40)
+end
+
+local function DoLandingShake(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 1.1, 0.04, 0.15, inst, 40)
 end
 
 --Keep 6-faced in Transform component; anim with no facings will behave like 2-faced.
@@ -479,7 +499,7 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/taunt") end),
 
-			FrameEvent(29, function(inst)
+			FrameEvent(27, function(inst)
 				inst.sg.mem.forcetaunt = nil
 				DoRoarShake(inst)
 				inst.components.epicscare:Scare(10)
@@ -595,7 +615,7 @@ local states =
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/taunt2") end),
 
 			FrameEvent(21, function(inst)
-				DoRoarShake(inst)
+				DoRoar2Shake(inst)
 				inst.components.epicscare:Scare(10)
 			end),
 			FrameEvent(48, function(inst)
@@ -746,6 +766,13 @@ local states =
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/death_a") end),
 			FrameEvent(48, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/death_b") end),
 
+			FrameEvent(19, DoLiftOffShake),
+			FrameEvent(31, function(inst)
+				ShakeAllCameras(CAMERASHAKE.FULL, 3, 0.045, 0.07, inst, 40)
+			end),
+			FrameEvent(70, function(inst)
+				ShakeAllCameras(CAMERASHAKE.FULL, 1.55, 0.04, 0.2, inst, 40)
+			end),
 			FrameEvent(71, function(inst)
 				inst.components.lootdropper:SetChanceLootTable("shrouden")
 				inst.components.lootdropper.spawn_loot_inside_prefab = false
@@ -1280,7 +1307,7 @@ local states =
 						if inst.sg.statemem.summonprefab == "shadowthrall_mouth" then
 							table.insert(summons, math.random(2, 3), "shadowthrall_mouth")
 						else
-							table.insert(summons, "shadowthrall_mouth")
+							table.insert(summons, inst.sg.statemem.summonprefab)
 						end
 					end
 				else
@@ -1506,6 +1533,7 @@ local states =
 			FrameEvent(4, function(inst)
 				inst.sg:AddStateTag("nointerrupt")
 			end),
+			FrameEvent(8, DoTeleportDownShake),
 			FrameEvent(10, function(inst)
 				inst.sg:AddStateTag("noattack")
 				SetClickable(inst, false)
@@ -1567,7 +1595,7 @@ local states =
 				local deceltime = 0.3
 				local arrivedist = 1
 				local min_t = 1
-				local max_t = 4
+				local max_t = 3
 				local t2 = max_t - deceltime
 				local t = (inst.sg.statemem.t or 0) + dt
 
@@ -1609,16 +1637,20 @@ local states =
 
 				inst.sg.statemem.t = t
 
-				local minspeed, maxspeed = unpack(TUNING.SHROUDEN_TELEPORT_SPEED)
+				local maxspeed = TUNING.SHROUDEN_TELEPORT_SPEED
 				if inst.sg.statemem.targetpos == nil and
 					inst.sg.statemem.target and
 					inst.sg.statemem.target.components.locomotor
 				then
-					local runspeed = inst.sg.statemem.target.components.locomotor:GetRunSpeed()
-					maxspeed = math.clamp(Remap(runspeed, 6, 7.5, minspeed, maxspeed), minspeed, maxspeed)
-					runspeed = math.max(8, runspeed)
-					if runspeed < maxspeed then
-						maxspeed = math.clamp(Remap(dist, 3, 9, runspeed, maxspeed), runspeed, maxspeed)
+					local runspeed = math.max(6, inst.sg.statemem.target.components.locomotor:GetRunSpeed())
+					local diff = DiffAngle(inst.Transform:GetRotation(), inst.sg.statemem.target.Transform:GetRotation())
+					local dot = runspeed * math.cos(diff * DEGREES)
+					local k = math.clamp(Remap(diff, 180, 45, 0, 1), 0, 1)
+					k = k * k
+					local runspeed1 = runspeed * (1 - k) + dot * k
+					if runspeed1 < maxspeed then
+						local spacing = math.min(Remap(runspeed, 6, 7.5, 2.5, 3.5), 4)
+						maxspeed = math.clamp(Remap(dist, spacing, spacing + 6, runspeed1, maxspeed), runspeed1, maxspeed)
 					end
 				end
 
@@ -1629,9 +1661,9 @@ local states =
 				inst.sg.statemem.speed = speed
 
 				local mult =
-					(t < acceltime and easing.inQuad(t, 0, 1, acceltime)) or
+					(t < acceltime and easing.inOutQuad(t, 0, 1, acceltime)) or
 					(t <= t2 and 1) or
-					(t < max_t and easing.outQuad(t - t2, 1, -1, deceltime)) or
+					(t < max_t and easing.inOutQuad(t - t2, 1, -1, deceltime)) or
 					0
 				speed = speed * mult
 
@@ -1710,7 +1742,7 @@ local states =
 				local data = inst.sg.statemem.data
 				if data then
 					data.t = data.t + dt
-					local speed = data.t < data.deceltime and data.speed * easing.outQuad(data.t, 1, -1, data.deceltime) or 0
+					local speed = data.t < data.deceltime and data.speed * easing.inOutQuad(data.t, 1, -1, data.deceltime) or 0
 					if speed ~= 0 then
 						inst.Physics:SetMotorVelOverride(speed, 0, 0)
 					else
@@ -1731,12 +1763,14 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts2/shrouden/teleport_out") end),
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/portal_punch_pst") end),
 
 			FrameEvent(3, function(inst)
 				SetPuddleLayerEnabled(inst, false)
 			end),
 			FrameEvent(5, function(inst)
 				inst.sg:RemoveStateTag("invisible")
+				DoTeleportUpShake(inst)
 			end),
 			FrameEvent(6, function(inst)
 				if inst.sg:HasStateTag("jumping") then
@@ -1841,6 +1875,7 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts2/shrouden/teleport_in") end),
 
+			FrameEvent(7, DoLiftOffShake),
 			FrameEvent(8, function(inst)
 				inst.sg:AddStateTag("nointerrupt")
 			end),
@@ -2011,7 +2046,13 @@ local states =
 
 					local minspeed, maxspeed = unpack(TUNING.SHROUDEN_OPTIC_BLAST_SPEED)
 					if target and target.components.locomotor then
-						maxspeed = math.clamp(Remap(target.components.locomotor:GetRunSpeed(), 6, 7.5, minspeed, maxspeed), minspeed, maxspeed)
+						local runspeed = inst.sg.statemem.target.components.locomotor:GetRunSpeed()
+						local diff = DiffAngle(inst.Transform:GetRotation(), target.Transform:GetRotation())
+						local dot = runspeed * math.cos(diff * DEGREES)
+						local k = math.clamp(Remap(diff, 180, 45, 0, 1), 0, 1)
+						k = k * k
+						runspeed = runspeed * (1 - k) + dot * k
+						maxspeed = math.clamp(Remap(runspeed, 6, 7.5, minspeed, maxspeed), minspeed, maxspeed)
 					end
 					maxspeed = math.max(maxspeed, inst.sg.statemem.maxspeed or 0)
 					inst.sg.statemem.maxspeed = maxspeed
@@ -2105,6 +2146,7 @@ local states =
 			end),
 			FrameEvent(17, function(inst)
 				ConfigureFlying(inst, false)
+				DoLandingShake(inst)
 
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)

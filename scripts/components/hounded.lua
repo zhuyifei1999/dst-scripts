@@ -159,7 +159,7 @@ local function ClearLocationImmunity()
 	end
 end
 
-local function PlanNextAttack(force)
+local function PlanNextAttack(force, data)
 	ClearLocationImmunity()
 	if _timetoattack > 0 and not force then
 		-- we came in through a savegame that already had an attack scheduled
@@ -182,9 +182,17 @@ local function PlanNextAttack(force)
 			_wave_pre_upgraded, _wave_override_chance = _spawndata.specialupgradecheck(_wave_pre_upgraded, _wave_override_chance, _wave_override_settings, _wave_upgraded_record)
 		end
 		local timetoattackbase, timetoattackvariance = _attackdelayfn()
-		_timetoattack = timetoattackbase + timetoattackvariance
+		local timetoattack = timetoattackbase + timetoattackvariance
 		if _wave_upgraded_record then
-			_timetoattack = _timetoattack * UPGRADEDSPAWN_NOTKILLED_DELAY_MULT
+			timetoattack = timetoattack * UPGRADEDSPAWN_NOTKILLED_DELAY_MULT
+		end
+		if data and data.multtimetoattack then
+			timetoattack = timetoattack * data.multtimetoattack
+		end
+		if data and data.choosemintime then
+			_timetoattack = math.min(_timetoattack, timetoattack)
+		else
+			_timetoattack = timetoattack
 		end
 		_warnduration = _warndurationfn(_wave_pre_upgraded)
 		_attackplanned = true
@@ -685,6 +693,10 @@ local function OnStoreUpgradedSpawn(src, upgradedspawn)
 	PlanNextAttack(true)
 end
 
+local function ForcePlanNewAttack(src, data)
+	PlanNextAttack(true, data)
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -707,6 +719,7 @@ inst:ListenForEvent("hounded_setwintervariant", SetWinterVariant)
 inst:ListenForEvent("hounds_worm_boss_setdifficulty", SetWormBossDifficulty)
 
 inst:ListenForEvent("hounded_storeupgraded", OnStoreUpgradedSpawn)
+inst:ListenForEvent("hounded_forceplannewattack", ForcePlanNewAttack)
 
 
 self.inst:StartUpdatingComponent(self)

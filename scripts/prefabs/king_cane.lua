@@ -288,13 +288,16 @@ local function fn()
         return inst
     end
 
+    inst.scrapbook_subcat = "tool"
+    inst.scrapbook_removedeps = { "cutgrass" }
+
     -----------------------------------------------------------
 
     -- Follow symbol FX initialization.
     local frame = math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1
     inst.AnimState:SetFrame(frame)
-    --V2C: one networked fx for frame 3 (needed for floating)
-    --     all other frames will be spawned locally client-side by this fx.
+    -- one networked fx for frame 3 (needed for floating)
+    --  all other frames will be spawned locally client-side by this fx.
     inst.fx = SpawnPrefab("king_cane_fx")
     inst.fx.AnimState:SetFrame(frame)
 	SetFxOwner(inst, nil)

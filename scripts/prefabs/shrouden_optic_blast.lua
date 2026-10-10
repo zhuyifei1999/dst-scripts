@@ -234,7 +234,9 @@ local function StartBeamAOE(inst)
 	inst.components.updatelooper:AddOnUpdateFn(UpdateBeamAOE)
 	EnableSmoke(inst, true)
 
-	inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_LP", "loop")
+	if not inst.SoundEmitter:PlayingSound("loop") then
+		inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_LP", "loop")
+	end
 end
 
 local function UpdateBeamLightPre(inst)--, dt)
@@ -310,7 +312,12 @@ local function KillFx(inst)
 	inst.components.updatelooper:AddOnUpdateFn(UpdateBeamLightPst)
 	EnableSmoke(inst, false)
 
+	if inst._loopsoundtask then
+		inst._loopsoundtask:Cancel()
+		inst._loopsoundtask = nil
+	end
 	inst.SoundEmitter:KillSound("loop")
+	inst.SoundEmitter:KillSound("bigloop")
 	inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_pst")
 end
 
@@ -319,6 +326,27 @@ local function StartPreSound(inst)
 		inst.OnEntitySleep = nil
 		inst.OnEntityWake = nil
 		inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_pre")
+	end
+end
+
+local function StartLoopSound(inst)
+	inst._loopsoundtask = nil
+	if inst.AnimState:IsCurrentAnimation("beam_pre") and
+		inst.AnimState:GetCurrentAnimationFrame() >= 21 and
+		not inst.SoundEmitter:PlayingSound("loop")
+	then
+		inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_LP", "loop")
+	end
+end
+
+local function StartWideLoopSound(inst)
+	inst._loopsoundtask = nil
+	if inst.AnimState:IsCurrentAnimation("beam_wide_pre") and
+		inst.AnimState:GetCurrentAnimationFrame() >= 9 and
+		not inst.SoundEmitter:PlayingSound("bigloop")
+	then
+		inst.SoundEmitter:KillSound("loop")
+		inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_big_LP", "bigloop")
 	end
 end
 
@@ -354,8 +382,10 @@ local function StartWideBeam(inst)
 	inst.components.updatelooper:AddOnUpdateFn(UpdateBeamAOE)
 	EnableSmoke(inst, true)
 
-	inst.SoundEmitter:KillSound("loop")
-	inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_big_LP", "loop")
+	if not inst.SoundEmitter:PlayingSound("bigloop") then
+		inst.SoundEmitter:KillSound("loop")
+		inst.SoundEmitter:PlaySound("rifts8/shrouden/opticblast_big_LP", "bigloop")
+	end
 end
 
 local function MakeWide(inst)
@@ -368,6 +398,10 @@ local function MakeWide(inst)
 		inst.components.updatelooper:AddOnUpdateFn(UpdateBeamLightPre)
 		EnableSmoke(inst, false)
 
+		if inst._loopsoundtask then
+			inst._loopsoundtask:Cancel()
+		end
+		inst._loopsoundtask = inst:DoTaskInTime(10 * FRAMES, StartWideLoopSound)
 		inst:ListenForEvent("animover", StartWideBeam)
 	end
 end
@@ -432,6 +466,7 @@ local function fn()
 	inst:AddComponent("planardamage")
 	inst.components.planardamage:SetBaseDamage(TUNING.SHROUDEN_OPTIC_BLAST_PLANAR_DAMAGE - TUNING.SHROUDEN_PLANAR_DAMAGE)
 
+	inst._loopsoundtask = inst:DoTaskInTime(22 * FRAMES, StartLoopSound)
 	inst:ListenForEvent("animover", StartBeamAOE)
 
 	inst.InitBlast = InitBlast

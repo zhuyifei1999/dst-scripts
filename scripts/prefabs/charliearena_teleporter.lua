@@ -121,7 +121,6 @@ local function OnStopChanneling(inst, aborted, doer)
 	then
 		inst.AnimState:PlayAnimation("turn_off")
 		inst.AnimState:PushAnimation("idle_off", true)
-		-- inst.SoundEmitter:PlaySound("rifts6/vault_portal/turn_off")
 	end
 	inst.SoundEmitter:KillSound("loop")
 
@@ -279,7 +278,7 @@ local function fn()
 	inst.entity:AddLight()
     inst.entity:AddNetwork()
 
-	inst.MiniMapEntity:SetIcon("vault_teleporter.png")
+	inst.MiniMapEntity:SetIcon("charliearena_teleporter.png")
 
     inst.Light:SetRadius(2.5)
     inst.Light:SetIntensity(.9)

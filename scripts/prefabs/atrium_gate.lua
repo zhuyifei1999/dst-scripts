@@ -239,7 +239,7 @@ local function OnKeyTaken(inst)
 end
 
 local function SocketVaultKey(inst, loading)
-    -- WORLDSTATETAGS.SetTagEnabled("VAULT_KEY_FOUND", true) -- FIXME(JBK): rifts7: Vault key progress flag.
+    WORLDSTATETAGS.SetTagEnabled("VAULT_KEY_FOUND", true)
     inst.vault_key_socketed = true
     inst.AnimState:Show("KEY")
 
@@ -268,6 +268,7 @@ end
 local function DestroyVaultKey(inst)
     inst.vault_key_socketed = nil
     inst.AnimState:Hide("KEY")
+    WORLDSTATETAGS.SetTagEnabled("VAULT_KEY_FOUND", false)
 
     local active = inst.components.pickable.caninteractwith or inst.components.worldsettingstimer:ActiveTimerExists("destabilizedelay")
     inst.MiniMapEntity:SetIcon(active and "atrium_gate_fixed_active.png" or "atrium_gate_fixed.png")
@@ -410,6 +411,7 @@ local function OnDestabilizeExplode(inst)
     inst:StartCooldown(false)
 
     TheWorld:PushEvent("resetruins")
+    TheWorld:PushEvent("resetvault") -- defeating shrouden also resets vault
 
     for _, player in ipairs(AllPlayers) do
         player.components.talker:Say(GetString(player, "ANNOUNCE_RUINS_RESET"))

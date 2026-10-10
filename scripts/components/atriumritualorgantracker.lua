@@ -1,12 +1,19 @@
+local function ForcePlanWormBossWave()
+    TheWorld:PushEvent("hounded_forceplannewattack", { multtimetoattack = TUNING.WORM_BOSS_RITUAL_WAVE_TIME_MULT, choosemintime = true })
+end
+
 local function OnAtriumRitualEnabled(inst, gate)
     local state = gate:GetRitualState()
     if state >= gate.RITUAL_STATES.ENABLED then
-        inst.components.atriumritualorgantracker.enabled = true
+        inst.components.atriumritualorgantracker:Enable(true)
     end
 end
 
-local function OnResetVault(inst) -- vault being reset means shrouden was defeated, so also reset this tracker
+local function OnDefeatedShrouden(inst) -- vault being reset means shrouden was defeated, so also reset this tracker
     inst.components.atriumritualorgantracker:RefreshOrgansTable()
+    if inst.components.atriumritualorgantracker.enabled then
+        ForcePlanWormBossWave()
+    end
 end
 
 local AtriumRitualOrganTracker = Class(function(self, inst)
@@ -16,8 +23,17 @@ local AtriumRitualOrganTracker = Class(function(self, inst)
     self.enabled = false
     self:RefreshOrgansTable()
     inst:ListenForEvent("ms_atriumgate_ritualstatechanged", OnAtriumRitualEnabled, TheWorld)
-    inst:ListenForEvent("resetvault", OnResetVault, TheWorld)
+    inst:ListenForEvent("ms_defeated_shrouden", OnDefeatedShrouden, TheWorld)
 end)
+
+function AtriumRitualOrganTracker:Enable(enabled)
+    if self.enabled ~= enabled then
+        self.enabled = enabled
+        if enabled and self:NeedsRitualOrgan("atrium_ritual_organ_worm") then
+            ForcePlanWormBossWave()
+        end
+    end
+end
 
 function AtriumRitualOrganTracker:RefreshOrgansTable()
     self.organs = {}

@@ -389,9 +389,7 @@ local states =
 				inst.sg.statemem.turnsign = diff < 0 and -1 or 1
 			end
 			inst.sg.statemem.inarena = TheWorld.Map:IsPointInCharlieBossArena(inst.Transform:GetWorldPosition())
-			if not inst.sg.statemem.inarena then
-				inst.sg:SetTimeout(8)
-			end
+			inst.sg:SetTimeout(8)
 		end,
 
 		onupdate = function(inst, dt)
@@ -472,8 +470,10 @@ local states =
 				inst.sg.statemem.orbit = orbit
 				orbit = math.max(inst.sg.statemem.minorbit, orbit + inst.sg.statemem.extraorbit)
 
-				local turnstr = math.min(1, inst.sg.statemem.turnstr + 0.001)
-				inst.sg.statemem.turnstr = turnstr
+				inst.sg.statemem.turnstr =
+					inst.sg.statemem.stopturn and
+					math.max(0, inst.sg.statemem.turnstr - 0.005) or
+					math.min(1, inst.sg.statemem.turnstr + 0.001)
 
 				local x, _, z = inst.Transform:GetWorldPosition()
 				local x0, _, z0 = inst.shrouden.Transform:GetWorldPosition()
@@ -497,15 +497,19 @@ local states =
 					local rot = inst.Transform:GetRotation()
 					local delta = ReduceAngle(rot1 - rot)
 					if (inst.sg.statemem.turnsign < 0) == (delta < 0) then
-						inst.Transform:SetRotation(rot + delta * turnstr)
+						inst.Transform:SetRotation(rot + delta * inst.sg.statemem.turnstr)
 					end
 				end
 			end
 		end,
 
 		ontimeout = function(inst)
-			inst.sg.statemem.flyby = true
-			inst.sg:GoToState("shrouden_flyby_pst")
+			if inst.sg.statemem.inarena then
+				inst.sg.statemem.stopturn = true
+			else
+				inst.sg.statemem.flyby = true
+				inst.sg:GoToState("shrouden_flyby_pst")
+			end
 		end,
 
 		onexit = function(inst)

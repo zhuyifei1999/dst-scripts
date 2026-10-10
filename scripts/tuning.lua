@@ -9667,6 +9667,7 @@ function Tune(overrides)
         WORM_BOSS_MAX_SPEED = 1,
         WORM_BOSS_SHADOW_ENRAGED_MAX_SPEED = 1.5,
 
+        WORM_BOSS_RITUAL_WAVE_TIME_MULT = 0.75, -- worm boss comes in 3 quarters of the usual time
         SHROUDEN_RITUAL_TIME = 14,
 
         -- tile width * SQRT2 * TILE_SCALE / 2
@@ -9714,7 +9715,7 @@ function Tune(overrides)
 		SHROUDEN_HEALTH = 16000,
 		SHROUDEN_WALKSPEED = 3,
 		SHROUDEN_OPTIC_BLAST_SPEED = { 9, 12 },
-		SHROUDEN_TELEPORT_SPEED = { 9, 12 },
+		SHROUDEN_TELEPORT_SPEED = 12,
 		SHROUDEN_HIT_RECOVERY = 1.5,
 		SHROUDEN_ATTACK_PERIOD = { 3, 2.75, 2.5 }, --threat levels
 		SHROUDEN_ATTACK_RANGE = 11,
@@ -9727,7 +9728,7 @@ function Tune(overrides)
 		SHROUDEN_AGGRO_DIST = 15,
 		SHROUDEN_KEEP_AGGRO_DIST = 12,
 		SHROUDEN_DEAGGRO_DIST = 30, --backup value; only used if c_spawned outside of arena
-		SHROUDEN_PORTAL_CD = { 4, 3.5, 3 }, --threat levels
+		SHROUDEN_PORTAL_CD = { 5, 4, 3 }, --threat levels
 		SHROUDEN_OPTIC_BLAST_CD = 29,
 		SHROUDEN_TELEPORT_CD = 19,
 		SHROUDEN_TAUNT_INTERVAL = 15, --affects portal ex-summons frequency
@@ -9751,8 +9752,9 @@ function Tune(overrides)
             ["greengem"] = 20,
         },
 
-        KING_CANE_RED_COOLDOWN = 1,
-        KING_CANE_BLUE_COOLDOWN = 1,
+        -- red and blue values aren't used, just here to say that these don't have any cooldown.
+        KING_CANE_RED_COOLDOWN = 0,
+        KING_CANE_BLUE_COOLDOWN = 0,
         KING_CANE_PURPLE_COOLDOWN = seg_time*3,
         KING_CANE_ORANGE_COOLDOWN = 10,
         KING_CANE_YELLOW_COOLDOWN = seg_time*3,

@@ -45,7 +45,15 @@ end
 
 local function OnDroppedAsLoot(inst, data)
     if TheWorld.components.atriumritualorgantracker then
+        local neededwormorgan
+        if inst.prefab == "atrium_ritual_organ_worm" then
+            neededwormorgan = TheWorld.components.atriumritualorgantracker:NeedsRitualOrgan(inst.prefab)
+        end
         TheWorld.components.atriumritualorgantracker:SetRitualOrgan(inst.prefab)
+        if neededwormorgan then
+            -- we got the worm organ, so lets not do this next one with a worm boss guaranteed
+            TheWorld:PushEvent("hounded_forceplannewattack", { choosemintime = true })
+        end
     end
 end
 

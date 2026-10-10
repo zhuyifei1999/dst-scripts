@@ -125,6 +125,8 @@ local function red()
         return inst
     end
 
+    inst.scrapbook_removedeps = { "cutgrass" }
+
     MakeHauntableLaunch(inst)
     stafffns.red(inst)
 

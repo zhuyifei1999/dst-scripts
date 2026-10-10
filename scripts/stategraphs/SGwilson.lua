@@ -28629,7 +28629,7 @@ local states =
 
 	State{
 		name = "charliearena_teleport",
-		tags = { "busy", "nomorph", "notalking", "nopredict" },
+		tags = { "busy", "nomorph", "notalking", "nopredict", "noattack", "nointerrupt", },
 
 		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
@@ -28684,7 +28684,11 @@ local states =
 				inst.components.playercontroller:Enable(true)
 			end
 
+            local data = inst.sg.statemem.data
 			if not inst.sg.statemem.not_interrupted then
+                if data and data.onplayerready then
+                    data.onplayerready(inst)
+                end
 				inst:ScreenFade(true, 0)
 			end
             inst:SetCameraDistance()
