@@ -167,8 +167,30 @@ local function OnRiftAddedToPool(inst, data)
     end
 end
 
+local function ReleaseFissureWithCombatCooldowns()
+    if _spawn_thralls_task == nil and (_thrall_hands == nil or _thrall_horns == nil or _thrall_wings == nil) then
+        -- One of the trio is dead combat must have happened.
+        self:ReleaseFissure(TUNING.FISSURE_COOLDOWN_DEFEATED_ANY_THRALLS)
+    else
+        self:ReleaseFissure(TUNING.FISSURE_COOLDOWN_WALKED_AWAY)
+    end
+end
+function self:OnFissureRemoved(inst)
+    if inst == _fissure then
+        ReleaseFissureWithCombatCooldowns()
+        if _thrall_combatcheck_task ~= nil then
+            _thrall_combatcheck_task:Cancel()
+            _thrall_combatcheck_task = nil
+        end
+    end
+    _potential_fissures[inst] = nil
+end
+
 function self:RegisterFissure(inst)
-    _potential_fissures[inst] = true
+    _potential_fissures[inst] = function()
+        self:OnFissureRemoved(inst)
+    end
+    inst:ListenForEvent("onremove", _potential_fissures[inst])
 
     if inst == _fissure then
         if _thrall_combatcheck_task ~= nil then
@@ -179,7 +201,7 @@ function self:RegisterFissure(inst)
 end
 
 function self:IsRegisteredFissure(inst)
-    return _potential_fissures[inst]
+    return _potential_fissures[inst] ~= nil
 end
 
 local function TrackOtherThralls(thrall, other1name, other1, other2name, other2)
@@ -283,14 +305,6 @@ function self:SafeToReleaseFissure()
     return true
 end
 
-local function ReleaseFissureWithCombatCooldowns()
-    if _spawn_thralls_task == nil and (_thrall_hands == nil or _thrall_horns == nil or _thrall_wings == nil) then
-        -- One of the trio is dead combat must have happened.
-        self:ReleaseFissure(TUNING.FISSURE_COOLDOWN_DEFEATED_ANY_THRALLS)
-    else
-        self:ReleaseFissure(TUNING.FISSURE_COOLDOWN_WALKED_AWAY)
-    end
-end
 local function CheckIfSafeToReleaseFissure()
     if self:SafeToReleaseFissure() then
         ReleaseFissureWithCombatCooldowns()
@@ -310,7 +324,11 @@ function self:UnregisterFissure(inst)
             _thrall_combatcheck_task = self.inst:DoPeriodicTask(CHECK_FISSURE_INTERVAL, CheckIfSafeToReleaseFissure)
         end
     end
-    _potential_fissures[inst] = nil
+
+    if _potential_fissures[inst] then
+        inst:RemoveEventCallback("onremove", _potential_fissures[inst])
+        _potential_fissures[inst] = nil
+    end
 end
 
 ----------
@@ -396,7 +414,9 @@ function self:ReleaseFissure(cooldown)
         local fissure = _fissure -- Local copy which stops GetControlledFissure from returning things during shutdown sequence.
         _fissure = nil
         --print("ReleaseFissure", _fissure)
-        fissure:OnReleasedFromControl()
+        if fissure:IsValid() then
+            fissure:OnReleasedFromControl()
+        end
 
         if _miasmas then
             for miasma in pairs(_miasmas) do

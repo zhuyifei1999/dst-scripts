@@ -2,6 +2,9 @@ local assets =
 {
 	Asset("ANIM", "anim/charlie_boss_basic.zip"),
 	Asset("ANIM", "anim/charlie_boss_actions.zip"),
+	Asset("ANIM", "anim/charlie_boss_transform_v2.zip"),
+	Asset("ANIM", "anim/charlie_basic.zip"),
+	Asset("ANIM", "anim/charlie_transform.zip"),
 }
 
 local prefabs =
@@ -18,6 +21,7 @@ local prefabs =
 	"temp_beta_msg", --#TEMP_BETA
 	"horrorfuel",
 	"nightmarefuel",
+	"chesspiece_charlie_boss_sketch",
 }
 
 SetSharedLootTable("charlie_boss",
@@ -31,6 +35,7 @@ SetSharedLootTable("charlie_boss",
 	{ "nightmarefuel",		1.00 },
 	{ "nightmarefuel",		1.00 },
 	{ "nightmarefuel",		0.75 },
+	{'chesspiece_charlie_boss_sketch', 1.0 },
 })
 
 local brain = require("brains/charlie_bossbrain")
@@ -141,10 +146,17 @@ local function RetargetFn(inst)
 	--NOTE: grouptargets aleady have checked for inarena conditions during UpdatePlayerTargets
 	assert(next(inst._temptbl1) == nil)
 	local nearplayers = inst._temptbl1
-	for k in pairs(inst.components.grouptargeter:GetTargets()) do
-		local range = inrange and TUNING.CHARLIE_BOSS_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.CHARLIE_BOSS_AGGRO_DIST
-		if k:GetDistanceSqToPoint(x, 0, z) < range * range then
+	if not inrange and inst._disengagetask then
+		--V2C: when pending reset (was in combat but lost aggro), retarget the entire arena until successfully reset
+		for k in pairs(inst.components.grouptargeter:GetTargets()) do
 			table.insert(nearplayers, k)
+		end
+	else
+		for k in pairs(inst.components.grouptargeter:GetTargets()) do
+			local range = inrange and TUNING.CHARLIE_BOSS_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.CHARLIE_BOSS_AGGRO_DIST
+			if k:GetDistanceSqToPoint(x, 0, z) < range * range then
+				table.insert(nearplayers, k)
+			end
 		end
 	end
 	if #nearplayers > 0 then
@@ -426,7 +438,10 @@ end
 local PHASES --forward declare
 
 local function TryReset(inst, force)
-	if inst.sg.currentstate.name == "spawn" or not inst:IsInArena() then
+	if inst.sg.currentstate.name == "spawn" or
+		inst.sg.currentstate.name == "spawn_loop" or
+		not inst:IsInArena()
+	then
 		inst._resettask:Cancel()
 		inst._resettask = nil
 		return
@@ -451,7 +466,7 @@ local function TryReset(inst, force)
 			inst.Physics:Teleport(x, 0, z)
 		end
 	end
-	inst.sg:GoToState("spawn")
+	inst.sg:GoToState("spawn_loop")
 	inst.components.health:SetPercent(1)
 	PHASES[1].fn(inst)
 
@@ -616,13 +631,16 @@ for i = #RUNNER_HP_THRESHOLDS, 1, -1 do
 	table.insert(PHASES, { hp = RUNNER_HP_THRESHOLDS[i], fn = RunnerPhaseFn })
 end
 
---[[local function OnSave(inst, data)
-	if inst.sg.mem.killstarttime then
+local function OnSave(inst, data)
+	--[[if inst.sg.mem.killstarttime then
 		data.killtime = math.floor(GetTime() - inst.sg.mem.killstarttime)
-	end
-end]]
+	end]]
+	data.looted = inst.looted
+end
 
 local function OnLoad(inst, data)--, ents)
+	inst.looted = data and data.looted
+
 	local healthpct = inst.components.health:GetPercent()
 	for i = #PHASES, 2, -1 do
 		local v = PHASES[i]
@@ -642,7 +660,7 @@ local function OnLoad(inst, data)--, ents)
 			--loading to full hp => force reset
 			inst._resettask = inst:DoTaskInTime(0, TryReset, true)
 		else
-			inst._resettask = inst:DoPeriodicTask(3, TryReset)
+			inst._resettask = inst:DoPeriodicTask(3, TryReset, 30)
 		end
 	end
 end
@@ -667,7 +685,7 @@ end
 
 local function OnUpdateStandbyLoop(inst, dt)
 	local d = 1
-	if inst.AnimState:IsCurrentAnimation("rise_loop") then
+	if inst.AnimState:IsCurrentAnimation("rise_loop") or inst.AnimState:IsCurrentAnimation("swallow") then
 		if ThePlayer then
 			d = math.sqrt(inst:GetDistanceSqToPoint(ThePlayer.Transform:GetWorldPosition()))
 			d = math.clamp(Remap(d, 5, 14, 1, 0), 0, 1)
@@ -687,13 +705,16 @@ end
 
 local function EnableStandbyLoop(inst, enable)
 	if not enable then
-		TheFocalPoint.SoundEmitter:KillSound("charlie_boss_standby")
-		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateStandbyLoop)
-		inst._standby = nil
-	elseif not TheFocalPoint.SoundEmitter:PlayingSound("charlie_boss_standby") then
+		if inst._standby then
+			TheFocalPoint.SoundEmitter:KillSound("charlie_boss_standby")
+			inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateStandbyLoop)
+			inst._standby = nil
+		end
+	elseif inst._standby == nil then
 		TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_charlie_standbyLP", "charlie_boss_standby")
 		inst.components.updatelooper:AddOnUpdateFn(OnUpdateStandbyLoop)
 		OnUpdateStandbyLoop(inst, 0)
+		assert(inst._standby)
 	end
 end
 
@@ -779,7 +800,11 @@ end
 
 local function OnCameraFocusDirty(inst)
 	local level = inst.camerafocus:value()
-	if level > 0 then
+	if level == 4 then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 12, 30, 4)
+	elseif level == 3 then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 30, 30, 4, nil, Vector3(0, 3, 0))
+	elseif level > 0 then
 		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 5, 21, 4, nil, level > 1 and Vector3(0, 3, 0) or nil)
 	else
 		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
@@ -980,7 +1005,7 @@ local function fn()
 	inst.SpawnReflectProjectileAtXYZ = SpawnReflectProjectileAtXYZ
 	inst.WantsToReflectProjectiles = WantsToReflectProjectiles
 	inst.ToggleReflectingProjectiles = ToggleReflectingProjectiles
-	--inst.OnSave = OnSave
+	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 	--inst.OnLongUpdate = OnLongUpdate
 	inst.SetMusicLevel = SetMusicLevel

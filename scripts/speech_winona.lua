@@ -2218,6 +2218,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Weirdest thing I ever saw. And I seen a lotta weird stuff.",
         CHESSPIECE_YOTH = "There were good and bad times with this fella.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Hey there, shorty!",
+        CHESSPIECE_BATBOSS_SHADOW = "Nasty bloodsucker.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "A tough customer for sure.",
+        CHESSPIECE_WORMBOSS_SHADOW = "Like a regular giant worm wasn't bad enough.",
+        CHESSPIECE_CHARLIE_BOSS = "Oh, Charlie...",
+        CHESSPIECE_SHROUDEN = "Good riddance.",
 
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
@@ -6366,6 +6371,8 @@ return{
         QUEEN_TORCH = "What the heck keeps it burnin'?",
         
         CHARLIEARENA_TELEPORTER = "Better not leave nothin' behind.",
+
+        MASK_CHARLIE_BOSSHAT = "It didn't have to be that way, Charlie.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

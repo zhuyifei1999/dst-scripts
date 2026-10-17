@@ -5327,6 +5327,7 @@ function d_spawnitemswithskins(releasegroup)
 
     local x, y, z = ThePlayer.Transform:GetWorldPosition()
     local padding = 0.5
+    local MAXBBCHECK = 10
     for prefab, skins in orderedPairs(GetPrefabSkinsForReleaseGroup(releasegroup)) do
         if not BADITEMSTOSPAWN[prefab] then
             local ent = SpawnPrefab(prefab)
@@ -5335,6 +5336,10 @@ function d_spawnitemswithskins(releasegroup)
                 ent:Remove()
             else
                 local x1, y1, x2, y2 = ent.AnimState:GetVisualBB()
+                if math.abs(x1) > MAXBBCHECK or math.abs(x2) > MAXBBCHECK then
+                    print("Bad GetVisualBB for prefab:", prefab, x1, y1, x2, y2)
+                    x1, y1, x2, y2 = -1, 1, -1, 1
+                end
                 local width = x2 - x1
                 x = x - x1
                 ent.Transform:SetPosition(x, y, z)

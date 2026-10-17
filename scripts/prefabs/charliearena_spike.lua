@@ -59,6 +59,7 @@ local function DoDamage(inst)
 end
 
 local function Spawn(inst)
+    inst.spawn_task = nil
     inst:Show()
     inst:AddTag("NOCLICK")
     inst.Physics:SetActive(false)
@@ -77,6 +78,23 @@ local function Destroy(inst)
         inst.destroy_task:Cancel()
         inst.destroy_task = nil
     end
+    if inst.soundtask then
+        inst.soundtask:Cancel()
+        inst.soundtask = nil
+    end
+    if inst.task then
+        inst.task:Cancel()
+        inst.task = nil
+    end
+    if inst.explosion_task then
+        inst.explosion_task:Cancel()
+        inst.explosion_task = nil
+    end
+    if inst.spawn_task then
+        inst.spawn_task:Cancel()
+        inst.spawn_task = nil
+    end
+	inst.Physics:SetActive(false)
     inst.SoundEmitter:PlaySound("dontstarve/impacts/lava_arena/fossilized_break")
     inst.AnimState:PlayAnimation("spike_pst")
     inst:ListenForEvent("animover", inst.Remove)
@@ -112,6 +130,8 @@ local function IsValidToWork(v, inst)
 end
 
 local function DoExplosion(inst)
+    inst.explosion_task = nil
+
     local tagset
     if inst.shrouden and inst.shrouden:IsValid() then
         tagset = inst.shrouden:GetAOEAttackTagSet()
@@ -156,7 +176,7 @@ OnUpdate = function(inst, dt)
             inst.blink = math.random(4)
             inst.AnimState:SetAddColour(1, .2, .2, 0)
             inst.AnimState:SetMultColour(1, 1 - .8, 1 - .8, 1)
-            inst:DoTaskInTime(.6 + math.random() * .25, DoExplosion)
+            inst.explosion_task = inst:DoTaskInTime(.6 + math.random() * .25, DoExplosion)
         end
     end
 end
@@ -195,7 +215,7 @@ local function OnShroudenSummon(inst, shrouden)
     inst.Physics:SetActive(false)
     SetShrouden(inst, shrouden)
 
-    inst:DoTaskInTime(math.random() * .5, inst.Spawn)
+    inst.spawn_task = inst:DoTaskInTime(math.random() * .5, inst.Spawn)
 end
 
 local function KeepTargetFn()

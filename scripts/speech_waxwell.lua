@@ -1262,7 +1262,7 @@ return{
 	ANNOUNCE_GRUE_NOCHARLIE_ATTACK = "Ow! What have you done with Charlie!?",
 --fallback to speech_wilson.lua 	ANNOUNCE_GRUE_NOCHARLIE_MISSED = "only_used_by_winona", --winona specific
 
-	ANNOUNCE_STOMP_SHROUDEN = "How are you still alive? Must I crush you with my heel?",
+	ANNOUNCE_STOMP_SHROUDEN = "This must be terribly undignified for you.",
 
     ANNOUNCE_DREADSTONE_SPIKE_EXPLODING = "Of course they explode near an enlightened mind.", -- exploding because of enlightenment.
 
@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "It was a culmination of terrible decisions.",
         CHESSPIECE_YOTH = "Make up your mind! Friend or foe?",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Now who's afraid of getting crushed?",
+        CHESSPIECE_BATBOSS_SHADOW = "Not too keen on the whole mouth thing.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "I sensed a mutual respect between us.",
+        CHESSPIECE_WORMBOSS_SHADOW = "It was impressive, I'll admit.",
+        CHESSPIECE_CHARLIE_BOSS = "Where are you, Charlie?",
+        CHESSPIECE_SHROUDEN = "I don't see what all the fuss was about.",
 
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",
@@ -6347,7 +6352,7 @@ return{
 		SHROUDEN =
 		{
 			GENERIC = "H-hey there, pal... Maxwell here. Big fan of, uh... whatever it is you're doing.",
-			PUDDLE = "This must be terribly undignified for you.",
+			PUDDLE = "How are you still alive? Must I crush you with my heel?",
 		},
 
         CHARLIEARENA_SPIKE = "Someone could run into that!",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "This is old magic.",
         
         CHARLIEARENA_TELEPORTER = "I better not leave anything behind.",
+
+        MASK_CHARLIE_BOSSHAT = "I'm sorry, Charlie.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

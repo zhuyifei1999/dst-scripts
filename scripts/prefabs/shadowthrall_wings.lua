@@ -124,6 +124,10 @@ end
 
 --------------------------------------------------------------------------
 
+local function ShouldAvoidAggroFn(target, inst)
+	return false --false means target should not aggro on us - _-""
+end
+
 local function OnShroudenSummon(inst, shrouden, target)
 	inst.shrouden = shrouden
 	inst.persists = false
@@ -137,6 +141,7 @@ local function OnShroudenSummon(inst, shrouden, target)
 	inst.components.health:SetInvincible(true)
 	inst.components.combat:SetRetargetFunction(nil)
 	inst.components.combat:SetKeepTargetFunction(nil)
+	inst.components.combat.shouldavoidaggrofn = ShouldAvoidAggroFn
 	inst.components.planardamage:AddBonus(shrouden, TUNING.SHROUDEN_SUMMONS_BONUS_PLANAR_DAMAGE, "summoned")
 	inst:RemoveEventCallback("attacked", OnAttacked)
 	inst:RemoveEventCallback("newcombattarget", OnNewCombatTarget)

@@ -42,6 +42,7 @@ end
 local function SetFxOwner(inst, owner)
     if inst._fxowner ~= nil and inst._fxowner.components.colouradder ~= nil then
         inst._fxowner.components.colouradder:DetachChild(inst.fx)
+        inst.fx.components.colouraddersync:SyncColour(0, 0, 0, 0) -- detach child doesnt sync color
     end
 
     inst._fxowner = owner
@@ -156,8 +157,15 @@ local function SetGem(inst, gemtype)
     end
     stafffns[GetGemId(gemtype)](inst, true)
 
+    local iscorrupted = inst.components.corruption:IsCorrupted()
+
+    if inst.components.blinkstaff then
+        local blinksound = iscorrupted and "dontstarve/common/staff_blink_corrupted" or "dontstarve/common/staff_blink_kingcane"
+        inst.components.blinkstaff:SetSoundFX(blinksound, blinksound)
+    end
+
     inst.castsound = "dontstarve/wilson/use_kingcane"
-    inst.castsoundparams = { corrupted = inst.components.corruption:IsCorrupted() and 0.5 or 0 }
+    inst.castsoundparams = { corrupted = iscorrupted and 0.5 or 0 }
     inst.components.inventoryitem:ChangeImageName("king_cane_"..inst.gem)
     inst.fx:SetGemType(gemtype)
 end
@@ -179,6 +187,9 @@ local function OnGemGiven(inst, giver, item)
 end
 
 local function OnCorruptedFn(inst)
+    if inst.components.blinkstaff then
+        inst.components.blinkstaff:SetSoundFX("dontstarve/common/staff_blink_corrupted", "dontstarve/common/staff_blink_corrupted")
+    end
     inst.castsoundparams = { corrupted = 0.5 }
     inst:AddTag("shadow_item")
     inst.dodischarge = true
@@ -278,8 +289,6 @@ local function fn()
     inst.projectiledelay = FRAMES -- only ice staff and fire staff need this
 
     inst._gem = net_string(inst.GUID, "king_cane_fx.gem", "gemdirty")
-
-    inst:AddComponent("colouraddersync")
 
     inst.entity:SetPristine()
 

@@ -305,8 +305,17 @@ local function teleport_end(teleportee, locpos, loctarget, staff)
 
     if teleportee:HasTag("player") then
         teleportee.sg.statemem.teleport_task = nil
-        teleportee.sg:GoToState(teleportee:HasTag("playerghost") and "appear" or "wakeup")
-        teleportee.SoundEmitter:PlaySound(staff.skin_castsound or "dontstarve/common/staffteleport")
+        teleportee.sg:GoToState(
+            teleportee:HasTag("playerghost") and "appear" or
+            staff.notlightningteleport and "idle" or
+            "wakeup"
+        )
+        local castsound = staff.skin_castsound or staff.castsound or "dontstarve/common/staffteleport"
+        if staff.castsoundparams then
+            teleportee.SoundEmitter:PlaySoundWithParams(castsound, staff.castsoundparams)
+        else
+            teleportee.SoundEmitter:PlaySound(castsound)
+        end
     else
         teleportee:Show()
         if teleportee.DynamicShadow ~= nil then

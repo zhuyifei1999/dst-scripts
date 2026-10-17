@@ -39,6 +39,7 @@ local prefabs_shadow =
 	"nightmarefuel",
 	"rocky_snip_fx",
 	"rocky_dash_fx",
+	"chesspiece_rockyboss_shadow_sketch",
 }
 
 local brain = require("brains/rocky_bossbrain")
@@ -51,6 +52,7 @@ SetSharedLootTable("rocky_boss_shadow",
 	{ "horrorfuel",					0.50 },
 	{ "nightmarefuel",				1.00 },
 	{ "nightmarefuel",				0.67 },
+	{ "chesspiece_rockyboss_shadow_sketch",	1.00 },
 })
 
 local LOOT = { "armor_rocky", "rocks", "rocks", "meat", "flint", "flint" }

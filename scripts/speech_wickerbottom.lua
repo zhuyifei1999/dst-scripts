@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "This dreadful amalgamation was unprecedented.",
         CHESSPIECE_YOTH = "This mechanical knight demonstrates loyalty to whomever dons the garb of its charge.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "It proved a marvel of ancient architecture.",
+        CHESSPIECE_BATBOSS_SHADOW = "Its cursed form did not affect its thirst for blood.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "Destructive and deadly in every form.",
+        CHESSPIECE_WORMBOSS_SHADOW = "A creature with a bottomless appetite.",
+        CHESSPIECE_CHARLIE_BOSS = "It seems she got more than she bargained for.",
+        CHESSPIECE_SHROUDEN = "Will it ever be truly destroyed?",
 
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "This is no ordinary torch.",
         
         CHARLIEARENA_TELEPORTER = "It would be prudent to collect everything before entering.",
+
+        MASK_CHARLIE_BOSSHAT = "A cursed relic of the abhorrent triune.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

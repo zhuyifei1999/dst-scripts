@@ -1,5 +1,6 @@
 require("stategraphs/commonstates")
 local AOEUtil = require("aoeutil")
+local easing = require("easing")
 
 local RECENT_ATTACKERS_DURATION = 6
 local CLEAR_RECENT_ATTACKERS_PERIOD = 10
@@ -212,6 +213,47 @@ local states =
 		onenter = function(inst, loops)
 			inst.components.locomotor:Stop()
 			SwitchToNoFaced(inst)
+			inst.AnimState:PlayAnimation("swallow")
+			inst:SetMusicLevel(1)
+			inst:SetCameraFocusLevel(2)
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/tentacle_swallow") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.spawning = true
+					inst.sg.statemem.keepnofaced = true
+					inst.sg:GoToState("spawn_loop", 2)
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			if not inst.sg.statemem.spawning then
+				inst:SetMusicLevel(
+					(inst.components.health:IsDead() and 4) or
+					(inst.components.combat:HasTarget() and 3) or
+					0)
+				inst:SetCameraFocusLevel(0)
+			end
+		end,
+	},
+
+	State{
+		name = "spawn_loop",
+		tags = { "spawning", "busy", "noattack", "temp_invincible", "nointerrupt" },
+
+		onenter = function(inst, loops)
+			inst.components.locomotor:Stop()
+			SwitchToNoFaced(inst)
 			if not inst.AnimState:IsCurrentAnimation("rise_loop") then
 				inst.AnimState:PlayAnimation("rise_loop", true)
 			end
@@ -248,7 +290,7 @@ local states =
 			inst.sg.statemem.spawning = true
 			inst.sg.statemem.keepnofaced = true
 			if inst.sg.statemem.loops < 15 and not inst.sg.statemem.aggro then
-				inst.sg:GoToState("spawn", inst.sg.statemem.loops + 1)
+				inst.sg:GoToState("spawn_loop", inst.sg.statemem.loops + 1)
 			else
 				inst.sg:GoToState("spawn_pst")
 			end
@@ -416,7 +458,7 @@ local states =
 		{
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.5) end),
-			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.5) end),
+			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.5) end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit", nil, 0.7) end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit", nil, 0.8) end),
 			FrameEvent(23, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/tentacles") end),
@@ -737,8 +779,8 @@ local states =
 		},
 	},
 
-	State{
-		name = "death",
+	--[[State{
+		name = "death_beta",
 		tags = { "dead", "busy", "nointerrupt" },
 
 		onenter = function(inst)
@@ -810,6 +852,390 @@ local states =
 		},
 
 		onexit = TryRestoreSixFaced,
+	},]]
+
+	State{
+		name = "death",
+		tags = { "dead", "busy", "nointerrupt" },
+
+		onenter = function(inst)
+			if inst.looted then
+				inst.sg:GoToState("death_spawn_shrouden")
+				return
+			end
+			inst.components.locomotor:Stop()
+			SwitchToNoFaced(inst)
+			inst.AnimState:PlayAnimation("death_beta")
+			inst:SetCameraFocusLevel(1)
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(6, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/whoosh", nil, 0.6) end),
+			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_shrill", nil, 0.7) end),
+			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/scream_subdued", nil, 0.5) end),
+			FrameEvent(37, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
+			FrameEvent(43, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/ground_hit", nil, 0.6) end),
+			FrameEvent(39, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
+			FrameEvent(35, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature3/die") end),
+			FrameEvent(35, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature2/die") end),
+			FrameEvent(35, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature1/die") end),
+			FrameEvent(90, function(inst) inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/pounce") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.keepnofaced = true
+					inst.sg:GoToState("death2")
+				end
+			end),
+		},
+
+		onexit = TryRestoreSixFaced,
+	},
+
+	State{
+		name = "death2",
+		tags = { "dead", "busy", "nointerrupt", "jumping" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			SwitchToNoFaced(inst)
+			inst.AnimState:PlayAnimation("death")
+			inst.AnimState:PushAnimation("death2", false)
+			inst.AnimState:AddOverrideBuild("charlie_boss_transform_v2")
+			inst:SetCameraFocusLevel(3)
+			RemovePhysicsColliders(inst)
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/death") end),
+			FrameEvent(160, function(inst) inst.SoundEmitter:PlaySound("rifts8/shadow_insanity_player/pounce", nil, 0.7) end),
+			FrameEvent(169, function(inst) inst.SoundEmitter:PlaySound("rifts8/charlie/claw_swipe") end),
+			FrameEvent(173, function(inst) inst.SoundEmitter:PlaySound("rifts2/charlie/charlie_hand_decline", nil, 0.7) end),
+			--FrameEvent(176, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/shadowhand_snuff", nil, 0.6) end),
+
+			FrameEvent(0, function(inst)
+				local home = inst.components.knownlocations:GetLocation("spawnpoint")
+				if home then
+					local x, _, z = inst.Transform:GetWorldPosition()
+					local dx = home.x - x
+					local dz = home.z - z
+					local x1, z1
+					if dx == 0 and dz == 0 then
+						local theta = math.random() * TWOPI
+						local tgtdist = 3 + math.random() * 2
+						x1 = x + tgtdist * math.cos(theta)
+						z1 = z - tgtdist * math.sin(theta)
+					else
+						local dsq = dx * dx + dz * dz
+						if dsq < 36 then
+							local dist = math.sqrt(dsq)
+							local tgtdist = dist + 2 + math.random() * 2
+							local k = tgtdist / dist
+							x1 = x + dx * k
+							z1 = z + dz * k
+							k = (0.15 + math.random() * 0.2) * (math.random() < 0.5 and -1 or 1)
+							x1 = x1 + dz * k
+							z1 = z1 - dx * k
+						else
+							local k = 0.4 + math.random() * 0.2
+							x1 = x + dx * k
+							z1 = z + dz * k
+							k = (0.2 + math.random() * 0.2) * (math.random() < 0.5 and -1 or 1)
+							x1 = x1 + dz * k
+							z1 = z1 - dx * k
+						end
+					end
+
+					inst.Transform:SetRotation(math.atan2(z1 - z, x - x1) * RADIANS)
+
+					inst.sg.statemem.x0, inst.sg.statemem.z0 = x, z
+					inst.sg.statemem.x1, inst.sg.statemem.z1 = x1, z1
+					inst.sg.statemem.x2, inst.sg.statemem.z2 = home.x, home.z
+					inst.sg.statemem.t = 0
+					inst.sg.statemem.len = 14 * FRAMES
+					inst.sg.statemem.easefn = easing.outQuad
+
+					inst.sg.statemem.onwallupdate = function(inst, dt)
+						local t = inst.sg.statemem.t
+						dt = dt * TheSim:GetTimeScale()
+						if t and dt > 0 then
+							t = t + dt
+							local len = inst.sg.statemem.len
+							if t < len then
+								local k = inst.sg.statemem.easefn(t, 0, 1, len)
+								local x3 = inst.sg.statemem.x0 * (1 - k) + inst.sg.statemem.x1 * k
+								local z3 = inst.sg.statemem.z0 * (1 - k) + inst.sg.statemem.z1 * k
+								inst.Transform:SetPosition(x3, 0, z3)
+								inst.sg.statemem.t = t
+							else
+								inst.Transform:SetPosition(inst.sg.statemem.x1, 0, inst.sg.statemem.z1)
+								inst.sg.statemem.t = nil
+							end
+						end
+					end
+					inst.components.updatelooper:AddOnWallUpdateFn(inst.sg.statemem.onwallupdate)
+				end
+			end),
+			FrameEvent(23, function(inst)
+				if inst.sg.statemem.onwallupdate then
+					inst.sg.statemem.x0, inst.sg.statemem.z0 = inst.sg.statemem.x1, inst.sg.statemem.z1
+					inst.sg.statemem.x1, inst.sg.statemem.z1 = inst.sg.statemem.x2, inst.sg.statemem.z2
+					inst.sg.statemem.t = 0
+					inst.sg.statemem.len = 23 * FRAMES
+					inst.sg.statemem.easefn = easing.outCubic
+
+					inst.Transform:SetRotation(math.atan2(inst.sg.statemem.z0 - inst.sg.statemem.z1, inst.sg.statemem.x1 - inst.sg.statemem.x0) * RADIANS)
+				end
+			end),
+			FrameEvent(47, function(inst)
+				if inst.sg.statemem.onwallupdate then
+					inst.components.updatelooper:RemoveOnWallUpdateFn(inst.sg.statemem.onwallupdate)
+					inst.sg.statemem.onwallupdate = nil
+				end
+				if inst.sg.statemem.x2 then
+					inst.Transform:SetPosition(inst.sg.statemem.x2, 0, inst.sg.statemem.z2)
+				end
+
+				inst:SetCameraFocusLevel(4)
+				ChangeToObstaclePhysics(inst, 0.9)
+
+				local targets = {}
+				AOEUtil.Work(inst, 1.25)
+				AOEUtil.TossItems(inst, GetTossParams(1.25), targets)
+				for k in pairs(targets) do
+					if k:IsValid() and k.components.burnable and k.components.burnable:IsBurning() then
+						k.components.burnable:Extinguish()
+					end
+				end
+			end),
+			FrameEvent(52, function(inst)
+				local targets = {}
+				AOEUtil.Work(inst, 2.6, targets)
+
+				inst.components.combat:SetDefaultDamage(0)
+				inst.components.planardamage:SetBaseDamage(0)
+				AOEUtil.Attack(inst, GetAOEParams(0, 2.6, nil, 1, nil, true), inst:GetAOEAttackTagSet(), targets)
+				inst.components.combat:SetDefaultDamage(TUNING.CHARLIE_BOSS_DAMAGE)
+				inst.components.planardamage:SetBaseDamage(TUNING.CHARLIE_BOSS_PLANAR_DAMAGE)
+
+				targets = {}
+				AOEUtil.TossItems(inst, GetTossParams(2.6, 2), targets)
+				for k in pairs(targets) do
+					if k:IsValid() and k.components.burnable and k.components.burnable:IsBurning() then
+						k.components.burnable:Extinguish()
+					end
+				end
+			end),
+			FrameEvent(176, function(inst)
+				inst:DropDeathLoot()
+				inst.looted = true
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.dead = true
+					local charlie_tracker = inst:IsInArena() and TheWorld.components.charlie_tracker or nil
+					if charlie_tracker and not charlie_tracker:IsCharlieDefeated() then
+						inst.sg:GoToState("death_charlie")
+					else
+						inst.sg:GoToState("death_no_charlie")
+					end
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.sg.statemem.onwallupdate then
+				inst.components.updatelooper:RemoveOnWallUpdateFn(inst.sg.statemem.onwallupdate)
+			end
+			TryRestoreSixFaced(inst)
+			if not inst.sg.statemem.dead then
+				inst.AnimState:ClearOverrideBuild("charlie_boss_transform_v2")
+				inst:SetCameraFocusLevel(0)
+				ChangeToGiantCharacterPhysics(inst, 1000, 0.9)
+			end
+		end,
+	},
+
+	State{
+		name = "death_charlie",
+		tags = { "dead", "busy", "nointerrupt", "noattack" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			SwitchToNoFaced(inst)
+			inst.AnimState:SetBuild("charlie_basic")
+			inst.AnimState:SetBankAndPlayAnimation("charlie_basic", "return_pre") --19 frames
+			inst.AnimState:PushAnimation("return", false)
+			inst:SetCameraFocusLevel(4)
+			inst.Physics:SetActive(false)
+			inst.Light:Enable(false)
+			inst:AddTag("NOCLICK")
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("dontstarve/charlie/ohno", nil, 0.5) end),
+			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts2/thrall_generic/death_cloth", nil, 0.8) end),
+			FrameEvent(46, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature3/dissappear", nil, 0.8) end),
+			FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/creature3/movement_pst", nil, 0.8) end),
+			FrameEvent(58, function(inst) inst.SoundEmitter:PlaySound("rifts4/mimic/item_become_poof") end),
+			FrameEvent(99, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden_portal/eye_movement") end),
+			FrameEvent(99, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/shadowhand_snuff", nil, 0.4) end),
+			FrameEvent(97, function(inst) inst.SoundEmitter:PlaySound("rifts4/goop/absorb") end),
+
+			FrameEvent(19 + 47, function(inst)
+				inst.sg:AddStateTag("flight")
+			end),
+			FrameEvent(19 + 83, function(inst)
+				inst.sg:AddStateTag("invisible")
+			end),
+			FrameEvent(19 + 83, function(inst)
+				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.dead = true
+				inst.sg:GoToState("death_spawn_shrouden", true)
+			end),
+		},
+
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			if not inst.sg.statemem.dead then
+				inst.AnimState:SetBank("charlie_boss")
+				inst.AnimState:SetBuild("charlie_boss_basic")
+				inst.AnimState:ClearOverrideBuild("charlie_boss_transform_v2")
+				inst:SetCameraFocusLevel(0)
+				ChangeToGiantCharacterPhysics(inst, 1000, 0.9)
+				inst.Physics:SetActive(true)
+				inst.Light:Enable(true)
+				inst:RemoveTag("NOCLICK")
+			end
+		end,
+	},
+
+	State{
+		name = "death_no_charlie",
+		tags = { "dead", "busy", "nointerrupt", "noattack", "flight" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			SwitchToNoFaced(inst)
+			inst.AnimState:PlayAnimation("death3")
+			inst:SetCameraFocusLevel(3)
+			inst.Physics:SetActive(false)
+			inst.Light:Enable(false)
+			inst:AddTag("NOCLICK")
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts4/mimic/item_become_poof") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden_portal/eye_movement") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/sanity/shadowhand_snuff", nil, 0.4) end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts4/goop/absorb") end),
+
+			FrameEvent(2, function(inst)
+				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.dead = true
+				inst.sg:GoToState("death_spawn_shrouden", true)
+			end),
+		},
+
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			if not inst.sg.statemem.dead then
+				inst.AnimState:ClearOverrideBuild("charlie_boss_transform_v2")
+				inst:SetCameraFocusLevel(0)
+				ChangeToGiantCharacterPhysics(inst, 1000, 0.9)
+				inst.Physics:SetActive(true)
+				inst.Light:Enable(true)
+				inst:RemoveTag("NOCLICK")
+			end
+		end,
+	},
+
+	State{
+		name = "death_spawn_shrouden",
+		tags = { "dead", "busy", "nointerrupt", "noattack", "invisible", "flight" },
+
+		onenter = function(inst, waitforanim)
+			inst.components.locomotor:Stop()
+			inst.Physics:SetActive(false)
+			inst.Light:Enable(false)
+			inst:AddTag("NOCLICK")
+
+			if waitforanim then
+				inst:SetCameraFocusLevel(4)
+				inst.sg:SetTimeout(0)
+			else
+				inst:SetCameraFocusLevel(1)
+				inst:Hide()
+				inst.sg:SetTimeout(FRAMES)
+			end
+		end,
+
+		ontimeout = function(inst)
+			local home = inst.components.knownlocations:GetLocation("spawnpoint")
+			local x, _, z
+			if home then
+				x, _, z = home:Get()
+			else
+				if inst:IsInArena() then
+					x, z = TheWorld.Map:GetCharlieBossArenaCenterXZ()
+				end
+				if x == nil then
+					x, _, z = inst.Transform:GetWorldPosition()
+				end
+			end
+
+			local shrouden = SpawnPrefab("shrouden")
+			shrouden:TransferAOEAttackTagSetFrom(inst)
+			shrouden.Transform:SetPosition(x, 0, z)
+			shrouden.sg:GoToState("spawn")
+
+			if inst:IsInArena() then
+				inst:PushEvent("track_charlie_boss", shrouden)
+			end
+
+			if inst.entity:IsVisible() and not inst.AnimState:AnimDone() then
+				inst.persists = false
+			else
+				inst:Remove()
+			end
+		end,
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst:Remove()
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			inst.AnimState:SetBank("charlie_boss")
+			inst.AnimState:SetBuild("charlie_boss_basic")
+			inst.AnimState:ClearOverrideBuild("charlie_boss_transform_v2")
+			inst:SetCameraFocusLevel(0)
+			ChangeToGiantCharacterPhysics(inst, 1000, 0.9)
+			inst.Physics:SetActive(true)
+			inst.Light:Enable(true)
+			inst:RemoveTag("NOCLICK")
+		end,
 	},
 }
 

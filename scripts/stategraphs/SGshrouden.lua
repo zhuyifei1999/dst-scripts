@@ -37,7 +37,7 @@ local function ChooseAttack(inst, target, isfar)
 
 		if not isfar then
 			if inst.sg.mem.forcetaunt then
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg:GoToState("taunt")
 				return true
 			end
@@ -55,14 +55,14 @@ local function ChooseAttack(inst, target, isfar)
 				math.random() < 0.667
 			then
 				inst.components.combat:ResetBattleCryCooldown()
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg:GoToState("taunt")
 				return true
 			end
 		end
 
 		if shouldopticblast then
-			inst.sg.statemem.keepnofaced = true
+			inst.sg.statemem.keeptwofaced = true
 			inst.sg:GoToState("optic_blast_pre", target)
 			return true
 		end
@@ -98,9 +98,13 @@ local events =
 			inst.sg:GoToState("hit")
 		end
 	end),
-	EventHandler("death", function(inst)
+	EventHandler("death", function(inst, data)
 		if not inst.sg:HasStateTag("nointerrupt") then
-			inst.sg:GoToState("death")
+			if data and data.cause == "file_load" then
+				inst.sg:GoToState("death", true)
+			else
+				inst.sg:GoToState("hit")
+			end
 		end
 	end),
 	EventHandler("doattack", function(inst, data)
@@ -139,12 +143,21 @@ local function DoLandingShake(inst)
 	ShakeAllCameras(CAMERASHAKE.VERTICAL, 1.1, 0.04, 0.15, inst, 40)
 end
 
---Keep 6-faced in Transform component; anim with no facings will behave like 2-faced.
 local function SwitchToNoFaced(inst)
-	if inst.sg.mem.facings == 8 then
-		inst.Transform:SetSixFaced()
+	if inst.sg.mem.facings ~= 0 then
+		inst.sg.mem.facings = 0
+		inst.Transform:SetNoFaced()
 	end
-	inst.sg.mem.facings = 0
+end
+
+--Keep 6-faced in Transform component; anim with no facings will behave like 2-faced.
+local function SwitchToTwoFaced(inst)
+	if inst.sg.mem.facings ~= 2 then
+		if inst.sg.mem.facings ~= 6 then
+			inst.Transform:SetSixFaced()
+		end
+		inst.sg.mem.facings = 2
+	end
 end
 
 local function SwitchToEightFaced(inst)
@@ -155,12 +168,17 @@ local function SwitchToEightFaced(inst)
 end
 
 local function TryRestoreSixFaced(inst)
-	if inst.sg.mem.facings == 0 then
-		if not inst.sg.statemem.keepnofaced then
+	if inst.sg.mem.facings == 2 then
+		if not inst.sg.statemem.keeptwofaced then
 			inst.sg.mem.facings = 6
 		end
 	elseif inst.sg.mem.facings == 8 then
 		if not inst.sg.statemem.keepeightfaced then
+			inst.Transform:SetSixFaced()
+			inst.sg.mem.facings = 6
+		end
+	elseif inst.sg.mem.facings == 0 then
+		if not inst.sg.statemem.keepnofaced then
 			inst.Transform:SetSixFaced()
 			inst.sg.mem.facings = 6
 		end
@@ -276,7 +294,7 @@ local function OnUpdatePuddle(inst, dt)
 		end
 		if stomper then
 			--inst.SoundEmitter:PlaySound(stomper.components.combat:GetImpactSound(inst))
-			inst.sg.statemem.keepnofaced = true
+			inst.sg.statemem.keeptwofaced = true
 			inst.sg.statemem.death = true
 			inst.sg:GoToState("death_hit")
 			stomper:PushEvent("ms_stompshrouden", inst)
@@ -376,6 +394,7 @@ local states =
 	State{
 		name = "init",
 		onenter = function(inst)
+			inst.sg.mem.facings = 6
 			inst.sg.mem.recent_attackers = {}
 			inst.sg.mem.next_clear_recent_attackers = GetTime() + CLEAR_RECENT_ATTACKERS_PERIOD
 			inst.sg:GoToState("idle")
@@ -388,7 +407,7 @@ local states =
 
 		onenter = function(inst, pushanim)
 			if inst.sg.mem.forcetaunt then
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg:GoToState("taunt")
 				return
 			end
@@ -398,7 +417,7 @@ local states =
 			if pushanim and not inst.AnimState:AnimDone() then
 				inst.sg.statemem.pushanim = true
 			else
-				local anim = inst.sg.mem.facings == 0 and "idle_nofaced" or "idle"
+				local anim = inst.sg.mem.facings <= 2 and "idle_nofaced" or "idle"
 				if not inst.AnimState:IsCurrentAnimation(anim) or inst.AnimState:AnimDone() then
 					inst.AnimState:PlayAnimation(anim, true)
 				end
@@ -411,8 +430,9 @@ local states =
 			--NOTE: we may be have several anims still queued
 			EventHandler("animqueueover", function(inst)
 				if inst.sg.statemem.pushanim and inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg.statemem.keepeightfaced = true
+					inst.sg.statemem.keepnofaced = true
 					inst.sg:GoToState("idle")
 				end
 			end),
@@ -431,41 +451,138 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			inst.Physics:SetActive(false)
-			inst:Hide()
+			SwitchToNoFaced(inst)
+			inst.AnimState:PlayAnimation("puddle_appear")
+			SetPuddleLayerEnabled(inst, true)
+			inst:SetMusicLevel(4)
+			inst:SetCameraFocusEnabled(true)
 			SetClickable(inst, false)
-			inst.sg.statemem.changearena = true -- for save/load
+			ToggleOffAllObjectCollisions(inst)
+			ConfigureUnderground(inst, true)
+			inst:SetGelEnabled(false)
+			inst.SoundEmitter:PlaySound("rifts4/goop/idle_big", "puddle_loop")
+
+			inst.sg.mem.changearena = true -- for save/load
 		end,
 
 		timeline =
 		{
-			--#SFX
-			TimeEvent(3, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/spawn") end),
-
-			--#TEMP #TODO
-			TimeEvent(3, function(inst)
-				inst:SetMusicLevel(1)
-				inst:SetCameraFocusEnabled(true)
-				inst.sg.statemem.changearena = false
-				inst:PushEvent("ms_charliearena_becomeunstable")
+			FrameEvent(1, function(inst)
+				if inst.sg.mem.changearena then
+					inst.sg.mem.changearena = nil
+					if inst:IsInArena() then
+						inst:PushEvent("ms_charliearena_becomeunstable")
+					end
+				end
 			end),
+			FrameEvent(30, function(inst)
+				inst:SetGelEnabled(true)
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.spawning = true
+					inst.sg:GoToState("spawn_loop")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.spawning then
+				TryRestoreSixFaced(inst)
+				SetPuddleLayerEnabled(inst, false)
+				inst:SetMusicLevel(
+					(inst.components.health:IsDead() and 4) or
+					(inst.components.combat:HasTarget() and 3) or
+					0)
+				inst:SetCameraFocusEnabled(false)
+				SetClickable(inst, true)
+				ConfigureUnderground(inst, false)
+				if inst.sg.mem.isobstaclepassthrough then
+					local x, _, z = inst.Transform:GetWorldPosition()
+					ToggleOnAllObjectCollisionsAt(inst, x, z)
+				end
+				inst.SoundEmitter:KillSound("puddle_loop")
+			end
+			if inst.sg.mem.changearena then
+				inst.sg.mem.changearena = nil
+				if inst:IsInArena() then
+					inst:PushEvent("ms_charliearena_becomeunstable")
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "spawn_loop",
+		tags = { "spawning", "busy", "noattack", "invisible", "temp_invincible", "nointerrupt" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			SwitchToNoFaced(inst)
+			inst.AnimState:PlayAnimation("teleport_loop", true)
+			SetPuddleLayerEnabled(inst, true)
+			inst:SetMusicLevel(1)
+			inst:SetCameraFocusEnabled(true)
+			SetClickable(inst, false)
+			ToggleOffAllObjectCollisions(inst)
+			ConfigureUnderground(inst, true)
+			if not inst.SoundEmitter:PlayingSound("puddle_loop") then
+				inst.SoundEmitter:PlaySound("rifts4/goop/idle_big", "puddle_loop")
+			end
+		end,
+
+		onupdate = function(inst, dt)
+			if dt > 0 then
+				if inst.sg.statemem.aggrodelay then
+					if inst.sg.statemem.aggrodelay > dt then
+						inst.sg.statemem.aggrodelay = inst.sg.statemem.aggrodelay - dt
+					else
+						inst.sg.statemem.spawning = true
+						inst.sg:GoToState("teleport_pst")
+					end
+				elseif inst.sg.statemem.canaggro then
+					local player, dsq = inst:GetNearestPlayer(true)
+					if player and dsq < 36 then
+						inst.sg.statemem.aggrodelay = 1 + math.random() * 0.25
+						inst.components.combat:SetTarget(player)
+						inst:SetMusicLevel(2)
+					end
+				end
+			end
+		end,
+
+		timeline =
+		{
 			TimeEvent(5, function(inst)
+				inst.sg.statemem.canaggro = true
+			end),
+			TimeEvent(20, function(inst)
 				inst.sg.statemem.spawning = true
 				inst.sg:GoToState("teleport_pst")
 			end),
 		},
 
 		onexit = function(inst)
-			inst.Physics:SetActive(true)
-			inst:Show()
+			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.spawning then
-				SetClickable(inst, true)
-				inst:SetMusicLevel(
-					(inst.components.health:IsDead() and 3) or
-					(inst.components.combat:HasTarget() and 2) or
-					0)
+				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
+				SetClickable(inst, true)
+				ConfigureUnderground(inst, false)
+				if inst.sg.mem.isobstaclepassthrough then
+					local x, _, z = inst.Transform:GetWorldPosition()
+					ToggleOnAllObjectCollisionsAt(inst, x, z)
+				end
+				inst:SetMusicLevel(
+					(inst.components.health:IsDead() and 4) or
+					(inst.components.combat:HasTarget() and 3) or
+					0)
 			end
+			inst.SoundEmitter:KillSound("puddle_loop")
 		end,
 	},
 
@@ -475,7 +592,7 @@ local states =
 
 		onenter = function(inst, quick)
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			local target = inst.components.combat.target
 			if target then
 				inst:ForceFacePoint(target.Transform:GetWorldPosition())
@@ -513,7 +630,7 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg:GoToState(inst.sg.statemem.quick and "taunt_pst" or "taunt_loop")
 				end
 			end),
@@ -528,7 +645,7 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			inst.AnimState:PlayAnimation("taunt_loop")
 		end,
 
@@ -546,7 +663,7 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg:GoToState("taunt_pst")
 				end
 			end),
@@ -561,7 +678,7 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			inst.AnimState:PlayAnimation("taunt_pst")
 
 			if inst.sg.lasttags["caninterrupt"] then
@@ -587,7 +704,7 @@ local states =
 				inst.sg:AddStateTag("canrotate")
 			end),
 			FrameEvent(19, function(inst)
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg:GoToState("idle", true)
 			end),
 		},
@@ -601,7 +718,7 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			local target = inst.components.combat.target
 			if target then
 				inst:ForceFacePoint(target.Transform:GetWorldPosition())
@@ -629,12 +746,13 @@ local states =
 					inst.sg.statemem.doattack = nil
 				end
 				inst.sg:AddStateTag("caninterrupt")
+				inst:SetCameraFocusEnabled(false) --in case came from spawning teleport_pst
 			end),
 			FrameEvent(62, function(inst)
 				if inst.sg.statemem.doattack and ChooseAttack(inst, inst.sg.statemem.doattack) then
 					return
 				end
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg:GoToState("idle", true)
 			end),
 		},
@@ -655,7 +773,10 @@ local states =
 			end),
 		},
 
-		onexit = TryRestoreSixFaced,
+		onexit = function(inst)
+			TryRestoreSixFaced(inst)
+			inst:SetCameraFocusEnabled(false) --in case came from spawning teleport_pst
+		end,
 	},
 
 	State{
@@ -666,6 +787,15 @@ local states =
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("hit")
 			CommonHandlers.UpdateHitRecoveryDelay(inst)
+
+			if inst.components.health:IsDead() then
+				inst.sg:AddStateTag("dead")
+				inst.sg:AddStateTag("nointerrupt")
+				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_sharp")
+				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_dull")
+				inst.SoundEmitter:PlaySound("terraria1/mini_eyeofterror/egg_crack")
+				inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spawn", nil, 0.8)
+			end
 		end,
 
 		timeline =
@@ -674,7 +804,10 @@ local states =
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts8/shrouden/hit_react") end),
 
 			FrameEvent(8, function(inst)
-				if inst.sg.statemem.doattack then
+				if inst.sg:HasStateTag("dead") then
+					inst.sg:GoToState("death", true)
+					return
+				elseif inst.sg.statemem.doattack then
 					if inst.sg.statemem.doattack:IsValid() then
 						return
 					end
@@ -747,17 +880,26 @@ local states =
 		name = "death",
 		tags = { "dead", "busy", "nointerrupt" },
 
-		onenter = function(inst)
+		onenter = function(inst, skipsound)
 			if inst.looted then
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
+				inst.sg.statemem.death = true
 				inst.sg:GoToState("death_fr94")
 				return
 			end
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			inst.AnimState:PlayAnimation("death")
 			ShowPuddleEye(inst, "death")
 			inst:SetCameraFocusEnabled(true)
+
+			if not skipsound then
+				inst.SoundEmitter:PlaySound("rifts8/shrouden/hit_react")
+				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_sharp")
+				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_dull")
+				inst.SoundEmitter:PlaySound("terraria1/mini_eyeofterror/egg_crack")
+				inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spawn", nil, 0.8)
+			end
 		end,
 
 		timeline =
@@ -786,15 +928,15 @@ local states =
 				ConfigureUnderground(inst, true)
 			end),
 			FrameEvent(94, function(inst)
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg.statemem.death = true
 				inst.sg:GoToState("death_fr94")
 			end),
 		},
 
 		onexit = function(inst)
-			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.death then
+				TryRestoreSixFaced(inst)
 				HidePuddleEye(inst)
 				inst:SetCameraFocusEnabled(false)
 				ConfigureUnderground(inst, false)
@@ -812,12 +954,12 @@ local states =
 
 		onenter = function(inst)
 			if inst.looted == true then
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.death = true
 				inst.sg:GoToState("death_loop")
 				return
 			end
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			if not inst.AnimState:IsCurrentAnimation("death") and inst.sg.lasttags["dead"] then
 				inst.AnimState:PlayAnimation("death")
 				inst.AnimState:SetFrame(94)
@@ -850,7 +992,6 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
 					inst.sg.statemem.death = true
 					inst.sg:GoToState("death_loop")
 				end
@@ -858,8 +999,8 @@ local states =
 		},
 
 		onexit = function(inst)
-			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.death then
+				TryRestoreSixFaced(inst)
 				HidePuddleEye(inst)
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
@@ -918,8 +1059,8 @@ local states =
 		end,
 
 		onexit = function(inst)
-			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.death then
+				TryRestoreSixFaced(inst)
 				HidePuddleEye(inst)
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
@@ -970,8 +1111,8 @@ local states =
 		end,
 
 		onexit = function(inst)
-			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.death then
+				TryRestoreSixFaced(inst)
 				HidePuddleEye(inst)
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
@@ -1040,8 +1181,8 @@ local states =
 		},
 
 		onexit = function(inst)
-			TryRestoreSixFaced(inst)
 			if not inst.sg.statemem.death then
+				TryRestoreSixFaced(inst)
 				HidePuddleEye(inst)
 				SetPuddleLayerEnabled(inst, false)
 				inst:SetCameraFocusEnabled(false)
@@ -1574,6 +1715,7 @@ local states =
 			if inst.AnimState:IsCurrentAnimation("teleport_loop") then
 				SetPuddleLayerEnabled(inst, true)
 			end
+			inst.SoundEmitter:PlaySound("rifts4/goop/idle_big", "puddle_loop")
 
 			SetClickable(inst, false)
 			ToggleOffAllObjectCollisions(inst)
@@ -1627,10 +1769,12 @@ local states =
 						inst.Transform:SetRotation(rot + drot)
 
 						dist = math.sqrt(dx * dx + dz * dz)
-						if t > min_t and dist < arrivedist + physrad1 then
+						if t > min_t and dist < arrivedist + physrad1 or inst.components.health:IsDead() then
 							t = math.max(t, t2)
 						end
 					end
+				elseif inst.components.health:IsDead() then
+					t = math.max(t, t2)
 				else
 					t = math.max(t, t2 - min_t)
 				end
@@ -1696,6 +1840,7 @@ local states =
 		},
 
 		onexit = function(inst)
+			inst.SoundEmitter:KillSound("puddle_loop")
 			if not inst.sg.statemem.teleporting then
 				SetPuddleLayerEnabled(inst, false)
 				SetClickable(inst, true)
@@ -1730,7 +1875,8 @@ local states =
 
 			if inst.sg.lasttags["spawning"] then
 				inst.sg:AddStateTag("spawning")
-				inst:SetMusicLevel(1)
+				inst:SetMusicLevel(2)
+				inst.sg.statemem.nodmg = true
 				inst.components.combat:SetDefaultDamage(0)
 				inst.components.planardamage:SetBaseDamage(0)
 				inst.components.combat:RestartCooldown()
@@ -1753,6 +1899,11 @@ local states =
 					end
 				end
 				if inst.sg.statemem.targets then
+					if inst.components.health:IsDead() and not inst.sg.statemem.nodmg then
+						inst.sg.statemem.nodmg = true
+						inst.components.combat:SetDefaultDamage(0)
+						inst.components.planardamage:SetBaseDamage(0)
+					end
 					AOEUtil.AttackAndDig(inst, inst.sg.statemem.aoeparams, inst:GetAOEAttackTagSet(), inst.sg.statemem.targets)
 				end
 			end
@@ -1815,6 +1966,27 @@ local states =
 					return
 				end
 				inst.sg:RemoveStateTag("nointerrupt")
+				if not (inst.sg:HasStateTag("spawning") and inst.components.combat:HasTarget()) then
+					inst.sg:AddStateTag("caninterrupt")
+				end
+			end),
+			FrameEvent(34, function(inst) if not (inst.sg:HasStateTag("spawning") and inst.components.combat:HasTarget()) then inst.sg:AddStateTag("caninterrupt") end end),
+			FrameEvent(35, function(inst) if not (inst.sg:HasStateTag("spawning") and inst.components.combat:HasTarget()) then inst.sg:AddStateTag("caninterrupt") end end),
+			FrameEvent(36, function(inst) if not (inst.sg:HasStateTag("spawning") and inst.components.combat:HasTarget()) then inst.sg:AddStateTag("caninterrupt") end end),
+			FrameEvent(37, function(inst) if not (inst.sg:HasStateTag("spawning") and inst.components.combat:HasTarget()) then inst.sg:AddStateTag("caninterrupt") end end),
+			FrameEvent(38, function(inst)
+				if inst.sg:HasStateTag("spawning") then
+					if inst.components.combat:HasTarget() then
+						inst.sg.mem.forcetaunt = nil
+						inst.components.combat:ResetBattleCryCooldown()
+						if not inst.canexsummon then
+							inst.components.combat.battlecryenabled = false
+						end
+					end
+					inst.sg.statemem.keepcamerafocus = true
+					inst.sg:GoToState("taunt2")
+					return
+				end
 				inst.sg:AddStateTag("caninterrupt")
 			end),
 			FrameEvent(43, function(inst)
@@ -1832,15 +2004,19 @@ local states =
 		},
 
 		onexit = function(inst)
-			if inst.sg:HasStateTag("spawning") then
+			if inst.sg.statemem.nodmg then
 				inst.components.combat:SetDefaultDamage(TUNING.SHROUDEN_DAMAGE)
 				inst.components.planardamage:SetBaseDamage(TUNING.SHROUDEN_PLANAR_DAMAGE)
-				inst:SetMusicLevel(
-					(inst.components.health:IsDead() and 3) or
-					(inst.components.combat:HasTarget() and 2) or
-					0)
 			end
-			inst:SetCameraFocusEnabled(false) --#TEMP #TODO used as temp spawn state
+			if inst.sg:HasStateTag("spawning") then
+				inst:SetMusicLevel(
+					(inst.components.health:IsDead() and 4) or
+					(inst.components.combat:HasTarget() and 3) or
+					0)
+				if not inst.sg.statemem.keepcamerafocus then
+					inst:SetCameraFocusEnabled(false)
+				end
+			end
 			SetPuddleLayerEnabled(inst, false)
 			ConfigureUnderground(inst, false)
 			if inst.sg:HasStateTag("jumping") then
@@ -1861,7 +2037,7 @@ local states =
 		onenter = function(inst, target)
 			inst.components.locomotor:Stop()
 			inst.components.combat:StartAttack()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 
 			if target and target:IsValid() then
 				inst.sg.statemem.target = target
@@ -1894,7 +2070,7 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg.statemem.opticblasting = true
 					inst.sg:GoToState("optic_blast_appear", inst.sg.statemem.target)
 				end
@@ -1920,7 +2096,7 @@ local states =
 
 		onenter = function(inst, target)
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 
 			if target and target:IsValid() then
 				inst.sg.statemem.target = target
@@ -1958,12 +2134,17 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg.statemem.opticblasting = true
-					inst.sg:GoToState("optic_blast_loop", {
-						target = inst.sg.statemem.target,
-						fx = inst.sg.statemem.fx,
-					})
+					if inst.components.health:IsDead() then
+						inst.sg.statemem.fx:Remove()
+						inst.sg:GoToState("optic_blast_pst")
+					else
+						inst.sg:GoToState("optic_blast_loop", {
+							target = inst.sg.statemem.target,
+							fx = inst.sg.statemem.fx,
+						})
+					end
 				end
 			end),
 		},
@@ -1991,7 +2172,7 @@ local states =
 		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
 			inst.components.combat:RestartCooldown()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			inst.AnimState:PlayAnimation("optic_blast_loop", true)
 
 			ConfigureFlying(inst, true)
@@ -2074,14 +2255,14 @@ local states =
 
 		timeline =
 		{
-			FrameEvent(30, function(inst)
+			FrameEvent(45, function(inst)
 				inst.components.combat:RestartCooldown()
 			end),
 			FrameEvent(75, function(inst)
 				if not inst.canwideblast then
 					local success = inst.sg.statemem.fx.targets ~= nil and inst.sg.statemem.fx.targets[inst.sg.statemem.target] ~= nil
 					inst.sg.statemem.fx:KillFx()
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg.statemem.opticblasting = true
 					inst.sg:GoToState("optic_blast_pst", success)
 					return
@@ -2092,13 +2273,16 @@ local states =
 				inst.AnimState:PlayAnimation("optic_blast_pre3")
 				inst.AnimState:PushAnimation("optic_blast_loop")
 			end),
-			FrameEvent(80, function(inst)
+			FrameEvent(84, function(inst)
 				inst.sg.statemem.speedmult = 1
+			end),
+			FrameEvent(90, function(inst)
+				inst.components.combat:RestartCooldown()
 			end),
 			FrameEvent(120, function(inst)
 				local success = inst.sg.statemem.fx.targets ~= nil and inst.sg.statemem.fx.targets[inst.sg.statemem.target] ~= nil
 				inst.sg.statemem.fx:KillFx()
-				inst.sg.statemem.keepnofaced = true
+				inst.sg.statemem.keeptwofaced = true
 				inst.sg.statemem.opticblasting = true
 				inst.sg:GoToState("optic_blast_pst", success)
 			end),
@@ -2127,7 +2311,7 @@ local states =
 
 		onenter = function(inst, success)
 			inst.components.locomotor:Stop()
-			SwitchToNoFaced(inst)
+			SwitchToTwoFaced(inst)
 			inst.AnimState:PlayAnimation("optic_blast_pst")
 
 			ConfigureFlying(inst, true)
@@ -2151,6 +2335,12 @@ local states =
 				local x, _, z = inst.Transform:GetWorldPosition()
 				ToggleOnAllObjectCollisionsAt(inst, x, z)
 
+				if inst.components.health:IsDead() then
+					inst.sg.statemem.nodmg = true
+					inst.components.combat:SetDefaultDamage(0)
+					inst.components.planardamage:SetBaseDamage(0)
+				end
+
 				inst.sg.statemem.targets = {}
 				local aoeparams = GetAOEParams(0, 2.6, nil, 0.8)
 				AOEUtil.Work(inst, aoeparams, inst.sg.statemem.targets)
@@ -2159,6 +2349,12 @@ local states =
 				inst:RemoveSpawningArenaSpikes(x, z, inst:GetPhysicsRadius(0))
 			end),
 			FrameEvent(18, function(inst)
+				if inst.components.health:IsDead() and not inst.sg.statemem.nodmg then
+					inst.sg.statemem.nodmg = true
+					inst.components.combat:SetDefaultDamage(0)
+					inst.components.planardamage:SetBaseDamage(0)
+				end
+
 				local aoeparams = GetAOEParams(0, 3.6, nil, 0.8)
 				AOEUtil.Work(inst, aoeparams, inst.sg.statemem.targets)
 				AOEUtil.Attack(inst, aoeparams, inst:GetAOEAttackTagSet(), inst.sg.statemem.targets)
@@ -2173,7 +2369,7 @@ local states =
 			end),
 			FrameEvent(24, function(inst)
 				if inst.sg.statemem.success then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg:GoToState("taunt2")
 					return
 				end
@@ -2189,13 +2385,17 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.keeptwofaced = true
 					inst.sg:GoToState("idle")
 				end
 			end),
 		},
 
 		onexit = function(inst)
+			if inst.sg.statemem.nodmg then
+				inst.components.combat:SetDefaultDamage(TUNING.SHROUDEN_DAMAGE)
+				inst.components.planardamage:SetBaseDamage(TUNING.SHROUDEN_PLANAR_DAMAGE)
+			end
 			TryRestoreSixFaced(inst)
 			ConfigureFlying(inst, false)
 			if inst.sg.mem.isobstaclepassthrough then

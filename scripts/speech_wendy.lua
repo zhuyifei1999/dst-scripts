@@ -2216,6 +2216,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "This doesn't capture its pain.",
         CHESSPIECE_YOTH = "Not quite the fairy tale version.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "There's no life in this small sentry.",
+        CHESSPIECE_BATBOSS_SHADOW = "It thirsted for life.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "It harbored a dark rage.",
+        CHESSPIECE_WORMBOSS_SHADOW = "It was cursed with an endless hunger.",
+        CHESSPIECE_CHARLIE_BOSS = "I feel sorry for her.",
+        CHESSPIECE_SHROUDEN = "That was the worst.",
 
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
@@ -6364,6 +6369,8 @@ return{
         QUEEN_TORCH = "I see the flame, but I feel no warmth.",
         
         CHARLIEARENA_TELEPORTER = "I'd better take everything before I jump.",
+
+        MASK_CHARLIE_BOSSHAT = "It was just a mask afterall.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

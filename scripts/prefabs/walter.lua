@@ -630,7 +630,7 @@ end
 
 local function OnAttacked(inst, data)
 	local mount = inst.components.rider:GetMount()
-	if not (mount and mount:HasTag("woby") and IsEquipmentOnAttackedOrBlocked(inst, inst, data)) then
+	if not (mount and mount:HasTag("woby")) or IsEquipmentOnAttackedOrBlocked(inst, inst, data) then
 		return
 	end
 

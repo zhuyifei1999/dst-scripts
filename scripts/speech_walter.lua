@@ -2254,6 +2254,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Like a robot possessed!",
         CHESSPIECE_YOTH = "It's a chess piece of a chess piece!",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Don't even think about it, Woby!",
+        CHESSPIECE_BATBOSS_SHADOW = "What a sucker! Get it, Woby?",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "It got real rocky with this guy!",
+        CHESSPIECE_WORMBOSS_SHADOW = "That was a whopper, eh, Woby?",
+        CHESSPIECE_CHARLIE_BOSS = "She sure had a lot going on!",
+        CHESSPIECE_SHROUDEN = "It can't hurt us now, Woby!",
 
         CHESSJUNK1 = "I don't think they're going to get up anytime soon.",
         CHESSJUNK2 = "I don't think they're going to get up anytime soon.",
@@ -6402,6 +6407,8 @@ return{
         QUEEN_TORCH = "That's gotta be a special flame, Wobes!",
         
         CHARLIEARENA_TELEPORTER = "We better not leave anything behind, Woby!",
+
+        MASK_CHARLIE_BOSSHAT = "Ooooh, what's that on the back!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

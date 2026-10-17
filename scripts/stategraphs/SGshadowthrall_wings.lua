@@ -369,7 +369,7 @@ local states =
 
 			inst.SoundEmitter:PlaySound("rifts2/thrall_wings/cast_f25")
 
-			inst.sg.statemem.period = 0.17
+			inst.sg.statemem.period = 0.24
 			inst.sg.statemem.thetaoffset = -PI
 			inst.sg.statemem.delay = 0
 			inst.sg.statemem.voiddelay = 8
@@ -428,7 +428,7 @@ local states =
 
 				--try snap to nearest target
 				if inst.shrouden then
-					local mindsq = 2.5 * 2.5
+					local mindsq = 5.76--2.4 * 2.4
 					local minx2, minz2
 
 					local function TryTarget(k)

@@ -2119,6 +2119,14 @@ local PREFABS =
 
     ["shrouden"] = true,
 
+    ["chesspiece_batboss_shadow"] = true,
+    ["chesspiece_rockyboss_shadow"] = true,
+    ["chesspiece_wormboss_shadow"] = true,
+    ["chesspiece_charlie_boss"] = true,
+    ["chesspiece_shrouden"] = true,
+
+    ["mask_charlie_bosshat"] = true,
+
     -----------------------------------------------
 
     --["archive_switch"] = true, proxy for archive_switch_base

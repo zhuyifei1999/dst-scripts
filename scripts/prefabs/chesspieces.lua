@@ -62,6 +62,11 @@ local PIECES =
     {name="wagboss_lunar",       moonevent=false,    gymweight=4},
     {name="yoth",                moonevent=false,    gymweight=3},
     {name="vault_pillar_guard",  moonevent=false,    gymweight=4},
+    {name="batboss_shadow",      moonevent=false,    gymweight=4},
+    {name="rockyboss_shadow",    moonevent=false,    gymweight=4},
+    {name="wormboss_shadow",     moonevent=false,    gymweight=4},
+    {name="charlie_boss",        moonevent=false,    gymweight=4},
+    {name="shrouden",            moonevent=false,    gymweight=4},
 }
 
 local MOON_EVENT_RADIUS = 12

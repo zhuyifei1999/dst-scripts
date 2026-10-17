@@ -29,6 +29,7 @@ local prefabs =
 
     "king_cane",
     "queen_torch",
+    "mask_charlie_bosshat",
 }
 
 local RITUAL_STATES =
@@ -411,7 +412,9 @@ local function OnDestabilizeExplode(inst)
     inst:StartCooldown(false)
 
     TheWorld:PushEvent("resetruins")
-    TheWorld:PushEvent("resetvault") -- defeating shrouden also resets vault
+    if TheWorld.components.charlie_tracker:IsCharlieDefeated() then -- we've beat shrouden once
+        TheWorld:PushEvent("resetvault") -- defeating shrouden also resets vault
+    end
 
     for _, player in ipairs(AllPlayers) do
         player.components.talker:Say(GetString(player, "ANNOUNCE_RUINS_RESET"))
@@ -695,7 +698,15 @@ end
 local function SpawnShroudenLootSetPiece(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local theta = inst.components.charliecutscene:FindRitualAngle() * DEGREES
+
     theta = theta - PI/4
+
+    if not (TheWorld.components.charlie_tracker and TheWorld.components.charlie_tracker:IsCharlieDefeated()) then
+        local hat = SpawnPrefab("mask_charlie_bosshat")
+        hat.Transform:SetPosition(x + math.cos(theta) * 6.75, y, z - math.sin(theta) * 6.75)
+        hat:PushCameraFocusForNextLoad()
+    end
+
     theta = theta - PI/16
     SpawnPrefab("king_cane").Transform:SetPosition(x + math.cos(theta) * 7.25, y, z - math.sin(theta) * 7.25)
 
@@ -706,14 +717,21 @@ end
 
 --------------------------------------------------------------------------
 
+local function GetRitualTime()
+    local charlie_tracker = TheWorld.components.charlie_tracker
+    return (charlie_tracker and charlie_tracker:IsCharlieDefeated() and TUNING.SHROUDEN_RITUAL_NOCHARLIE_TIME)
+        or TUNING.SHROUDEN_RITUAL_TIME
+end
+
 local function UpdateShroudenTarget(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
+    local ritualtime = GetRitualTime()
     local timeleft = GetTaskRemaining(inst.shrouden_summon_task)
     local charlienpc = inst.components.entitytracker:GetEntity("charlienpc")
     local players = FindPlayersInRange(x, y, z, ATRIUM_ARENA_SIZE + 5, true)
     local targetchoices = {}
     for i, v in ipairs(players) do
-        targetchoices[v] = inst.shrouden_target:value() == v and 0 or Remap(easing.linear(1 / (TUNING.SHROUDEN_RITUAL_TIME/timeleft), 1, -1, 1), 0, 1, 1, 0)
+        targetchoices[v] = inst.shrouden_target:value() == v and 0 or Remap(easing.linear(1 / (ritualtime/timeleft), 1, -1, 1), 0, 1, 1, 0)
     end
     if charlienpc then
         targetchoices[charlienpc] = (timeleft > 1 and inst.shrouden_target:value() == charlienpc and 0) or .8
@@ -722,7 +740,7 @@ local function UpdateShroudenTarget(inst)
     local target = weighted_random_choice(targetchoices)
 
     inst:SetShroudenTarget(target)
-    inst.shrouden_target_task = inst:DoTaskInTime(easing.linear(1 / (TUNING.SHROUDEN_RITUAL_TIME/timeleft), .5, 1.5, 1), UpdateShroudenTarget)
+    inst.shrouden_target_task = inst:DoTaskInTime(easing.linear(1 / (ritualtime/timeleft), .5, 1.5, 1), UpdateShroudenTarget)
 end
 
 local function DoShroudenSummon(inst)
@@ -823,8 +841,9 @@ local function ritualstate_OnSummoning(inst, state)
     end
 
     -- 72 frames for the eye to appear
+    local ritualtime = GetRitualTime()
     inst.shrouden_target_task = inst:DoTaskInTime(3, UpdateShroudenTarget)
-    inst.shrouden_summon_task = inst:DoPeriodicTask(TUNING.SHROUDEN_RITUAL_TIME, DoShroudenSummon)
+    inst.shrouden_summon_task = inst:DoPeriodicTask(ritualtime, DoShroudenSummon)
 end
 
 local function ritualstate_OnEnabled(inst, state)

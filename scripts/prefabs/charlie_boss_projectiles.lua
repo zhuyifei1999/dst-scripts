@@ -313,6 +313,7 @@ local function fn()
 	inst.scrapbook_build = "charlie_boss_actions"
 	inst.scrapbook_anim = "air_ripple_atk_loop"
 	inst.scrapbook_planardamage = TUNING.CHARLIE_BOSS_PLANAR_DAMAGE
+	inst.scrapbook_thingtype = "creature"
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(TUNING.CHARLIE_BOSS_PROJECTILE_DAMAGE)

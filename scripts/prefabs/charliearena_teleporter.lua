@@ -194,6 +194,7 @@ local function SetOpen(inst)
 	if inst.opentask then
 		inst.opentask:Cancel()
 		inst.opentask = nil
+		inst.SoundEmitter:KillSound("rumble")
 	end
 	inst:RemoveEventCallback("animover", SetOpen)
     inst:RemoveTag("NOCLICK")
@@ -208,6 +209,7 @@ end
 
 local function DoOpenAnim(inst)
     inst.opentask = nil
+	inst.SoundEmitter:KillSound("rumble")
     inst:Show()
 	inst.Light:Enable(true)
 	inst.Physics:SetActive(true)
@@ -231,6 +233,7 @@ local function Open(inst)
     if inst.opentask == nil then
         inst:Hide()
         inst.opentask = inst:DoTaskInTime(1, DoOpenAnim)
+		inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentacle_rumble_LP", "rumble")
         if IsInArena(inst) then
 			EnableCameraFocus(inst, true)
 			ShakeAllCamerasWithFilter(IsInArena, CAMERASHAKE.FULL, 2, 0.025, 0.1, inst, 1000)

@@ -2232,6 +2232,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "What error caused such a terror?",
         CHESSPIECE_YOTH = "This little knight put up quite the fight.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "It was tall, now small.",
+        CHESSPIECE_BATBOSS_SHADOW = "The bat that was an unwanted hat.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "The nastiest claw I ever did saw!",
+        CHESSPIECE_WORMBOSS_SHADOW = "The sight of that worm still makes me squirm.",
+        CHESSPIECE_CHARLIE_BOSS = "The Shadow Queen has been!",
+        CHESSPIECE_SHROUDEN = "Nice try, evil eye.",
 
         CHESSJUNK1 = "It looks quite broke, and that's no joke!",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!",
@@ -6380,6 +6385,8 @@ return{
         QUEEN_TORCH = "It's not the same flame!",
         
         CHARLIEARENA_TELEPORTER = "Pack it all before the fall!",
+
+        MASK_CHARLIE_BOSSHAT = "A mask for a dark task.",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

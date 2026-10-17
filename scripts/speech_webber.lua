@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Yes! Three-legged space spider!",
         CHESSPIECE_YOTH = "Were we friends?",
         CHESSPIECE_VAULT_PILLAR_GUARD = "A toy tower!",
+        CHESSPIECE_BATBOSS_SHADOW = "We wish we could fly!",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "How did it move like that?",
+        CHESSPIECE_WORMBOSS_SHADOW = "We had fun being chased by the big worm.",
+        CHESSPIECE_CHARLIE_BOSS = "Aww, poor lady.",
+        CHESSPIECE_SHROUDEN = "We weren't scared one bit!",
 
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "Oooh, we can't stop staring at it!",
         
         CHARLIEARENA_TELEPORTER = "We can't leave anything behind!",
+
+        MASK_CHARLIE_BOSSHAT = "We wanna wear the lady's mask!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

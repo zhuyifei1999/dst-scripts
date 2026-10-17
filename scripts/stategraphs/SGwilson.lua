@@ -55,6 +55,18 @@ local function GetIceStaffProjectileSound(inst, equip)
     return "dontstarve/wilson/attack_icestaff"
 end
 
+local function GetKingStaffProjectileSound(inst, equip) -- shadowdominance tag means the staff is corrupted
+    if equip:HasTag("icestaff") then
+        return equip:HasTag("shadowdominance") and "dontstarve/wilson/attack_icestaff_corrupted"
+            or "dontstarve/wilson/attack_icestaff_kingcane"
+    elseif equip:HasTag("firestaff") then
+        return equip:HasTag("shadowdominance") and "dontstarve/wilson/attack_firestaff_corrupted"
+            or "dontstarve/wilson/attack_firestaff_kingcane"
+    end
+
+    return "dontstarve/wilson/attack_weapon"
+end
+
 local function GetRoyaltyTarget(inst)
     local royalty
     local mindistsq = 25
@@ -10748,6 +10760,7 @@ local states =
                         inst.sg.statemem.projectiledelay = 8 * FRAMES - equip.projectiledelay
                         if inst.sg.statemem.projectiledelay > FRAMES then
                             inst.sg.statemem.projectilesound =
+                                (equip.prefab == "king_cane" and GetKingStaffProjectileSound(inst, equip)) or
                                 (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                                 (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                                 (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
@@ -10758,6 +10771,7 @@ local states =
                     end
                     if inst.sg.statemem.projectilesound == nil then
                         inst.SoundEmitter:PlaySound(
+                            (equip.prefab == "king_cane" and GetKingStaffProjectileSound(inst, equip)) or
                             (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                             (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                             (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
@@ -10835,6 +10849,7 @@ local states =
                     inst.sg.statemem.projectiledelay = 8 * FRAMES - equip.projectiledelay
                     if inst.sg.statemem.projectiledelay > FRAMES then
                         inst.sg.statemem.projectilesound =
+                            (equip.prefab == "king_cane" and GetKingStaffProjectileSound(inst, equip)) or
                             (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                             (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                             (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
@@ -10845,6 +10860,7 @@ local states =
                 end
                 if inst.sg.statemem.projectilesound == nil then
                     inst.SoundEmitter:PlaySound(
+                        (equip.prefab == "king_cane" and GetKingStaffProjectileSound(inst, equip)) or
                         (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                         (equip:HasTag("shadow") and "dontstarve/wilson/attack_nightsword") or
                         (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
@@ -10929,7 +10945,7 @@ local states =
                 if inst.sg.statemem.ismoose and not inst.sg.statemem.ismoosesmash then
                     inst.SoundEmitter:PlaySound("dontstarve/characters/woodie/moose/punch", nil, nil, true)
                 end
-                if inst.sg.statemem.kingstaff and inst.sg.statemem.kingstaff:IsValid() then
+                if inst.sg.statemem.kingstaff and inst.sg.statemem.kingstaff:IsValid() and inst.sg.statemem.kingstaff:HasTag("rangedweapon") then
                     inst.sg.statemem.kingstaff:DoGemShine()
                 end
             end),

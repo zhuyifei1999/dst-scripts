@@ -23,6 +23,10 @@ local function GetAOEAttackTagSet(inst) -- only if not tied to charlie boss (deb
 	return AOE_TAGSET
 end
 
+local function ShouldAvoidAggroFn(target, inst)
+	return false --false means target should not aggro on us - _-""
+end
+
 local AOE_RADIUS = 0.6
 local function DoAOE(inst)
     local tagset
@@ -33,7 +37,9 @@ local function DoAOE(inst)
         inst.caster = nil
     end
 
+	inst.components.combat.shouldavoidaggrofn = ShouldAvoidAggroFn
     AOEUtil.Attack(inst, AOE_RADIUS, tagset, nil, nil)
+	inst.components.combat.shouldavoidaggrofn = nil
 end
 
 local states =

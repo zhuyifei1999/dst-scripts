@@ -902,7 +902,7 @@ function MultiplayerMainScreen:Quit()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
     TheFrontEnd:PushScreen(PopupDialogScreen(
             STRINGS.UI.MAINSCREEN.ASKQUIT,
-            STRINGS.UI.MAINSCREEN.ASKQUITDESC,
+            TheGenericKV:GetKV("charlie_defeated") == "1" and STRINGS.UI.MAINSCREEN.ASKQUITDESC_NOCHARLIE or STRINGS.UI.MAINSCREEN.ASKQUITDESC,
             {
                 { text=STRINGS.UI.MAINSCREEN.YES, cb = function() RequestShutdown() end },
                 { text=STRINGS.UI.MAINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end },

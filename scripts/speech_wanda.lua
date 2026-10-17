@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Can't we just leave this monstrosity in the past?",
         CHESSPIECE_YOTH = "I have mixed emotions about this one.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "I'll not soon forget this brute.",
+        CHESSPIECE_BATBOSS_SHADOW = "Dreadful, that maw.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "Too many close calls with this beast.",
+        CHESSPIECE_WORMBOSS_SHADOW = "I preferred the other one.",
+        CHESSPIECE_CHARLIE_BOSS = "I couldn't forget her if I tried.",
+        CHESSPIECE_SHROUDEN = "The last thing I need is a reminder of that.",
 
         CHESSJUNK1 = "I don't see much in the way of proper clockwork in there.",
         CHESSJUNK2 = "I have a suspicion these were held together with more magic than craftsmanship.",
@@ -6343,7 +6348,7 @@ return{
             IN_RITUAL = "The offering is accepted.", -- it's floating as part of the ritual circle (can reuse same string for all IN_RITUAL)
         },
 
-		CHARLIE_BOSS = "She gets worse every time.",
+		CHARLIE_BOSS = "She gets worse each time.",
 		SHROUDEN =
 		{
 			GENERIC = "Let this be the last time.",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "This should help keep the nasties at bay.",
         
         CHARLIEARENA_TELEPORTER = "I'll not leave anything behind this time.",
+
+        MASK_CHARLIE_BOSSHAT = "A face I'll not soon forget.",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

@@ -2213,6 +2213,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "That was a bad one... and weird.",
         CHESSPIECE_YOTH = "It could be really mean when it wanted to be.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Kinda sad now, eh?",
+        CHESSPIECE_BATBOSS_SHADOW = "Yup, the worst things have wings.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "That guy was mean.",
+        CHESSPIECE_WORMBOSS_SHADOW = "The mouth on that one!",
+        CHESSPIECE_CHARLIE_BOSS = "She went looking for trouble and she found it.",
+        CHESSPIECE_SHROUDEN = "I don't wanna remember that thing.",
 
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
@@ -6361,6 +6366,8 @@ return{
         QUEEN_TORCH = "That's a weird lookin' flame, eh Luce?",
         
         CHARLIEARENA_TELEPORTER = "We better pack up before we jump in there, Lucy.",
+
+        MASK_CHARLIE_BOSSHAT = "Think it's bad luck to wear it, Lucy?",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

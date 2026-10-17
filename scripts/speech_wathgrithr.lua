@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "This tribute to the unhallowed giant is an abomination unto itself.",
         CHESSPIECE_YOTH = "This warrior's loyalty was as fleeting as the wind.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Ah yes, the once towering golem!",
+        CHESSPIECE_BATBOSS_SHADOW = "The winged beast of the night was naught but a nuisance to be swatted!",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "The cursed brute was broken by mine hand and steel!",
+        CHESSPIECE_WORMBOSS_SHADOW = "I relished slaying this dark behemoth!",
+        CHESSPIECE_CHARLIE_BOSS = "Never shall I forget thee, Lady of Shadows.",
+        CHESSPIECE_SHROUDEN = "The accursed one deserverth no tribute!",
 
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "This flame must have burned since the days of Surtr's sword!",
         
         CHARLIEARENA_TELEPORTER = "No plunder shall be left behind!",
+
+        MASK_CHARLIE_BOSSHAT = "T'was an honor to battle thee, Lady of Shadows.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

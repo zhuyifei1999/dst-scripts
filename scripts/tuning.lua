@@ -9669,9 +9669,11 @@ function Tune(overrides)
 
         WORM_BOSS_RITUAL_WAVE_TIME_MULT = 0.75, -- worm boss comes in 3 quarters of the usual time
         SHROUDEN_RITUAL_TIME = 14,
+        SHROUDEN_RITUAL_NOCHARLIE_TIME = 6,
 
         -- tile width * SQRT2 * TILE_SCALE / 2
-        CHARLIE_ARENA_RADIUS = 6 * math.sqrt(2) * 4 / 2, -- used for temperatureoverrider
+        -- .5 to account for overhang
+        CHARLIE_ARENA_RADIUS = 9.5 * math.sqrt(2) * 4 / 2, -- used for temperatureoverrider
         CHARLIE_ARENA_TEMPERATURE_OVERRIDE = 35, -- STARTING_TEMP
 
 		CHARLIE_BOSS_HEALTH = 18500,

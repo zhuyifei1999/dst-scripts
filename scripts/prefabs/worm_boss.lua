@@ -42,6 +42,7 @@ local prefabs_shadow =
     "worm_boss_shadow_head",
     "worm_boss_shadow_segment",
     "worm_boss_shadow_tail",
+    "chesspiece_wormboss_shadow_sketch",
 }
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -75,6 +76,7 @@ SetSharedLootTable("worm_boss_shadow",
 	{ "nightmarefuel",				0.33 },
 
     { "fused_shadeling_bomb",       1.00 },
+    { "chesspiece_wormboss_shadow_sketch", 1.00 },
 })
 
 -----------------------------------------------------------------------------------------------------------------------

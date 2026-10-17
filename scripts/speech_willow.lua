@@ -2219,6 +2219,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "That thing was the worst.",
         CHESSPIECE_YOTH = "It could be a real jerk sometimes.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Not so tall now, huh?",
+        CHESSPIECE_BATBOSS_SHADOW = "Its breath was cursed.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "It's Ol' Pinchy.",
+        CHESSPIECE_WORMBOSS_SHADOW = "At this size, it just looks silly.",
+        CHESSPIECE_CHARLIE_BOSS = "She had some real issues.",
+        CHESSPIECE_SHROUDEN = "That guy had a real staring problem.",
 
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
@@ -6367,6 +6372,8 @@ return{
         QUEEN_TORCH = "What kinda flame is that supposed to be?",
         
         CHARLIEARENA_TELEPORTER = "Can't leave anything behind.",
+
+        MASK_CHARLIE_BOSSHAT = "Stupid creepy mask.",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

@@ -39,6 +39,7 @@ local prefabs_shadow =
 	"nightmarefuel",
 	"bat_bosshat_fx",
 	"bat_boss_shadow_split_fx",
+	"chesspiece_batboss_shadow_sketch",
 }
 
 local brain = require("brains/bat_bossbrain")
@@ -60,6 +61,7 @@ SetSharedLootTable("bat_boss_shadow",
 	{ "horrorfuel",					0.67 },
 	{ "nightmarefuel",				1.00 },
 	{ "nightmarefuel",				0.33 },
+	{ "chesspiece_batboss_shadow_sketch",	1.00 },
 })
 
 local function ShouldSleep(inst) return false end

@@ -502,12 +502,12 @@ local function CreateLayout_Vault()
     local x, y, z = archive_portal.Transform:GetWorldPosition()
     local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
 
-    if not StaticLayoutPlacer.TryToPlaceStaticLayoutNear(Vault_Lobby, tx, ty, StaticLayoutPlacer.ScanForStaticLayoutPosition_Spiral, StaticLayoutPlacer.TileFilter_Impassable) then
+    if not StaticLayoutPlacer.TryToPlaceStaticLayoutNear(Vault_Lobby, tx, ty, StaticLayoutPlacer.ScanForStaticLayoutPosition_Spiral, StaticLayoutPlacer.TileFilter_Impassable, StaticLayoutPlacer.CreateVRSPositionFilter(VIRTUALROOMSETS.LOBBYVAULT)) then
         print("CreateLayout_Vault failed to place required static layout Vault_Lobby!")
         return false
     end
 
-    if not StaticLayoutPlacer.TryToPlaceStaticLayoutNear(Vault_Vault, tx, ty, StaticLayoutPlacer.ScanForStaticLayoutPosition_Spiral, StaticLayoutPlacer.TileFilter_Impassable) then
+    if not StaticLayoutPlacer.TryToPlaceStaticLayoutNear(Vault_Vault, tx, ty, StaticLayoutPlacer.ScanForStaticLayoutPosition_Spiral, StaticLayoutPlacer.TileFilter_Impassable, StaticLayoutPlacer.CreateVRSPositionFilter(VIRTUALROOMSETS.VAULT)) then
         print("CreateLayout_Vault failed to place required static layout Vault_Vault!")
         return false
     end

@@ -2527,6 +2527,11 @@ STRINGS =
         CHESSPIECE_WAGBOSS_LUNAR = "Celestial Scion Figure",
         CHESSPIECE_YOTH = "Gilded Knight Figure",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Ancient Guard Tower Figure",
+        CHESSPIECE_BATBOSS_SHADOW = "Blighted Hound Batilisk Figure",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "Blighted Rock Master Figure",
+        CHESSPIECE_WORMBOSS_SHADOW = "Blighted Great Depths Worm Figure",
+        CHESSPIECE_CHARLIE_BOSS = "Shrouded Queen Figure",
+        CHESSPIECE_SHROUDEN = "Umbral Abomination Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -2574,6 +2579,11 @@ STRINGS =
         CHESSPIECE_WAGBOSS_LUNAR_BUILDER = "Celestial Scion Figure",
         CHESSPIECE_YOTH_BUILDER = "Gilded Knight Figure",
         CHESSPIECE_VAULT_PILLAR_GUARD_BUILDER = "Ancient Guard Tower Figure",
+        CHESSPIECE_BATBOSS_SHADOW_BUILDER = "Blighted Hound Batilisk Figure",
+        CHESSPIECE_ROCKYBOSS_SHADOW_BUILDER = "Blighted Rock Master Figure",
+        CHESSPIECE_WORMBOSS_SHADOW_BUILDER = "Blighted Great Depths Worm Figure",
+        CHESSPIECE_CHARLIE_BOSS_BUILDER = "Shrouded Queen Figure",
+        CHESSPIECE_SHROUDEN_BUILDER = "Umbral Abomination Figure",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
         CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
@@ -2598,6 +2608,11 @@ STRINGS =
         CHESSPIECE_WAGBOSS_LUNAR_SKETCH = "Celestial Scion Figure Sketch",
         CHESSPIECE_YOTH_SKETCH = "Gilded Knight Figure Sketch",
         CHESSPIECE_VAULT_PILLAR_GUARD_SKETCH = "Ancient Guard Tower Figure Sketch",
+        CHESSPIECE_BATBOSS_SHADOW_SKETCH = "Blighted Hound Batilisk Figure Sketch",
+        CHESSPIECE_ROCKYBOSS_SHADOW_SKETCH = "Blighted Rock Master Figure Sketch",
+        CHESSPIECE_WORMBOSS_SHADOW_SKETCH = "Blighted Great Depths Worm Figure Sketch",
+        CHESSPIECE_CHARLIE_BOSS_SKETCH = "Shrouded Queen Figure Sketch",
+        CHESSPIECE_SHROUDEN_SKETCH = "Umbral Abomination Figure Sketch",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -4771,6 +4786,7 @@ STRINGS =
 
         QUEEN_TORCH = "Queen's Torch",
         KING_CANE = "King's Staff",
+        MASK_CHARLIE_BOSSHAT = "Queen's Mask",
 
         CHARLIEARENA_TELEPORTER = "Chasm",
 	},
@@ -5220,6 +5236,11 @@ STRINGS =
         CHESSPIECE_WAGBOSS_LUNAR_BUILDER = "The abomination.",
         CHESSPIECE_YOTH_BUILDER = "Shining armor included.",
         CHESSPIECE_VAULT_PILLAR_GUARD_BUILDER = "Imposing presence not included.",
+        CHESSPIECE_BATBOSS_SHADOW_BUILDER = "Luckily the mouth is too small to fit over your head.",
+        CHESSPIECE_ROCKYBOSS_SHADOW_BUILDER = "At least this one will stay in one place.",
+        CHESSPIECE_WORMBOSS_SHADOW_BUILDER = "To commemorate being swallowed by an abyss.",
+        CHESSPIECE_CHARLIE_BOSS_BUILDER = "It really captures her essences.",
+        CHESSPIECE_SHROUDEN_BUILDER = "It's a little evil.",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
         CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",
@@ -10186,6 +10207,7 @@ STRINGS.UI =
         IMPORTSUCCESS = "Success",
         IMPORTSUCCESSDESC = "Data was imported successfully.",
         OK = "OK",
+        LOGIN_REQUIRED_TITLE = "Login Required",
         IMPORTFAIL = "Failed to load",
         GREETING = "Hi ",
         NEWWORLD = "Create a new world!",
@@ -10197,6 +10219,7 @@ STRINGS.UI =
         NEWGO = "Let's Go!",
         ASKQUIT = "Quit Game?",
         ASKQUITDESC = "Charlie will miss you.",
+        ASKQUITDESC_NOCHARLIE = "Charlie would miss you.",
         QUIT = "Quit",
 
         DYNAMICCONTENT_TITLE = "Dynamic Content",
@@ -12771,8 +12794,11 @@ STRINGS.UI =
         OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world. Players will not be able to receive or use Collection Items in this world.",
         OFFLINEMODEBODYCREATE_CANSKIN = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join.",
         OFFLINEMODEBODYRESUME_CANSKIN = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world.",
-        CONVERT_OFFLINE_TO_ONLINE = "This world was last saved as offline. Are you sure you want to play online?",
-        CONVERT_ONLINE_TO_OFFLINE = "This world was last saved as online. Are you sure you want to play offline? Only users on your Local Area Network will be able to join.",
+        CHANGE_MODE_TITLE = "Change World Mode",
+        CHANGE_MODE_TO_ONLINE = "This world was last played offline. Do you want to change it to an online world?",
+        CHANGE_MODE_TO_OFFLINE = "This world was last played online. Do you want to change it to an offline world? Only players on your local network will be able to join. Your skins and characters still work but gifts will be unavailable.",
+        SIGNIN_REQUIRED_TITLE = "Login Required",
+        SIGNIN_REQUIRED_BODY = "You must be logged in to play worlds in online mode. Logging in takes you back to the title screen.",
         FULLSLOTSTITLE = "No Slots Available",
         FULLSLOTSBODY = "All of your server slots are currently full. You must either select a slot to load from, or delete a slot and start a new world.",
         OK = "OK",
@@ -16168,10 +16194,12 @@ STRINGS.UI =
 
     PREMIUM_ONLINE = 
     {
-        PLAYSTATION_PLUS = "PlayStation®Plus",
-        NINTENDO_ONLINE = "Nintendo Switch Online",
+        PLAYSTATION = "PlayStation®Plus",
+        NINTENDO = "Nintendo Switch Online",
         NOT_REQUIRED_TEXT = "Skins and the Klei Store are now available to everyone without a %s membership.\n\n You must be logged in to a Klei Account to use these features.",
+        MEMBERSHIP_REQUIRED_TITLE = "Membership Required",
         OFFLINE_WARNING = "Online play requires an active\n%s membership\nDo you want to play offline?",
+        MEMBERSHIP_REQUIRED_BODY = "Online play requires an active\n%s membership.\n\nIf you do not wish to play Online, please choose an offline mode from the Connection setting.",
         UPSELL_TEXT = "Online play requires an active%s membership\n Do you want to become a member?",
         SUBSCRIBE = "Subscribe",
         CANCEL = "Cancel",
@@ -19397,6 +19425,7 @@ STRINGS.SCRAPBOOK = {
 
         KING_CANE = "Increases movement speed by 30% when held. Socket any gem to use the respective staffs ability.\nBe careful to not overuse, or you will fall as they did.",
         QUEEN_TORCH = "An eternal flame to push back the shadows.",
+        MASK_CHARLIE_BOSSHAT = "Once worn by Her Royal Darkness.",
     },
 
     -- Full name: "{name} Scrapbook Page"

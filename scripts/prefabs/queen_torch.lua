@@ -92,7 +92,7 @@ local function onequip(inst, owner)
 	if inst._fx ~= nil then
 		inst._fx:Remove()
 	end
-    inst._fx = SpawnPrefab("queen_torch_fx")
+    inst._fx = SpawnPrefab("queen_torch_fx", skin_build, inst.skin_id)
 	inst._fx:AttachToOwner(owner)
 
     if inst._light == nil then

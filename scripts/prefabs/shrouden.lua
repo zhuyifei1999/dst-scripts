@@ -3,6 +3,7 @@ local assets =
 	Asset("ANIM", "anim/shrouden_build.zip"),
 	Asset("ANIM", "anim/shrouden_basic.zip"),
 	Asset("ANIM", "anim/shrouden_actions.zip"),
+	Asset("ANIM", "anim/shrouden_death.zip"),
 	Asset("ANIM", "anim/shrouden_voidcloth.zip"),
 }
 
@@ -25,6 +26,7 @@ local prefabs =
 	"nightmarefuel",
 	"dreadstone",
 	"voidcloth",
+	"chesspiece_shrouden_sketch",
 }
 
 SetSharedLootTable("shrouden",
@@ -56,6 +58,8 @@ SetSharedLootTable("shrouden2",
 	{ "voidcloth",			1.00 },
 	{ "voidcloth",			0.75 },
 	{ "voidcloth",			0.50 },
+
+	{ "chesspiece_shrouden_sketch", 1.00 },
 })
 
 local brain = require("brains/shroudenbrain")
@@ -105,9 +109,13 @@ end
 
 local function RemoveSpawningArenaSpikes(inst, x, z, r)
 	--spike radius 0.8 see charliearena_spike.lua
-	for _, v in ipairs(TheSim:FindEntities(x, 0, z, r + 0.8, inst.SPAWNING_SPIKE_MUST_TAGS, inst.SPAWNING_SPIKE_CANT_TAGS)) do
+	for _, v in ipairs(TheSim:FindEntities(x, 0, z, r + 0.8, inst.SPIKE_TAGS)) do
 		if v.prefab == "charliearena_spike" then
-			v:Remove()
+			if v.components.workable:CanBeWorked() then
+				v.components.workable:Destroy(inst)
+			elseif v.persists then --don't remove instantly if already destoryed
+				v:Remove()
+			end
 		end
 	end
 end
@@ -411,10 +419,19 @@ local function RetargetFn(inst)
 	--NOTE: grouptargets aleady have checked for inarena conditions during UpdatePlayerTargets
 	assert(next(inst._temptbl1) == nil)
 	local nearplayers = inst._temptbl1
-	for k in pairs(inst.components.grouptargeter:GetTargets()) do
-		local range = inrange and TUNING.SHROUDEN_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.SHROUDEN_AGGRO_DIST
-		if not k.sg:HasStateTag("devoured") and k:GetDistanceSqToPoint(x, 0, z) < range * range then
-			table.insert(nearplayers, k)
+	if not inrange and inst._disengagetask then
+		--V2C: when pending reset (was in combat but lost aggro), retarget the entire arena until successfully reset
+		for k in pairs(inst.components.grouptargeter:GetTargets()) do
+			if not k.sg:HasStateTag("devoured") then
+				table.insert(nearplayers, k)
+			end
+		end
+	else
+		for k in pairs(inst.components.grouptargeter:GetTargets()) do
+			local range = inrange and TUNING.SHROUDEN_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.SHROUDEN_AGGRO_DIST
+			if not k.sg:HasStateTag("devoured") and k:GetDistanceSqToPoint(x, 0, z) < range * range then
+				table.insert(nearplayers, k)
+			end
 		end
 	end
 	if #nearplayers > 0 then
@@ -640,7 +657,7 @@ local function TryReset(inst, force)
 			inst.Physics:Teleport(x, 0, z)
 		end
 	end
-	inst.sg:GoToState("idle")
+	inst.sg:GoToState("spawn_loop")
 	inst.components.health:SetPercent(1)
 	PHASES[1].fn(inst)
 
@@ -659,7 +676,7 @@ local function OnNewCombatTarget(inst, data)
 	SetDreadstoneSpikesSpawnsEnabled(inst, inst.candreadstonespikes)
 
 	if not inst.sg:HasStateTag("spawning") then
-		inst:SetMusicLevel(2)
+		inst:SetMusicLevel(3)
 	end
 end
 
@@ -675,7 +692,7 @@ local function Disengage(inst)
 	end
 
 	if not inst.sg:HasStateTag("spawning") then
-		inst:SetMusicLevel(inst.components.health:IsDead() and 3 or 0)
+		inst:SetMusicLevel(inst.components.health:IsDead() and 4 or 0)
 	end
 end
 
@@ -707,12 +724,12 @@ local function OnDeath(inst)
 	end
 
 	if not inst.sg:HasStateTag("spawning") then
-		inst:SetMusicLevel(3)
+		inst:SetMusicLevel(4)
 	end
 end
 
 local function OnSave(inst, data)
-	if inst.sg.statemem.changearena then
+	if inst.sg.mem.changearena then
 		data.changearena = true
 	end
 
@@ -741,14 +758,24 @@ local function OnLoad(inst, data)--, ents)
 			--loading to full hp => force reset
 			inst._resettask = inst:DoTaskInTime(0, TryReset, true)
 		else
-			inst._resettask = inst:DoPeriodicTask(3, TryReset)
+			inst._resettask = inst:DoPeriodicTask(3, TryReset, 30)
+		end
+	end
+end
+
+local function DoChangeArena(inst)
+	if inst.sg.mem.changearena then
+		inst.sg.mem.changearena = nil
+		if inst:IsInArena() then
+			inst:PushEvent("ms_charliearena_becomeunstable")
 		end
 	end
 end
 
 local function OnLoadPostPass(inst, newents, data)
 	if data and data.changearena then
-		inst:PushEvent("ms_charliearena_becomeunstable")
+		inst.sg.mem.changearena = true
+		inst:DoTaskInTime(0, DoChangeArena)
 	end
 end
 
@@ -1036,6 +1063,82 @@ end
 
 --------------------------------------------------------------------------
 
+local function OnUpdateStandbyLoop(inst, dt)
+	local d = 1
+	if inst.AnimState:IsCurrentAnimation("teleport_loop") then
+		if ThePlayer then
+			d = math.sqrt(inst:GetDistanceSqToPoint(ThePlayer.Transform:GetWorldPosition()))
+			d = math.clamp(Remap(d, 5, 14, 1, 0), 0, 1)
+		else
+			d = 0
+		end
+	end
+	if inst._standby == nil then
+		inst._standby = d
+	elseif d > inst._standby then
+		inst._standby = math.min(d, inst._standby + 0.05)
+	elseif d < inst._standby then
+		inst._standby = math.max(d, inst._standby - 0.05)
+	end
+	TheFocalPoint.SoundEmitter:SetParameter("shrouden_standby", "HP", inst._standby)
+end
+
+local function EnableStandbyLoop(inst, enable)
+	if not enable then
+		if inst._standby then
+			TheFocalPoint.SoundEmitter:KillSound("shrouden_standby")
+			inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateStandbyLoop)
+			inst._standby = nil
+		end
+	elseif inst._standby == nil then
+		TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_shrouden_lowHP", "shrouden_standby")
+		inst.components.updatelooper:AddOnUpdateFn(OnUpdateStandbyLoop)
+		OnUpdateStandbyLoop(inst, 0)
+		assert(inst._standby)
+	end
+end
+
+local function OnUpdateLowHPLoop(inst, dt)
+	local threshold = 1 / 3
+	local hp = inst.replica.health
+	hp = hp and hp:GetPercent() or 1
+	hp = math.clamp(Remap(hp, threshold * 0.5, threshold, 1, 0), 0, 1)
+
+	local old = inst._lowhp or 0
+	if inst._lowhp == nil then
+		inst._lowhp = hp
+	elseif hp > inst._lowhp then
+		inst._lowhp = math.min(hp, inst._lowhp + 0.05)
+	elseif hp <= 0 then
+		inst._lowhp = 0
+	elseif hp < inst._lowhp then
+		inst._lowhp = math.max(hp, inst._lowhp - 0.05)
+	end
+
+	if inst._lowhp > 0 then
+		if old <= 0 then
+			TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_shrouden_lowHP", "shrouden_lowhp")
+		end
+		TheFocalPoint.SoundEmitter:SetParameter("shrouden_lowhp", "HP", inst._lowhp)
+	elseif old > 0 then
+		TheFocalPoint.SoundEmitter:KillSound("shrouden_lowhp")
+	end
+end
+
+local function EnableLowHPLoop(inst, enable)
+	if not enable then
+		if inst._lowhp then
+			TheFocalPoint.SoundEmitter:KillSound("shrouden_lowhp")
+			inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateLowHPLoop)
+			inst._lowhp = nil
+		end
+	elseif inst._lowhp == nil then
+		inst.components.updatelooper:AddOnUpdateFn(OnUpdateLowHPLoop)
+		OnUpdateLowHPLoop(inst, 0)
+		assert(inst._lowhp)
+	end
+end
+
 local function EnableGatewayDimensionBattleMix(inst, enable)
 	if enable then
 		if not inst._gatewaydimensionbattlemix then
@@ -1048,36 +1151,44 @@ local function EnableGatewayDimensionBattleMix(inst, enable)
 	end
 end
 
-local function SetPlayingMusic(inst, playing)
+local function SetPlayingMusic(inst, playing, instant)
 	if playing then
 		inst._playingmusic = true
-		EnableGatewayDimensionBattleMix(inst, inst.music:value() <= 2)
+		local level = inst.music:value()
+		if instant and level == 2 and TheFocalPoint.SoundEmitter:PlayingSound("shrouden_standby") then
+			TheFocalPoint.SoundEmitter:SetParameter("shrouden_standby", "HP", 1)
+		end
+		EnableStandbyLoop(inst, level == 1)
+		EnableLowHPLoop(inst, level == 3)
+		EnableGatewayDimensionBattleMix(inst, level == 2 or level == 3)
 	elseif inst._playingmusic then
 		inst._playingmusic = false
+		EnableStandbyLoop(inst, false)
+		EnableLowHPLoop(inst, false)
 		EnableGatewayDimensionBattleMix(inst, false)
 	end
 end
 
-local function PushMusic(inst)
+local function PushMusic(inst, instant)
 	if ThePlayer == nil then
-		SetPlayingMusic(inst, false)
+		SetPlayingMusic(inst, false, instant)
 	else
 		local x, _, z = inst.Transform:GetWorldPosition()
 		if IsPointInArena(x, 0, z) then
 			if IsEntInArena(ThePlayer) then
-				SetPlayingMusic(inst, true)
+				SetPlayingMusic(inst, true, instant)
 				ThePlayer:PushEvent("triggeredevent", { name = "shrouden", level = inst.music:value() })
 			else
-				SetPlayingMusic(inst, false)
+				SetPlayingMusic(inst, false, instant)
 			end
 		else
 			local dsq = ThePlayer:GetDistanceSqToPoint(x, 0, z)
 			local range = inst._playingmusic and 30 or 20
 			if dsq < range * range then
-				SetPlayingMusic(inst, true)
+				SetPlayingMusic(inst, true, instant)
 				ThePlayer:PushEvent("triggeredevent", { name = "shrouden", level = inst.music:value() })
 			elseif dsq >= 40 * 40 then
-				SetPlayingMusic(inst, false)
+				SetPlayingMusic(inst, false, instant)
 			end
 		end
 	end
@@ -1091,7 +1202,7 @@ local function OnMusicDirty(inst)
 
 	if inst.music:value() > 0 then
 		inst._musictask = inst:DoPeriodicTask(1, PushMusic)
-		PushMusic(inst)
+		PushMusic(inst, true)
 	else
 		SetPlayingMusic(inst, false)
 	end
@@ -1110,12 +1221,12 @@ end
 
 local function DisplayNameFn(inst)
 	if ThePlayer then
-		if ThePlayer:HasTag("player_shadow_aligned") then
-			return STRINGS.NAMES.SHROUDEN_ALLEGIANCE
-		elseif ThePlayer:HasTag("shadowthrall_parasite_mask") then
+		if ThePlayer:HasTag("shadowthrall_parasite_mask") then
 			return STRINGS.NAMES.SHROUDEN_VOIDMASQUE
 		elseif ThePlayer.replica.inventory and ThePlayer.replica.inventory:EquipHasTag("ancient_reader") then
 			return STRINGS.NAMES.SHROUDEN_OTHER
+		elseif ThePlayer:HasTag("player_shadow_aligned") then
+			return STRINGS.NAMES.SHROUDEN_ALLEGIANCE
 		end
 	end
 
@@ -1355,8 +1466,7 @@ local function fn()
 	inst._geltargets = {}
 	inst._recent_attackers = {}
 
-	inst.SPAWNING_SPIKE_MUST_TAGS = { "groundspike", "NOCLICK" }
-	inst.SPAWNING_SPIKE_CANT_TAGS = { "MINE_workable" }
+	inst.SPIKE_TAGS = { "groundspike" }
 
 	inst.IsInArena = IsInArena
 	inst.GetAOEAttackTagSet = GetAOEAttackTagSet
@@ -1473,6 +1583,7 @@ local function eyefn()
 
 	inst.AnimState:SetBank("shrouden")
 	inst.AnimState:SetBuild("shrouden_voidcloth") --wrong build on purpose so symbols are blank
+	inst.AnimState:Hide("sh_eye")
 	inst.AnimState:OverrideSymbol("sh_eye_pupil", "shrouden_build", "sh_eye_pupil")
 	inst.AnimState:OverrideSymbol("RED_fx_eye_ball", "shrouden_build", "RED_fx_eye_ball")
 	inst.AnimState:OverrideSymbol("RED_fx_eye_flame", "shrouden_build", "RED_fx_eye_flame")

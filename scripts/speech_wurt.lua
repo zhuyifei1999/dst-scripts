@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Moon stuff made big Ironfolk bad.",
         CHESSPIECE_YOTH = "Where spring now, springy Ironfolk?",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Cute tiny horns! Florp!",
+        CHESSPIECE_BATBOSS_SHADOW = "Florp! Flying night puppy!",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "Wish me have big claw.",
+        CHESSPIECE_WORMBOSS_SHADOW = "Night worm never full.",
+        CHESSPIECE_CHARLIE_BOSS = "Is scary night lady little sad?",
+        CHESSPIECE_SHROUDEN = "Crush you again, wicked eyeball!",
 
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "Hmm. Weird fire stick.",
         
         CHARLIEARENA_TELEPORTER = "Remember take all my stuff. Florp.",
+
+        MASK_CHARLIE_BOSSHAT = "Florp! Me can be scary night lady! Ha!",
     },
 
     DESCRIBE_GENERIC = "What that?",

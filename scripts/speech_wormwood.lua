@@ -2216,6 +2216,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Friend no hurt more",
         CHESSPIECE_YOTH = "Neigh machine?",
         CHESSPIECE_VAULT_PILLAR_GUARD = "Little tall rock thing",
+        CHESSPIECE_BATBOSS_SHADOW = "Bad flying mouth",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "Little big pinchy",
+        CHESSPIECE_WORMBOSS_SHADOW = "Much hungry!",
+        CHESSPIECE_CHARLIE_BOSS = "Sad for lady",
+        CHESSPIECE_SHROUDEN = "Never ever friend",
 
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
@@ -6364,6 +6369,8 @@ return{
         QUEEN_TORCH = "Lady fire stick?",
         
         CHARLIEARENA_TELEPORTER = "Take all things",
+
+        MASK_CHARLIE_BOSSHAT = "Lady bad mask",
     },
 
     DESCRIBE_GENERIC = "Friend?",

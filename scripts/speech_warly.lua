@@ -2212,6 +2212,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "That was a bad combination.",
         CHESSPIECE_YOTH = "It was really hot and cold with this one.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "It comes in petit!",
+        CHESSPIECE_BATBOSS_SHADOW = "Ugh, I can still feel it on my head.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "I'll never look at lobster the same way again.",
+        CHESSPIECE_WORMBOSS_SHADOW = "It had a hunger that could not be satiated.",
+        CHESSPIECE_CHARLIE_BOSS = "I wonder what happened to her?",
+        CHESSPIECE_SHROUDEN = "I never want to see that thing again!",
 
         CHESSJUNK1 = "Broken chess pieces?",
         CHESSJUNK2 = "More broken chess pieces?",
@@ -6360,6 +6365,8 @@ return{
         QUEEN_TORCH = "It will make a lovely night light!",
         
         CHARLIEARENA_TELEPORTER = "Oh! I must remember to take all my things!",
+
+        MASK_CHARLIE_BOSSHAT = "It was just a mask.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

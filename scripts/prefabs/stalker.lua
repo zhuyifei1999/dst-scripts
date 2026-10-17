@@ -1076,8 +1076,10 @@ local function CheckAtriumDecay(inst)
 end
 
 local function trackattackers(inst,data)
-    if data.attacker and data.attacker:HasTag("player") then
-        inst.attackerUSERIDs[data.attacker.userid] = true
+    -- afflicter comes from death event
+    local attacker = data.afflicter or data.attacker
+    if attacker and attacker.isplayer then
+        inst.attackerUSERIDs[attacker.userid] = true
     end
 end
 

@@ -5673,8 +5673,10 @@ local function MakeHat(name)
             owner.components.planardamage:SetBaseDamage(TUNING.SHADOWTHRALL_PARASITE_PLANAR_DAMAGE)
         end
 
-        local brain = require("brains/hostedbrain")
-        owner:SetBrain(brain)
+        if not owner.isplayer then
+            local brain = require("brains/hostedbrain")
+            owner:SetBrain(brain)
+        end
 
 		if owner.SoundEmitter then
 			owner.SoundEmitter:PlaySound("hallowednights2024/thrall_parasite/thrall_idle_LP","parasite_LP")
@@ -6667,6 +6669,81 @@ local function MakeHat(name)
         return inst
     end
 
+    --
+
+    local function mask_charlie_boss_OnFocusCamera(inst)
+        if inst._camerafocusvalue > FRAMES then
+            inst._camerafocusvalue = inst._camerafocusvalue - FRAMES
+            local k = math.min(1, inst._camerafocusvalue) / 1
+            TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 10 * k, 28 * k, 4)
+        else
+            inst._camerafocustask:Cancel()
+            inst._camerafocustask = nil
+            inst._camerafocusvalue = nil
+            TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+        end
+    end
+
+    local function mask_charlie_boss_OnCameraFocusDirty(inst)
+        inst._camerafocusvalue = 3
+        if inst._camerafocustask == nil then
+            inst._camerafocustask = inst:DoPeriodicTask(0, mask_charlie_boss_OnFocusCamera)
+            mask_charlie_boss_OnFocusCamera(inst)
+        end
+    end
+
+    local function mask_charlie_boss_PushCameraFocus(inst)
+        inst._camerafocus:push()
+        if not TheNet:IsDedicated() then
+            mask_charlie_boss_OnCameraFocusDirty(inst)
+        end
+    end
+
+    fns.mask_charlie_boss_dappernessfn = function(inst, owner)
+        return (owner and CHARACTER_KNOWS_CHARLIE[owner.prefab] and TUNING.CRAZINESS_MED)
+            or 0
+    end
+
+    fns.mask_charlie_boss_pushcamerafocusforload = function(inst)
+        inst.pushcamerafocusonload = true
+    end
+
+    fns.mask_charlie_boss_onsave = function(inst, data)
+        if inst.pushcamerafocusonload then
+            data.pushcamerafocusonload = true
+        end
+    end
+
+    fns.mask_charlie_boss_onload = function(inst, data)
+        if data and data.pushcamerafocusonload ~= nil then
+            -- after teleport time and screen fade are finished roughly
+            inst:DoTaskInTime(1.2, inst.PushCameraFocus)
+        end
+    end
+
+	fns.mask_charlie_boss_custom_init = function(inst)
+        inst._camerafocus = net_event(inst.GUID, "mask_charlie_bosshat._camerafocus")
+        inst._camerafocustask = nil
+	end
+
+    fns.mask_charlie_boss = function()
+        local inst = simple(fns.mask_charlie_boss_custom_init)
+
+        if not TheWorld.ismastersim then
+            inst:ListenForEvent("mask_charlie_bosshat._camerafocus", mask_charlie_boss_OnCameraFocusDirty)
+            return inst
+        end
+
+        inst.components.equippable:SetDappernessFn(fns.mask_charlie_boss_dappernessfn)
+
+        inst.PushCameraFocus = mask_charlie_boss_PushCameraFocus
+        inst.PushCameraFocusForNextLoad = fns.mask_charlie_boss_pushcamerafocusforload
+        inst.OnSave = fns.mask_charlie_boss_onsave
+        inst.OnLoad = fns.mask_charlie_boss_onload
+
+        return inst
+    end
+
     -----------------------------------------------------------------------------
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
@@ -6896,6 +6973,8 @@ local function MakeHat(name)
     elseif name == "bat_bosscorpse" then
         fn = fns.bat_bosscorpse
         prefabs = { "bat_bosscorpsehat_fx" }
+    elseif name == "mask_charlie_boss" then
+        fn = fns.mask_charlie_boss
     end
 
     table.insert(ALL_HAT_PREFAB_NAMES, prefabname)
@@ -7848,6 +7927,7 @@ return  MakeHat("straw"),
         MakeHat("yoth_knight"),
 
         MakeHat("bat_bosscorpse"),
+        MakeHat("mask_charlie_boss"),
 
         MakeFollowFx("mask_halfwit_fx", {
 			createfn = fns2.mask_halfwit_CreateFxFollowFrame,

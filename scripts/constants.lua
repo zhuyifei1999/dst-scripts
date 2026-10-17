@@ -1017,8 +1017,8 @@ FESTIVAL_EVENT_MUSIC =
 
 DEFAULT_FE_MUSIC =
 {
-	bank = "music_frontend_rifts7.fsb",
-	sound = "dontstarve/music/music_FE_rifts7",
+	bank = "music_frontend_rifts8.fsb",
+	sound = "dontstarve/music/music_FE_rifts8",
 
 	--bank = "music_frontend_WX.fsb",
 	--sound = "dontstarve/music/music_FE_WX",

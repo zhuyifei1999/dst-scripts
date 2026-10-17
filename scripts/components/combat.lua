@@ -426,7 +426,9 @@ function Combat:ShouldAggro(target, ignore_forbidden)
         (self.shouldaggrofn == nil or self.shouldaggrofn(self.inst, target)) and
         (self.shouldavoidaggro == nil or not self.shouldavoidaggro[target]) and
         (target.components.combat == nil or target.components.combat.shouldavoidaggrofn == nil or target.components.combat.shouldavoidaggrofn(self.inst, target))
-        then
+		--V2C: It passes (allows aggro) when shouldavoidaggrofn returns true, which is backward! (?!?!?!)
+		--     Leave it as is in case mods already using???
+	then
         if not ignore_forbidden and self.forbiddenaggrotags ~= nil then
             for _, tag in ipairs(self.forbiddenaggrotags) do
                 if target:HasTag(tag) then

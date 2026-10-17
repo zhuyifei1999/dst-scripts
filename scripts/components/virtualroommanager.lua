@@ -199,6 +199,30 @@ function VirtualRoomManager:CheckForBoundingBoxCollisions()
     end
 end
 
+function VirtualRoomManager:WillBoundingBoxCollideAt(boundingbox, tx, ty)
+    for i = 1, self.numbervirtualroomsets do
+        local virtualroomset_1 = self.virtualroomsets[i]
+        local tx1, ty1 = virtualroomset_1:GetOriginInTiles()
+        local minx1, miny1, maxx1, maxy1 = virtualroomset_1:GetBoundingBoxInTiles()
+        if tx1 and minx1 then
+            local b1_minx, b1_maxx = tx1 + minx1, tx1 + maxx1
+            local b1_miny, b1_maxy = ty1 + miny1, ty1 + maxy1
+
+            local tx2, ty2 = tx, ty
+            local minx2, miny2, maxx2, maxy2 = boundingbox.minx, boundingbox.miny, boundingbox.maxx, boundingbox.maxy
+            if tx2 and minx2 then
+                local b2_minx, b2_maxx = tx2 + minx2, tx2 + maxx2
+                local b2_miny, b2_maxy = ty2 + miny2, ty2 + maxy2
+                local colliding = b1_maxx >= b2_minx and b1_minx <= b2_maxx and b1_maxy >= b2_miny and b1_miny <= b2_maxy
+                if colliding then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
 function VirtualRoomManager:StartRoomVoteForRoomSetBy(player, roomsetname, virtualroomteleporter)
     local virtualroomset = self:GetVirtualRoomSet(roomsetname)
     if virtualroomset then

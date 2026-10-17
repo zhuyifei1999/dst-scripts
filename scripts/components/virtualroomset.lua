@@ -754,12 +754,14 @@ end
 function VirtualRoomSet:OnPlayerTick(player, x, y, z)
     local drownable = player.components.drownable
     if drownable then
-        local pt = drownable:GetTeleportPtFor(self.roomsetname)
-        if pt then
-            pt.x = x
-            pt.z = z
-        else
-            drownable:PushTeleportPt(self.roomsetname, Vector3(x, 0, z))
+        if self.map:IsVisualGroundAtPoint(x, y, z) then
+            local pt = drownable:GetTeleportPtFor(self.roomsetname)
+            if pt then
+                pt.x = x
+                pt.z = z
+            else
+                drownable:PushTeleportPt(self.roomsetname, Vector3(x, 0, z))
+            end
         end
     end
     if self.config.OnPlayerTick then

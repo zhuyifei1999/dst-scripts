@@ -301,6 +301,7 @@ local function MakeShadowHand(name, data, assets, prefabs)
         end
 
         inst.scrapbook_anim = "hand_in_loop"
+        inst.scrapbook_thingtype = "creature"
 
         inst.arm = nil
         inst.fire = nil

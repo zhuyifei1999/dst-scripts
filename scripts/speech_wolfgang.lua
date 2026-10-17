@@ -2213,6 +2213,11 @@ return{
         CHESSPIECE_WAGBOSS_LUNAR = "Wolfgang not understand what, how... and most of all, why.",
         CHESSPIECE_YOTH = "Tough little horsey.",
         CHESSPIECE_VAULT_PILLAR_GUARD = "It is only little mighty now.",
+        CHESSPIECE_BATBOSS_SHADOW = "Is too small to bite head now.",
+        CHESSPIECE_ROCKYBOSS_SHADOW = "Look at little shadowy claw! Cute!",
+        CHESSPIECE_WORMBOSS_SHADOW = "Mama worm took Wolfgang to dark place.",
+        CHESSPIECE_CHARLIE_BOSS = "Is pity what happen to scary night lady.",
+        CHESSPIECE_SHROUDEN = "Aw, little red eye is kind of cute, no?",
 
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
@@ -6361,6 +6366,8 @@ return{
         QUEEN_TORCH = "A nice night light! But Wolfgang no need.",
         
         CHARLIEARENA_TELEPORTER = "Remember to bring all Wolfgang things.",
+
+        MASK_CHARLIE_BOSSHAT = "All that is left of scary night lady. So sad.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",
