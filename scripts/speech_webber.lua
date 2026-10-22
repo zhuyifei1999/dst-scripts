@@ -6366,7 +6366,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "We can't leave anything behind!",
 
-        MASK_CHARLIE_BOSSHAT = "We wanna wear the lady's mask!",
+        MASK_CHARLIE_BOSSHAT = "We wanna wear the lady's face!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

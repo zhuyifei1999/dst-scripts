@@ -794,7 +794,7 @@ local states =
 				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_sharp")
 				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_dull")
 				inst.SoundEmitter:PlaySound("terraria1/mini_eyeofterror/egg_crack")
-				inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spawn", nil, 0.8)
+				inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spawn", nil, 0.6)
 			end
 		end,
 
@@ -898,7 +898,7 @@ local states =
 				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_sharp")
 				inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_flesh_lrg_dull")
 				inst.SoundEmitter:PlaySound("terraria1/mini_eyeofterror/egg_crack")
-				inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spawn", nil, 0.8)
+				inst.SoundEmitter:PlaySound("dontstarve/common/lava_arena/spawn", nil, 0.6)
 			end
 		end,
 

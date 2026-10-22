@@ -447,6 +447,11 @@ function VirtualRoomSet:ApplyFloorTileBatch()
     local otx, oty = self:GetOriginInTiles()
     local minx, miny, maxx, maxy = self:GetBoundingBoxInTiles()
 
+    -- Defer the collision rebuild to once per batch, as Map Fill/Replace do. Per tile it
+    -- rebuilt the same regions dozens of times and cost ~1 ms each.
+    local instantphysicsrebuild = self.map:GetInstantPhysicsRebuild()
+    self.map:SetInstantPhysicsRebuild(false)
+
     local index = 1
     for dty = miny, maxy do
         local ty = oty + dty
@@ -464,6 +469,8 @@ function VirtualRoomSet:ApplyFloorTileBatch()
             index = index + 1
         end
     end
+
+    self.map:SetInstantPhysicsRebuild(instantphysicsrebuild)
     self.floortilesbatch = nil
 end
 

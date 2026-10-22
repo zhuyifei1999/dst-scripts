@@ -200,6 +200,7 @@ PREFABFILES = {
   "cane",
   "cane_ancient_fx",
   "cane_candy_fx",
+  "cane_chess_fx",
   "cane_harlequin_fx",
   "cane_rose_fx",
   "cane_sharp_fx",

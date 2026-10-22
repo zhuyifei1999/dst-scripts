@@ -34,12 +34,11 @@ local function DisplayNameFn(inst)
 	return ThePlayer and ThePlayer:HasTag("player_shadow_aligned") and STRINGS.NAMES.SHADOWTHRALL_MOUTH_ALLEGIANCE or nil
 end
 
-local function OnNewState(inst)
+local function OnNewState(inst, data)
 	if inst.sg:HasStateTag("stealth") then
 		if not inst._stealth then
 			inst._stealth = true
 			inst.Transform:SetNoFaced()
-			inst.AnimState:SetLightOverride(1)
 			inst.DynamicShadow:Enable(false)
 			RemovePhysicsColliders(inst)
 			inst:AddTag("stealth")
@@ -47,10 +46,17 @@ local function OnNewState(inst)
 			inst.components.combat:SetAttackPeriod(TUNING.SHADOWTHRALL_MOUTH_STEALTH_ATTACK_PERIOD)
 			inst.components.combat:SetRange(TUNING.SHADOWTHRALL_MOUTH_STEALTH_ATTACK_RANGE)
 		end
+		if not inst._stealthlit and not (data and data.statename == "stealth_on") then
+			inst._stealthlit = true
+			inst.AnimState:SetLightOverride(1)
+		end
 	elseif inst._stealth then
 		inst._stealth = nil
 		inst.Transform:SetSixFaced()
-		inst.AnimState:SetLightOverride(0)
+		if inst._stealthlit then
+			inst._stealthlit = nil
+			inst.AnimState:SetLightOverride(0)
+		end
 		inst.DynamicShadow:Enable(true)
 		ChangeToCharacterPhysics(inst)
 		inst:RemoveTag("stealth")
@@ -58,6 +64,19 @@ local function OnNewState(inst)
 		inst.components.combat:SetAttackPeriod(TUNING.SHADOWTHRALL_MOUTH_ATTACK_PERIOD)
 		inst.components.combat:SetRange(TUNING.SHADOWTHRALL_MOUTH_ATTACK_RANGE)
 	end
+end
+
+local function OnRooted(inst)
+	if inst.dupe.components.rooted == nil then
+		inst.dupe:AddComponent("rooted")
+	end
+	inst.dupe.components.rooted:AddSource(inst)
+end
+
+local function OnUnrooted(inst)
+	if inst.dupe.components.rooted then
+		inst.dupe.components.rooted:RemoveSource(inst)
+    end
 end
 
 local function RetargetFn(inst)
@@ -228,6 +247,10 @@ local function fn()
 	inst.AnimState:SetBank("shadow_thrall_mouth")
 	inst.AnimState:SetBuild("shadow_thrall_mouth")
 	inst.AnimState:PlayAnimation("idle", true)
+	inst.AnimState:SetSymbolLightOverride("fin_red", 1)
+	inst.AnimState:SetSymbolLightOverride("fx_red", 1)
+	inst.AnimState:SetSymbolLightOverride("fx_red_particle", 1)
+	inst.AnimState:SetSymbolLightOverride("smile_parts_02", 1)
 
 	inst.CanMouseThrough = CanMouseThrough
 	inst.displaynamefn = DisplayNameFn
@@ -292,6 +315,8 @@ local function fn()
 	inst:SetBrain(brain)
 
 	inst:ListenForEvent("newstate", OnNewState)
+	inst.dupe:ListenForEvent("rooted", OnRooted, inst)
+	inst.dupe:ListenForEvent("unrooted", OnUnrooted, inst)
 
 	inst._bite_target = nil
 	inst.TryRegisterBiteTarget = TryRegisterBiteTarget
@@ -339,6 +364,7 @@ local function dupefxfn()
 
 	inst.AnimState:SetBank("shadow_thrall_mouth")
 	inst.AnimState:SetBuild("shadow_thrall_mouth")
+	inst.AnimState:SetSymbolLightOverride("fin_red", 1)
 
 	inst.entity:SetPristine()
 

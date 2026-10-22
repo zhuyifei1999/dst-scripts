@@ -1040,7 +1040,14 @@ local states =
 				end
 			end),
 			FrameEvent(7, function(inst) inst.Physics:SetMotorVelOverride(6, 0, 0) end),
+			FrameEvent(8, function(inst)
+				inst.sg:AddStateTag("flight")
+			end),
 			FrameEvent(8, function(inst) inst.Physics:SetMotorVelOverride(4, 0, 0) end),
+			FrameEvent(9, function(inst)
+				RemovePhysicsColliders(inst)
+				inst.DynamicShadow:Enable(false)
+			end),
 			FrameEvent(9, function(inst) inst.Physics:SetMotorVelOverride(2, 0, 0) end),
 			FrameEvent(10, function(inst) inst.Physics:SetMotorVelOverride(1, 0, 0) end),
 			FrameEvent(11, function(inst) inst.Physics:SetMotorVelOverride(0.5, 0, 0) end),
@@ -1048,6 +1055,7 @@ local states =
 			FrameEvent(13, function(inst)
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
+				inst.Physics:SetActive(false)
 			end),
 		},
 
@@ -1062,8 +1070,11 @@ local states =
 
 		onexit = function(inst)
 			ResetBiteTargets(inst)
+			ChangeToCharacterPhysics(inst, 50, inst.physicsradiusoverride)
+			inst.DynamicShadow:Enable(true)
 			inst.Physics:ClearMotorVelOverride()
 			inst.Physics:Stop()
+			inst.Physics:SetActive(true)
 		end,
 	},
 

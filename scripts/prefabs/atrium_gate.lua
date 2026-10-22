@@ -1234,8 +1234,10 @@ local function ConfigureShroudenFX(inst)
         AddShroudenFollowSymbol(inst, "swap_shrouden", "pupil", nil, true),
         AddShroudenFollowSymbol(inst, "swap_shrouden", "eye_shading_idle", nil, true),
         AddShroudenFollowSymbol(inst, "swap_shrouden", "eye_lids_idle", nil, true),
+        -- adding another symbol will escape the final offset range, careful
     }
     for i, v in ipairs(inst.shrouden_parts) do
+        v.AnimState:SetFinalOffset(i - 2) -- -1 to 3 [final offset]
         table.insert(inst.highlightchildren, v)
         if v.SyncEyeParts then
             v:SyncEyeParts()
@@ -1318,6 +1320,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetSymbolLightOverride("dreadstone_patch_red", 1)
     inst.AnimState:Hide("KEY")
+    inst.AnimState:SetFinalOffset(-2)
 
     inst.MiniMapEntity:SetIcon("atrium_gate.png")
 

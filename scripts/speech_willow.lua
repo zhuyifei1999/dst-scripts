@@ -6373,7 +6373,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "Can't leave anything behind.",
 
-        MASK_CHARLIE_BOSSHAT = "Stupid creepy mask.",
+        MASK_CHARLIE_BOSSHAT = "A face only a monster could love.",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

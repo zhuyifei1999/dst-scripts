@@ -5161,25 +5161,37 @@ local states =
             end),
 
             TimeEvent(14 * FRAMES, function(inst)
-                if inst.components.playercontroller ~= nil and
-                    inst.components.playercontroller:IsAnyOfControlsPressed(
-                        CONTROL_PRIMARY,
-                        CONTROL_ACTION,
-                        CONTROL_CONTROLLER_ACTION) and
-                    inst.sg.statemem.action ~= nil and
-                    inst.sg.statemem.action:IsValid() and
-                    inst.sg.statemem.action.target ~= nil and
-                    ((inst.sg.statemem.action.target.components.workable ~= nil and
-                        inst.sg.statemem.action.target.components.workable:CanBeWorked()) or
-                    (inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
-                        inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable()
-                    )) and
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
-                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
+				local buffaction = inst.sg.statemem.action
+				local target = buffaction and buffaction:IsValid() and buffaction.target or nil
+				if target and
+					inst.components.playercontroller and
+					(	inst.components.playercontroller:IsAnyOfControlsPressed(
+							CONTROL_PRIMARY,
+							CONTROL_ACTION,
+							CONTROL_CONTROLLER_ACTION
+						) or
+						(	target.components.combat and
+							inst.components.playercontroller:IsAnyOfControlsPressed(
+								CONTROL_SECONDARY,
+								CONTROL_CONTROLLER_ALTACTION
+							) and
+							target.components.combat:CanBeAttacked(inst)
+						)
+					) and
+					(	(	target.components.workable and
+							target.components.workable:CanBeWorked()
+						) or
+						(	target.components.lunarhailbuildup and
+							target.components.lunarhailbuildup:IsBuildupWorkable()
+						)
+					) and
+					target:IsActionValid(buffaction.action) and
+					CanEntitySeeTarget(inst, target)
+				then
 					--No fast-forward when repeat initiated on server
-					inst.sg.statemem.action.options.no_predict_fastforward = true
+					buffaction.options.no_predict_fastforward = true
                     inst:ClearBufferedAction()
-                    inst:PushBufferedAction(inst.sg.statemem.action)
+					inst:PushBufferedAction(buffaction)
                 end
             end),
         },

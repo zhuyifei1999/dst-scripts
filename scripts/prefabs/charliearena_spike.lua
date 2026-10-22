@@ -44,6 +44,7 @@ local function DoDamage(inst)
     inst.AnimState:SetLayer(LAYER_WORLD)
     inst.AnimState:SetSortOrder(0)
     PlayCrackSound(inst, 1)
+	PreventCharacterCollisionsWithPlacedObjects(inst)
 
     local tagset
     if inst.shrouden and inst.shrouden:IsValid() then
@@ -243,7 +244,8 @@ local function spikefn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 0.8)
+	inst:SetPhysicsRadiusOverride(0.8)
+	MakeObstaclePhysics(inst, inst.physicsradiusoverride)
 
     inst.AnimState:SetBank("charliearena_spike")
     inst.AnimState:SetBuild("charliearena_spike")

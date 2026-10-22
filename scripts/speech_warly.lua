@@ -6366,7 +6366,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "Oh! I must remember to take all my things!",
 
-        MASK_CHARLIE_BOSSHAT = "It was just a mask.",
+        MASK_CHARLIE_BOSSHAT = "A face of horror.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

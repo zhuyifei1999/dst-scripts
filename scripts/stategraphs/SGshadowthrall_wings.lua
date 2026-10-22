@@ -525,7 +525,7 @@ local states =
 
 	State{
 		name = "shrouden_flyby_pst",
-		tags = { "busy", "jumping", "nointerrupt", "noattack", "temp_invincible" },
+		tags = { "busy", "jumping", "nointerrupt", "noattack", "temp_invincible", "flight" },
 
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("portal_pst")
@@ -533,6 +533,13 @@ local states =
 			--ToggleOffCharacterCollisions(inst)
 			--inst.Physics:SetMotorVelOverride(8, 0, 0)
 		end,
+
+		timeline =
+		{
+			FrameEvent(17, function(inst)
+				inst.DynamicShadow:Enable(false)
+			end),
+		},
 
 		events =
 		{
@@ -544,6 +551,7 @@ local states =
 		},
 
 		onexit = function(inst)
+			inst.DynamicShadow:Enable(true)
 			inst.Physics:ClearMotorVelOverride()
 			inst.Physics:Stop()
 

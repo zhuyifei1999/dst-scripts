@@ -6372,7 +6372,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "Better not leave nothin' behind.",
 
-        MASK_CHARLIE_BOSSHAT = "It didn't have to be that way, Charlie.",
+        MASK_CHARLIE_BOSSHAT = "This is horrible, Charlie.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

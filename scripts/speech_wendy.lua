@@ -6370,7 +6370,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "I'd better take everything before I jump.",
 
-        MASK_CHARLIE_BOSSHAT = "It was just a mask afterall.",
+        MASK_CHARLIE_BOSSHAT = "And that's how she'll be remembered.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

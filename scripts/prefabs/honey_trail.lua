@@ -1,11 +1,12 @@
 local HONEYTRAILSLOWDOWN_MUST_TAGS = { "locomotor" }
 local HONEYTRAILSLOWDOWN_CANT_TAGS = { "flying", "playerghost", "INLIMBO", "honey_ammo_afflicted", "vigorbuff" }
+local HONEYTRAILSLOWDOWN_CANT_TAGS_SHROUDEN = { "flying", "playerghost", "INLIMBO", "gelblobbed" }
 
-local function OnUpdateServer(inst, x, y, z, rad)--, _)
+local function OnUpdateServer(inst, x, y, z, rad, server_exclude_tags)
 	local ents =
 		inst.registered_tags and
 		TheSim:FindEntities_Registered(x, y, z, rad, inst.registered_tags) or
-		TheSim:FindEntities(x, y, z, rad, HONEYTRAILSLOWDOWN_MUST_TAGS, HONEYTRAILSLOWDOWN_CANT_TAGS)
+		TheSim:FindEntities(x, y, z, rad, HONEYTRAILSLOWDOWN_MUST_TAGS, server_exclude_tags)
 
     for _, v in ipairs(ents) do
         if v.components.locomotor and (inst.filterfn == nil or inst.filterfn(v, inst)) then
@@ -48,29 +49,15 @@ local function OnAnimOver(inst)
     end
 end
 
-local function OnInit(inst, client_exclude_tags, scale)
+local function OnInit(inst, _exclude_tags, scale)
     local x, y, z = inst.Transform:GetWorldPosition()
     if scale == nil then
         scale = inst.Transform:GetScale()
     end
     inst.task:Cancel()
     local onupdatefn = TheWorld.ismastersim and OnUpdateServer or OnUpdateClient
-    inst.task = inst:DoPeriodicTask(0, onupdatefn, nil, x, y, z, scale, client_exclude_tags)
-    onupdatefn(inst, x, y, z, scale, client_exclude_tags)
-end
-
-local function SetVariation(inst, rand, scale, duration)
-    if inst.trailname == nil then
-        inst.Transform:SetScale(scale, scale, scale)
-
-        inst.trailname = "trail"..tostring(rand)
-        inst.duration = duration
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/honey_drip")
-        inst.AnimState:PlayAnimation(inst.trailname.."_pre")
-        inst:ListenForEvent("animover", OnAnimOver)
-
-        OnInit(inst, nil, scale)
-    end
+    inst.task = inst:DoPeriodicTask(0, onupdatefn, nil, x, y, z, scale, _exclude_tags)
+    onupdatefn(inst, x, y, z, scale, _exclude_tags)
 end
 
 local function OverrideSearchParams(inst, registered_tags, filterfn)
@@ -85,6 +72,20 @@ local function MakeFx(name, data)
 	}
 	if data.build ~= "honey_trail" then
 		table.insert(assets, Asset("ANIM", "anim/"..data.build..".zip"))
+	end
+
+	local function SetVariation(inst, rand, scale, duration)
+		if inst.trailname == nil then
+			inst.Transform:SetScale(scale, scale, scale)
+
+			inst.trailname = "trail"..tostring(rand)
+			inst.duration = duration
+			inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/honey_drip")
+			inst.AnimState:PlayAnimation(inst.trailname.."_pre")
+			inst:ListenForEvent("animover", OnAnimOver)
+
+			OnInit(inst, data.server_exclude_tags, scale)
+		end
 	end
 
 	local function fn()
@@ -131,9 +132,11 @@ end
 return MakeFx("honey_trail", {
 		build = "honey_trail",
 		client_exclude_tags = CLIENT_EXCLUDE_TAGS,
+		server_exclude_tags = HONEYTRAILSLOWDOWN_CANT_TAGS,
 	}),
 	MakeFx("honey_trail_shrouden_fx", {
 		build = "honey_trail_shrouden",
 		client_exclude_tags = CLIENT_EXCLUDE_TAGS_SHROUDEN,
+		server_exclude_tags = HONEYTRAILSLOWDOWN_CANT_TAGS_SHROUDEN,
 		light_override = 1,
 	})

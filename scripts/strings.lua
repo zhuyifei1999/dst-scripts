@@ -4786,7 +4786,7 @@ STRINGS =
 
         QUEEN_TORCH = "Queen's Torch",
         KING_CANE = "King's Staff",
-        MASK_CHARLIE_BOSSHAT = "Queen's Mask",
+        MASK_CHARLIE_BOSSHAT = "Queen's Visage",
 
         CHARLIEARENA_TELEPORTER = "Chasm",
 	},

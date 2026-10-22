@@ -6370,7 +6370,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "Take all things",
 
-        MASK_CHARLIE_BOSSHAT = "Lady bad mask",
+        MASK_CHARLIE_BOSSHAT = "Lady... face",
     },
 
     DESCRIBE_GENERIC = "Friend?",

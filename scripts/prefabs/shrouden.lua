@@ -659,6 +659,7 @@ local function TryReset(inst, force)
 	end
 	inst.sg:GoToState("spawn_loop")
 	inst.components.health:SetPercent(1)
+	inst:SetLowHPMusic(false)
 	PHASES[1].fn(inst)
 
 	inst:PushEvent("resetboss")
@@ -728,6 +729,12 @@ local function OnDeath(inst)
 	end
 end
 
+local function OnHealthDelta(inst, data)
+	if data and data.newpercent then
+		inst:SetLowHPMusic(data.newpercent < 0.1)
+	end
+end
+
 local function OnSave(inst, data)
 	if inst.sg.mem.changearena then
 		data.changearena = true
@@ -743,6 +750,7 @@ local function OnLoad(inst, data)--, ents)
 	inst.looted = data and data.looted
 
 	local healthpct = inst.components.health:GetPercent()
+	inst:SetLowHPMusic(healthpct < 0.1)
 	for i = #PHASES, 2, -1 do
 		local v = PHASES[i]
 		if healthpct <= v.hp then
@@ -1098,44 +1106,12 @@ local function EnableStandbyLoop(inst, enable)
 	end
 end
 
-local function OnUpdateLowHPLoop(inst, dt)
-	local threshold = 1 / 3
-	local hp = inst.replica.health
-	hp = hp and hp:GetPercent() or 1
-	hp = math.clamp(Remap(hp, threshold * 0.5, threshold, 1, 0), 0, 1)
-
-	local old = inst._lowhp or 0
-	if inst._lowhp == nil then
-		inst._lowhp = hp
-	elseif hp > inst._lowhp then
-		inst._lowhp = math.min(hp, inst._lowhp + 0.05)
-	elseif hp <= 0 then
-		inst._lowhp = 0
-	elseif hp < inst._lowhp then
-		inst._lowhp = math.max(hp, inst._lowhp - 0.05)
-	end
-
-	if inst._lowhp > 0 then
-		if old <= 0 then
-			TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_shrouden_lowHP", "shrouden_lowhp")
-		end
-		TheFocalPoint.SoundEmitter:SetParameter("shrouden_lowhp", "HP", inst._lowhp)
-	elseif old > 0 then
-		TheFocalPoint.SoundEmitter:KillSound("shrouden_lowhp")
-	end
-end
-
 local function EnableLowHPLoop(inst, enable)
 	if not enable then
-		if inst._lowhp then
-			TheFocalPoint.SoundEmitter:KillSound("shrouden_lowhp")
-			inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateLowHPLoop)
-			inst._lowhp = nil
-		end
-	elseif inst._lowhp == nil then
-		inst.components.updatelooper:AddOnUpdateFn(OnUpdateLowHPLoop)
-		OnUpdateLowHPLoop(inst, 0)
-		assert(inst._lowhp)
+		TheFocalPoint.SoundEmitter:KillSound("shrouden_lowhp")
+	elseif not TheFocalPoint.SoundEmitter:PlayingSound("shrouden_lowhp") then
+		TheFocalPoint.SoundEmitter:PlaySound("dontstarve/music/music_epicfight_shrouden_lowHP", "shrouden_lowhp")
+		TheFocalPoint.SoundEmitter:SetParameter("shrouden_lowhp", "HP", 1)
 	end
 end
 
@@ -1159,7 +1135,7 @@ local function SetPlayingMusic(inst, playing, instant)
 			TheFocalPoint.SoundEmitter:SetParameter("shrouden_standby", "HP", 1)
 		end
 		EnableStandbyLoop(inst, level == 1)
-		EnableLowHPLoop(inst, level == 3)
+		EnableLowHPLoop(inst, level == 3 and inst.lowhp:value())
 		EnableGatewayDimensionBattleMix(inst, level == 2 or level == 3)
 	elseif inst._playingmusic then
 		inst._playingmusic = false
@@ -1211,6 +1187,17 @@ end
 local function SetMusicLevel(inst, level)
 	if level ~= inst.music:value() then
 		inst.music:set(level)
+
+		--Dedicated server does not need to trigger music
+		if not TheNet:IsDedicated() then
+			OnMusicDirty(inst)
+		end
+	end
+end
+
+local function SetLowHPMusic(inst, lowhp)
+	if lowhp ~= inst.lowhp:value() then
+		inst.lowhp:set(lowhp)
 
 		--Dedicated server does not need to trigger music
 		if not TheNet:IsDedicated() then
@@ -1348,6 +1335,7 @@ local function fn()
 
 	inst.portalopen = net_bool(inst.GUID, "shrouden.portalopen", "portalopendirty")
 	inst.music = net_tinybyte(inst.GUID, "shrouden.music", "musicdirty")
+	inst.lowhp = net_bool(inst.GUID, "shrouden.lowhp", "musicdirty")
 	inst.camerafocus = net_bool(inst.GUID, "shrouden.camerafocus", "camerafocusdirty")
 
 	inst.highlightoverride = HIGHLIGHT_OVERRIDE
@@ -1460,6 +1448,7 @@ local function fn()
 	inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 	inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 	inst:ListenForEvent("death", OnDeath)
+	inst:ListenForEvent("healthdelta", OnHealthDelta)
 
 	inst._temptbl1 = {}
 	inst._temptbl2 = {}
@@ -1479,6 +1468,7 @@ local function fn()
 	inst.OnLoad = OnLoad
 	inst.OnLoadPostPass = OnLoadPostPass
 	inst.SetMusicLevel = SetMusicLevel
+	inst.SetLowHPMusic = SetLowHPMusic
 	inst.SetCameraFocusEnabled = SetCameraFocusEnabled
 	inst.SetPortalOpen = SetPortalOpen
 	inst.SetGelEnabled = SetGelEnabled

@@ -1441,7 +1441,7 @@ function IsTeleportLinkingPermittedFromPoint(fx, fy, fz)
         return false
     end
 
-    if map:IsPointInAnyVault(fx, fy, fz) then
+    if map:IsPointInVaultRoom(fx, fy, fz) then
         return false
     end
 

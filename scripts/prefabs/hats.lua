@@ -6561,6 +6561,7 @@ local function MakeHat(name)
 			inst.fx:Remove()
 		end
 		inst.fx = SpawnPrefab("bat_bosscorpsehat_fx")
+        inst.fx.owningitem = inst
 		inst.fx:AttachToOwner(owner)
 
 		if inst.bat_bosscorpse_onhitother_fn == nil then
@@ -7710,7 +7711,26 @@ fns2.bat_bosscorpsehat_fx_Init = function(inst)
 	end
 end
 
+fns2.bat_bosscorpsehat_fx_skinhashdirty = function(inst)
+    if inst.fx ~= nil then
+        local skinbuildhash = inst.skinbuildhash:value()
+        if skinbuildhash ~= 0 then
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetSkin(skinbuildhash, "bat_bosscorpsehat")
+            end
+        else
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetBuild("bat_bosscorpsehat")
+            end
+        end
+    end
+end
+
 fns2.bat_bosscorpsehat_fx_common_postinit = function(inst)
+    inst.skinbuildhash = net_hash(inst.GUID, "bat_bosscorpsehat.skinbuildhash", "skinhashdirty")
+    if not TheNet:IsDedicated() then
+        inst:ListenForEvent("skinhashdirty", fns2.bat_bosscorpsehat_fx_skinhashdirty)
+    end
 	--start/stop events (mainly used for HUD), safe to defer via task
 	inst:DoTaskInTime(0, fns2.bat_bosscorpsehat_fx_Init)
 end

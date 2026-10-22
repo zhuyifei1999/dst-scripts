@@ -693,6 +693,8 @@ local function OnUpdateStandbyLoop(inst, dt)
 			d = 0
 		end
 	end
+
+	local old = inst._standby
 	if inst._standby == nil then
 		inst._standby = d
 	elseif d > inst._standby then
@@ -700,7 +702,10 @@ local function OnUpdateStandbyLoop(inst, dt)
 	elseif d < inst._standby then
 		inst._standby = math.max(d, inst._standby - 0.05)
 	end
-	TheFocalPoint.SoundEmitter:SetParameter("charlie_boss_standby", "proximity", inst._standby)
+
+	if old ~= inst._standby then
+		TheFocalPoint.SoundEmitter:SetParameter("charlie_boss_standby", "proximity", inst._standby)
+	end
 end
 
 local function EnableStandbyLoop(inst, enable)

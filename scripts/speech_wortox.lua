@@ -6386,7 +6386,7 @@ return{
         
         CHARLIEARENA_TELEPORTER = "Pack it all before the fall!",
 
-        MASK_CHARLIE_BOSSHAT = "A mask for a dark task.",
+        MASK_CHARLIE_BOSSHAT = "A bad case of broken face! Hyuyu!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

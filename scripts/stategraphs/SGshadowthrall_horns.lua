@@ -762,13 +762,21 @@ local states =
 					inst.AnimState:PushAnimation("shrouden_jump_pst", false)
 				end
 			end),
+			FrameEvent(33 - 18, function(inst)
+				inst.sg:AddStateTag("flight")
+			end),
 			FrameEvent(33 - 18, function(inst) inst.Physics:SetMotorVelOverride(0.4 * inst.sg.statemem.speed, 0, 0) end),
 			FrameEvent(35 - 18, function(inst) inst.Physics:SetMotorVelOverride(0.2 * inst.sg.statemem.speed, 0, 0) end),
+			FrameEvent(36 - 18, function(inst)
+				inst.DynamicShadow:Enable(false)
+				RemovePhysicsColliders(inst)
+			end),
 			FrameEvent(37 - 18, function(inst) inst.Physics:SetMotorVelOverride(0.1 * inst.sg.statemem.speed, 0, 0) end),
 			FrameEvent(39 - 18, function(inst) inst.Physics:SetMotorVelOverride(0.05 * inst.sg.statemem.speed, 0, 0) end),
 			FrameEvent(41 - 18, function(inst)
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
+				inst.Physics:SetActive(false)
 			end),
 		},
 
@@ -942,12 +950,20 @@ local states =
 
 	State{
 		name = "shrouden_spit_pst",
-		tags = { "busy", "nointerrupt", "noattack", "temp_invincible" },
+		tags = { "busy", "nointerrupt", "noattack", "temp_invincible", "flight" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("shrouden_disappear")
 		end,
+
+		timeline =
+		{
+			FrameEvent(9, function(inst)
+				inst.DynamicShadow:Enable(false)
+				inst.Physics:SetActive(false)
+			end),
+		},
 
 		events =
 		{
@@ -957,6 +973,11 @@ local states =
 				end
 			end),
 		},
+
+		onexit = function(inst)
+			inst.DynamicShadow:Enable(true)
+			inst.Physics:SetActive(true)
+		end,
 	},
 
 	State{

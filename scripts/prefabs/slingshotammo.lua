@@ -315,7 +315,11 @@ end
 
 local function SetSpeed_Slow(target, fx, numstacks)
 	local mult = TUNING.SLINGSHOT_AMMO_MOVESPEED_MULT ^ numstacks
-	if target._slingshot_gelblob then
+	if target._slingshot_gelblob and
+		target._slingshot_gelblob.blob and
+		target._slingshot_gelblob.blob:IsValid() and
+		target._slingshot_gelblob.blob._targets[target]
+	then
 		mult = math.min(1, mult / TUNING.CAREFUL_SPEED_MOD)
 	end
 	target.components.locomotor:SetExternalSpeedMultiplier(target, "slingshotammo_slow", mult)
@@ -677,7 +681,8 @@ end
 local function OnUpdate_GelBlob(target)
 	local data = target._slingshot_gelblob
 	local elapsed = GetTime() - data.t0
-	if elapsed < TUNING.SLINGSHOT_AMMO_GELBLOB_DURATION then
+	local kill = elapsed >= TUNING.SLINGSHOT_AMMO_GELBLOB_DURATION
+	if not kill then
 		if data.blob then
 			if not data.blob:IsValid() then
 				data.blob = nil
@@ -691,11 +696,16 @@ local function OnUpdate_GelBlob(target)
 		if data.blob == nil then
 			data.blob = TrySpawnGelBlob(target)
 		end
-		if not data.wasafflicted and data.blob and data.blob._targets[target] then
-			data.wasafflicted = true
+		if not data.wasafflicted and data.blob then
+			if data.blob._targets[target] then
+				data.wasafflicted = true
+			else
+				kill = true
+			end
 		end
 		data.start = nil
-	else
+	end
+	if kill then
 		if data.blob then
 			data.blob:KillFX(true)
 			data.blob = nil

@@ -6376,7 +6376,7 @@ return {
         
         CHARLIEARENA_TELEPORTER = "I'd better take everything with me.",
 
-        MASK_CHARLIE_BOSSHAT = "I wonder how old it is.",
+        MASK_CHARLIE_BOSSHAT = "I think it's her... face.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

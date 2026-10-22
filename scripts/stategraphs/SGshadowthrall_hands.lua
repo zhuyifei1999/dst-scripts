@@ -600,11 +600,13 @@ local states =
 
 	State{
 		name = "shrouden_run_stop",
-		tags = { "canrotate" },
+		tags = { "canrotate", "flight" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("shrouden_disappear")
+			inst.DynamicShadow:Enable(false)
+			inst.Physics:SetActive(false)
 		end,
 
 		events =
@@ -615,6 +617,11 @@ local states =
 				end
 			end),
 		},
+
+		onexit = function(inst)
+			inst.DynamicShadow:Enable(true)
+			inst.Physics:SetActive(true)
+		end,
 	},
 }
 
